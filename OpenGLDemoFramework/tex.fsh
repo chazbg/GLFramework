@@ -1,8 +1,13 @@
-varying highp vec2 textureCoordinate;
+#version 330 core
+in vec2 texCoords;
 
-uniform sampler2D videoFrame;
+// Ouput data
+out vec3 color;
 
 void main()
 {
-    gl_FragColor = texture2D(videoFrame, textureCoordinate);
+
+	// Output color = red 
+	color = vec3(texCoords,0);
+
 }

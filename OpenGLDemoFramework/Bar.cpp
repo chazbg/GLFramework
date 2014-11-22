@@ -508,7 +508,7 @@ const GLfloat Bar::g_vertex_buffer_data[] = {
 
 Bar::Bar()
 {
-	programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");;
+	programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
 	timeID = glGetUniformLocation(programID, "time");
 	segmentsID = glGetUniformLocation(programID, "segments");
 	startAngleID = glGetUniformLocation(programID, "startAngle");
