@@ -30,7 +30,7 @@ void GLWrapper::InitRenderer()
 
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
 
@@ -38,9 +38,24 @@ void GLWrapper::InitRenderer()
 	glGenTextures(1, &texName);
 }
 
+GLint programId;
+GLuint fb;
+void StoreState()
+{
+	//glGetIntegerv(GL_CURRENT_PROGRAM, &programId);
+	glGenFramebuffers(1, &fb);
+	glBindFramebuffer(GL_FRAMEBUFFER, fb);
+}
+
+void RestoreState()
+{
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glUseProgram(programId);
+}
 void GLWrapper::RenderTexture(unsigned char* buffer, unsigned int width, unsigned int height)
 {
-	static const GLfloat g_vertex_buffer_data[] = {
+	const GLfloat g_vertex_buffer_data[] = {
 			0.0f, -0.5f,
 			1.0f, 1.0f,
 			0.5f, -0.5f,
@@ -51,7 +66,28 @@ void GLWrapper::RenderTexture(unsigned char* buffer, unsigned int width, unsigne
 			0.0f, 0.0f
 	};
 
-	
+	//////////////////////////////////
+	GLint name, size, type, normalized, stride, offset, enabled;
+	GLint* i0p = 0, i1p = 0;
+	//glGetVertexAttribfv
+	//printf("index %d\n", index);
+	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &name);
+	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &enabled);
+	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_SIZE, &size);
+	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &stride);
+	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_TYPE, &type);
+	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &normalized);
+	glGetVertexAttribPointerv(0, GL_VERTEX_ATTRIB_ARRAY_POINTER, (void**)&i0p);
+	glGetVertexAttribPointerv(1, GL_VERTEX_ATTRIB_ARRAY_POINTER, (void**)&i1p);
+	//printf("name %d\n", name);
+	//printf("enabled %d\n", enabled);
+	//printf("size %d\n", size);
+	//printf("type %d\n", type);
+	//printf("normalized %d\n", normalized);
+	//printf("stride %d\n", stride);
+	//printf("offset %d\n", offset);
+	StoreState();
+	//////////////////////////////////
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -61,7 +97,6 @@ void GLWrapper::RenderTexture(unsigned char* buffer, unsigned int width, unsigne
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glVertexAttribPointer(
 		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 		2,                  // size
@@ -80,6 +115,7 @@ void GLWrapper::RenderTexture(unsigned char* buffer, unsigned int width, unsigne
 		(void*)16           // array buffer offset
 		);
 
+	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texName);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
@@ -92,4 +128,8 @@ void GLWrapper::RenderTexture(unsigned char* buffer, unsigned int width, unsigne
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
+
+	////////////////////////////////
+	RestoreState();
+	////////////////////////////////
 }

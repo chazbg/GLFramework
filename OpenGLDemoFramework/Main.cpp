@@ -5,12 +5,15 @@
 #define TEX_SIZE 32
 Bar* b;
 unsigned char texture[TEX_SIZE * TEX_SIZE * 4];
+
 void RenderScene()
 {
 	GLWrapper::ClearWindow();
 
 	b->Render();
-	GLWrapper::RenderTexture(texture, TEX_SIZE, TEX_SIZE);
+
+	//GLWrapper::RenderTexture(texture, TEX_SIZE, TEX_SIZE);
+
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
 }
