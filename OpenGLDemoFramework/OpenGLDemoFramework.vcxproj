@@ -48,12 +48,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\bin;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -71,18 +75,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bar.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GLUTWrapper.cpp" />
     <ClCompile Include="GLWrapper.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Plance.cpp" />
+    <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />
     <ClInclude Include="GLWrapper.hpp" />
+    <ClInclude Include="Line.hpp" />
     <ClInclude Include="Mesh.hpp" />
+    <ClInclude Include="Plane.hpp" />
+    <ClInclude Include="Rectangle.hpp" />
     <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="TestLine.hpp" />
+    <ClInclude Include="TestPlane.hpp" />
+    <ClInclude Include="TestVector.hpp" />
+    <ClInclude Include="Vector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -34,8 +34,8 @@ void GLWrapper::InitRenderer()
 	glDepthFunc(GL_LESS);
 	glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
 
-	texShader = LoadShaders("tex.vsh", "tex.fsh");
-	glGenTextures(1, &texName);
+	//texShader = LoadShaders("tex.vsh", "tex.fsh");
+	//glGenTextures(1, &texName);
 }
 
 GLint programId;
