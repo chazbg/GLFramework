@@ -67,27 +67,6 @@ void GLWrapper::RenderTexture(unsigned char* buffer, unsigned int width, unsigne
 	};
 
 	//////////////////////////////////
-	GLint name, size, type, normalized, stride, offset, enabled;
-	GLint* i0p = 0, i1p = 0;
-	//glGetVertexAttribfv
-	//printf("index %d\n", index);
-	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &name);
-	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &enabled);
-	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_SIZE, &size);
-	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &stride);
-	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_TYPE, &type);
-	glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &normalized);
-	glGetVertexAttribPointerv(0, GL_VERTEX_ATTRIB_ARRAY_POINTER, (void**)&i0p);
-	glGetVertexAttribPointerv(1, GL_VERTEX_ATTRIB_ARRAY_POINTER, (void**)&i1p);
-	//printf("name %d\n", name);
-	//printf("enabled %d\n", enabled);
-	//printf("size %d\n", size);
-	//printf("type %d\n", type);
-	//printf("normalized %d\n", normalized);
-	//printf("stride %d\n", stride);
-	//printf("offset %d\n", offset);
-	StoreState();
-	//////////////////////////////////
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -128,8 +107,4 @@ void GLWrapper::RenderTexture(unsigned char* buffer, unsigned int width, unsigne
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
-
-	////////////////////////////////
-	RestoreState();
-	////////////////////////////////
 }

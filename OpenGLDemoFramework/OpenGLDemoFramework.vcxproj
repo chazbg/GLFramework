@@ -75,6 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bar.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GLUTWrapper.cpp" />
@@ -87,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.hpp" />
+    <ClInclude Include="Cube.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />
     <ClInclude Include="GLWrapper.hpp" />
     <ClInclude Include="Line.hpp" />
@@ -97,6 +99,7 @@
     <ClInclude Include="TestLine.hpp" />
     <ClInclude Include="TestPlane.hpp" />
     <ClInclude Include="TestVector.hpp" />
+    <ClInclude Include="TextureGenerator.hpp" />
     <ClInclude Include="Vector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
