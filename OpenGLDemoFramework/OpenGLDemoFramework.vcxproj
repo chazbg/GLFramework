@@ -39,9 +39,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;$(LibraryPath)</LibraryPath>
-    <ReferencePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;$(ReferencePath)</ReferencePath>
+    <IncludePath>C:\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;C:\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;$(LibraryPath)</LibraryPath>
+    <ReferencePath>C:\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -76,6 +76,7 @@
     <ClCompile Include="GLWrapper.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.hpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="GLWrapper.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="Triangle.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

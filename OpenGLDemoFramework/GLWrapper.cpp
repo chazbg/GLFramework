@@ -68,5 +68,4 @@ void RenderTexture(unsigned char* buffer, unsigned int width, unsigned int heigh
 					gl_FragColor = texture2D(videoFrame, textureCoordinate);	\
 				}";
 
-	L
 }
