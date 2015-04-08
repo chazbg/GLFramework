@@ -84,6 +84,7 @@
     <ClCompile Include="Plance.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +101,7 @@
     <ClInclude Include="TestPlane.hpp" />
     <ClInclude Include="TestVector.hpp" />
     <ClInclude Include="TextureGenerator.hpp" />
+    <ClInclude Include="Triangle.hpp" />
     <ClInclude Include="Vector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
