@@ -17,7 +17,7 @@ void GLUTWrapper::InitWindow(void (*renderScene)())
 
 	glutInit(&argc, &argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(1024, 768);
+	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("Bar");
 	glutDisplayFunc(renderScene);
