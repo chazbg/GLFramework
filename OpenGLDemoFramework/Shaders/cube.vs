@@ -13,10 +13,21 @@ void main(){
     mat4 rotation;
     vec4 pos = vec4(vertexPosition_modelspace,1);
     mat4 proj;
-    proj[0] = vec4(-1.0/sqrt(2.0), 1.0/sqrt(2.0), 0, 0);
-    proj[1] = vec4(-1.0/sqrt(6.0), -1.0/sqrt(6.0), sqrt(2.0)/sqrt(3.0), 0);
-    proj[2] = vec4(0, 0, 0, 0);
-    proj[3] = vec4(0, 0, 0, 1);
+    mat4 rotY, rotX;
+    rotY[0] = vec4(cos(3.14/4.0), 0, sin(3.14/4.0), 0);
+    rotY[1] = vec4(0, 1, 0, 0);
+    rotY[2] = vec4(-sin(3.14/4.0), 0, cos(3.14/4.0), 0);
+    rotY[3] = vec4(0, 0, 0, 1);
+    
+    rotX[0] = vec4(1, 0, 0, 0);
+    rotX[1] = vec4(0, cos(3.14/6.0), sin(3.14/6.0), 0);
+    rotX[2] = vec4(0, -sin(3.14/6.0), cos(3.14/6.0), 0);
+    rotX[3] = vec4(0, 0, 0, 1);
+    
+    // proj[0] = vec4(-1.0/sqrt(2.0), 1.0/sqrt(2.0), 0, 0);
+    // proj[1] = vec4(-1.0/sqrt(6.0), -1.0/sqrt(6.0), -sqrt(2.0)/sqrt(3.0), 0);
+    // proj[2] = vec4(0, 0, 0, 0);
+    // proj[3] = vec4(0, 0, 0, 1);
     
     // proj[0] = vec4(1, 0, 1.0/sqrt(2.0), 0);
     // proj[1] = vec4(0,  1, 1.0/sqrt(2.0), 0);    
@@ -37,7 +48,7 @@ void main(){
     rotation[3] = vec4(0, 0, 0, 1);
 
     vec4 n = rotation * vec4(normal,1);
-    gl_Position = transpose(proj) * rotation *scale * (transl +vec4(vertexPosition_modelspace,1.0));
+    gl_Position = transpose(rotX) * transpose(rotY) * rotation * scale * (transl +vec4(vertexPosition_modelspace,1.0));
     inColor = vec3(dot(n.xyz, light)*0.5,0,0);
 }
 

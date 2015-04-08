@@ -18,8 +18,8 @@ public:
 		unsigned int* tex = new unsigned int[SIZE];
 		textures.push_back(tex);
 
-		int c1 = 100;
-		int c2 = 200;
+		int c1 = 0xFF00FFFF;
+		int c2 = 0xFF0000FF;
 		int i = 0;
 		float t = 0.0f;
 		float delta = (float)1 / (float)(SIZE / 2 - 1);

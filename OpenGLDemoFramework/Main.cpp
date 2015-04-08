@@ -18,10 +18,10 @@ void RenderScene()
 	GLWrapper::ClearWindow();
 
 	//b->Render();
-	r1->Render();
+	//r1->Render();
 	//r2->Render();
 	//GLWrapper::RenderTexture(texture, TEX_SIZE, TEX_SIZE);
-	//c->Render();
+	c->Render();
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
 }
@@ -60,10 +60,10 @@ int main(int argc, char* argv[])
 	}
 
 	unsigned int* tex = gen.generateGradient();
-	r1->attachTexture(256, 1, tex);
-	r1->attachShaders("Shaders/tex.vs", "Shaders/fractal.fs");
+	//r1->attachTexture(256, 1, tex);
+	//r1->attachShaders("Shaders/tex.vs", "Shaders/mandelbulb.fs");
 	//r2->attachTexture(TEX_SIZE, TEX_SIZE, texture);
-	//c = new Cube();
+	c = new Cube();
 	GLUTWrapper::RenderLoop();
 
 	return 0;

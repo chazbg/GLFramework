@@ -110,8 +110,6 @@ void Rectangle::attachTexture(GLuint width, GLuint height, void* data)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	/*glPixelStorei(GL_PACK_ALIGNMENT, sizeof(GLfloat));
-	glPixelStorei(GL_UNPACK_ALIGNMENT, sizeof(GLfloat));*/
 	glUniform1i(texUniform, 0);
 }
 
