@@ -4,10 +4,45 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
+static float* generateWireframe(const float* vbuf, int length)
+{
+	float* wireframe = new float[length * 2];
+	int j = 0;
+	for (int i = 0; i < length; i += 9)
+	{
+		wireframe[j] = vbuf[i];
+		wireframe[j+1] = vbuf[i+1];
+		wireframe[j+2] = vbuf[i+2];
+
+		wireframe[j+3] = vbuf[i+3];
+		wireframe[j+4] = vbuf[i+4];
+		wireframe[j+5] = vbuf[i+5];
+
+		wireframe[j + 6] = vbuf[i + 3];
+		wireframe[j + 7] = vbuf[i + 4];
+		wireframe[j + 8] = vbuf[i + 5];
+
+		wireframe[j + 9] = vbuf[i + 6];
+		wireframe[j + 10] = vbuf[i + 7];
+		wireframe[j + 11] = vbuf[i + 8];
+
+		wireframe[j + 12] = vbuf[i + 6];
+		wireframe[j + 13] = vbuf[i + 7];
+		wireframe[j + 14] = vbuf[i + 8];
+
+		wireframe[j + 15] = vbuf[i];
+		wireframe[j + 16] = vbuf[i + 1];
+		wireframe[j + 17] = vbuf[i + 2];
+		j += 18;
+	}
+	return wireframe;
+}
+
 PlaneMesh::PlaneMesh(int _width, int _height) : 
 width(_width), 
 height(_height), 
-vertexBuffer(generatePlaneVertices(width, height))
+vertexBuffer(generatePlaneVertices(width, height)),
+vertexBufferWireframe(generateWireframe(vertexBuffer, width * height * 18))
 {
 	programID = LoadShaders("Shaders/plane.vs", "Shaders/plane.fs");
 	timeID = glGetUniformLocation(programID, "time");
@@ -19,7 +54,8 @@ vertexBuffer(generatePlaneVertices(width, height))
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	GenerateNormals();
-	glBufferData(GL_ARRAY_BUFFER, width * height * 18 * 4, vertexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, width * height * 18 * 4 * 2, vertexBufferWireframe, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, width * height * 18 * 4, vertexBuffer, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
@@ -34,9 +70,9 @@ vertexBuffer(generatePlaneVertices(width, height))
 	UseProgram();
 }
 
-
 PlaneMesh::~PlaneMesh()
 {
+	delete[] vertexBufferWireframe;
 	delete[] vertexBuffer;
 }
 
@@ -71,7 +107,8 @@ void PlaneMesh::Render()
 		(void*)0            // array buffer offset
 		);
 
-	glDrawArrays(GL_TRIANGLES, 0, width * height * 18); // 12 + 12 + 12 indices starting at 0 -> 4 + 4 + 4 triangles
+	glDrawArrays(GL_LINES, 0, width * height * 18 * 2);
+	//glDrawArrays(GL_TRIANGLES, 0, width * height * 18);
 
 	glDisableVertexAttribArray(0);
 }

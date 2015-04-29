@@ -23,5 +23,6 @@ private:
 	int width;
 	int height;
 	float* vertexBuffer;
+	float* vertexBufferWireframe;
 };
 

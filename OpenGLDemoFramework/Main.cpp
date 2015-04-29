@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 	//r1->attachShaders("Shaders/tex.vs", "Shaders/mandelbulb.fs");
 	//r2->attachTexture(TEX_SIZE, TEX_SIZE, texture);
 	//c = new Cube();
-	planeMesh = new PlaneMesh(2, 2);
+	planeMesh = new PlaneMesh(50, 50);
 	GLUTWrapper::RenderLoop();
 
 	return 0;
