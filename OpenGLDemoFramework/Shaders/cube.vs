@@ -48,7 +48,7 @@ void main(){
     rotation[3] = vec4(0, 0, 0, 1);
 
     vec4 n = rotation * vec4(normal,1);
-    gl_Position = transpose(rotX) * transpose(rotY) * rotation * scale * (transl +vec4(vertexPosition_modelspace,1.0));
+    gl_Position = rotation * transpose(rotX) * transpose(rotY) * scale * (transl +vec4(vertexPosition_modelspace,1.0));
     inColor = vec3(dot(n.xyz, light)*0.5,0,0);
 }
 

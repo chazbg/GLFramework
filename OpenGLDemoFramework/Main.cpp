@@ -6,6 +6,8 @@
 #include "Triangle.hpp"
 #include <cmath>
 #include "TextureGenerator.hpp"
+#include "PlaneMesh.hpp"
+
 #define TEX_SIZE 32
 Bar* b;
 Cube* c;
@@ -13,6 +15,7 @@ Rectangle* r1;
 Rectangle* r2;
 TextureGenerator gen;
 unsigned char texture[TEX_SIZE * TEX_SIZE * 4];
+PlaneMesh* planeMesh;
 
 void RenderScene()
 {
@@ -22,11 +25,11 @@ void RenderScene()
 	//r1->Render();
 	//r2->Render();
 	//GLWrapper::RenderTexture(texture, TEX_SIZE, TEX_SIZE);
-	c->Render();
+	//c->Render();
+	planeMesh->Render();
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
 }
-
 
 int main(int argc, char* argv[])
 {
@@ -36,7 +39,7 @@ int main(int argc, char* argv[])
 	//b = new Bar();
 	//r1 = new Rectangle(/*Vec2(-0.5,0.5), Vec2(0.5,-0.5)*/);
 	//r1 = new Rectangle(Vec2(-1,1), Vec2(1,-1));
-	r1 = new Rectangle();
+	//r1 = new Rectangle();
 
 	//for (int i = 0; i < TEX_SIZE * TEX_SIZE * 4; i += 4)
 	//{
@@ -46,7 +49,7 @@ int main(int argc, char* argv[])
 	//	texture[i + 3] = 255;
 	//}
 
-	for (int y = 0; y < TEX_SIZE; y += 1)
+	/*for (int y = 0; y < TEX_SIZE; y += 1)
 	{
 		for (int x = 0; x < TEX_SIZE; x += 1)
 		{
@@ -58,13 +61,14 @@ int main(int argc, char* argv[])
 			texture[offset + 2] = 127;
 			texture[offset + 3] = 255;
 		}
-	}
+	}*/
 
-	unsigned int* tex = gen.generateGradient();
+	//unsigned int* tex = gen.generateGradient();
 	//r1->attachTexture(256, 1, tex);
 	//r1->attachShaders("Shaders/tex.vs", "Shaders/mandelbulb.fs");
 	//r2->attachTexture(TEX_SIZE, TEX_SIZE, texture);
-	c = new Cube();
+	//c = new Cube();
+	planeMesh = new PlaneMesh(2, 2);
 	GLUTWrapper::RenderLoop();
 
 	return 0;
