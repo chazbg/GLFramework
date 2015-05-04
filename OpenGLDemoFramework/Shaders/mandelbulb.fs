@@ -25,7 +25,7 @@ float f(vec3 r)
     float hit = 0.0;
     float p = 8.0;
     float d = 1.0;
-    int iter = int(float(mod(time, 200) * 0.05));
+    int iter = 10;
     for(int i = 0; i < iter; i++)
     {
         rad = length(zn);
