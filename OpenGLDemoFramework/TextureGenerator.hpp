@@ -19,8 +19,8 @@ public:
 	{
 		unsigned int* tex = new unsigned int[SIZE];
 		textures.push_back(tex);
-		Vec3 c1(1.0f, 0.0f, 0.0f);
-		Vec3 c2(1.0f, 1.0f, 1.0f);
+		Vec3 c1(0.0f, 0.0f, 0.0f);
+		Vec3 c2(1.0f, 0.0f, 0.0f);
 		int i = 0;
 		float t = 0.0f;
 		float delta = (float) 1 / (float) (SIZE / 2 - 1);

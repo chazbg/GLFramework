@@ -15,7 +15,7 @@ public:
 private:
 	void initGL();
 	void useProgram();
-	GLfloat vertexBuffer[24]; //Vertices + texture coordinates
+	GLfloat vertexBuffer[16]; //Vertices + texture coordinates
 	GLuint programID;
 	GLuint timeUniform;
 	GLuint texID;
