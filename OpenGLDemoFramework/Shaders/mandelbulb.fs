@@ -19,13 +19,13 @@ vec3 rotate(vec3 pos, float x, float y, float z)
 
 float f(vec3 r)
 {
-    r = rotate(r, sin(float(time) * 0.01), cos(float(time) * 0.01), 0.0);
+    //r = rotate(r, sin(float(time) * 0.01), cos(float(time) * 0.01), 0.0);
     vec3 zn = vec3(r.xyz);
     float rad = 0.0;
     float hit = 0.0;
-    float p = 8.0;
+    float p = abs(sin(float(time) * 0.001)) * 12.0;
     float d = 1.0;
-    int iter = 10;
+    int iter = 5;
     for(int i = 0; i < iter; i++)
     {
         rad = length(zn);
@@ -37,7 +37,7 @@ float f(vec3 r)
         }else{
             float th = atan(length(zn.xy), zn.z);
             float phi = atan(zn.y, zn.x);		
-            float rado = pow(rad,8.0);
+            float rado = pow(rad, 8.0);
             d = pow(rad, 7.0) * 7.0 * d + 1.0;
             
             float sint = sin(th * p);
@@ -95,7 +95,7 @@ vec3 terrainColor(vec3 origin, vec3 direction, float t)
 {
     vec3 p = origin + direction * t;
     vec3 n = getNormal(p);
-    return  abs(dot(n,direction)) * texture2D(sampler, texCoords).rgb;
+    return  abs(dot(n,direction)) * texture2D(sampler, vec2(t, 0)).rgb;
 }
 
 void main()
