@@ -18,8 +18,8 @@ public:
 	void UseProgram();
 	void Render();
 private:
-	static const GLfloat g_vertex_buffer_data[];
-	GLuint vertexBuffer;
+	float* genVertices();
+	GLuint vertexBufferID;
 	GLuint programID;
 	GLuint timeID;
 	GLuint time;

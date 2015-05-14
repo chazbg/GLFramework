@@ -39,11 +39,15 @@ static float* generateWireframe(const float* vbuf, int length)
 }
 
 PlaneMesh::PlaneMesh(int _width, int _height) : 
+Mesh(),
 width(_width), 
-height(_height), 
-vertexBuffer(generatePlaneVertices(width, height)),
-vertexBufferWireframe(generateWireframe(vertexBuffer, width * height * 18))
+height(_height)
 {
+	vertexCount = width * height * 6;
+	vertexBuffer = generatePlaneVertices(width, height);
+	generateNormals();
+	wireframeVertexBuffer = generateWireframe(vertexBuffer, width * height * 18);
+
 	programID = LoadShaders("Shaders/plane.vs", "Shaders/plane.fs");
 	timeID = glGetUniformLocation(programID, "time");
 
@@ -53,9 +57,9 @@ vertexBufferWireframe(generateWireframe(vertexBuffer, width * height * 18))
 
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	GenerateNormals();
-	glBufferData(GL_ARRAY_BUFFER, width * height * 18 * 4 * 2, vertexBufferWireframe, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, width * height * 18 * 4, vertexBuffer, GL_STATIC_DRAW);
+
+	//glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4 * 2, wireframeVertexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
@@ -67,13 +71,27 @@ vertexBufferWireframe(generateWireframe(vertexBuffer, width * height * 18))
 		BUFFER_OFFSET(0)
 		);
 
-	UseProgram();
+	glGenBuffers(1, &normalsBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		BUFFER_OFFSET(0)
+		);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
 PlaneMesh::~PlaneMesh()
 {
-	delete[] vertexBufferWireframe;
-	delete[] vertexBuffer;
 }
 
 void PlaneMesh::SetTime(GLuint time)
@@ -106,13 +124,20 @@ void PlaneMesh::Render()
 		0,                  // stride
 		(void*)0            // array buffer offset
 		);
-
-	glDrawArrays(GL_LINES, 0, width * height * 18 * 2);
-	//glDrawArrays(GL_TRIANGLES, 0, width * height * 18);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		3,                  // size
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+		);
+	//glDrawArrays(GL_LINES, 0, vertexCount * 2);
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
 	glDisableVertexAttribArray(0);
-}
-
-void PlaneMesh::GenerateNormals()
-{
+	glDisableVertexAttribArray(1);
 }

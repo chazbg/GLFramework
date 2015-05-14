@@ -1,36 +1,30 @@
 #include "GLUTWrapper.hpp"
 #include "GLWrapper.hpp"
-#include "Rectangle.hpp"
-#include "TextureGenerator.hpp"
-
-Rectangle* r1;
-Rectangle* r2;
+#include "PlaneMesh.hpp"
+#include "Cube.hpp"
+#include "Triangle.hpp"
+PlaneMesh* p;
+Cube* c;
+Triangle* t;
 void RenderScene()
 {
 	GLWrapper::ClearWindow();
 
-	r1->Render();
-	r2->Render();
-
+	p->Render();
+	c->Render();
+	t->Render();
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
 }
 
 int main(int argc, char* argv[])
 {
-	TextureGenerator gen;
-
 	GLUTWrapper::InitWindow(&RenderScene);
 	GLWrapper::InitRenderer();
 
-	r1 = new Rectangle(Vec2(-1, 1), Vec2(0, -1));
-	r2 = new Rectangle(Vec2(0, 1), Vec2(1, -1));
-	unsigned int* tex = gen.generateGradient();
-	r1->attachTexture(256, 1, tex);
-	r1->attachShaders("Shaders/tex.vs", "Shaders/fractal.fs");
-	r2->attachTexture(256, 1, tex);
-	r2->attachShaders("Shaders/tex.vs", "Shaders/mandelbulb.fs");
-
+	p = new PlaneMesh(50, 50);
+	c = new Cube();
+	t = new Triangle();
 	GLUTWrapper::RenderLoop();
 
 	return 0;

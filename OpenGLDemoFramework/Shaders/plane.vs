@@ -1,6 +1,7 @@
 #version 330 core
 // Input vertex data, different for all executions of this shader.
-layout(location = 0) in vec3 vertexPosition_modelspace;
+in vec3 vertexPosition_modelspace;
+in vec3 normal;
 uniform uint time;
 
 smooth out vec3 inColor;
@@ -31,6 +32,6 @@ void main(){
     gl_Position.xyz = toWaves(vertexPosition_modelspace) * 0.02 - vec3(1, 1, 0.0);
     gl_Position.w = 1.0;
     gl_Position = rot * gl_Position;
-    inColor.xyz = vec3(1.0, gl_Position.z, 0.0);
+    inColor.xyz = normal;
 }
 

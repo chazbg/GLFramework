@@ -52,6 +52,8 @@ public:
  	operator string();
 	string toString();
 	float* raw();
+	float length() const;
+	Vec3 normalize() const;
 	//TODO: Add operations
 public:
 	float x;

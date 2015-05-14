@@ -3,80 +3,15 @@
 #include <cmath>
 #include "Vector.hpp"
 
-struct MyVertex
-{
-	float x, y, z;        //Vertex
-	float nx, ny, nz;     //Normal
-};
-
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-const GLfloat Cube::vertices[] = {
-	//front side
-	//1
-	0.0f, 0.0f, 0.0f,
-	1.0f, 0.0f, 0.0f,
-	1.0f, 1.0f, 0.0f,
-
-	//2
-	0.0f, 0.0f, 0.0f,
-	1.0f, 1.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-
-	//back side
-	//1
-	1.0f, 0.0f, 1.0f,
-	0.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 1.0f,
-
-	//2
-	1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 1.0f,
-	1.0f, 1.0f, 1.0f,
-
-	//bottom side
-	1.0f, 0.0f, 0.0f,
-	0.0f, 0.0f, 0.0f,
-	0.0f, 0.0f, 1.0f,
-
-	1.0f, 0.0f, 0.0f,
-	0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 1.0f,
-
-	//top side
-	0.0f, 1.0f, 0.0f,
-	1.0f, 1.0f, 0.0f,
-	1.0f, 1.0f, 1.0f,
-
-	0.0f, 1.0f, 0.0f,
-	1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f,
-
-	//right side
-	//1
-	1.0f, 0.0f, 0.0f,
-	1.0f, 0.0f, 1.0f,
-	1.0f, 1.0f, 1.0f,
-
-	//2
-	1.0f, 0.0f, 0.0f,
-	1.0f, 1.0f, 1.0f,
-	1.0f, 1.0f, 0.0f,
-
-	//left side
-	//1
-	0.0f, 0.0f, 1.0f,
-	0.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-
-	//2
-	0.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f,
-	0.0f, 1.0f, 1.0f,
-};
-
-Cube::Cube()
+Cube::Cube() :
+Mesh()
 {
+	vertexCount = 36; //6 sides * 2 triangles * 3 vertices
+	vertexBuffer = genVerts();
+	generateNormals();
+
 	programID = LoadShaders("Shaders/cube.vs", "Shaders/cube.fs");
 	timeID = glGetUniformLocation(programID, "time");
 
@@ -84,41 +19,39 @@ Cube::Cube()
 
 	glUniform1ui(timeID, time);
 
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	buffer = new GLfloat[216];
-	GenerateNormals();
-	glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(MyVertex), buffer, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glGenBuffers(1, &vertexBufferID);
+	glGenBuffers(1, &normalsBufferID);
 
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glVertexAttribPointer(
 		0,
 		3,
 		GL_FLOAT,
 		GL_FALSE,
-		sizeof(MyVertex),
+		0,
 		BUFFER_OFFSET(0)
 		);
 
+	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(
 		1,
 		3,
 		GL_FLOAT,
 		GL_FALSE,
-		sizeof(MyVertex),
-		BUFFER_OFFSET(12)
+		0,
+		BUFFER_OFFSET(0)
 		);
-	
-	UseProgram();
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
 Cube::~Cube()
 {
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
 }
 
 void Cube::SetTime(GLuint time)
@@ -139,54 +72,150 @@ void Cube::UseProgram()
 
 void Cube::Render()
 {
-	//UseProgram();
+	UseProgram();
 	SetTime(time + 1);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(
-	//	0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-	//	3,                  // size
-	//	GL_FLOAT,           // type
-	//	GL_FALSE,           // normalized?
-	//	0,                  // stride
-	//	(void*)0            // array buffer offset
-	//	);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(
+		0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		BUFFER_OFFSET(0)
+		);
 
-	glDrawArrays(GL_TRIANGLES, 0, 36); // 12 + 12 + 12 indices starting at 0 -> 4 + 4 + 4 triangles
+	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		BUFFER_OFFSET(0)
+		);
 
-	//glDisableVertexAttribArray(0);
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
-void Cube::GenerateNormals()
+float* Cube::genVerts()
 {
-	for (int i = 0, j = 0; i < 216, j < 108; i += 6, j += 3)
-	{
-		buffer[i] = vertices[j];
-		buffer[i + 1] = vertices[j + 1];
-		buffer[i + 2] = vertices[j + 2];
-	}
+	float* verts = new float[6 * 6 * 3];
 
-	for (int i = 0, j = 0; i < 216, j < 108; i += 18, j += 9)
-	{
-		Vec3 a(vertices[j], vertices[j + 1], vertices[j + 2]);
-		Vec3 b(vertices[j + 3], vertices[j + 4], vertices[j + 5]);
-		Vec3 c(vertices[j + 6], vertices[j + 7], vertices[j + 8]);
-		Vec3 cb = c - b;
-		Vec3 ab = a - b;
-		Vec3 res = cb * ab;
+	verts[0] = 0.0f;
+	verts[1] = 0.0f;
+	verts[2] = 0.0f;
+	verts[3] = 1.0f;
+	verts[4] = 0.0f;
+	verts[5] = 0.0f;
+	verts[6] = 1.0f;
+	verts[7] = 1.0f;
+	verts[8] = 0.0f;
+	verts[9] = 0.0f;
+	verts[10] = 0.0f;
+	verts[11] = 0.0f;
+	verts[12] = 1.0f;
+	verts[13] = 1.0f;
+	verts[14] = 0.0f;
+	verts[15] = 0.0f;
+	verts[16] = 1.0f;
+	verts[17] = 0.0f;
+	verts[18] = 1.0f;
+	verts[19] = 0.0f;
+	verts[20] = 1.0f;
+	verts[21] = 0.0f;
+	verts[22] = 0.0f;
+	verts[23] = 1.0f;
+	verts[24] = 0.0f;
+	verts[25] = 1.0f;
+	verts[26] = 1.0f;
+	verts[27] = 1.0f;
+	verts[28] = 0.0f;
+	verts[29] = 1.0f;
+	verts[30] = 0.0f;
+	verts[31] = 1.0f;
+	verts[32] = 1.0f;
+	verts[33] = 1.0f;
+	verts[34] = 1.0f;
+	verts[35] = 1.0f;
+	verts[36] = 1.0f;
+	verts[37] = 0.0f;
+	verts[38] = 0.0f;
+	verts[39] = 0.0f;
+	verts[40] = 0.0f;
+	verts[41] = 0.0f;
+	verts[42] = 0.0f;
+	verts[43] = 0.0f;
+	verts[44] = 1.0f;
+	verts[45] = 1.0f;
+	verts[46] = 0.0f;
+	verts[47] = 0.0f;
+	verts[48] = 0.0f;
+	verts[49] = 0.0f;
+	verts[50] = 1.0f;
+	verts[51] = 1.0f;
+	verts[52] = 0.0f;
+	verts[53] = 1.0f;
+	verts[54] = 0.0f;
+	verts[55] = 1.0f;
+	verts[56] = 0.0f;
+	verts[57] = 1.0f;
+	verts[58] = 1.0f;
+	verts[59] = 0.0f;
+	verts[60] = 1.0f;
+	verts[61] = 1.0f;
+	verts[62] = 1.0f;
+	verts[63] = 0.0f;
+	verts[64] = 1.0f;
+	verts[65] = 0.0f;
+	verts[66] = 1.0f;
+	verts[67] = 1.0f;
+	verts[68] = 1.0f;
+	verts[69] = 0.0f;
+	verts[70] = 1.0f;
+	verts[71] = 1.0f;
+	verts[72] = 1.0f;
+	verts[73] = 0.0f;
+	verts[74] = 0.0f;
+	verts[75] = 1.0f;
+	verts[76] = 0.0f;
+	verts[77] = 1.0f;
+	verts[78] = 1.0f;
+	verts[79] = 1.0f;
+	verts[80] = 1.0f;
+	verts[81] = 1.0f;
+	verts[82] = 0.0f;
+	verts[83] = 0.0f;
+	verts[84] = 1.0f;
+	verts[85] = 1.0f;
+	verts[86] = 1.0f;
+	verts[87] = 1.0f;
+	verts[88] = 1.0f;
+	verts[89] = 0.0f;
+	verts[90] = 0.0f;
+	verts[91] = 0.0f;
+	verts[92] = 1.0f;
+	verts[93] = 0.0f;
+	verts[94] = 0.0f;
+	verts[95] = 0.0f;
+	verts[96] = 0.0f;
+	verts[97] = 1.0f;
+	verts[98] = 0.0f;
+	verts[99] = 0.0f;
+	verts[100] = 0.0f;
+	verts[101] = 1.0f;
+	verts[102] = 0.0f;
+	verts[103] = 1.0f;
+	verts[104] = 0.0f;
+	verts[105] = 0.0f;
+	verts[106] = 1.0f;
+	verts[107] = 1.0f;
 
-		buffer[i + 3] = res.x;
-		buffer[i + 4] = res.y;
-		buffer[i + 5] = res.z;
-
-		buffer[i + 9] = res.x;
-		buffer[i + 10] = res.y;
-		buffer[i + 11] = res.z;
-
-		buffer[i + 15] = res.x;
-		buffer[i + 16] = res.y;
-		buffer[i + 17] = res.z;
-	}
+	return verts;
 }

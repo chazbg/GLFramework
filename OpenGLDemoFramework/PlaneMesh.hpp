@@ -11,7 +11,6 @@ public:
 
 	void UseProgram();
 	void Render();
-	void GenerateNormals();
 private:
 	GLuint vertexBufferID;
 	GLuint normalsBufferID;
@@ -22,7 +21,5 @@ private:
 private:
 	int width;
 	int height;
-	float* vertexBuffer;
-	float* vertexBufferWireframe;
 };
 

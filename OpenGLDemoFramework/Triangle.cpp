@@ -2,16 +2,12 @@
 #include "Shader.hpp"
 #include <cmath>
 
-const GLfloat Triangle::g_vertex_buffer_data[] = {
-	//front side
-	//1
-	-0.5f, -0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	0.0f, 0.5f, 0.0f,
-};
-
-Triangle::Triangle()
+Triangle::Triangle() :
+Mesh()
 {
+	vertexCount = 3;
+	vertexBuffer = genVertices();
+	generateNormals();
 	programID = LoadShaders("Shaders/basic.vs", "Shaders/basic.fs");
 	timeID = glGetUniformLocation(programID, "time");
 	startAngleID = glGetUniformLocation(programID, "startAngle");
@@ -25,12 +21,11 @@ Triangle::Triangle()
 	glUniform1f(startAngleID, startAngle);
 	glUniform1f(offsetAngleID, offsetAngle);
 
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	glGenBuffers(1, &vertexBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glVertexAttribPointer(
 		0,		
 		3,                 
@@ -86,13 +81,13 @@ void Triangle::UseProgram()
 
 void Triangle::Render()
 {
+	UseProgram();
 	SetTime(time + 1);
 	SetOffsetAngle(3.14f / 2.0f);
 	SetStartAngle(3.0f * 3.14f / 2.0f);
-	UseProgram();
 
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glVertexAttribPointer(
 		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 		3,                  // size
@@ -102,7 +97,24 @@ void Triangle::Render()
 		(void*)0            // array buffer offset
 		);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
 	glDisableVertexAttribArray(0);
+}
+
+float* Triangle::genVertices()
+{
+	float* verts = new float[9];
+
+	verts[0] = -0.5f;
+	verts[1] = -0.5f;
+	verts[2] = 0.0f;
+	verts[3] = 0.5f;
+	verts[4] = -0.5f;
+	verts[5] = 0.0f;
+	verts[6] = 0.0f;
+	verts[7] = 0.5f;
+	verts[8] = 0.0f;
+
+	return verts;
 }

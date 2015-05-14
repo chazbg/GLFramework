@@ -213,3 +213,13 @@ float* Vec3::raw()
 
 	return v;
 }
+
+float Vec3::length() const
+{
+	return sqrt(x*x + y*y + z*z);
+}
+Vec3 Vec3::normalize() const
+{
+	float len = length();
+	return Vec3(x/len, y/len, z/len);
+}
