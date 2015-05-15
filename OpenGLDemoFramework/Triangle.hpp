@@ -20,6 +20,7 @@ public:
 private:
 	float* genVertices();
 	GLuint vertexBufferID;
+	GLuint normalBufferID;
 	GLuint programID;
 	GLuint timeID;
 	GLuint time;

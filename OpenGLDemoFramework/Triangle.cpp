@@ -34,11 +34,28 @@ Mesh()
 		0,
 		(void*)0
 		);
+
+	glGenBuffers(1, &normalBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBufferID);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
 Triangle::~Triangle()
 {
-	glDisableVertexAttribArray(0);
+	
 }
 
 void Triangle::SetTime(GLuint time)
@@ -97,9 +114,21 @@ void Triangle::Render()
 		(void*)0            // array buffer offset
 		);
 
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, normalBufferID);
+	glVertexAttribPointer(
+		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
 	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
 	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
 float* Triangle::genVertices()

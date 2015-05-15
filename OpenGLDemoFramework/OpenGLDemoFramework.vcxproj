@@ -39,9 +39,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;$(LibraryPath)</LibraryPath>
-    <ReferencePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;$(ReferencePath)</ReferencePath>
+    <IncludePath>E:\Git\GLFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\Git\GLFramework\OpenGLDemoFramework\lib\x64;E:\Git\GLFramework\OpenGLDemoFramework\bin\x64;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;$(LibraryPath)</LibraryPath>
+    <ReferencePath>E:\Git\GLFramework\OpenGLDemoFramework\bin\x64;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\x64;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
