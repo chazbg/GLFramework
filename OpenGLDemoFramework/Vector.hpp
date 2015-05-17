@@ -23,6 +23,10 @@ public:
 	float distanceSquaredTo(const Vec2& point);
 	operator string();
 	string toString();
+	bool operator==(const Vec2& rhs) const;
+	bool operator!=(const Vec2& rhs) const;
+	float dot(const Vec2& rhs) const;
+	float perp(const Vec2& rhs) const;
 	//TODO: Add operations
 public:
 	float x;

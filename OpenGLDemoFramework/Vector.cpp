@@ -96,6 +96,26 @@ string Vec2::toString()
 	return this->operator string();
 }
 
+bool Vec2::operator==(const Vec2& rhs) const
+{
+	return x == rhs.x && y == rhs.y;
+}
+
+bool Vec2::operator!=(const Vec2& rhs) const
+{
+	return !((*this) == rhs);
+}
+
+float Vec2::dot(const Vec2& rhs) const
+{
+	return x * rhs.x + y * rhs.y;
+}
+
+float Vec2::perp(const Vec2& rhs) const
+{
+	return x * rhs.y - y * rhs.x;
+}
+
 //Vec3
 Vec3::Vec3(const Vec3& vec)
 {
