@@ -84,14 +84,14 @@ float Vec2::distanceSquaredTo(const Vec2& point)
 	return dx * dx + dy * dy;
 }
 
-Vec2::operator string()
+Vec2::operator string() const
 {
 	stringstream s;
 	s << "(" << x << ", " << y << ")";
 	return s.str();
 }
 
-string Vec2::toString()
+string Vec2::toString() const
 {
 	return this->operator string();
 }
@@ -115,6 +115,12 @@ float Vec2::perp(const Vec2& rhs) const
 {
 	return x * rhs.y - y * rhs.x;
 }
+
+Vec2 Vec2::toPolar() const
+{
+	return Vec2(sqrt(x*x + y*y), atan2(y, x));
+}
+
 
 //Vec3
 Vec3::Vec3(const Vec3& vec)

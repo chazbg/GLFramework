@@ -1,12 +1,67 @@
 #include "GeometryAlgorithm.hpp"
 #include <cstdio>
 #include <cmath>
+#include <algorithm>
 
 #define EPS 0.0001f
 
 std::vector<Vec2> GeometryAlgorithm::ConvexHull(const std::vector<Vec2>& inputs)
 {
 	return inputs;
+}
+
+std::vector<Vec2> GeometryAlgorithm::ConvexHullGraham(const std::vector<Vec2>& inputs)
+{
+	std::vector<Vec2> convexHull;
+	std::vector<Vec2> sortedInputs = inputs;
+	Vec2 startingPoint = inputs[0];
+
+	int k = 2;
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		if ((inputs[i].y < startingPoint.y) || (inputs[i].y == startingPoint.y && inputs[i].x < startingPoint.x))
+		{
+			startingPoint = inputs[i];
+			std::iter_swap(sortedInputs.begin() + i, sortedInputs.begin() + 1);
+		}
+	}
+
+	struct less_than_key
+	{
+		inline bool operator() (const Vec2& u, const Vec2& v)
+		{
+			return u.toPolar().y < v.toPolar().y;
+		}
+	};
+
+	std::sort(sortedInputs.begin() + 1, sortedInputs.end(), less_than_key());
+
+	printf("Starting point: %s\n", startingPoint.toString().c_str());
+	
+	int M = 1;
+	for (unsigned int i = 1; i < sortedInputs.size(); i++)
+	{
+		while (TriangleArea(sortedInputs[M - 1], sortedInputs[M], sortedInputs[i]) <= 0)
+		{
+			if (M > 1)
+			{
+				M--;
+			}
+			else if (i == sortedInputs.size())
+			{
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
+
+		M++;
+
+	}
+
+	return sortedInputs;
 }
 
 bool GeometryAlgorithm::PointInPolygon(const Vec2& inputPoint, const std::vector<Vec2>& inputPolygon)
@@ -25,7 +80,7 @@ bool GeometryAlgorithm::PointInPolygon(const Vec2& inputPoint, const std::vector
 		if (PointInLine(inputPoint, a, b))
 		{
 			res = true;
-			printf("InputPoint is a contour point\n");
+			printf("%s is a contour point\n", inputPoint.toString().c_str());
 			break;
 		}
 		else if (a.y != b.y)
@@ -50,15 +105,35 @@ bool GeometryAlgorithm::PointInLine(const Vec2& inputPoint, const Vec2& lineEndA
 {
 	float t;
 	bool res = false;
-	//lineEndA * t + lineEndB * (1 - t) = inputPoint
-	//lineEndA * t + lineEndB  - lineEndB * t = inputPoint
-	//(lineEndA - lineEndB) * t = inputPoint - lineEndB
-	//x = (inputPoint - lineEndB) / (lineEndA - lineEndB)
+
+	if (lineEndA.x == lineEndB.x)
+	{
+		if (inputPoint.x == lineEndA.x)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	if (lineEndA.y == lineEndB.y)
+	{
+		if (inputPoint.y == lineEndA.y)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	if (inputPoint.x != lineEndB.x)
 	{
 		t = (inputPoint.x - lineEndB.x) / (lineEndA.x - lineEndB.x);
-		printf("t = %f\n", t);
-
+		printf("%s, %s, %s\n", inputPoint.toString().c_str(), lineEndA.toString().c_str(), lineEndB.toString().c_str());
 		if (t >= 0.0f && t <= 1.0f)
 		{
 			if (lineEndA.y * t + lineEndB.y * (1 - t) == inputPoint.y)
@@ -69,6 +144,7 @@ bool GeometryAlgorithm::PointInLine(const Vec2& inputPoint, const Vec2& lineEndA
 	}
 	else if (inputPoint.y != lineEndB.y)
 	{
+		printf("%s, %s, %s\n", inputPoint.toString().c_str(), lineEndA.toString().c_str(), lineEndB.toString().c_str());
 		t = (inputPoint.y - lineEndB.y) / (lineEndA.y - lineEndB.y);
 		printf("t = %f\n", t);
 
@@ -105,4 +181,9 @@ bool GeometryAlgorithm::LineIntersection(const Vec2& rayPointA,
 	}
 
 	return res;
+}
+
+float GeometryAlgorithm::TriangleArea(const Vec2& a, const Vec2& b, const Vec2& c)
+{
+	return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }

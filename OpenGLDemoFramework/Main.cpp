@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 	GLUTWrapper::InitWindow(&RenderScene);
 	GLWrapper::InitRenderer();
 
-	TestPointInPolygon();
+	TestConvexHullGraham();
 
 	GLUTWrapper::RenderLoop();
 

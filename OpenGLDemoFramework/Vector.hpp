@@ -21,12 +21,13 @@ public:
 	friend Vec2 operator*(const float scalar, const Vec2& rhs);
 	float distanceTo(const Vec2& point);
 	float distanceSquaredTo(const Vec2& point);
-	operator string();
-	string toString();
+	operator string() const;
+	string toString() const;
 	bool operator==(const Vec2& rhs) const;
 	bool operator!=(const Vec2& rhs) const;
 	float dot(const Vec2& rhs) const;
 	float perp(const Vec2& rhs) const;
+	Vec2 toPolar() const;
 	//TODO: Add operations
 public:
 	float x;
