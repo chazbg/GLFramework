@@ -86,13 +86,13 @@ lightSampleValues computeSpotLightValues(vec3 spotLightPosition,
 }
 
 void main(){
-	vec3 ambColor = vec3(1, 1, 1);
+	vec3 ambColor = vec3(0.1, 1, 0.1);
 	vec3 emissiveColor = vec3(1,1,1);
 	vec4 diffuseColor = vec4(1,0,0,1);
 	vec3 specularColor = vec3(1,1,1);
 	vec3 lightAmbDiffSpec = vec3(0.2,1,1);
 	vec3 lightColor = vec3(1,1,1);
-	float specExp = 2.0;
+	float specExp = 3.0;
 	float angle = float(time) * 0.02;
 	mat4 rot;
     rot[0] = vec4(cos(angle), 0, sin(angle), 0);
@@ -107,6 +107,6 @@ void main(){
 	vec3 ambComp = computeAmbientComponent(light, ambColor, lightAmbDiffSpec, lightColor);
 	vec3 diffComp = computeDiffuseComponent(normal, light, diffuseColor.xyz, lightAmbDiffSpec, lightColor);
 	vec3 specComp = computeSpecularComponent(normal, gl_Position, light, specularColor, specExp, lightAmbDiffSpec, lightColor);
-    inColor.xyz = specComp;
+    inColor.xyz = ambComp + diffComp;
 }
 
