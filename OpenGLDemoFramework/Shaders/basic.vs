@@ -7,12 +7,41 @@ uniform uint time;
 uniform float startAngle;
 uniform float offsetAngle;
 
+// uniform vec3 materialDiffuseColor;
+// uniform vec3 materialAmbientColor;
+// uniform vec3 materialSpecularColor;
+// uniform float materialSpecularExp;
+// uniform vec3 lightAmbDiffSpec;
+// uniform vec3 lightColor;
+
 smooth out vec3 inColor;
 
 struct lightSampleValues {
 	vec3 L;
 	float iL;
 };
+
+vec3 computeAmbientComponent(lightSampleValues light, vec3 materialAmbientColor, vec3 lightAmbDiffSpec, vec3 lightColor)
+{
+	return light.iL * (lightColor * lightAmbDiffSpec.x) * materialAmbientColor;
+}
+
+// surfaceNormal is assumed to be unit-length
+vec3 computeDiffuseComponent(vec3 surfaceNormal, lightSampleValues light, vec3 materialDiffuseColor, vec3 lightAmbDiffSpec, vec3 lightColor)
+{
+	return light.iL * (lightColor * lightAmbDiffSpec.y)
+					* materialDiffuseColor.rgb
+					* max(0.0, dot(surfaceNormal, light.L));
+}
+
+vec3 computeSpecularComponent(vec3 surfaceNormal, vec4 surfacePosition, lightSampleValues light, vec3 materialSpecularColor, float materialSpecularExp, vec3 lightAmbDiffSpec, vec3 lightColor)
+{
+	vec3 viewVector = normalize(vec3(0,0,1)-surfacePosition.xyz);
+	vec3 reflectionVector = 2.0 * dot(light.L, surfaceNormal) * surfaceNormal - light.L;
+	return (dot(surfaceNormal, light.L) <= 0.0) ? vec3(0.0,0.0,0.0) : (light.iL * (lightColor * lightAmbDiffSpec.z)
+																				* materialSpecularColor
+																				* pow(max(0.0, dot(reflectionVector, viewVector)), materialSpecularExp));
+}
 
 lightSampleValues computeDirLightValues(vec3 dirLightPosition, float dirLightIntensity)
 {
@@ -57,11 +86,13 @@ lightSampleValues computeSpotLightValues(vec3 spotLightPosition,
 }
 
 void main(){
-	vec3 ambColor = vec3(0.2, 0.2, 0.2);
+	vec3 ambColor = vec3(1, 1, 1);
 	vec3 emissiveColor = vec3(1,1,1);
 	vec4 diffuseColor = vec4(1,0,0,1);
 	vec3 specularColor = vec3(1,1,1);
-	
+	vec3 lightAmbDiffSpec = vec3(0.2,1,1);
+	vec3 lightColor = vec3(1,1,1);
+	float specExp = 2.0;
 	float angle = float(time) * 0.02;
 	mat4 rot;
     rot[0] = vec4(cos(angle), 0, sin(angle), 0);
@@ -69,11 +100,13 @@ void main(){
     rot[2] = vec4(-sin(angle), 0, cos(angle), 0);
     rot[3] = vec4(0, 0, 0, 1);
 	
-	lightSampleValues light = computePointLightValues(vec3(0, 0.5, 0.5), vec3(1,1,1), 1, vec4(vertexPosition_modelspace, 1));
+	lightSampleValues light = computePointLightValues(vec3(0.5, 0.5, 1), vec3(0,0,1), 1, vec4(vertexPosition_modelspace, 1));
     gl_Position.xyz = vertexPosition_modelspace.xyz;
     gl_Position.w = 1.0;
-	//gl_Position = transpose(rot) * gl_Position;
-	
-    inColor.xyz = vec3(1.0, 1.0, 0.0) * dot(normal, normalize(light.L)) * light.iL;
+	gl_Position = transpose(rot) * gl_Position;
+	vec3 ambComp = computeAmbientComponent(light, ambColor, lightAmbDiffSpec, lightColor);
+	vec3 diffComp = computeDiffuseComponent(normal, light, diffuseColor.xyz, lightAmbDiffSpec, lightColor);
+	vec3 specComp = computeSpecularComponent(normal, gl_Position, light, specularColor, specExp, lightAmbDiffSpec, lightColor);
+    inColor.xyz = specComp;
 }
 
