@@ -30,8 +30,8 @@ vec2 powComplex(vec2 a, int power)
 
 void main()
 {
-    float scale = 2.0 ;//* abs(sin(float(time) * 0.005));
-    int iter = 50; //int(sin(float(time) * 0.02) * 20.0);
+    float scale = 2.0 ;
+    int iter = int((abs(sin(float(time) * 0.01))) * 20.0);
     int i = 0;
     
     vec2 c;
