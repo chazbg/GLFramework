@@ -4,7 +4,7 @@ in vec3 vertexPosition_modelspace;
 in vec3 normal;
 uniform uint time;
 
-smooth out vec3 inColor;
+smooth out vec4 inColor;
 vec3 toWave(vec3 p, float amplitude, float waveLength, float speed, vec2 direction)
 {
     float frequency = 2 * 3.14 / waveLength;
@@ -135,11 +135,11 @@ lightSampleValues computeSpotLightValues(vec3 spotLightPosition,
 }
 
 void main(){
-	vec3 ambColor = vec3(1, 1, 1);
+	vec3 ambColor = vec3(1, 1, 0);
 	vec3 emissiveColor = vec3(1,1,1);
 	vec4 diffuseColor = vec4(1,0,0,1);
 	vec3 specularColor = vec3(1,1,1);
-	vec3 lightAmbDiffSpec = vec3(0.02,0.38,0.6);
+	vec3 lightAmbDiffSpec = vec3(0.02,0.68,0.3);
 	vec3 lightColor = vec3(1,1,1);
 	float specExp = 4.0;
     
@@ -152,17 +152,19 @@ void main(){
     rot = transpose(rot);
     vec3 normal = getNormal(vertexPosition_modelspace * 0.02 + vec3(-0.5, -0.5, 0));
     vec3 n = (rot * vec4(normal,0)).xyz;
-    //vec3 n = vec3(0,0,1);
-    // gl_Position.xyz = vertexPosition_modelspace * 0.04 + vec3(-1, -1, 0);
+
     gl_Position.xyz = toWaves(vertexPosition_modelspace * 0.02 + vec3(-0.5, -0.5, 0));
     gl_Position.w = 1.0;
     gl_Position = rot * gl_Position;
-    // lightSampleValues light = computePointLightValues(vec3(0, 0, 1), vec3(1,0,0), 1, gl_Position);
-    lightSampleValues light = computeDirLightValues(vec3(0, 0, 1), 1);
+    
+    lightSampleValues light = computePointLightValues(vec3(0, 0, 1), vec3(0,0,1), 1, gl_Position);
+    //lightSampleValues light = computeDirLightValues(vec3(0, 0, 1), 1);
+    
     vec3 ambComp = computeAmbientComponent(light, ambColor, lightAmbDiffSpec, lightColor);
 	vec3 diffComp = computeDiffuseComponent(n, light, diffuseColor.xyz, lightAmbDiffSpec, lightColor);
 	vec3 specComp = computeSpecularComponent(n, gl_Position, light, specularColor, specExp, lightAmbDiffSpec, lightColor);
     
     inColor.xyz = ambComp + diffComp + specComp;
+    inColor.w = diffuseColor.w;
 }
 

@@ -1,10 +1,10 @@
 #version 330 core
 
 // Input data
-smooth in vec3 inColor;
+smooth in vec4 inColor;
 
 // Ouput data
-out vec3 outColor;
+out vec4 outColor;
 
 void main()
 {
