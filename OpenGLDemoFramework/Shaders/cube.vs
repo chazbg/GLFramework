@@ -6,6 +6,20 @@ uniform uint time;
 
 smooth out vec3 inColor;
 
+mat4 view_frustum(
+    float angle_of_view,
+    float aspect_ratio,
+    float z_near,
+    float z_far
+) {
+    return mat4(
+        vec4(1.0/tan(angle_of_view),           0.0, 0.0, 0.0),
+        vec4(0.0, aspect_ratio/tan(angle_of_view),  0.0, 0.0),
+        vec4(0.0, 0.0,    (z_far+z_near)/(z_far-z_near), 1.0),
+        vec4(0.0, 0.0, -2.0*z_far*z_near/(z_far-z_near), 0.0)
+    );
+}
+
 void main(){
     vec3 light = vec3(-1,-1,-1);
     float step = 0.01;
@@ -14,9 +28,9 @@ void main(){
     vec4 pos = vec4(vertexPosition_modelspace,1);
     mat4 proj;
     mat4 rotY, rotX;
-    rotY[0] = vec4(cos(3.14/4.0), 0, sin(3.14/4.0), 0);
+    rotY[0] = vec4(cos(thetaRot), 0, sin(thetaRot), 0);
     rotY[1] = vec4(0, 1, 0, 0);
-    rotY[2] = vec4(-sin(3.14/4.0), 0, cos(3.14/4.0), 0);
+    rotY[2] = vec4(-sin(thetaRot), 0, cos(thetaRot), 0);
     rotY[3] = vec4(0, 0, 0, 1);
     
     rotX[0] = vec4(1, 0, 0, 0);
@@ -34,13 +48,24 @@ void main(){
     // proj[2] = vec4(0, 0, 0, 0);
     // proj[3] = vec4(0, 0, 0, 1);
     
+	float fov = radians(45.0);
+	float near = 0.5;
+	float far = 5;
+	float aspect = 2.0;
+	float f = 1.0 / tan(fov / 2.0);
+	proj = view_frustum(fov, aspect, near, far);
+	// proj[0] = vec4(f/aspect, 0, 0, 0);
+    // proj[1] = vec4(0, f, 0, 0);
+    // proj[2] = vec4(0, 0, (far + near) / (near - far), (2 * far * near) / (near - far));
+    // proj[3] = vec4(0, 0, 1, 0);
+	
     mat4 scale;
-    scale[0] = vec4(0.5,0,0,0);
-    scale[1] = vec4(0,0.5,0,0);
-    scale[2] = vec4(0,0,0.5,0);
+    scale[0] = vec4(0.2,0,0,0);
+    scale[1] = vec4(0,0.2,0,0);
+    scale[2] = vec4(0,0,0.2,0);
     scale[3] = vec4(0,0,0,1);
     vec4 transl;
-    transl = vec4(-0.5,-0.5,-0.5,1);
+    transl = vec4(cos(thetaRot), 0.0, 3.0+sin(thetaRot),0);
     
     rotation[0] = vec4(cos(thetaRot), 0, sin(thetaRot), 0);
     rotation[1] = vec4(0, 1, 0, 0);
@@ -48,7 +73,7 @@ void main(){
     rotation[3] = vec4(0, 0, 0, 1);
 
     vec4 n = rotation * vec4(normal,1);
-    gl_Position = rotation * transpose(rotX) * transpose(rotY) * scale * (transl +vec4(vertexPosition_modelspace,1.0));
+    gl_Position = proj * (transl + transpose(rotY) * vec4(vertexPosition_modelspace,1.0));
     inColor = vec3(dot(n.xyz, light)*0.5,0,0);
 }
 
