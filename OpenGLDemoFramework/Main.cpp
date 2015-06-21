@@ -1,18 +1,11 @@
 #include "GLUTWrapper.hpp"
 #include "GLWrapper.hpp"
-#include "Rectangle.hpp"
-#include "TextureGenerator.hpp"
-#include "Cube.hpp"
-
-Cube* c;
-Rectangle* r1;
-Rectangle* r2;
+#include "GeometryAlgorithm.hpp"
+#include "TestGeometryAlgorithm.hpp"
 
 void RenderScene()
 {
 	GLWrapper::ClearWindow();
-
-	c->Render();
 
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
@@ -20,14 +13,11 @@ void RenderScene()
 
 int main(int argc, char* argv[])
 {
-	TextureGenerator gen;
+	TestClip();
+	//GLUTWrapper::InitWindow(&RenderScene);
+	//GLWrapper::InitRenderer();
 
-	GLUTWrapper::InitWindow(&RenderScene);
-	GLWrapper::InitRenderer();
-
-	c = new Cube();
-
-	GLUTWrapper::RenderLoop();
+	//GLUTWrapper::RenderLoop();
 
 	return 0;
 }

@@ -5,13 +5,23 @@ void TestConvexHullGraham()
 {
 	std::vector<Vec2> testPoints;
 	std::vector<Vec2> convexHull;
-	testPoints.push_back(Vec2(0.2f, 0.5f));
-	testPoints.push_back(Vec2(0.5f, 0.5f));
-	testPoints.push_back(Vec2(0.5f, 0.7f));
-	testPoints.push_back(Vec2(-1.2f, 0.0f));
-	testPoints.push_back(Vec2(-1.2f, 0.5f));
-	testPoints.push_back(Vec2(0.0f, 0.0f));
-	testPoints.push_back(Vec2(-1.3f, 0.0f));
+	//testPoints.push_back(Vec2(1, 4));
+	//testPoints.push_back(Vec2(4, 2));
+	//testPoints.push_back(Vec2(6, 10));
+	//testPoints.push_back(Vec2(16, 5));
+	//testPoints.push_back(Vec2(18, 7));
+	//testPoints.push_back(Vec2(12, 16));
+	//testPoints.push_back(Vec2(11, 3));
+	//testPoints.push_back(Vec2(10, 7));
+
+	testPoints.push_back(Vec2(1, 2));
+	testPoints.push_back(Vec2(1.5, 3));
+	testPoints.push_back(Vec2(2, 9));
+	testPoints.push_back(Vec2(4, 1));
+	testPoints.push_back(Vec2(4, 8));
+	testPoints.push_back(Vec2(4, 10));
+	testPoints.push_back(Vec2(6, 4));
+	testPoints.push_back(Vec2(7.5, 6));
 
 	convexHull = GeometryAlgorithm::ConvexHullGraham(testPoints);
 	printf("ConvexHullGraham points:\n");
@@ -71,5 +81,31 @@ void TestLineIntersection()
 	if (res)
 	{
 		printf("Intersection point = %s\n", intersectionPoint.toString().c_str());
+	}
+}
+
+void TestClip()
+{
+	std::vector<Vec2> inputPolygon;
+	std::vector<Vec2> clippingPolygon;
+	std::vector<Vec2> outputPolygon;
+	inputPolygon.push_back(Vec2(4, 1));
+	inputPolygon.push_back(Vec2(7, 3));
+	inputPolygon.push_back(Vec2(9, 15));
+	inputPolygon.push_back(Vec2(15, 5));
+	inputPolygon.push_back(Vec2(10, 6));
+	inputPolygon.push_back(Vec2(7, 5));
+
+	clippingPolygon.push_back(Vec2(3, 3));
+	clippingPolygon.push_back(Vec2(6, 1));
+	clippingPolygon.push_back(Vec2(11, 1));
+	clippingPolygon.push_back(Vec2(13.5, 3));
+	clippingPolygon.push_back(Vec2(8.5, 8.5));
+
+	outputPolygon = GeometryAlgorithm::Clip(inputPolygon, clippingPolygon);
+	printf("Sutherland-Hodgeman clipping points:\n");
+	for (unsigned int i = 0; i < outputPolygon.size(); i++)
+	{
+		printf("%s\n", outputPolygon[i].toString().c_str());
 	}
 }

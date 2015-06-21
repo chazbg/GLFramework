@@ -121,6 +121,10 @@ Vec2 Vec2::toPolar() const
 	return Vec2(sqrt(x*x + y*y), atan2(y, x));
 }
 
+float Vec2::polarAngle(const Vec2& rhs) const
+{
+	return atan2(rhs.y - y, rhs.x - x);
+}
 
 //Vec3
 Vec3::Vec3(const Vec3& vec)

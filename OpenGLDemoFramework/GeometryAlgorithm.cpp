@@ -15,33 +15,40 @@ std::vector<Vec2> GeometryAlgorithm::ConvexHullGraham(const std::vector<Vec2>& i
 	std::vector<Vec2> convexHull;
 	std::vector<Vec2> sortedInputs = inputs;
 	Vec2 startingPoint = inputs[0];
+	sortedInputs.insert(sortedInputs.begin(), Vec2(0,0));
 
-	int k = 2;
+	//find starting point
 	for (unsigned int i = 0; i < inputs.size(); i++)
 	{
 		if ((inputs[i].y < startingPoint.y) || (inputs[i].y == startingPoint.y && inputs[i].x < startingPoint.x))
 		{
 			startingPoint = inputs[i];
-			std::iter_swap(sortedInputs.begin() + i, sortedInputs.begin() + 1);
+			std::iter_swap(sortedInputs.begin() + 1, sortedInputs.begin() + i + 1);
 		}
 	}
 
 	struct less_than_key
 	{
+	private:
+		const Vec2& startingPoint;
+	public:
+		less_than_key(const Vec2& startingPoint) : startingPoint(startingPoint) {}
 		inline bool operator() (const Vec2& u, const Vec2& v)
 		{
-			return u.toPolar().y < v.toPolar().y;
+			printf("-------------\n");
+			printf("%s, %s, angle=%f\n", startingPoint.toString().c_str(), u.toString().c_str(), startingPoint.polarAngle(u));
+			printf("%s, %s, angle=%f\n", startingPoint.toString().c_str(), v.toString().c_str(), startingPoint.polarAngle(v));
+			return startingPoint.polarAngle(u) < startingPoint.polarAngle(v);
 		}
 	};
 
-	std::sort(sortedInputs.begin() + 1, sortedInputs.end(), less_than_key());
+	std::sort(sortedInputs.begin() + 2, sortedInputs.end(), less_than_key(startingPoint));
+	sortedInputs[0] = sortedInputs[sortedInputs.size() - 1];
 
-	printf("Starting point: %s\n", startingPoint.toString().c_str());
-	
 	int M = 1;
 	for (unsigned int i = 1; i < sortedInputs.size(); i++)
 	{
-		while (TriangleArea(sortedInputs[M - 1], sortedInputs[M], sortedInputs[i]) <= 0)
+		while (Determinant(sortedInputs[M - 1], sortedInputs[M], sortedInputs[i]) <= 0)
 		{
 			if (M > 1)
 			{
@@ -59,9 +66,17 @@ std::vector<Vec2> GeometryAlgorithm::ConvexHullGraham(const std::vector<Vec2>& i
 
 		M++;
 
+		Vec2 tmp = sortedInputs[M];
+		sortedInputs[M] = sortedInputs[i];
+		sortedInputs[i] = tmp;
+	}
+		
+	for (unsigned int i = 1; i <= M; i++)
+	{
+		convexHull.push_back(sortedInputs[i]);
 	}
 
-	return sortedInputs;
+	return convexHull;
 }
 
 bool GeometryAlgorithm::PointInPolygon(const Vec2& inputPoint, const std::vector<Vec2>& inputPolygon)
@@ -183,7 +198,105 @@ bool GeometryAlgorithm::LineIntersection(const Vec2& rayPointA,
 	return res;
 }
 
-float GeometryAlgorithm::TriangleArea(const Vec2& a, const Vec2& b, const Vec2& c)
+float GeometryAlgorithm::Determinant(const Vec2& a, const Vec2& b, const Vec2& c)
 {
 	return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
+
+std::vector<Vec2> GeometryAlgorithm::Clip(const std::vector<Vec2>& inputPolygon, const std::vector<Vec2>& clippingPolygon)
+{
+	std::vector<Vec2> outputPolygon = inputPolygon;
+
+	for (unsigned int i = 0; i < clippingPolygon.size() - 1; i++)
+	{
+		std::vector<Vec2> inputPolygon = outputPolygon;
+
+		printf("-------------------\n");
+
+		for (unsigned int z = 0; z < outputPolygon.size(); z++)
+		{
+			printf("%s\n", outputPolygon[z].toString().c_str());
+		}
+
+		printf("-------------------\n");
+
+		outputPolygon.clear();
+		Vec2 end = inputPolygon[inputPolygon.size() - 1];
+		for (unsigned int j = 0; j < inputPolygon.size(); j++)
+		{
+			if (Determinant(clippingPolygon[i], inputPolygon[j], clippingPolygon[i + 1]) > 0)
+			{
+				if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) < 0)
+				{
+					outputPolygon.push_back(ComputeIntersection2(end, inputPolygon[j], clippingPolygon[i], clippingPolygon[i + 1]));
+				}
+				outputPolygon.push_back(inputPolygon[j]);
+			}
+			else if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) > 0)
+			{
+				outputPolygon.push_back(ComputeIntersection2(end, inputPolygon[j], clippingPolygon[i], clippingPolygon[i + 1]));
+			}
+
+			end = inputPolygon[j];
+		}
+	}
+
+	return outputPolygon;
+}
+
+bool GeometryAlgorithm::ComputeIntersection(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d, Vec2& intersectionPoint)
+{
+	Vec2 r = b - a;
+	Vec2 s = d - c;
+	float cas = (c - a).perp(s);
+	float acr = (a - c).perp(r);
+	float rs = r.perp(s);
+	float t = cas / rs;
+	float u = acr / rs;
+
+	if (abs(rs) < EPS && abs(cas) < EPS)
+	{
+		////collinear
+		//float t0 = (c - a).dot(r) / r.dot(r);
+		//float t1 = (c + s - a).dot(r) / r.dot(r);
+
+		//if ((t0 >= 0.0f && t0 <= 1.0f) || (t1 >= 0.0f && t1 <= 1.0f))
+		//{
+		//	return true;
+		//}
+		
+		return false;
+	}
+
+	if (abs(rs) < EPS)
+	{
+		return false;
+	}
+
+	if (0 < t && t < 1 && 0 < u && u < 1)
+	{
+		intersectionPoint = a + t * r;
+		return true;
+	}
+
+	return false;
+}
+
+Vec2 GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d)
+{
+	Vec2 intersectionPoint;
+	Vec2 r = b - a;
+	Vec2 s = d - c;
+	float cas = (c - a).perp(s);
+	float acr = (a - c).perp(r);
+	float rs = r.perp(s);
+	float t = cas / rs;
+	float u = acr / rs;
+
+	if (0 < t && t < 1 && 0 < u && u < 1)
+	{
+		intersectionPoint = a + t * r;
+	}
+
+	return intersectionPoint;
 }

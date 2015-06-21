@@ -28,6 +28,8 @@ public:
 	float dot(const Vec2& rhs) const;
 	float perp(const Vec2& rhs) const;
 	Vec2 toPolar() const;
+	float polarAngle(const Vec2& rhs) const;
+
 	//TODO: Add operations
 public:
 	float x;
