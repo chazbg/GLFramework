@@ -222,14 +222,14 @@ float Vec3::distanceSquaredTo(const Vec3& point)
 	return dx * dx + dy * dy + dz * dz;
 }
 
-Vec3::operator string()
+Vec3::operator string() const
 {
 	stringstream s;
 	s << "(" << x << ", " << y << ", " << z << ")";
 	return s.str();
 }
 
-string Vec3::toString()
+string Vec3::toString() const
 {
 	return this->operator string();
 }

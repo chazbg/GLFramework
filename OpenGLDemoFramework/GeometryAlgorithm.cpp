@@ -224,15 +224,15 @@ std::vector<Vec2> GeometryAlgorithm::Clip(const std::vector<Vec2>& inputPolygon,
 		Vec2 end = inputPolygon[inputPolygon.size() - 1];
 		for (unsigned int j = 0; j < inputPolygon.size(); j++)
 		{
-			if (Determinant(clippingPolygon[i], inputPolygon[j], clippingPolygon[i + 1]) > 0)
+			if (Determinant(clippingPolygon[i], inputPolygon[j], clippingPolygon[i + 1]) < 0)
 			{
-				if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) < 0)
+				if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) > 0)
 				{
 					outputPolygon.push_back(ComputeIntersection2(end, inputPolygon[j], clippingPolygon[i], clippingPolygon[i + 1]));
 				}
 				outputPolygon.push_back(inputPolygon[j]);
 			}
-			else if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) > 0)
+			else if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) < 0)
 			{
 				outputPolygon.push_back(ComputeIntersection2(end, inputPolygon[j], clippingPolygon[i], clippingPolygon[i + 1]));
 			}
@@ -282,21 +282,19 @@ bool GeometryAlgorithm::ComputeIntersection(const Vec2& a, const Vec2& b, const 
 	return false;
 }
 
+#include <iostream>
+
 Vec2 GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d)
 {
 	Vec2 intersectionPoint;
 	Vec2 r = b - a;
 	Vec2 s = d - c;
 	float cas = (c - a).perp(s);
-	float acr = (a - c).perp(r);
 	float rs = r.perp(s);
 	float t = cas / rs;
-	float u = acr / rs;
 
-	if (0 < t && t < 1 && 0 < u && u < 1)
-	{
-		intersectionPoint = a + t * r;
-	}
+	
+	intersectionPoint = a + t * r;
 
 	return intersectionPoint;
 }

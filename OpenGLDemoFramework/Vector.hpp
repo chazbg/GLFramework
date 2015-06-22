@@ -56,8 +56,8 @@ public:
 	friend Vec3 operator*(const float scalar, const Vec3& rhs);
 	float distanceTo(const Vec3& point);
 	float distanceSquaredTo(const Vec3& point);
- 	operator string();
-	string toString();
+ 	operator string() const;
+	string toString() const;
 	float* raw();
 	float length() const;
 	Vec3 normalize() const;

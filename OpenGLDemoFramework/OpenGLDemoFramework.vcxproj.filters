@@ -69,6 +69,9 @@
     <ClCompile Include="GeometryAlgorithm.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="PointListMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.hpp">
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="TestGeometryAlgorithm.hpp">
       <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="PointListMesh.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

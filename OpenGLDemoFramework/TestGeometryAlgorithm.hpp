@@ -84,7 +84,7 @@ void TestLineIntersection()
 	}
 }
 
-void TestClip()
+void TestClip(std::vector<Vec2>& _clippedPolygon, std::vector<Vec2>& _clippingPolygon)
 {
 	std::vector<Vec2> inputPolygon;
 	std::vector<Vec2> clippingPolygon;
@@ -108,4 +108,7 @@ void TestClip()
 	{
 		printf("%s\n", outputPolygon[i].toString().c_str());
 	}
+
+	_clippedPolygon = outputPolygon;
+	_clippingPolygon = clippingPolygon;
 }
