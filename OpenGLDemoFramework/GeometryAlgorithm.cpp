@@ -71,7 +71,7 @@ std::vector<Vec2> GeometryAlgorithm::ConvexHullGraham(const std::vector<Vec2>& i
 		sortedInputs[i] = tmp;
 	}
 		
-	for (unsigned int i = 1; i <= M; i++)
+	for (int i = 1; i <= M; i++)
 	{
 		convexHull.push_back(sortedInputs[i]);
 	}
@@ -206,35 +206,27 @@ float GeometryAlgorithm::Determinant(const Vec2& a, const Vec2& b, const Vec2& c
 std::vector<Vec2> GeometryAlgorithm::Clip(const std::vector<Vec2>& inputPolygon, const std::vector<Vec2>& clippingPolygon)
 {
 	std::vector<Vec2> outputPolygon = inputPolygon;
+	unsigned int size = clippingPolygon.size();
 
-	for (unsigned int i = 0; i < clippingPolygon.size() - 1; i++)
+	for (unsigned int i = 0; i < size; i++)
 	{
 		std::vector<Vec2> inputPolygon = outputPolygon;
-
-		printf("-------------------\n");
-
-		for (unsigned int z = 0; z < outputPolygon.size(); z++)
-		{
-			printf("%s\n", outputPolygon[z].toString().c_str());
-		}
-
-		printf("-------------------\n");
 
 		outputPolygon.clear();
 		Vec2 end = inputPolygon[inputPolygon.size() - 1];
 		for (unsigned int j = 0; j < inputPolygon.size(); j++)
 		{
-			if (Determinant(clippingPolygon[i], inputPolygon[j], clippingPolygon[i + 1]) < 0)
+			if (Determinant(clippingPolygon[i], inputPolygon[j], clippingPolygon[(i + 1) % size]) < 0)
 			{
-				if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) > 0)
+				if (Determinant(clippingPolygon[i], end, clippingPolygon[(i + 1) % size]) > 0)
 				{
-					outputPolygon.push_back(ComputeIntersection2(end, inputPolygon[j], clippingPolygon[i], clippingPolygon[i + 1]));
+					outputPolygon.push_back(ComputeIntersection(clippingPolygon[i], clippingPolygon[(i + 1) % size], end, inputPolygon[j]));
 				}
 				outputPolygon.push_back(inputPolygon[j]);
 			}
-			else if (Determinant(clippingPolygon[i], end, clippingPolygon[i + 1]) < 0)
+			else if (Determinant(clippingPolygon[i], end, clippingPolygon[(i + 1) % size]) < 0)
 			{
-				outputPolygon.push_back(ComputeIntersection2(end, inputPolygon[j], clippingPolygon[i], clippingPolygon[i + 1]));
+				outputPolygon.push_back(ComputeIntersection(clippingPolygon[i], clippingPolygon[(i + 1) % size], end, inputPolygon[j]));
 			}
 
 			end = inputPolygon[j];
@@ -244,47 +236,7 @@ std::vector<Vec2> GeometryAlgorithm::Clip(const std::vector<Vec2>& inputPolygon,
 	return outputPolygon;
 }
 
-bool GeometryAlgorithm::ComputeIntersection(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d, Vec2& intersectionPoint)
-{
-	Vec2 r = b - a;
-	Vec2 s = d - c;
-	float cas = (c - a).perp(s);
-	float acr = (a - c).perp(r);
-	float rs = r.perp(s);
-	float t = cas / rs;
-	float u = acr / rs;
-
-	if (abs(rs) < EPS && abs(cas) < EPS)
-	{
-		////collinear
-		//float t0 = (c - a).dot(r) / r.dot(r);
-		//float t1 = (c + s - a).dot(r) / r.dot(r);
-
-		//if ((t0 >= 0.0f && t0 <= 1.0f) || (t1 >= 0.0f && t1 <= 1.0f))
-		//{
-		//	return true;
-		//}
-		
-		return false;
-	}
-
-	if (abs(rs) < EPS)
-	{
-		return false;
-	}
-
-	if (0 < t && t < 1 && 0 < u && u < 1)
-	{
-		intersectionPoint = a + t * r;
-		return true;
-	}
-
-	return false;
-}
-
-#include <iostream>
-
-Vec2 GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d)
+Vec2 GeometryAlgorithm::ComputeIntersection(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d)
 {
 	Vec2 intersectionPoint;
 	Vec2 r = b - a;
@@ -293,7 +245,6 @@ Vec2 GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const
 	float rs = r.perp(s);
 	float t = cas / rs;
 
-	
 	intersectionPoint = a + t * r;
 
 	return intersectionPoint;
