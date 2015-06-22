@@ -4,11 +4,11 @@
 #include <vector>
 #include "Vector.hpp"
 
-class PointListMesh : public Mesh
+class LineListMesh : public Mesh
 {
 public:
-	PointListMesh(const std::vector<Vec2>& pointList, const Vec3& color = Vec3(1, 0, 0), const float pointSize = 5.0f);
-	~PointListMesh();
+	LineListMesh(const std::vector<Vec2>& pointList, const Vec3& color = Vec3(1, 0, 0), const float lineSize = 5.0f);
+	~LineListMesh();
 
 	void SetTime(const GLuint time);
 	GLuint GetTime() const;
@@ -16,8 +16,8 @@ public:
 	void SetColor(const Vec3& color);
 	Vec3 GetColor() const;
 
-	void SetPointSize(const float size);
-	float GetPointSize() const;
+	void SetLineSize(const float size);
+	float GetLineSize() const;
 
 	void UseProgram();
 	void Render();
@@ -26,8 +26,8 @@ private:
 	GLuint vertexBufferID;
 	GLuint colorID;
 	Vec3   color;
-	GLuint pointSizeID;
-	float  pointSize;
+	GLuint lineSizeID;
+	float  lineSize;
 	GLuint programID;
 	GLuint timeID;
 	GLuint time;

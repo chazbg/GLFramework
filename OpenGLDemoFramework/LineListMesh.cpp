@@ -1,19 +1,18 @@
-#include "PointListMesh.hpp"
+#include "LineListMesh.hpp"
 #include "Shader.hpp"
 #include <cmath>
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-PointListMesh::PointListMesh(const std::vector<Vec2>& pointsList, const Vec3& color, const float pointSize) : 
-Mesh(), color(color), pointSize(pointSize)
+LineListMesh::LineListMesh(const std::vector<Vec2>& pointsList, const Vec3& color, const float lineSize) :
+Mesh(), color(color), lineSize(lineSize)
 {
-	vertexCount = pointsList.size();
+	vertexCount = pointsList.size() * 2;
 	vertexBuffer = genVerts(pointsList);
 
 	programID = LoadShaders("Shaders/primitives2d.vs", "Shaders/primitives2d.fs");
 	timeID = glGetUniformLocation(programID, "time");
 	colorID = glGetUniformLocation(programID, "color");
-	pointSizeID = glGetUniformLocation(programID, "pointSize");
 
 	time = 0;
 
@@ -21,7 +20,6 @@ Mesh(), color(color), pointSize(pointSize)
 
 	glUniform1ui(timeID, time);
 	glUniform3f(colorID, color.x, color.y, color.z);
-	glUniform1f(pointSizeID, pointSize);
 
 	glGenBuffers(1, &vertexBufferID);
 
@@ -40,49 +38,48 @@ Mesh(), color(color), pointSize(pointSize)
 	glDisableVertexAttribArray(0);
 }
 
-PointListMesh::~PointListMesh()
+LineListMesh::~LineListMesh()
 {
 }
 
-void PointListMesh::SetTime(const GLuint time)
+void LineListMesh::SetTime(const GLuint time)
 {
 	this->time = time;
 	glUniform1ui(timeID, time);
 }
 
-GLuint PointListMesh::GetTime() const
+GLuint LineListMesh::GetTime() const
 {
 	return time;
 }
 
-void PointListMesh::SetColor(const Vec3& color)
+void LineListMesh::SetColor(const Vec3& color)
 {
 	this->color = color;
 	glUniform3f(colorID, color.x, color.y, color.z);
 }
 
-Vec3 PointListMesh::GetColor() const
+Vec3 LineListMesh::GetColor() const
 {
 	return color;
 }
 
-void PointListMesh::SetPointSize(const float pointSize)
+void LineListMesh::SetLineSize(const float lineSize)
 {
-	this->pointSize = pointSize;
-	glUniform1f(pointSizeID, pointSize);
+	this->lineSize = lineSize;
 }
 
-float PointListMesh::GetPointSize() const
+float LineListMesh::GetLineSize() const
 {
-	return pointSize;
+	return lineSize;
 }
 
-void PointListMesh::UseProgram()
+void LineListMesh::UseProgram()
 {
 	glUseProgram(programID);
 }
 
-void PointListMesh::Render()
+void LineListMesh::Render()
 {
 	UseProgram();
 	SetTime(time + 1);
@@ -98,19 +95,22 @@ void PointListMesh::Render()
 		BUFFER_OFFSET(0)
 		);
 
-	glDrawArrays(GL_POINTS, 0, vertexCount);
+	glLineWidth(lineSize);
+	glDrawArrays(GL_LINES, 0, vertexCount);
 
 	glDisableVertexAttribArray(0);
 }
 
-float* PointListMesh::genVerts(const std::vector<Vec2>& pointsList)
+float* LineListMesh::genVerts(const std::vector<Vec2>& pointsList)
 {
-	float* verts = new float[pointsList.size() * 2];
+	float* verts = new float[pointsList.size() * 4];
 
 	for (unsigned int i = 0; i < pointsList.size(); i++)
 	{
-		verts[2 * i] = pointsList[i].x;
-		verts[2 * i + 1] = pointsList[i].y;
+		verts[4 * i] = pointsList[i].x;
+		verts[4 * i + 1] = pointsList[i].y;
+		verts[4 * i + 2] = pointsList[(i + 1) % pointsList.size()].x;
+		verts[4 * i + 3] = pointsList[(i + 1) % pointsList.size()].y;
 	}
 
 	return verts;

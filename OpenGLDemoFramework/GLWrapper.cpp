@@ -30,7 +30,7 @@ void GLWrapper::InitRenderer()
 
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
