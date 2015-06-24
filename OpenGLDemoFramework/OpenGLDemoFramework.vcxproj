@@ -99,6 +99,7 @@
     <ClInclude Include="DemoGrahamScan.hpp" />
     <ClInclude Include="DemoIntersectingLineSegments.hpp" />
     <ClInclude Include="DemoPointInPolygon.hpp" />
+    <ClInclude Include="DemoRotatingCalipers.hpp" />
     <ClInclude Include="GeometryAlgorithm.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />
     <ClInclude Include="GLWrapper.hpp" />

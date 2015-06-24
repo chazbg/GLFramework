@@ -298,74 +298,7 @@ bool onLineSegment(const Vec2& point, const Vec2& lineEndA, const Vec2& lineEndB
 	return true;
 }
 
-//std::vector<Vec2> GeometryAlgorithm::SweepingLineIntersection(const std::vector<std::vector<Vec2>>& inputLines)
-//{
-//
-//	//http://geomalgorithms.com/a09-_intersect-3.html
-//
-//	std::vector<Vec2> intersections;
-//	std::vector<Vec2[2]> idk;
-//
-//	struct QueueElement 
-//	{
-//		Vec2 point;
-//		Vec2 otherEnd;
-//		bool operator==(const QueueElement& rhs) const { return point == rhs.point;	}
-//		bool operator<(const QueueElement& rhs) const { return point.x < rhs.point.x && point.y > rhs.point.y; }
-//	};
-//
-//	std::priority_queue<QueueElement> points;
-//
-//	for (unsigned int i = 0; i < inputLines.size(); i++)
-//	{
-//		QueueElement element1, element2;
-//		element1.point = inputLines[i][0];
-//		element1.otherEnd = inputLines[i][1];
-//		element2.point = inputLines[i][1];
-//		element2.otherEnd = inputLines[i][0];
-//		points.push(element1);
-//		points.push(element2);
-//	}
-//
-//	while (!points.empty())
-//	{
-//		QueueElement p = points.top();
-//		Vec2 line[2];
-//		line[0] = p.point;
-//		line[1] = p.otherEnd;
-//
-//		if ((line[0].x < line[1].x) || (line[0].x == line[1].x && line[0].y > line[1].y))
-//		{
-//			idk.push_back(line);
-//
-//			for (unsigned int i = 0; i < idk.size(); i++)
-//			{
-//				Vec2 intersectionPoint;
-//				if (onLineSegment(line[0], idk[i][0], idk[i][1]))
-//				{
-//					if ((line[0] != idk[i][0] && line[0] != idk[i][1]) || (abs((line[1] - line[0]).dot(idk[i][1] - idk[i][0]) - 1.0f) < EPS))
-//					{
-//						intersections.push_back(intersectionPoint);
-//					}
-//				}
-//				else
-//				{
-//
-//				}
-//			}
-//			
-//		}
-//		else
-//		{
-//
-//		}
-//
-//		points.pop();
-//	}
-//
-//	return intersections;
-//}
-
+//TODO: Refactor
 struct LineSegment {
 	LineSegment()
 	{
@@ -561,3 +494,119 @@ std::vector<Vec2> GeometryAlgorithm::SweepingLineIntersection(const std::vector<
 
 	return intersections;
 }
+
+std::vector<Vec2> GeometryAlgorithm::RotatingCalipers(const std::vector<Vec2>& p)
+{
+	std::vector<Vec2> antipodPoints;
+
+	Vec2 v = p[1] - p[0];
+	int k = 2;
+	if (p.size() >= 4)
+	{
+		while ((k < p.size() - 1) && Determinant(p[0], p[1], p[k + 1]) > Determinant(p[0], p[1], p[k]))
+		{
+			k++;
+		}
+
+		std::vector<float> f;
+		std::vector<float> s;
+		for (int j = 0; j < k; j++)
+		{
+			Vec2 v2 = p[j + 1] - p[j];
+			float angle = atan2(v2.y, v2.x) - atan2(v.y, v.x);
+		/*	if (angle < 0.0f)
+			{
+				angle += 2.0f * 3.14f;
+			}*/
+			f.push_back(angle);
+		}
+
+		for (int j = k; j < p.size() - 1; j++)
+		{
+			Vec2 v2 = p[j + 1] - p[j];
+			float angle = atan2(v2.y, v2.x) - atan2(-v.y, -v.x);
+			/*if (angle < 0.0f)
+			{
+				angle += 2.0f * 3.14f;
+			}*/
+			s.push_back(angle);
+		}
+
+		f.push_back(s[0] + 3.14f);
+		int j = 0;
+		int l = k;
+		while (j != k && l != p.size() - 1)
+		{
+			if (f[j] < s[l - k])
+			{
+				j++;
+			}
+			else if (s[l - k] < f[j])
+			{
+				l++;
+			}
+			else if (abs(f[j] - s[l - k]) < EPS)
+			{
+				j++;
+				l++;
+				cout << p[j - 1].toString() << ", " << p[l].toString() << endl;
+				cout << p[j].toString() << ", " << p[l - 1].toString() << endl;
+			}
+			cout << p[j].toString() << ", " << p[l].toString() << endl;
+		}
+	}
+	return antipodPoints;
+}
+
+//std::vector<Vec2> GeometryAlgorithm::RotatingCalipers(const std::vector<Vec2>& p)
+//{
+//	std::vector<Vec2> antipodPoints;
+//	int n = p.size();
+//	int i0 = n;
+//	int i = 0;
+//	int j = i + 1;
+//	Vec2 v = p[1] - p[0];
+//	int k = 2;
+//
+//	while (j + 1 < n && Determinant(p[i], p[i + 1], p[j + 1]) > Determinant(p[i], p[i + 1], p[j]))
+//	{
+//		j++;
+//		int j0 = j;
+//		while (j < n && i + 1 < n && j != i0)
+//		{
+//			i++;
+//			cout << p[i].toString() << ", " << p[j].toString() << endl;
+//			while (j + 1 < n && Determinant(p[i], p[i + 1], p[j + 1]) > Determinant(p[i], p[i + 1], p[j]))
+//			{
+//				j++;
+//				if (i != j0 || j != i0)
+//				{
+//					cout << p[i].toString() << ", " << p[j].toString() << endl;
+//				}
+//				else
+//				{
+//					return antipodPoints;
+//				}
+//			}
+//			if (j + 1 < n && Determinant(p[j], p[i + 1], p[j + 1]) > Determinant(p[i], p[i + 1], p[j]))
+//			{
+//				if (i != j0 || j != i0)
+//				{
+//					cout << p[i].toString() << ", " << p[j + 1].toString() << endl;
+//				}
+//				else
+//				{
+//					cout << p[i + 1].toString() << ", " << p[j].toString() << endl;
+//				}
+//			}
+//		}
+//	}
+//	
+//		/*
+//	cout << p[j - 1].toString() << ", " << p[l].toString() << endl;
+//	cout << p[j].toString() << ", " << p[l - 1].toString() << endl;
+//		
+//	cout << p[j].toString() << ", " << p[l].toString() << endl;
+//	*/
+//	return antipodPoints;
+//}
