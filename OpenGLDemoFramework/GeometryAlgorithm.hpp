@@ -14,4 +14,6 @@ public:
 	static float Determinant(const Vec2& a, const Vec2& b, const Vec2& c);
 	static std::vector<Vec2> Clip(const std::vector<Vec2>& inputPolygon, const std::vector<Vec2>& clippingPolygon);
 	static Vec2 ComputeIntersection(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d);
+	static bool ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d, Vec2& intersectionPoint);
+	static std::vector<Vec2> SweepingLineIntersection(const std::vector<std::vector<Vec2>>& inputLines);
 };

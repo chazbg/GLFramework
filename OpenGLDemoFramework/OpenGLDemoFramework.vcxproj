@@ -95,6 +95,10 @@
   <ItemGroup>
     <ClInclude Include="Bar.hpp" />
     <ClInclude Include="Cube.hpp" />
+    <ClInclude Include="DemoClipping.hpp" />
+    <ClInclude Include="DemoGrahamScan.hpp" />
+    <ClInclude Include="DemoIntersectingLineSegments.hpp" />
+    <ClInclude Include="DemoPointInPolygon.hpp" />
     <ClInclude Include="GeometryAlgorithm.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />
     <ClInclude Include="GLWrapper.hpp" />

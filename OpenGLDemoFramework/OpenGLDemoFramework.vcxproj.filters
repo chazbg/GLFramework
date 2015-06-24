@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Tests">
       <UniqueIdentifier>{d1399962-f5c7-4958-b1d7-9dc9a0d68f4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Demos">
+      <UniqueIdentifier>{e8574c73-2bbb-4369-a5ba-85bdf333428b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -139,6 +142,18 @@
     </ClInclude>
     <ClInclude Include="LineListMesh.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoGrahamScan.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoClipping.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoPointInPolygon.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoIntersectingLineSegments.hpp">
+      <Filter>Header Files\Demos</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

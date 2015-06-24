@@ -84,6 +84,23 @@ void TestLineIntersection()
 	}
 }
 
+void TestComputeIntersection2()
+{
+	Vec2 segment1A(0, 0);
+	Vec2 segment1B(1, 1);
+	Vec2 segment2A(0, 1);
+	Vec2 segment2B(1, 0);
+	Vec2 intersectionPoint;
+
+	bool res = GeometryAlgorithm::ComputeIntersection2(segment1A, segment1B, segment2A, segment2B, intersectionPoint);
+	printf("TestComputeIntersection2 result : %d\n", res);
+	if (res)
+	{
+		printf("Intersection point = %s\n", intersectionPoint.toString().c_str());
+	}
+}
+
+
 void TestClip(std::vector<Vec2>& _inputPolygon, std::vector<Vec2>& _clippedPolygon, std::vector<Vec2>& _clippingPolygon)
 {
 	std::vector<Vec2> inputPolygon;

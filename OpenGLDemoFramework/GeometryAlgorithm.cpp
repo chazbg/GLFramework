@@ -2,6 +2,10 @@
 #include <cstdio>
 #include <cmath>
 #include <algorithm>
+#include <queue>
+#include <map>
+#include <iostream>
+using namespace std;
 
 #define EPS 0.0001f
 
@@ -248,4 +252,312 @@ Vec2 GeometryAlgorithm::ComputeIntersection(const Vec2& a, const Vec2& b, const 
 	intersectionPoint = a + t * r;
 
 	return intersectionPoint;
+}
+
+bool GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d, Vec2& intersectionPoint)
+{
+	Vec2 r = b - a;
+	Vec2 s = d - c;
+	float cas = (c - a).perp(s);
+	float car = (c - a).perp(r);
+	float rs = r.perp(s);
+	float t = cas / rs;
+	float u = car / rs;
+
+	if (abs(rs) < EPS && abs(cas) < EPS)
+	{
+		////collinear
+		//float t0 = (c - a).dot(r) / r.dot(r);
+		//float t1 = (c + s - a).dot(r) / r.dot(r);
+
+		//if ((t0 >= 0.0f && t0 <= 1.0f) || (t1 >= 0.0f && t1 <= 1.0f))
+		//{
+		//	return true;
+		//}
+
+		return false;
+	}
+
+	if (abs(rs) < EPS)
+	{
+		return false;
+	}
+
+	if ((0.0f < t && t < 1.0f) && (0.0f < u && u < 1.0f))
+	{
+		intersectionPoint = a + t * r;
+		cout << "Intersection point: " << intersectionPoint.toString() << endl;
+		return true;
+	}
+
+	return false;
+}
+
+bool onLineSegment(const Vec2& point, const Vec2& lineEndA, const Vec2& lineEndB)
+{
+	return true;
+}
+
+//std::vector<Vec2> GeometryAlgorithm::SweepingLineIntersection(const std::vector<std::vector<Vec2>>& inputLines)
+//{
+//
+//	//http://geomalgorithms.com/a09-_intersect-3.html
+//
+//	std::vector<Vec2> intersections;
+//	std::vector<Vec2[2]> idk;
+//
+//	struct QueueElement 
+//	{
+//		Vec2 point;
+//		Vec2 otherEnd;
+//		bool operator==(const QueueElement& rhs) const { return point == rhs.point;	}
+//		bool operator<(const QueueElement& rhs) const { return point.x < rhs.point.x && point.y > rhs.point.y; }
+//	};
+//
+//	std::priority_queue<QueueElement> points;
+//
+//	for (unsigned int i = 0; i < inputLines.size(); i++)
+//	{
+//		QueueElement element1, element2;
+//		element1.point = inputLines[i][0];
+//		element1.otherEnd = inputLines[i][1];
+//		element2.point = inputLines[i][1];
+//		element2.otherEnd = inputLines[i][0];
+//		points.push(element1);
+//		points.push(element2);
+//	}
+//
+//	while (!points.empty())
+//	{
+//		QueueElement p = points.top();
+//		Vec2 line[2];
+//		line[0] = p.point;
+//		line[1] = p.otherEnd;
+//
+//		if ((line[0].x < line[1].x) || (line[0].x == line[1].x && line[0].y > line[1].y))
+//		{
+//			idk.push_back(line);
+//
+//			for (unsigned int i = 0; i < idk.size(); i++)
+//			{
+//				Vec2 intersectionPoint;
+//				if (onLineSegment(line[0], idk[i][0], idk[i][1]))
+//				{
+//					if ((line[0] != idk[i][0] && line[0] != idk[i][1]) || (abs((line[1] - line[0]).dot(idk[i][1] - idk[i][0]) - 1.0f) < EPS))
+//					{
+//						intersections.push_back(intersectionPoint);
+//					}
+//				}
+//				else
+//				{
+//
+//				}
+//			}
+//			
+//		}
+//		else
+//		{
+//
+//		}
+//
+//		points.pop();
+//	}
+//
+//	return intersections;
+//}
+
+struct LineSegment {
+	LineSegment()
+	{
+
+	}
+
+	LineSegment(Vec2 a, Vec2 b) : a(a), b(b)
+	{
+
+	}
+	bool operator==(const LineSegment& rhs) const { return  a == rhs.a && b == rhs.b; }
+	bool operator<(const LineSegment& rhs) const { return a.y < rhs.a.y; }
+
+	Vec2 a;
+	Vec2 b;
+};
+
+struct QueueElement
+{
+	Vec2 point;
+	Vec2 otherEnd;
+	LineSegment e1;
+	LineSegment e2;
+
+	bool operator==(const QueueElement& rhs) const { return point == rhs.point; }
+	bool operator<(const QueueElement& rhs) const { return (point.x > rhs.point.x) || (point.x == rhs.point.x && point.y > rhs.point.y); }
+};
+
+bool isLeftEndPoint(const QueueElement& el)
+{
+	return (el.point.x < el.otherEnd.x) || (el.point.x == el.otherEnd.x && el.point.y < el.otherEnd.y);
+}
+
+bool isRightPoint(const QueueElement& el)
+{
+	return el.point != el.otherEnd;
+}
+
+bool above(const std::map<LineSegment, int>& m, const LineSegment& s, LineSegment& a)
+{
+	std::map<LineSegment, int>::const_iterator it = m.find(s);
+	if (it == m.begin())
+	{
+		return false;
+	}
+	else
+	{
+		it--;
+		a = it->first;
+		return true;
+	}
+}
+
+bool below(const std::map<LineSegment, int>& m, const LineSegment& s, LineSegment& a)
+{
+	std::map<LineSegment, int>::const_iterator it = m.find(s);
+	if (it == m.end())
+	{
+		return false;
+	}
+	else
+	{
+		it++;
+		if (it == m.end())
+		{
+			return false;
+		}
+		a = it->first;
+		return true;
+	}
+}
+
+void removeSegment(std::map<LineSegment, int>& m, const LineSegment& s)
+{
+	m.erase(s);
+}
+
+std::vector<Vec2> GeometryAlgorithm::SweepingLineIntersection(const std::vector<std::vector<Vec2>>& inputLines)
+{
+	std::vector<Vec2> intersections;
+	std::priority_queue<QueueElement> points;
+	std::map<LineSegment, int> sl;
+
+	for (unsigned int i = 0; i < inputLines.size(); i++)
+	{
+		QueueElement element1, element2;
+		element1.point = inputLines[i][0];
+		element1.otherEnd = inputLines[i][1];
+		element2.point = inputLines[i][1];
+		element2.otherEnd = inputLines[i][0];
+		points.push(element1);
+		points.push(element2);
+	}
+
+	while (!points.empty())
+	{
+		QueueElement e = points.top();
+		cout << e.point.toString() << endl;
+		LineSegment segE(e.point, e.otherEnd);
+		LineSegment segA(e.point, e.otherEnd);
+		LineSegment segB(e.point, e.otherEnd);
+		
+		if (isLeftEndPoint(e))
+		{
+			int slSize = sl.size();
+			sl[segE] = 0;
+			if (above(sl, segE, segA))
+			{
+				Vec2 intersectionPoint;
+				if (ComputeIntersection2(segE.a, segE.b, segA.a, segA.b, intersectionPoint))
+				{
+					QueueElement i;
+					i.point = intersectionPoint;
+					i.otherEnd = intersectionPoint;
+					i.e1 = segE;
+					i.e2 = segA;
+					points.push(i);
+				}
+			}
+
+			if (below(sl, segE, segB))
+			{
+				Vec2 intersectionPoint;
+				if (ComputeIntersection2(segE.a, segE.b, segB.a, segB.b, intersectionPoint))
+				{
+					QueueElement i;
+					i.point = intersectionPoint;
+					i.otherEnd = intersectionPoint;
+					i.e1 = segE;
+					i.e2 = segB;
+					points.push(i);
+				}
+			}
+		}
+		else if (isRightPoint(e))
+		{
+			if (above(sl, segE, segA) && 
+				below(sl, segE, segB))
+			{
+				Vec2 intersectionPoint;
+				if (ComputeIntersection2(segA.a, segA.b, segB.a, segB.b, intersectionPoint))
+				{
+					QueueElement i;
+					i.point = intersectionPoint;
+					i.otherEnd = intersectionPoint;
+					i.e1 = segA;
+					i.e2 = segB;
+					points.push(i);
+				}
+			}
+			removeSegment(sl, LineSegment(segE.b, segE.a));
+		}
+		else
+		{
+			intersections.push_back(e.point);
+			LineSegment segE(e.point, e.point);
+			LineSegment segE1 = e.e1;
+			LineSegment segE2 = e.e2;
+
+			LineSegment segAA(e.point, e.otherEnd);
+			LineSegment segBB(e.point, e.otherEnd);
+			if (above(sl, segE1, segAA))
+			{
+				Vec2 intersectionPoint;
+				if (ComputeIntersection2(segE2.a, segE2.b, segAA.a, segAA.b, intersectionPoint))
+				{
+					QueueElement i;
+					i.point = intersectionPoint;
+					i.otherEnd = intersectionPoint;
+					i.e1 = segE2;
+					i.e2 = segAA;
+					points.push(i);
+				}
+			}
+
+			if (below(sl, segE2, segBB))
+			{
+				Vec2 intersectionPoint;
+				if (ComputeIntersection2(segE1.a, segE1.b, segBB.a, segBB.b, intersectionPoint))
+				{
+					QueueElement i;
+					i.point = intersectionPoint;
+					i.otherEnd = intersectionPoint;
+					i.e1 = segE1;
+					i.e2 = segBB;
+					points.push(i);
+				}
+			}
+		}
+
+		points.pop();
+	}
+
+	return intersections;
 }
