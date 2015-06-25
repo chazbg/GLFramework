@@ -586,3 +586,9 @@ std::vector<std::vector<Vec2>> GeometryAlgorithm::RotatingCalipers(const std::ve
 
 	return antipodPoints;
 }
+
+std::vector<Vec2> IntersectPolygons(const std::vector<Vec2>& inputPolygon1, const std::vector<Vec2>& inputPolygon2)
+{
+	std::vector<Vec2> outputPolygon;
+	return outputPolygon;
+}

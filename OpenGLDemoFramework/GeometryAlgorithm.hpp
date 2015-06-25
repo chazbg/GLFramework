@@ -17,4 +17,5 @@ public:
 	static bool ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d, Vec2& intersectionPoint);
 	static std::vector<Vec2> SweepingLineIntersection(const std::vector<std::vector<Vec2>>& inputLines);
 	static std::vector<std::vector<Vec2>> RotatingCalipers(const std::vector<Vec2>& inputPolygon);
+	static std::vector<Vec2> IntersectPolygons(const std::vector<Vec2>& inputPolygon1, const std::vector<Vec2>& inputPolygon2);
 };

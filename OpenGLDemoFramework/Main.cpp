@@ -1,8 +1,8 @@
-#include "DemoRotatingCalipers.hpp"
-#include "TestGeometryAlgorithm.hpp"
+#include "DemoIntersectingPolygons.hpp"
+
 int main(int argc, char* argv[])
 {
-	DemoRotatingCalipers();
-	//TestComputeIntersection2();
+	DemoIntersectingPolygons();
+
 	return 0;
 }
