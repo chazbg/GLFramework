@@ -27,19 +27,19 @@ void DemoIntersectingPolygons()
 	std::vector<Vec2> inputPolygon2;
 	std::vector<Vec2> outputPolygon;
 
-	inputPolygon1.push_back(Vec2(7, 4));
-	inputPolygon1.push_back(Vec2(10, 7));
-	inputPolygon1.push_back(Vec2(8, 10));
-	inputPolygon1.push_back(Vec2(4, 11));
-	inputPolygon1.push_back(Vec2(1, 5));
 	inputPolygon1.push_back(Vec2(2, 2));
+	inputPolygon1.push_back(Vec2(5, 2));
+	inputPolygon1.push_back(Vec2(8, 6));
+	inputPolygon1.push_back(Vec2(6, 8));
+	inputPolygon1.push_back(Vec2(2, 9));
+	inputPolygon1.push_back(Vec2(1, 6));
 
-	inputPolygon2.push_back(Vec2(7, 4));
-	inputPolygon2.push_back(Vec2(10, 7));
-	inputPolygon2.push_back(Vec2(8, 10));
-	inputPolygon2.push_back(Vec2(4, 11));
-	inputPolygon2.push_back(Vec2(1, 5));
-	inputPolygon2.push_back(Vec2(2, 2));
+	inputPolygon2.push_back(Vec2(0, 4.5));
+	inputPolygon2.push_back(Vec2(3, 3));
+	inputPolygon2.push_back(Vec2(7, 3));
+	inputPolygon2.push_back(Vec2(9, 4));
+	inputPolygon2.push_back(Vec2(10, 8));
+	inputPolygon2.push_back(Vec2(4, 7));
 
 	outputPolygon = GeometryAlgorithm::IntersectPolygons(inputPolygon1, inputPolygon2);
 

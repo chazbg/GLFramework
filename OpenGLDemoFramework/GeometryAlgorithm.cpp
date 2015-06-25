@@ -188,6 +188,7 @@ bool GeometryAlgorithm::LineIntersection(const Vec2& rayPointA,
 	Vec2 w = rayPointA - segmentEndA;
 	float d = u.perp(v);
 
+	cout << "Intersecting Ray " << rayPointA.toString() << ", " << rayPointB.toString() << " with segment " << segmentEndA.toString() << ", " << segmentEndB.toString() << endl;
 	if (abs(d) >= EPS)
 	{
 		float tI = u.perp(w) / d;
@@ -263,6 +264,8 @@ bool GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const
 	float rs = r.perp(s);
 	float t = cas / rs;
 	float u = car / rs;
+
+	cout << "Intersecting segment " << a.toString() << ", " << b.toString() << " with segment " << c.toString() << ", " << d.toString() << endl;
 
 	if (abs(rs) < EPS && abs(cas) < EPS)
 	{
@@ -587,8 +590,90 @@ std::vector<std::vector<Vec2>> GeometryAlgorithm::RotatingCalipers(const std::ve
 	return antipodPoints;
 }
 
-std::vector<Vec2> IntersectPolygons(const std::vector<Vec2>& inputPolygon1, const std::vector<Vec2>& inputPolygon2)
+struct LineSegment2
+{
+	LineSegment2()
+	{
+
+	}
+
+	LineSegment2(Vec2 a, Vec2 b) : a(a), b(b)
+	{
+
+	}
+
+	Vec2 a;
+	Vec2 b;
+};
+void firstIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2)
+{
+	int current1Index = 0;
+	int current2Index = 0;
+	int current = 1;
+	LineSegment2 current1(p1[0], p1[1]);
+	LineSegment2 current2(p2[0], p2[1]);
+	bool empty = false;
+	for (int i = 0, j = 0; i < p1.size() - 1, j < p2.size() - 1;)
+	{
+		if (current == 1)
+		{
+			if (GeometryAlgorithm::Determinant(current2.a, current1.a, current2.b) > 0)
+			{
+				empty = true;
+			}
+
+			Vec2 intersectionPoint;
+			if (!GeometryAlgorithm::LineIntersection(current1.a, current1.b, current2.a, current2.b, intersectionPoint))
+			{
+				current = 2;
+				j++;
+				current2 = LineSegment2(p2[j], p2[(j + 1) % p2.size()]);
+			}
+			else if (!GeometryAlgorithm::ComputeIntersection2(current1.a, current1.b, current2.a, current2.b, intersectionPoint))
+			{
+				current = 1;
+				i++;
+				current1 = LineSegment2(p1[i], p1[(i + 1) % p1.size()]);
+			}
+			else
+			{
+				cout << "IntersectionPoint: " << intersectionPoint.toString() << endl;
+				break;
+			}
+		}
+		else
+		{
+			if (GeometryAlgorithm::Determinant(current1.a, current2.a, current1.b) > 0)
+			{
+				empty = true;
+			}
+
+			Vec2 intersectionPoint;
+			if (!GeometryAlgorithm::LineIntersection(current2.a, current2.b, current1.a, current1.b, intersectionPoint))
+			{
+				current = 1;
+				i++;
+				current1 = LineSegment2(p1[i], p1[(i + 1) % p1.size()]);
+			}
+			else if (!GeometryAlgorithm::ComputeIntersection2(current2.a, current2.b, current1.a, current1.b, intersectionPoint))
+			{
+				current = 2;
+				j++;
+				current2 = LineSegment2(p2[j], p2[(j + 1) % p2.size()]);
+			}
+			else
+			{
+				cout << "IntersectionPoint: " << intersectionPoint.toString() << endl;
+				break;
+			}
+		}
+		
+	}
+}
+
+std::vector<Vec2> GeometryAlgorithm::IntersectPolygons(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2)
 {
 	std::vector<Vec2> outputPolygon;
+	firstIntersectionPoint(p1, p2);
 	return outputPolygon;
 }
