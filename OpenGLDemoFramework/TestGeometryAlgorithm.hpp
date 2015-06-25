@@ -136,7 +136,7 @@ void TestClip(std::vector<Vec2>& _inputPolygon, std::vector<Vec2>& _clippedPolyg
 void TestRotatingCalipers()
 {
 	std::vector<Vec2> inputPolygon;
-	std::vector<Vec2> antipodPoints;
+	std::vector<std::vector<Vec2>> antipodPoints;
 	inputPolygon.push_back(Vec2(7, 4));
 	inputPolygon.push_back(Vec2(10, 7));
 	inputPolygon.push_back(Vec2(8, 10));
@@ -145,5 +145,4 @@ void TestRotatingCalipers()
 	inputPolygon.push_back(Vec2(2, 2));
 
 	antipodPoints = GeometryAlgorithm::RotatingCalipers(inputPolygon);
-	printf("RotatingCalipers:\n");
 }

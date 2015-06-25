@@ -495,18 +495,46 @@ std::vector<Vec2> GeometryAlgorithm::SweepingLineIntersection(const std::vector<
 	return intersections;
 }
 
-std::vector<Vec2> GeometryAlgorithm::RotatingCalipers(const std::vector<Vec2>& p)
+float angle(const std::vector<Vec2>& p, int m, int n)
 {
-	std::vector<Vec2> antipodPoints;
+	Vec2 vm = p[m + 1] - p[m];
+	Vec2 vn = p[n + 1] - p[n];
+	float a = atan2(vn.y, vn.x) - atan2(vm.y, vm.x);
+	if (a < 0)
+	{
+		a += 2 * 3.14f;
+	}
+	cout << "Angle:" << a << endl;
+	return a;
+}
+
+float area(const Vec2& a, const Vec2& b, const Vec2& c)
+{
+	return abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
+}
+
+std::vector<Vec2> makePair(const Vec2& a, const Vec2& b)
+{
+	std::vector<Vec2> pair;
+	pair.push_back(a);
+	pair.push_back(b);
+	return pair;
+}
+
+std::vector<std::vector<Vec2>> GeometryAlgorithm::RotatingCalipers(const std::vector<Vec2>& p)
+{
+	std::vector<std::vector<Vec2>> antipodPoints;
 
 	Vec2 v = p[1] - p[0];
 	int k = 2;
 	if (p.size() >= 4)
 	{
-		while ((k < p.size() - 1) && Determinant(p[0], p[1], p[k + 1]) > Determinant(p[0], p[1], p[k]))
+		while (area(p[0], p[1], p[k + 1]) > area(p[0], p[1], p[k]))
 		{
 			k++;
 		}
+
+		antipodPoints.push_back(makePair(p[0], p[k]));
 
 		std::vector<float> f;
 		std::vector<float> s;
@@ -514,28 +542,28 @@ std::vector<Vec2> GeometryAlgorithm::RotatingCalipers(const std::vector<Vec2>& p
 		{
 			Vec2 v2 = p[j + 1] - p[j];
 			float angle = atan2(v2.y, v2.x) - atan2(v.y, v.x);
-		/*	if (angle < 0.0f)
+			if (angle < 0.0f)
 			{
 				angle += 2.0f * 3.14f;
-			}*/
+			}
 			f.push_back(angle);
 		}
 
-		for (int j = k; j < p.size() - 1; j++)
+		for (int j = k; j < p.size(); j++)
 		{
-			Vec2 v2 = p[j + 1] - p[j];
+			Vec2 v2 = p[(j + 1) % p.size()] - p[j];
 			float angle = atan2(v2.y, v2.x) - atan2(-v.y, -v.x);
-			/*if (angle < 0.0f)
+			if (angle < 0.0f)
 			{
 				angle += 2.0f * 3.14f;
-			}*/
+			}
 			s.push_back(angle);
 		}
 
 		f.push_back(s[0] + 3.14f);
 		int j = 0;
 		int l = k;
-		while (j != k && l != p.size() - 1)
+		while (j < k && l < p.size())
 		{
 			if (f[j] < s[l - k])
 			{
@@ -545,68 +573,16 @@ std::vector<Vec2> GeometryAlgorithm::RotatingCalipers(const std::vector<Vec2>& p
 			{
 				l++;
 			}
-			else if (abs(f[j] - s[l - k]) < EPS)
+			else
 			{
 				j++;
 				l++;
-				cout << p[j - 1].toString() << ", " << p[l].toString() << endl;
-				cout << p[j].toString() << ", " << p[l - 1].toString() << endl;
+				antipodPoints.push_back(makePair(p[j - 1], p[l]));
+				antipodPoints.push_back(makePair(p[j], p[l - 1]));
 			}
-			cout << p[j].toString() << ", " << p[l].toString() << endl;
+			antipodPoints.push_back(makePair(p[j], p[l]));
 		}
 	}
+
 	return antipodPoints;
 }
-
-//std::vector<Vec2> GeometryAlgorithm::RotatingCalipers(const std::vector<Vec2>& p)
-//{
-//	std::vector<Vec2> antipodPoints;
-//	int n = p.size();
-//	int i0 = n;
-//	int i = 0;
-//	int j = i + 1;
-//	Vec2 v = p[1] - p[0];
-//	int k = 2;
-//
-//	while (j + 1 < n && Determinant(p[i], p[i + 1], p[j + 1]) > Determinant(p[i], p[i + 1], p[j]))
-//	{
-//		j++;
-//		int j0 = j;
-//		while (j < n && i + 1 < n && j != i0)
-//		{
-//			i++;
-//			cout << p[i].toString() << ", " << p[j].toString() << endl;
-//			while (j + 1 < n && Determinant(p[i], p[i + 1], p[j + 1]) > Determinant(p[i], p[i + 1], p[j]))
-//			{
-//				j++;
-//				if (i != j0 || j != i0)
-//				{
-//					cout << p[i].toString() << ", " << p[j].toString() << endl;
-//				}
-//				else
-//				{
-//					return antipodPoints;
-//				}
-//			}
-//			if (j + 1 < n && Determinant(p[j], p[i + 1], p[j + 1]) > Determinant(p[i], p[i + 1], p[j]))
-//			{
-//				if (i != j0 || j != i0)
-//				{
-//					cout << p[i].toString() << ", " << p[j + 1].toString() << endl;
-//				}
-//				else
-//				{
-//					cout << p[i + 1].toString() << ", " << p[j].toString() << endl;
-//				}
-//			}
-//		}
-//	}
-//	
-//		/*
-//	cout << p[j - 1].toString() << ", " << p[l].toString() << endl;
-//	cout << p[j].toString() << ", " << p[l - 1].toString() << endl;
-//		
-//	cout << p[j].toString() << ", " << p[l].toString() << endl;
-//	*/
-//	return antipodPoints;
-//}
