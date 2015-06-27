@@ -553,7 +553,7 @@ std::vector<std::vector<Vec2>> GeometryAlgorithm::RotatingCalipers(const std::ve
 			f.push_back(angle);
 		}
 
-		for (int j = k; j < p.size(); j++)
+		for (unsigned int j = k; j < p.size(); j++)
 		{
 			Vec2 v2 = p[(j + 1) % p.size()] - p[j];
 			float angle = atan2(v2.y, v2.x) - atan2(-v.y, -v.x);
@@ -620,7 +620,7 @@ struct State
 	int current1Index;
 	int current2Index;
 	int currentContour;
-
+	int outer;
 	std::string toString()
 	{
 		stringstream s;
@@ -635,7 +635,7 @@ bool firstIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>
 	state.current1 = LineSegment2(p1[0], p1[1]);
 	state.current2 = LineSegment2(p2[0], p2[1]);
 	bool empty = false;
-	for (int i = 0, j = 0; i < p1.size() - 1, j < p2.size() - 1;)
+	for (unsigned int i = 0, j = 0; i < p1.size() - 1, j < p2.size() - 1;)
 	{
 		if (state.currentContour == 1)
 		{
@@ -661,6 +661,7 @@ bool firstIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>
 				cout << "IntersectionPoint: " << state.intersectionPoint.toString() << endl;
 				state.current1Index = i;
 				state.current2Index = j;
+				state.outer = state.currentContour;
 				return true;
 			}
 		}
@@ -688,12 +689,149 @@ bool firstIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>
 				cout << "IntersectionPoint: " << state.intersectionPoint.toString() << endl;
 				state.current1Index = i;
 				state.current2Index = j;
+				state.outer = state.currentContour;
 				return true;
 			}
 		}
 	}
 
 	return false;
+}
+
+void innerOuter(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2, State& state)
+{
+	if (GeometryAlgorithm::Determinant(state.current1.a, state.current2.b, state.current1.b) > 0)
+	{
+		state.currentContour = 2;
+	}
+	else
+	{
+		state.currentContour = 1;
+	}
+}
+
+bool nextIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2, State& state)
+{
+	bool found = false;
+
+	while (!found && state.current1Index  - 1 < p1.size() && state.current2Index - 1 < p2.size())
+	{
+		if (state.currentContour == 1) //outer = 1
+		{
+			if (state.outer == 1)
+			{
+				if (!GeometryAlgorithm::LineIntersection(state.current2.a, state.current2.b, state.current1.a, state.current1.b, state.intersectionPoint))
+				{
+					state.current1Index++;
+					state.current1 = LineSegment2(p1[state.current1Index % p1.size()], p1[(state.current1Index + 1) % p1.size()]);
+					cout << "727: Current1 " << state.current1.toString() << endl;
+				}
+				else
+				{
+					if (!GeometryAlgorithm::ComputeIntersection2(state.current1.a, state.current1.b, state.current2.a, state.current2.b, state.intersectionPoint))
+					{
+						cout << state.current2.toString() << endl;
+					}
+					else
+					{
+						found = true;
+						cout << state.intersectionPoint.toString() << endl;
+						state.outer = 2;
+					}
+					state.currentContour = 2;
+					state.current2Index++;
+					state.current2 = LineSegment2(p2[state.current2Index % p2.size()], p2[(state.current2Index + 1) % p2.size()]);
+					cout << "746: Current2 " << state.current2.toString() << endl;
+				}
+			}
+			else
+			{
+				if (!GeometryAlgorithm::LineIntersection(state.current1.a, state.current1.b, state.current2.a, state.current2.b, state.intersectionPoint))
+				{
+					state.currentContour = 2;
+					state.current2Index++;
+					state.current2 = LineSegment2(p2[state.current2Index % p2.size()], p2[(state.current2Index + 1) % p2.size()]);
+					cout << "727: Current2 " << state.current2.toString() << endl;
+				}
+				else
+				{
+					if (!GeometryAlgorithm::ComputeIntersection2(state.current1.a, state.current1.b, state.current2.a, state.current2.b, state.intersectionPoint))
+					{
+						cout << state.current2.toString() << endl;
+					}
+					else
+					{
+						found = true;
+						cout << state.intersectionPoint.toString() << endl;
+						state.outer = 1;
+					}
+					state.currentContour = 2;
+					state.current2Index++;
+					state.current2 = LineSegment2(p2[state.current2Index % p2.size()], p2[(state.current2Index + 1) % p2.size()]);
+					cout << "746: Current2 " << state.current2.toString() << endl;
+				}
+			}
+
+		}
+		else
+		{
+			if (state.outer == 2)
+			{
+				if (!GeometryAlgorithm::LineIntersection(state.current1.a, state.current1.b, state.current2.a, state.current2.b, state.intersectionPoint))
+				{
+					state.current2Index++;
+					state.current2 = LineSegment2(p2[state.current2Index % p2.size()], p2[(state.current2Index + 1) % p2.size()]);
+					cout << "754: Current2 " << state.current2.toString() << endl;
+				}
+				else
+				{
+					if (!GeometryAlgorithm::ComputeIntersection2(state.current2.a, state.current2.b, state.current1.a, state.current1.b, state.intersectionPoint))
+					{
+						cout << state.current1.toString() << endl;
+					}
+					else
+					{
+						found = true;
+						cout << state.intersectionPoint.toString() << endl;
+						state.outer = 1;
+
+					}
+					state.currentContour = 1;
+					state.current1Index++;
+					state.current1 = LineSegment2(p1[state.current1Index % p1.size()], p1[(state.current1Index + 1) % p1.size()]);
+					cout << "774: Current1 " << state.current1.toString() << endl;
+				}
+			}
+			else
+			{
+				if (!GeometryAlgorithm::LineIntersection(state.current2.a, state.current2.b, state.current1.a, state.current1.b, state.intersectionPoint))
+				{
+					state.current1Index++;
+					state.current1 = LineSegment2(p1[state.current1Index % p1.size()], p1[(state.current1Index + 1) % p1.size()]);
+					cout << "727: Current1 " << state.current1.toString() << endl;
+				}
+				else
+				{
+					if (!GeometryAlgorithm::ComputeIntersection2(state.current2.a, state.current2.b, state.current1.a, state.current1.b, state.intersectionPoint))
+					{
+						cout << state.current1.toString() << endl;
+					}
+					else
+					{
+						found = true;
+						cout << state.intersectionPoint.toString() << endl;
+						state.outer = 2;
+					}
+					state.currentContour = 1;
+					state.current1Index++;
+					state.current1 = LineSegment2(p1[state.current1Index % p1.size()], p1[(state.current1Index + 1) % p1.size()]);
+					cout << "774: Current1 " << state.current1.toString() << endl;
+				}
+			}
+		}
+	}
+
+	return found;
 }
 
 std::vector<Vec2> GeometryAlgorithm::IntersectPolygons(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2)
@@ -703,6 +841,12 @@ std::vector<Vec2> GeometryAlgorithm::IntersectPolygons(const std::vector<Vec2>& 
 	if (firstIntersectionPoint(p1, p2, state))
 	{
 		cout << state.toString() << endl;
+		outputPolygon.push_back(state.intersectionPoint);
+		while (nextIntersectionPoint(p1, p2, state))
+		{
+			cout << state.intersectionPoint.toString() << endl;
+			outputPolygon.push_back(state.intersectionPoint);
+		}
 	}
 	else
 	{
