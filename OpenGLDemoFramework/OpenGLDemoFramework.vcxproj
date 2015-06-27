@@ -101,6 +101,7 @@
     <ClInclude Include="DemoIntersectingLineSegments.hpp" />
     <ClInclude Include="DemoIntersectingPolygons.hpp" />
     <ClInclude Include="DemoPointInPolygon.hpp" />
+    <ClInclude Include="DemoProjections.hpp" />
     <ClInclude Include="DemoRotatingCalipers.hpp" />
     <ClInclude Include="GeometryAlgorithm.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />

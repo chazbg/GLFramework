@@ -2,6 +2,8 @@
 #include "Shader.hpp"
 #include <cmath>
 
+#include <iostream>
+
 #define BUFFER_OFFSET(i) ((void*)(i))
 
 LineListMesh::LineListMesh(const std::vector<Vec2>& pointsList, const Vec3& color, const float lineSize) :
@@ -17,7 +19,7 @@ Mesh(), color(color), lineSize(lineSize)
 	time = 0;
 
 	UseProgram();
-
+	
 	glUniform1ui(timeID, time);
 	glUniform3f(colorID, color.x, color.y, color.z);
 
@@ -36,6 +38,41 @@ Mesh(), color(color), lineSize(lineSize)
 		);
 
 	glDisableVertexAttribArray(0);
+}
+
+LineListMesh::LineListMesh(const std::vector<Vec3>& pointsList, const Vec3& color, const float lineSize) :
+Mesh(), color(color), lineSize(lineSize)
+{
+	vertexCount = pointsList.size() * 2;
+	vertexBuffer = genVerts(pointsList);
+
+	programID = LoadShaders("Shaders/primitives3d.vs", "Shaders/primitives3d.fs");
+	timeID = glGetUniformLocation(programID, "time");
+	colorID = glGetUniformLocation(programID, "color");
+
+	time = 0;
+
+	UseProgram();
+
+	glUniform1ui(timeID, time);
+	glUniform3f(colorID, color.x, color.y, color.z);
+
+	glGenBuffers(1, &vertexBufferID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(
+		0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		BUFFER_OFFSET(0)
+		);
+
+	glDisableVertexAttribArray(0);
+
 }
 
 LineListMesh::~LineListMesh()
@@ -88,7 +125,7 @@ void LineListMesh::Render()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0,
-		2,
+		3,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
@@ -103,7 +140,7 @@ void LineListMesh::Render()
 
 float* LineListMesh::genVerts(const std::vector<Vec2>& pointsList)
 {
-	float* verts = new float[pointsList.size() * 4];
+	float* verts = new float[pointsList.size() * 2 * 2];
 
 	for (unsigned int i = 0; i < pointsList.size(); i++)
 	{
@@ -111,6 +148,23 @@ float* LineListMesh::genVerts(const std::vector<Vec2>& pointsList)
 		verts[4 * i + 1] = pointsList[i].y;
 		verts[4 * i + 2] = pointsList[(i + 1) % pointsList.size()].x;
 		verts[4 * i + 3] = pointsList[(i + 1) % pointsList.size()].y;
+	}
+
+	return verts;
+}
+
+float* LineListMesh::genVerts(const std::vector<Vec3>& pointsList)
+{
+	float* verts = new float[pointsList.size() * 2 * 3];
+
+	for (unsigned int i = 0; i < pointsList.size(); i++)
+	{
+		verts[6 * i] = pointsList[i].x;
+		verts[6 * i + 1] = pointsList[i].y;
+		verts[6 * i + 2] = pointsList[i].z;
+		verts[6 * i + 3] = pointsList[(i + 1) % pointsList.size()].x;
+		verts[6 * i + 4] = pointsList[(i + 1) % pointsList.size()].y;
+		verts[6 * i + 5] = pointsList[(i + 1) % pointsList.size()].z;
 	}
 
 	return verts;

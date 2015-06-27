@@ -1,8 +1,8 @@
-#include "DemoIntersectingPolygons.hpp"
+#include "DemoProjections.hpp"
 
 int main(int argc, char* argv[])
 {
-	DemoIntersectingPolygons();
+	DemoProjections();
 
 	return 0;
 }

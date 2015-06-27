@@ -167,5 +167,8 @@
     <ClInclude Include="LineSegment.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="DemoProjections.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
