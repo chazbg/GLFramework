@@ -592,76 +592,6 @@ struct State
 	}
 };
 
-bool firstIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2, State& state)
-{
-	state.currentContour = 1;
-	state.current[0] = LineSegment(p1[0], p1[1]);
-	state.current[1] = LineSegment(p2[0], p2[1]);
-
-	bool empty = false;
-	for (unsigned int i = 0, j = 0; i < p1.size() - 1, j < p2.size() - 1;)
-	{
-		if (state.currentContour == 1)
-		{
-			if (GeometryAlgorithm::Determinant(state.current[1].a, state.current[0].a, state.current[1].b) > 0)
-			{
-				empty = true;
-			}
-
-			if (!GeometryAlgorithm::LineIntersection(state.current[0].a, state.current[0].b, state.current[1].a, state.current[1].b, state.intersectionPoint))
-			{
-				state.currentContour = 2;
-				j++;
-				state.current[1] = LineSegment(p2[j], p2[(j + 1) % p2.size()]);
-			}
-			else if (!GeometryAlgorithm::ComputeIntersection2(state.current[0].a, state.current[0].b, state.current[1].a, state.current[1].b, state.intersectionPoint))
-			{
-				state.currentContour = 1;
-				i++;
-				state.current[0] = LineSegment(p1[i], p1[(i + 1) % p1.size()]);
-			}
-			else
-			{
-				cout << "IntersectionPoint: " << state.intersectionPoint.toString() << endl;
-				state.current1Index = i;
-				state.current2Index = j;
-				state.outer = state.currentContour - 1;
-				return true;
-			}
-		}
-		else
-		{
-			if (GeometryAlgorithm::Determinant(state.current[0].a, state.current[1].a, state.current[0].b) > 0)
-			{
-				empty = true;
-			}
-
-			if (!GeometryAlgorithm::LineIntersection(state.current[1].a, state.current[1].b, state.current[0].a, state.current[0].b, state.intersectionPoint))
-			{
-				state.currentContour = 1;
-				i++;
-				state.current[0] = LineSegment(p1[i], p1[(i + 1) % p1.size()]);
-			}
-			else if (!GeometryAlgorithm::ComputeIntersection2(state.current[1].a, state.current[1].b, state.current[0].a, state.current[0].b, state.intersectionPoint))
-			{
-				state.currentContour = 2;
-				j++;
-				state.current[1] = LineSegment(p2[j], p2[(j + 1) % p2.size()]);
-			}
-			else
-			{
-				cout << "IntersectionPoint: " << state.intersectionPoint.toString() << endl;
-				state.current1Index = i;
-				state.current2Index = j;
-				state.outer = state.currentContour - 1;
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
 void next(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2, State& state, const unsigned int index)
 {
 	if (index == 0)
@@ -674,6 +604,40 @@ void next(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2, State& state
 		state.current2Index++;
 		state.current[1] = LineSegment(p2[state.current2Index % p2.size()], p2[(state.current2Index + 1) % p2.size()]);
 	}
+
+}
+bool firstIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2, State& state)
+{
+	state.outer = 0;
+	state.current1Index = 0;
+	state.current2Index = 0;
+	state.current[0] = LineSegment(p1[0], p1[1]);
+	state.current[1] = LineSegment(p2[0], p2[1]);
+
+	bool empty = false;
+	for (state.current1Index = 0, state.current2Index = 0; state.current1Index < p1.size() - 1, state.current2Index < p2.size() - 1;)
+	{
+		if (GeometryAlgorithm::Determinant(state.current[!state.outer].a, state.current[state.outer].a, state.current[!state.outer].b) > 0)
+		{
+			empty = true;
+		}
+
+		if (!GeometryAlgorithm::LineIntersection(state.current[0].a, state.current[0].b, state.current[1].a, state.current[1].b, state.intersectionPoint))
+		{
+			state.outer = !state.outer;
+		}
+		else if (!GeometryAlgorithm::ComputeIntersection2(state.current[0].a, state.current[0].b, state.current[1].a, state.current[1].b, state.intersectionPoint))
+		{		
+		}
+		else
+		{
+			cout << "IntersectionPoint: " << state.intersectionPoint.toString() << endl;
+			return true;
+		}
+		next(p1, p2, state, state.outer);
+	}
+
+	return false;
 }
 
 bool nextIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2, State& state, std::vector<Vec2>& outputPolygon)
