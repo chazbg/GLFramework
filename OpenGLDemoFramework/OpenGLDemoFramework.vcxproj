@@ -79,6 +79,7 @@
     <ClCompile Include="GeometryAlgorithm.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineListMesh.cpp" />
+    <ClCompile Include="LineSegment.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GLUTWrapper.cpp" />
     <ClCompile Include="GLWrapper.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="GLWrapper.hpp" />
     <ClInclude Include="Line.hpp" />
     <ClInclude Include="LineListMesh.hpp" />
+    <ClInclude Include="LineSegment.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Plane.hpp" />
     <ClInclude Include="PlaneGenerator.hpp" />
