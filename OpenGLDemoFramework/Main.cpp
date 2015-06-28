@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[])
 {
-	DemoProjections();
-
+	DemoProjections2();
+	//DemoProjections2();
 	return 0;
 }

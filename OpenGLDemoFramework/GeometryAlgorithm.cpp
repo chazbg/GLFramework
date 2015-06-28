@@ -687,3 +687,15 @@ std::vector<Vec2> GeometryAlgorithm::IntersectPolygons(const std::vector<Vec2>& 
 	}
 	return outputPolygon;
 }
+
+std::vector<Vec2> GeometryAlgorithm::TestVisibility(const std::vector<Vec2>& p1, const std::vector<Vec2>& p2)
+{
+	Vec2 intersectionPoint;
+
+	if (!GeometryAlgorithm::ComputeIntersection2(p1[0], p1[1], p2[0], p2[1], intersectionPoint))
+	{
+
+	}
+
+	return p1;
+}
