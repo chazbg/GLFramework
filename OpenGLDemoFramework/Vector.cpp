@@ -248,8 +248,147 @@ float Vec3::length() const
 {
 	return sqrt(x*x + y*y + z*z);
 }
+
 Vec3 Vec3::normalize() const
 {
 	float len = length();
 	return Vec3(x/len, y/len, z/len);
+}
+
+//Vec4
+Vec4::Vec4(const Vec4& vec)
+{
+	x = vec.x;
+	y = vec.y;
+	z = vec.z;
+	w = vec.w;
+}
+
+Vec4& Vec4::operator=(const Vec4& vec)
+{
+	x = vec.x;
+	y = vec.y;
+	z = vec.z;
+	w = vec.w;
+
+	return *this;
+}
+
+Vec4 Vec4::operator+(const Vec4& rhs) const
+{
+	return Vec4(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w);
+}
+
+Vec4& Vec4::operator+=(const Vec4& rhs)
+{
+	x += rhs.x;
+	y += rhs.y;
+	z += rhs.z;
+	w += rhs.w;
+
+	return *this;
+}
+
+Vec4 Vec4::operator-(const Vec4& rhs) const
+{
+	return Vec4(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
+}
+
+Vec4& Vec4::operator-=(const Vec4& rhs)
+{
+	x -= rhs.x;
+	y -= rhs.y;
+	z -= rhs.z;
+	w -= rhs.w;
+
+	return *this;
+}
+
+Vec4 Vec4::operator*(const float scalar) const
+{
+	return Vec4(x * scalar, y * scalar, z * scalar, w * scalar);
+}
+
+Vec4& Vec4::operator*=(const float scalar)
+{
+	x *= scalar;
+	y *= scalar;
+	z *= scalar;
+	w *= scalar;
+
+	return *this;
+}
+
+Vec4 Vec4::operator/(const float scalar) const
+{
+	return Vec4(x / scalar, y / scalar, z / scalar, w / scalar);
+}
+
+Vec4& Vec4::operator/=(const float scalar)
+{
+	x /= scalar;
+	y /= scalar;
+	z /= scalar;
+	w /= scalar;
+
+	return *this;
+}
+
+Vec4 operator*(const float scalar, const Vec4& rhs)
+{
+	return Vec4(scalar * rhs.x, scalar * rhs.y, scalar * rhs.z, scalar * rhs.w);
+}
+
+float Vec4::distanceTo(const Vec4& point)
+{
+	float dx = x - point.x;
+	float dy = y - point.y;
+	float dz = z - point.z;
+	float dw = w - point.w;
+
+	return sqrt(dx * dx + dy * dy + dz * dz + dw * dw);
+}
+
+float Vec4::distanceSquaredTo(const Vec4& point)
+{
+	float dx = x - point.x;
+	float dy = y - point.y;
+	float dz = z - point.z;
+	float dw = w - point.w;
+
+	return dx * dx + dy * dy + dz * dz + dw * dw;
+}
+
+Vec4::operator string() const
+{
+	stringstream s;
+	s << "(" << x << ", " << y << ", " << z << ", " << w << ")";
+	return s.str();
+}
+
+string Vec4::toString() const
+{
+	return this->operator string();
+}
+
+float* Vec4::raw()
+{
+	float* v = new float[4];
+	v[0] = x;
+	v[1] = y;
+	v[2] = z;
+	v[3] = w;
+
+	return v;
+}
+
+float Vec4::length() const
+{
+	return sqrt(x * x + y * y + z * z + w * w);
+}
+
+Vec4 Vec4::normalize() const
+{
+	float len = length();
+	return Vec4(x / len, y / len, z / len, w / len);
 }

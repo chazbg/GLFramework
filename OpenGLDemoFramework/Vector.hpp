@@ -67,3 +67,35 @@ public:
 	float y;
 	float z;
 };
+
+class Vec4
+{
+public:
+	inline Vec4() {}
+	inline Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+	inline ~Vec4() {}
+	Vec4(const Vec4& vec);
+	Vec4& operator=(const Vec4& vec);
+	Vec4 operator+(const Vec4& rhs) const;
+	Vec4& operator+=(const Vec4& rhs);
+	Vec4 operator-(const Vec4& rhs) const;
+	Vec4& operator-=(const Vec4& rhs);
+	Vec4 operator*(const float scalar) const;
+	Vec4& operator*=(const float scalar);
+	Vec4 operator/(const float scalar) const;
+	Vec4& operator/=(const float scalar);
+	friend Vec4 operator*(const float scalar, const Vec4& rhs);
+	float distanceTo(const Vec4& point);
+	float distanceSquaredTo(const Vec4& point);
+	operator string() const;
+	string toString() const;
+	float* raw();
+	float length() const;
+	Vec4 normalize() const;
+	//TODO: Add operations
+public:
+	float x;
+	float y;
+	float z;
+	float w;
+};
