@@ -158,6 +158,21 @@ void DemoProjections()
 						{
 							outPoints.push_back(fj);
 						}
+
+						if (fi.z > fj.z)
+						{
+							for (int m = 0; m < 4; m++)
+							{
+								sides[i][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
+							}
+						}
+						else
+						{
+							for (int m = 0; m < 4; m++)
+							{
+								sides[j][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
+							}
+						}
 					}
 				}
 			}
@@ -168,10 +183,23 @@ void DemoProjections()
 	GLUTWrapper::InitWindow(&RenderScene);
 	GLWrapper::InitRenderer();
 
-	for (unsigned int i = 0; i < inputPolygon.size(); i++)
+	for (int i = 0; i < sides.size(); i++)
+	{
+		std::vector<Vec3> lines;
+		lines.push_back(sides[i][0].a);
+		lines.push_back(sides[i][0].b);
+		lines.push_back(sides[i][1].a);
+		lines.push_back(sides[i][1].b);
+		lines.push_back(sides[i][2].a);
+		lines.push_back(sides[i][2].b);
+		lines.push_back(sides[i][3].a);
+		lines.push_back(sides[i][3].b);
+		lm1.push_back(new LineListMesh(lines, Vec3(0, 1, 1), 2.0f));
+	}
+	/*for (unsigned int i = 0; i < inputPolygon.size(); i++)
 	{
 		lm1.push_back(new LineListMesh(*inputPolygon[i], Vec3(0, 1, 1), 2.0f));
-	}
+	}*/
 
 	plm = new PointListMesh(outPoints, Vec3(1, 1, 0), 5.0f);
 	GLUTWrapper::RenderLoop();
