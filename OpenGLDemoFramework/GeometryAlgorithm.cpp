@@ -342,7 +342,7 @@ bool GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const
 	return false;
 }
 
-bool GeometryAlgorithm::ComputeIntersection3(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj)
+bool GeometryAlgorithm::ComputeIntersection3Perspective(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj)
 {
 	bool res = false;
 	Vec4 p1(a.x, a.y, a.z, 1);
@@ -369,6 +369,34 @@ bool GeometryAlgorithm::ComputeIntersection3(const Vec3& a, const Vec3& b, const
 		u1 = (u * (h - c.z)) / (h - u * c.z - (1 - u) * d.z);
 		fi = (1 - t1) * a + t1 * b;
 		fj = (1 - u1) * c + u1 * d;
+		cout << fi.toString() << fj.toString() << endl;
+	}
+
+	return res;
+}
+
+bool GeometryAlgorithm::ComputeIntersection3Parallel(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj)
+{
+	bool res = false;
+	Vec4 p1(a.x, a.y, a.z, 1);
+	Vec4 p2(b.x, b.y, b.z, 1);
+	Vec4 p3(c.x, c.y, c.z, 1);
+	Vec4 p4(d.x, d.y, d.z, 1);
+	Matrix4 m(Vec4(1, 0, -0.35, 1), Vec4(0, 1, -0.35, 1), Vec4(0, 0, 0, 0), Vec4(0, 0, 0, 1));
+
+	p1 = m * p1;
+	p2 = m * p2;
+	p3 = m * p3;
+	p4 = m * p4;
+
+	Vec2 intersectionPoint;
+	float t = 0;
+	float u = 0;
+	if (ComputeIntersection2(Vec2(p1.x, p1.y), Vec2(p2.x, p2.y), Vec2(p3.x, p3.y), Vec2(p4.x, p4.y), intersectionPoint, t, u))
+	{
+		res = true;
+		fi = (1 - t) * a + t * b;
+		fj = (1 - u) * c + u * d;
 		cout << fi.toString() << fj.toString() << endl;
 	}
 
