@@ -19,6 +19,31 @@ string LineSegment::toString() const
 	return this->operator string();
 }
 
+LineSegment3::LineSegment3()
+{
+}
+
+LineSegment3::LineSegment3(Vec3 a, Vec3 b) : a(a), b(b)
+{
+
+}
+
+LineSegment3::operator string() const
+{
+	return "[" + a.toString() + ", " + b.toString() + "]";
+}
+
+string LineSegment3::toString() const
+{
+	return this->operator string();
+}
+
+bool LineSegment3::operator == (const LineSegment3& rhs) const
+{
+	return (a == rhs.a && b == rhs.b) || (a == rhs.b && b == rhs.a);
+}
+
+
 OrderedLineSegment::OrderedLineSegment() : LineSegment()
 {
 

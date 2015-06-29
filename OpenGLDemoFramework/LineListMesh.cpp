@@ -7,7 +7,7 @@
 #define BUFFER_OFFSET(i) ((void*)(i))
 
 LineListMesh::LineListMesh(const std::vector<Vec2>& pointsList, const Vec3& color, const float lineSize) :
-Mesh(), color(color), lineSize(lineSize)
+Mesh(), color(color), lineSize(lineSize), is2d(true)
 {
 	vertexCount = pointsList.size() * 2;
 	vertexBuffer = genVerts(pointsList);
@@ -41,7 +41,7 @@ Mesh(), color(color), lineSize(lineSize)
 }
 
 LineListMesh::LineListMesh(const std::vector<Vec3>& pointsList, const Vec3& color, const float lineSize) :
-Mesh(), color(color), lineSize(lineSize)
+Mesh(), color(color), lineSize(lineSize), is2d(false)
 {
 	vertexCount = pointsList.size() * 2;
 	vertexBuffer = genVerts(pointsList);
@@ -120,12 +120,13 @@ void LineListMesh::Render()
 {
 	UseProgram();
 	SetTime(time + 1);
+	SetColor(color);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0,
-		3,
+		is2d ? 2 : 3,
 		GL_FLOAT,
 		GL_FALSE,
 		0,

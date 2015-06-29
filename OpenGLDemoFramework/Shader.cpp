@@ -4,16 +4,25 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-using namespace std;
-
 #include <stdlib.h>
 #include <string.h>
 
 #include <GL/glew.h>
 
 #include "Shader.hpp"
+#include <map>
+
+using namespace std;
+
+static map<pair<string, string>, int> shaders;
 
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
+
+	map<pair<string, string>, int>::iterator it;
+	if ((it = shaders.find(pair<string, string>(vertex_file_path, fragment_file_path))) != shaders.end())
+	{
+		return it->second;
+	}
 
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -103,6 +112,8 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 
 	glDeleteShader(VertexShaderID);
 	glDeleteShader(FragmentShaderID);
+
+	shaders[pair<string, string>(vertex_file_path, fragment_file_path)] = ProgramID;
 
 	return ProgramID;
 }

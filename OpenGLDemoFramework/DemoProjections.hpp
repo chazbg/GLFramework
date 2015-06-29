@@ -5,8 +5,12 @@
 #include "GeometryAlgorithm.hpp"
 #include "TestGeometryAlgorithm.hpp"
 #include "LineListMesh.hpp"
+#include "LineSegment.hpp"
+#include "PointListMesh.hpp"
+#include <iostream>
 
 static std::vector<LineListMesh*> lm1;
+static PointListMesh* plm;
 
 static void RenderScene()
 {
@@ -17,13 +21,58 @@ static void RenderScene()
 		lm1[i]->Render();
 	}
 
+	plm->Render();
+
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
+}
+
+std::vector<std::vector<LineSegment3>> initCubeSides(const std::vector<Vec3>& p)
+{
+	std::vector<std::vector<LineSegment3>> sides;
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		sides.push_back(std::vector<LineSegment3>());
+	}
+
+	sides[0].push_back(LineSegment3(p[0], p[1]));
+	sides[0].push_back(LineSegment3(p[1], p[2]));
+	sides[0].push_back(LineSegment3(p[2], p[3]));
+	sides[0].push_back(LineSegment3(p[3], p[0]));
+
+	sides[1].push_back(LineSegment3(p[0], p[1]));
+	sides[1].push_back(LineSegment3(p[1], p[5]));
+	sides[1].push_back(LineSegment3(p[5], p[4]));
+	sides[1].push_back(LineSegment3(p[4], p[0]));
+
+	sides[2].push_back(LineSegment3(p[0], p[3]));
+	sides[2].push_back(LineSegment3(p[3], p[7]));
+	sides[2].push_back(LineSegment3(p[7], p[4]));
+	sides[2].push_back(LineSegment3(p[4], p[0]));
+
+	sides[3].push_back(LineSegment3(p[2], p[1]));
+	sides[3].push_back(LineSegment3(p[1], p[5]));
+	sides[3].push_back(LineSegment3(p[5], p[6]));
+	sides[3].push_back(LineSegment3(p[6], p[2]));
+
+	sides[4].push_back(LineSegment3(p[2], p[3]));
+	sides[4].push_back(LineSegment3(p[3], p[7]));
+	sides[4].push_back(LineSegment3(p[7], p[6]));
+	sides[4].push_back(LineSegment3(p[6], p[2]));
+
+	sides[5].push_back(LineSegment3(p[4], p[5]));
+	sides[5].push_back(LineSegment3(p[5], p[6]));
+	sides[5].push_back(LineSegment3(p[6], p[7]));
+	sides[5].push_back(LineSegment3(p[7], p[4]));
+
+	return sides;
 }
 
 void DemoProjections()
 {
 	std::vector<std::vector<Vec3>*> inputPolygon;
+	std::vector<Vec3> points;
+	
 	Vec3 A(0, 0, 0);
 	Vec3 B(2, 0, 0);
 	Vec3 C(2, 0, 2);
@@ -32,6 +81,15 @@ void DemoProjections()
 	Vec3 F(2, 2, 0);
 	Vec3 G(2, 2, 2);
 	Vec3 H(0, 2, 2);
+
+	points.push_back(A);
+	points.push_back(B);
+	points.push_back(C);
+	points.push_back(D);
+	points.push_back(E);
+	points.push_back(F);
+	points.push_back(G);
+	points.push_back(H);
 
 	for (unsigned int i = 0; i < 12; i++)
 	{
@@ -74,6 +132,39 @@ void DemoProjections()
 	inputPolygon[11]->push_back(H);
 	inputPolygon[11]->push_back(G);
 
+	std::vector<std::vector<LineSegment3>> sides = initCubeSides(points);
+	std::vector<Vec3> outPoints;
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		for (unsigned int j = 0; j < 6; j++)
+		{
+			if (i == j)	continue;
+
+			for (unsigned int k = 0; k < 4; k++)
+			{
+				for (unsigned int l = 0; l < 4; l++)
+				{
+					if (sides[i][k] == sides[j][l]) continue;
+
+					Vec3 fi, fj;
+					if (GeometryAlgorithm::ComputeIntersection3(sides[i][k].a, sides[i][k].b, sides[j][l].a, sides[j][l].b, fi, fj))
+					{
+						if (outPoints.end() == std::find(outPoints.begin(), outPoints.end(), fi))
+						{
+							outPoints.push_back(fi);
+						}
+
+						if (outPoints.end() == std::find(outPoints.begin(), outPoints.end(), fj))
+						{
+							outPoints.push_back(fj);
+						}
+					}
+				}
+			}
+		}
+	}
+	//Vec3 fi, fj;
+	//std::cout << GeometryAlgorithm::ComputeIntersection3(A, E, H, G, fi, fj) << std::endl;
 	GLUTWrapper::InitWindow(&RenderScene);
 	GLWrapper::InitRenderer();
 
@@ -82,6 +173,7 @@ void DemoProjections()
 		lm1.push_back(new LineListMesh(*inputPolygon[i], Vec3(0, 1, 1), 2.0f));
 	}
 
+	plm = new PointListMesh(outPoints, Vec3(1, 1, 0), 5.0f);
 	GLUTWrapper::RenderLoop();
 }
 

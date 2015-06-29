@@ -204,6 +204,11 @@ Vec3 operator*(const float scalar, const Vec3& rhs)
 	return Vec3(scalar * rhs.x, scalar * rhs.y, scalar * rhs.z);
 }
 
+bool Vec3::operator== (const Vec3& rhs) const
+{
+	return x == rhs.x && y == rhs.y && z == rhs.z;
+}
+
 float Vec3::distanceTo(const Vec3& point)
 {
 	float dx = x - point.x;

@@ -8,6 +8,7 @@ class PointListMesh : public Mesh
 {
 public:
 	PointListMesh(const std::vector<Vec2>& pointList, const Vec3& color = Vec3(1, 0, 0), const float pointSize = 5.0f);
+	PointListMesh(const std::vector<Vec3>& pointList, const Vec3& color = Vec3(1, 0, 0), const float pointSize = 5.0f);
 	~PointListMesh();
 
 	void SetTime(const GLuint time);
@@ -23,6 +24,7 @@ public:
 	void Render();
 private:
 	float* genVerts(const std::vector<Vec2>& pointsList);
+	float* genVerts(const std::vector<Vec3>& pointsList);
 	GLuint vertexBufferID;
 	GLuint colorID;
 	Vec3   color;
@@ -31,4 +33,5 @@ private:
 	GLuint programID;
 	GLuint timeID;
 	GLuint time;
+	bool   is2d;
 };

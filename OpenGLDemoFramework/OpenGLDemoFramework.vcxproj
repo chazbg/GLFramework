@@ -109,6 +109,7 @@
     <ClInclude Include="Line.hpp" />
     <ClInclude Include="LineListMesh.hpp" />
     <ClInclude Include="LineSegment.hpp" />
+    <ClInclude Include="Matrix.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Plane.hpp" />
     <ClInclude Include="PlaneGenerator.hpp" />

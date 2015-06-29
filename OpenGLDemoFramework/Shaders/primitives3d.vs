@@ -12,8 +12,8 @@ void main()
     mat4 proj;
     
     proj[0] = vec4(1, 0, 0, 1);
-    proj[1] = vec4(0, 1, 0, 0);
-    proj[2] = vec4(0, 1, 0, 1);
+    proj[1] = vec4(0, 1, 0, 1);
+    proj[2] = vec4(0, 0, 0, 0);
     proj[3] = vec4(0, 0, 1, 2);
     
     // proj[0] = vec4(1, 0, -0.35, 1);
@@ -28,6 +28,6 @@ void main()
         interpolatedColor = vec3(1, 0, 0);
     }
     gl_Position = transpose(proj) * vec4(position, 1);
-    gl_Position.xyz *= 0.1f;
+    gl_Position.xyz *= 0.5f;
 }
 

@@ -14,6 +14,19 @@ public:
 	Vec2 b;
 };
 
+class LineSegment3
+{
+public:
+	LineSegment3();
+	LineSegment3(Vec3 a, Vec3 b);
+	operator string() const;
+	string toString() const;
+	bool operator==(const LineSegment3& rhs) const;
+
+	Vec3 a;
+	Vec3 b;
+};
+
 class OrderedLineSegment : public LineSegment
 {
 public:

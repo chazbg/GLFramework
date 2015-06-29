@@ -54,6 +54,7 @@ public:
 	Vec3& operator/=(const float scalar);
 	Vec3 operator*(const Vec3& rhs) const;
 	friend Vec3 operator*(const float scalar, const Vec3& rhs);
+	bool operator==(const Vec3& rhs) const;
 	float distanceTo(const Vec3& point);
 	float distanceSquaredTo(const Vec3& point);
  	operator string() const;

@@ -33,4 +33,5 @@ private:
 	GLuint programID;
 	GLuint timeID;
 	GLuint time;
+	bool is2d;
 };
