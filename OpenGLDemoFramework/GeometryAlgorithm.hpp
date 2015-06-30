@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector.hpp"
+#include "Matrix.hpp"
 #include <vector>
 
 class GeometryAlgorithm
@@ -16,10 +17,13 @@ public:
 	static Vec2 ComputeIntersection(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d);
 	static bool ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d, Vec2& intersectionPoint);
 	static bool ComputeIntersection2(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d, Vec2& intersectionPoint, float& t, float& u);
-	static bool ComputeIntersection3Perspective(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj);
-	static bool ComputeIntersection3Parallel(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj);
+	static bool ComputePerspectiveIntersection(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj, const Matrix4& mat, const float projCenterZ);
+	static bool ComputeParallelIntersection(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj, const Matrix4& mat);
 	static std::vector<Vec2> SweepingLineIntersection(const std::vector<std::vector<Vec2>>& inputLines);
 	static std::vector<std::vector<Vec2>> RotatingCalipers(const std::vector<Vec2>& inputPolygon);
 	static std::vector<Vec2> IntersectPolygons(const std::vector<Vec2>& inputPolygon1, const std::vector<Vec2>& inputPolygon2);
 	static std::vector<Vec2> TestVisibility(const std::vector<Vec2>& inputPolygon1, const std::vector<Vec2>& inputPolygon2);
+	static std::vector<Vec2> ProjectPointList(const std::vector<Vec3>& points, const Matrix4& mat);
+private:
+	
 };

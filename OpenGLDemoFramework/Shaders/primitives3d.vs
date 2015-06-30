@@ -11,15 +11,15 @@ void main()
 {
     mat4 proj;
     
-    // proj[0] = vec4(1, 0, 0, 1);
-    // proj[1] = vec4(0, 1, 0, 1);
-    // proj[2] = vec4(0, 0, 0, 0);
-    // proj[3] = vec4(0, 0, 1, 2);
-    
-    proj[0] = vec4(1, 0, -0.35, 1);
-    proj[1] = vec4(0, 1, -0.35, 0);
+    proj[0] = vec4(1, 0, 0, 1);
+    proj[1] = vec4(0, 1, 0, 1);
     proj[2] = vec4(0, 0, 0, 0);
-    proj[3] = vec4(0, 0, 0, 1);
+    proj[3] = vec4(0, 0, 1, 2);
+    
+    // proj[0] = vec4(1, 0, -0.35, 1);
+    // proj[1] = vec4(0, 1, -0.35, 0);
+    // proj[2] = vec4(0, 0, 0, 0);
+    // proj[3] = vec4(0, 0, 0, 1);
     
     gl_PointSize = pointSize;
     interpolatedColor = color;

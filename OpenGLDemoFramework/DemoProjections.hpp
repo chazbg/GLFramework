@@ -7,6 +7,7 @@
 #include "LineListMesh.hpp"
 #include "LineSegment.hpp"
 #include "PointListMesh.hpp"
+#include "Matrix.hpp"
 #include <iostream>
 
 static std::vector<LineListMesh*> lm1;
@@ -27,7 +28,7 @@ static void RenderScene()
 	GLUTWrapper::RequestNewFrame();
 }
 
-std::vector<std::vector<LineSegment3>> initCubeSides(const std::vector<Vec3>& p)
+static std::vector<std::vector<LineSegment3>> initCubeSides(const std::vector<Vec3>& p)
 {
 	std::vector<std::vector<LineSegment3>> sides;
 	for (unsigned int i = 0; i < 6; i++)
@@ -68,7 +69,7 @@ std::vector<std::vector<LineSegment3>> initCubeSides(const std::vector<Vec3>& p)
 	return sides;
 }
 
-std::vector<std::vector<LineSegment3>> initOctaederSides(const std::vector<Vec3>& p)
+static std::vector<std::vector<LineSegment3>> initOctaederSides(const std::vector<Vec3>& p)
 {
 	std::vector<std::vector<LineSegment3>> sides;
 	for (unsigned int i = 0; i < 8; i++)
@@ -111,116 +112,100 @@ std::vector<std::vector<LineSegment3>> initOctaederSides(const std::vector<Vec3>
 	return sides;
 }
 
-void DemoProjections()
+static std::vector<Vec3> getConvexHullOrigins(const std::vector<Vec3>& points, const std::vector<Vec2>& projections, const std::vector<Vec2>& convexHull)
 {
-	std::vector<std::vector<Vec3>*> inputPolygon;
-	std::vector<Vec3> points;
-	
-	Vec3 A(0, 0, 0);
-	Vec3 B(2, 0, 0);
-	Vec3 C(2, 0, 2);
-	Vec3 D(0, 0, 2);
-	Vec3 E(0, 2, 0);
-	Vec3 F(2, 2, 0);
-	Vec3 G(2, 2, 2);
-	Vec3 H(0, 2, 2);
+	std::vector<Vec3> origins;
 
-	points.push_back(A);
-	points.push_back(B);
-	points.push_back(C);
-	points.push_back(D);
-	points.push_back(E);
-	points.push_back(F);
-	points.push_back(G);
-	points.push_back(H);
-
-	for (unsigned int i = 0; i < 12; i++)
+	for (unsigned int i = 0; i < points.size(); i++)
 	{
-		inputPolygon.push_back(new std::vector<Vec3>());
+		if (std::find(convexHull.begin(), convexHull.end(), projections[i]) != convexHull.end())
+		{
+			origins.push_back(points[i]);
+		}
 	}
 
-	inputPolygon[0]->push_back(A);
-	inputPolygon[0]->push_back(B);
+	return origins;
+}
 
-	inputPolygon[1]->push_back(A);
-	inputPolygon[1]->push_back(D);
+static void removeInvisibleEdges(std::vector<std::vector<LineSegment3>>& sides, std::vector<Vec3> invisPoints)
+{
+	for (unsigned int i = 0; i < sides.size(); i++)
+	{
+		for (unsigned int j = 0; j < sides[i].size(); j++)
+		{
+			if (std::find(invisPoints.begin(), invisPoints.end(), sides[i][j].a) != invisPoints.end() ||
+				std::find(invisPoints.begin(), invisPoints.end(), sides[i][j].b) != invisPoints.end())
+			{
+				sides[i][j] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
+			}
+		}
+	}
+}
 
-	inputPolygon[2]->push_back(A);
-	inputPolygon[2]->push_back(E);
+static bool isContourPoint(const std::vector<Vec3>& contour, const Vec3& point)
+{
+	return std::find(contour.begin(), contour.end(), point) != contour.end();
+}
 
-	inputPolygon[3]->push_back(C);
-	inputPolygon[3]->push_back(B);
+static bool alreadyAdded(const std::vector<Vec3>& points, const Vec3& point)
+{
+	return std::find(points.begin(), points.end(), point) != points.end();
+}
 
-	inputPolygon[4]->push_back(C);
-	inputPolygon[4]->push_back(D);
+void DemoProjections()
+{
+	std::vector<Vec3> points;
+	Matrix4 projectionMat(Vec4(1, 0, 0, 1), Vec4(0, 1, 0, 1), Vec4(0, 0, 0, 0), Vec4(0, 0, 1, 2));
 
-	inputPolygon[5]->push_back(C);
-	inputPolygon[5]->push_back(G);
-
-	inputPolygon[6]->push_back(F);
-	inputPolygon[6]->push_back(E);
-
-	inputPolygon[7]->push_back(F);
-	inputPolygon[7]->push_back(G);
-
-	inputPolygon[8]->push_back(F);
-	inputPolygon[8]->push_back(B);
-
-	inputPolygon[9]->push_back(H);
-	inputPolygon[9]->push_back(D);
-
-	inputPolygon[10]->push_back(H);
-	inputPolygon[10]->push_back(E);
-
-	inputPolygon[11]->push_back(H);
-	inputPolygon[11]->push_back(G);
+	points.push_back(Vec3(0, 0, 0));
+	points.push_back(Vec3(2, 0, 0));
+	points.push_back(Vec3(2, 0, 2));
+	points.push_back(Vec3(0, 0, 2));
+	points.push_back(Vec3(0, 2, 0));
+	points.push_back(Vec3(2, 2, 0));
+	points.push_back(Vec3(2, 2, 2));
+	points.push_back(Vec3(0, 2, 2));
 
 	std::vector<std::vector<LineSegment3>> sides = initCubeSides(points);
 	std::vector<Vec3> outPoints;
-	for (unsigned int i = 0; i < 6; i++)
+	std::vector<Vec3> invisPoints;
+	std::vector<Vec2> projections = GeometryAlgorithm::ProjectPointList(points, projectionMat);
+	std::vector<Vec2> convexHull = GeometryAlgorithm::ConvexHullGraham(projections);
+	std::vector<Vec3> convexHullOrigins = getConvexHullOrigins(points, projections, convexHull);
+
+	for (unsigned int i = 0; i < sides.size(); i++)
 	{
-		for (unsigned int j = 0; j < 6; j++)
+		for (unsigned int j = 0; j < sides.size(); j++)
 		{
 			if (i == j)	continue;
 
-			for (unsigned int k = 0; k < 4; k++)
+			for (unsigned int k = 0; k < sides[i].size(); k++)
 			{
-				for (unsigned int l = 0; l < 4; l++)
+				for (unsigned int l = 0; l < sides[j].size(); l++)
 				{
 					if (sides[i][k] == sides[j][l]) continue;
 
 					Vec3 fi, fj;
-					if (GeometryAlgorithm::ComputeIntersection3Perspective(sides[i][k].a, sides[i][k].b, sides[j][l].a, sides[j][l].b, fi, fj))
+					if (GeometryAlgorithm::ComputePerspectiveIntersection(sides[i][k].a, sides[i][k].b, sides[j][l].a, sides[j][l].b, fi, fj, projectionMat, -2))
 					{
-						if (outPoints.end() == std::find(outPoints.begin(), outPoints.end(), fi))
-						{
-							outPoints.push_back(fi);
-						}
+						if (!alreadyAdded(outPoints, fi)) { outPoints.push_back(fi); }
+						if (!alreadyAdded(outPoints, fj)) { outPoints.push_back(fj); }
 
-						if (outPoints.end() == std::find(outPoints.begin(), outPoints.end(), fj))
-						{
-							outPoints.push_back(fj);
-						}
+						unsigned int side = fi.z > fj.z ? i : j;
 
-						if (fi.z > fj.z)
+						for (unsigned int m = 0; m < sides[side].size(); m++)
 						{
-							for (int m = 0; m < 4; m++)
-							{
-								sides[i][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
-							}
-						}
-						else
-						{
-							for (int m = 0; m < 4; m++)
-							{
-								sides[j][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
-							}
+							if (!isContourPoint(convexHullOrigins, sides[side][m].a)) { invisPoints.push_back(sides[side][m].a); }
+							if (!isContourPoint(convexHullOrigins, sides[side][m].b)) { invisPoints.push_back(sides[side][m].b); }
+							sides[side][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
 						}
 					}
 				}
 			}
 		}
 	}
+
+	removeInvisibleEdges(sides, invisPoints);
 
 	GLUTWrapper::InitWindow(&RenderScene);
 	GLWrapper::InitRenderer();
@@ -239,11 +224,6 @@ void DemoProjections()
 		lm1.push_back(new LineListMesh(lines, Vec3(0, 1, 1), 2.0f));
 	}
 
-	/*for (unsigned int i = 0; i < inputPolygon.size(); i++)
-	{
-		lm1.push_back(new LineListMesh(*inputPolygon[i], Vec3(0, 1, 1), 2.0f));
-	}*/
-
 	plm = new PointListMesh(outPoints, Vec3(1, 1, 0), 5.0f);
 	GLUTWrapper::RenderLoop();
 }
@@ -252,105 +232,51 @@ void DemoProjections2()
 {
 	std::vector<std::vector<Vec3>*> inputPolygon;
 	std::vector<Vec3> points;
+	Matrix4 projectionMat(Vec4(1, 0, -0.35, 1), Vec4(0, 1, -0.35, 1), Vec4(0, 0, 0, 0), Vec4(0, 0, 0, 1));
 
-	Vec3 A(0, 0, 0);
-	Vec3 B(2, 0, 0);
-	Vec3 C(2, 0, 2);
-	Vec3 D(0, 0, 2);
-	Vec3 E(1, 2.4, 1);
-	Vec3 F(1, -2.4, 1);
+	points.push_back(Vec3(0, 0, 0));
+	points.push_back(Vec3(2, 0, 0));
+	points.push_back(Vec3(2, 0, 2));
+	points.push_back(Vec3(0, 0, 2));
+	points.push_back(Vec3(1, 2.4, 1));
+	points.push_back(Vec3(1, -2.4, 1));
 
-	points.push_back(A);
-	points.push_back(B);
-	points.push_back(C);
-	points.push_back(D);
-	points.push_back(E);
-	points.push_back(F);
-
-	for (unsigned int i = 0; i < 12; i++)
-	{
-		inputPolygon.push_back(new std::vector<Vec3>());
-	}
-
-	inputPolygon[0]->push_back(A);
-	inputPolygon[0]->push_back(B);
-
-	inputPolygon[1]->push_back(A);
-	inputPolygon[1]->push_back(D);
-
-	inputPolygon[2]->push_back(C);
-	inputPolygon[2]->push_back(B);
-
-	inputPolygon[3]->push_back(C);
-	inputPolygon[3]->push_back(D);
-
-	inputPolygon[4]->push_back(A);
-	inputPolygon[4]->push_back(E);
-
-	inputPolygon[5]->push_back(A);
-	inputPolygon[5]->push_back(F);
-
-	inputPolygon[6]->push_back(B);
-	inputPolygon[6]->push_back(E);
-
-	inputPolygon[7]->push_back(B);
-	inputPolygon[7]->push_back(F);
-
-	inputPolygon[8]->push_back(C);
-	inputPolygon[8]->push_back(E);
-
-	inputPolygon[9]->push_back(C);
-	inputPolygon[9]->push_back(F);
-
-	inputPolygon[10]->push_back(D);
-	inputPolygon[10]->push_back(E);
-
-	inputPolygon[11]->push_back(D);
-	inputPolygon[11]->push_back(F);
-
-	GLUTWrapper::InitWindow(&RenderScene);
-	GLWrapper::InitRenderer();
+	std::vector<Vec2> projections = GeometryAlgorithm::ProjectPointList(points, projectionMat);
+	std::vector<Vec2> convexHull = GeometryAlgorithm::ConvexHullGraham(projections);
+	std::vector<Vec3> convexHullOrigins = getConvexHullOrigins(points, projections, convexHull);
 
 	std::vector<std::vector<LineSegment3>> sides = initOctaederSides(points);
 	std::vector<Vec3> outPoints;
-	for (unsigned int i = 0; i < 8; i++)
+	std::vector<Vec3> invisPoints;
+
+	GLUTWrapper::InitWindow(&RenderScene);
+	GLWrapper::InitRenderer();
+	
+	for (unsigned int i = 0; i < sides.size(); i++)
 	{
-		for (unsigned int j = 0; j < 8; j++)
+		for (unsigned int j = 0; j < sides.size(); j++)
 		{
 			if (i == j)	continue;
 
-			for (unsigned int k = 0; k < 3; k++)
+			for (unsigned int k = 0; k < sides[i].size(); k++)
 			{
-				for (unsigned int l = 0; l < 3; l++)
+				for (unsigned int l = 0; l < sides[j].size(); l++)
 				{
 					if (sides[i][k] == sides[j][l]) continue;
 
 					Vec3 fi, fj;
-					if (GeometryAlgorithm::ComputeIntersection3Parallel(sides[i][k].a, sides[i][k].b, sides[j][l].a, sides[j][l].b, fi, fj))
+					if (GeometryAlgorithm::ComputeParallelIntersection(sides[i][k].a, sides[i][k].b, sides[j][l].a, sides[j][l].b, fi, fj, projectionMat))
 					{
-						if (outPoints.end() == std::find(outPoints.begin(), outPoints.end(), fi))
-						{
-							outPoints.push_back(fi);
-						}
+						if (!alreadyAdded(outPoints, fi)) { outPoints.push_back(fi); }
+						if (!alreadyAdded(outPoints, fj)) { outPoints.push_back(fj); }
 
-						if (outPoints.end() == std::find(outPoints.begin(), outPoints.end(), fj))
-						{
-							outPoints.push_back(fj);
-						}
+						unsigned int side = fi.z > fj.z ? i : j;
 
-						if (fi.z > fj.z)
+						for (unsigned int m = 0; m < sides[side].size(); m++)
 						{
-							for (int m = 0; m < 3; m++)
-							{
-								sides[i][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
-							}
-						}
-						else
-						{
-							for (int m = 0; m < 3; m++)
-							{
-								sides[j][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
-							}
+							if (!isContourPoint(convexHullOrigins, sides[side][m].a)) { invisPoints.push_back(sides[side][m].a); }
+							if (!isContourPoint(convexHullOrigins, sides[side][m].b)) { invisPoints.push_back(sides[side][m].b); }
+							sides[side][m] = LineSegment3(Vec3(0, 0, 0), Vec3(0, 0, 0));
 						}
 					}
 				}
@@ -358,21 +284,18 @@ void DemoProjections2()
 		}
 	}
 
-	//for (unsigned int i = 0; i < sides.size(); i++)
-	//{
-	//	std::vector<Vec3> lines;
-	//	lines.push_back(sides[i][0].a);
-	//	lines.push_back(sides[i][0].b);
-	//	lines.push_back(sides[i][1].a);
-	//	lines.push_back(sides[i][1].b);
-	//	lines.push_back(sides[i][2].a);
-	//	lines.push_back(sides[i][2].b);
-	//	lm1.push_back(new LineListMesh(lines, Vec3(0, 1, 1), 2.0f));
-	//}
+	removeInvisibleEdges(sides, invisPoints);
 
-	for (unsigned int i = 0; i < inputPolygon.size(); i++)
+	for (unsigned int i = 0; i < sides.size(); i++)
 	{
-		lm1.push_back(new LineListMesh(*inputPolygon[i], Vec3(0, 1, 1), 2.0f));
+		std::vector<Vec3> lines;
+		lines.push_back(sides[i][0].a);
+		lines.push_back(sides[i][0].b);
+		lines.push_back(sides[i][1].a);
+		lines.push_back(sides[i][1].b);
+		lines.push_back(sides[i][2].a);
+		lines.push_back(sides[i][2].b);
+		lm1.push_back(new LineListMesh(lines, Vec3(0, 1, 1), 2.0f));
 	}
 
 	plm = new PointListMesh(outPoints, Vec3(1, 1, 0), 5.0f);

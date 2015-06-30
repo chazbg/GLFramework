@@ -342,31 +342,30 @@ bool GeometryAlgorithm::ComputeIntersection2(const Vec2& a, const Vec2& b, const
 	return false;
 }
 
-bool GeometryAlgorithm::ComputeIntersection3Perspective(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj)
+bool GeometryAlgorithm::ComputePerspectiveIntersection(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj, const Matrix4& mat, const float projCenterZ)
 {
 	bool res = false;
+
 	Vec4 p1(a.x, a.y, a.z, 1);
 	Vec4 p2(b.x, b.y, b.z, 1);
 	Vec4 p3(c.x, c.y, c.z, 1);
 	Vec4 p4(d.x, d.y, d.z, 1);
-	Matrix4 m(Vec4(1, 0, 0, 1), Vec4(0, 1, 0, 1), Vec4(0, 0, 0, 0), Vec4(0, 0, 1, 2));
-
-	p1 = m * p1;
-	p2 = m * p2;
-	p3 = m * p3;
-	p4 = m * p4;
-
 	Vec2 intersectionPoint;
 	float t = 0;
 	float u = 0;
 	float t1 = 0;
 	float u1 = 0;
-	float h = -2;
+
+	p1 = mat * p1;
+	p2 = mat * p2;
+	p3 = mat * p3;
+	p4 = mat * p4;
+
 	if (ComputeIntersection2(Vec2(p1.x, p1.y), Vec2(p2.x, p2.y), Vec2(p3.x, p3.y), Vec2(p4.x, p4.y), intersectionPoint, t, u))
 	{
 		res = true;
-		t1 = (t * (h - a.z)) / (h - t * a.z - (1 - t) * b.z);
-		u1 = (u * (h - c.z)) / (h - u * c.z - (1 - u) * d.z);
+		t1 = (t * (projCenterZ - a.z)) / (projCenterZ - t * a.z - (1 - t) * b.z);
+		u1 = (u * (projCenterZ - c.z)) / (projCenterZ - u * c.z - (1 - u) * d.z);
 		fi = (1 - t1) * a + t1 * b;
 		fj = (1 - u1) * c + u1 * d;
 		cout << fi.toString() << fj.toString() << endl;
@@ -375,23 +374,22 @@ bool GeometryAlgorithm::ComputeIntersection3Perspective(const Vec3& a, const Vec
 	return res;
 }
 
-bool GeometryAlgorithm::ComputeIntersection3Parallel(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj)
+bool GeometryAlgorithm::ComputeParallelIntersection(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d, Vec3& fi, Vec3& fj, const Matrix4& mat)
 {
 	bool res = false;
 	Vec4 p1(a.x, a.y, a.z, 1);
 	Vec4 p2(b.x, b.y, b.z, 1);
 	Vec4 p3(c.x, c.y, c.z, 1);
 	Vec4 p4(d.x, d.y, d.z, 1);
-	Matrix4 m(Vec4(1, 0, -0.35, 1), Vec4(0, 1, -0.35, 1), Vec4(0, 0, 0, 0), Vec4(0, 0, 0, 1));
-
-	p1 = m * p1;
-	p2 = m * p2;
-	p3 = m * p3;
-	p4 = m * p4;
-
 	Vec2 intersectionPoint;
 	float t = 0;
 	float u = 0;
+
+	p1 = mat * p1;
+	p2 = mat * p2;
+	p3 = mat * p3;
+	p4 = mat * p4;
+	
 	if (ComputeIntersection2(Vec2(p1.x, p1.y), Vec2(p2.x, p2.y), Vec2(p3.x, p3.y), Vec2(p4.x, p4.y), intersectionPoint, t, u))
 	{
 		res = true;
@@ -401,11 +399,6 @@ bool GeometryAlgorithm::ComputeIntersection3Parallel(const Vec3& a, const Vec3& 
 	}
 
 	return res;
-}
-
-bool onLineSegment(const Vec2& point, const Vec2& lineEndA, const Vec2& lineEndB)
-{
-	return true;
 }
 
 //TODO: Refactor
@@ -804,4 +797,18 @@ std::vector<Vec2> GeometryAlgorithm::TestVisibility(const std::vector<Vec2>& p1,
 	}
 
 	return p1;
+}
+
+std::vector<Vec2> GeometryAlgorithm::ProjectPointList(const std::vector<Vec3>& points, const Matrix4& mat)
+{
+	std::vector<Vec2> projections;
+
+	for (unsigned int i = 0; i < points.size(); i++)
+	{
+		const Vec4 p(points[i].x, points[i].y, points[i].z, 1);
+		Vec4 res = mat * p;
+		projections.push_back(Vec2(res.x, res.y));
+	}
+
+	return projections;
 }
