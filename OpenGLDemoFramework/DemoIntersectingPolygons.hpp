@@ -9,7 +9,7 @@ static LineListMesh* p1;
 static LineListMesh* p2;
 static LineListMesh* p3;
 
-static void RenderScene()
+static void RenderDemoIntersectingPolygons()
 {
 	GLWrapper::ClearWindow();
 
@@ -43,7 +43,7 @@ void DemoIntersectingPolygons()
 
 	outputPolygon = GeometryAlgorithm::IntersectPolygons(inputPolygon1, inputPolygon2);
 
-	GLUTWrapper::InitWindow(&RenderScene);
+	GLUTWrapper::InitWindow(&RenderDemoIntersectingPolygons);
 	GLWrapper::InitRenderer();
 
 	p1 = new LineListMesh(inputPolygon1, Vec3(1, 0, 0), 4.0f);

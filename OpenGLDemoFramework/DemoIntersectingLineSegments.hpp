@@ -4,11 +4,13 @@
 #include "GLWrapper.hpp"
 #include "GeometryAlgorithm.hpp"
 #include "LineListMesh.hpp"
+#include "PointListMesh.hpp"
 #include <iostream>
 
 static LineListMesh* lines[5];
+static PointListMesh* plm;
 
-static void RenderScene()
+static void RenderDemoIntersectingLineSegments()
 {
 	GLWrapper::ClearWindow();
 
@@ -17,13 +19,15 @@ static void RenderScene()
 		lines[i]->Render();
 	}
 
+	plm->Render();
+
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
 }
 
 void DemoIntersectingLineSegments()
 {
-	GLUTWrapper::InitWindow(&RenderScene);
+	GLUTWrapper::InitWindow(&RenderDemoIntersectingLineSegments);
 	GLWrapper::InitRenderer();
 
 	std::vector<std::vector<Vec2>> lineSegments;
@@ -55,29 +59,17 @@ void DemoIntersectingLineSegments()
 
 	std::vector<Vec2> intersections = GeometryAlgorithm::SweepingLineIntersection(lineSegments);
 	
-	for (int i = 0; i < intersections.size(); i++)
+	for (unsigned int i = 0; i < intersections.size(); i++)
 	{
 		cout << "Intersection: " << intersections[i].toString() << endl;
 	}
-	/*for (int i = 0; i < 5; i++)
-	{
-		for (int j = i + 1; j < 5; j++)
-		{
-			Vec2 intersectionPoint;
-			if (GeometryAlgorithm::ComputeIntersection2(lineSegments[i][0], lineSegments[i][1], lineSegments[j][0], lineSegments[j][1], intersectionPoint))
-			{
-				cout << "[" << lineSegments[i][0].toString() << ", " << lineSegments[i][1].toString() << "], [" << lineSegments[j][0].toString() << ", " << lineSegments[j][1].toString() << "] intersect in " << intersectionPoint.toString() << endl;
-			}
-			else
-			{
-				cout << "[" << lineSegments[i][0].toString() << ", " << lineSegments[i][1].toString() << "], [" << lineSegments[j][0].toString() << ", " << lineSegments[j][1].toString() << "] don't intersect" << endl;
-			}
-		}
-	}*/
-	for (int i = 0; i < 5; i++)
+
+	for (unsigned int i = 0; i < lineSegments.size(); i++)
 	{
 		lines[i] = new LineListMesh(lineSegments[i]);
 	}
+
+	plm = new PointListMesh(intersections, Vec3(0, 1, 0));
 
 	GLUTWrapper::RenderLoop();
 }

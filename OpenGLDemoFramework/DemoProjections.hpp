@@ -13,7 +13,7 @@
 static std::vector<LineListMesh*> lm1;
 static PointListMesh* plm;
 
-static void RenderScene()
+static void RenderDemoProjections()
 {
 	GLWrapper::ClearWindow();
 
@@ -207,7 +207,7 @@ void DemoProjections()
 
 	removeInvisibleEdges(sides, invisPoints);
 
-	GLUTWrapper::InitWindow(&RenderScene);
+	GLUTWrapper::InitWindow(&RenderDemoProjections);
 	GLWrapper::InitRenderer();
 
 	for (int i = 0; i < sides.size(); i++)
@@ -249,7 +249,7 @@ void DemoProjections2()
 	std::vector<Vec3> outPoints;
 	std::vector<Vec3> invisPoints;
 
-	GLUTWrapper::InitWindow(&RenderScene);
+	GLUTWrapper::InitWindow(&RenderDemoProjections);
 	GLWrapper::InitRenderer();
 	
 	for (unsigned int i = 0; i < sides.size(); i++)

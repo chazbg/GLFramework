@@ -12,7 +12,7 @@ static LineListMesh* maxDistance;
 static std::vector<PointListMesh*> plm;
 static int time = 0;
 
-static void RenderScene()
+static void RenderDemoRotatingCalipers()
 {
 	GLWrapper::ClearWindow();
 
@@ -21,8 +21,6 @@ static void RenderScene()
 
 	plm[((int)(time * 0.01)) % plm.size()]->Render();
 	time++;
-	
-
 
 	GLUTWrapper::UpdateFrame();
 	GLUTWrapper::RequestNewFrame();
@@ -41,7 +39,7 @@ void DemoRotatingCalipers()
 
 	antipodPoints = GeometryAlgorithm::RotatingCalipers(inputPolygon);
 
-	GLUTWrapper::InitWindow(&RenderScene);
+	GLUTWrapper::InitWindow(&RenderDemoRotatingCalipers);
 	GLWrapper::InitRenderer();
 
 	llm = new LineListMesh(inputPolygon, Vec3(1, 1, 1), 4.0f);
