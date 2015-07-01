@@ -19,18 +19,12 @@
     <Filter Include="Header Files\Engine">
       <UniqueIdentifier>{7ace5328-3289-4f80-a471-cc17b2e905c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Tests">
-      <UniqueIdentifier>{d1399962-f5c7-4958-b1d7-9dc9a0d68f4b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Demos">
       <UniqueIdentifier>{e8574c73-2bbb-4369-a5ba-85bdf333428b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GLUTWrapper.cpp">
@@ -54,21 +48,6 @@
     <ClCompile Include="Rectangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlaneGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlaneMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Plane.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="GeometryAlgorithm.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -83,9 +62,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bar.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -101,44 +77,17 @@
     <ClInclude Include="Vector.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="TestVector.hpp">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
     <ClInclude Include="Line.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="TestLine.hpp">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="Plane.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="TestPlane.hpp">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
     <ClInclude Include="Rectangle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextureGenerator.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Triangle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlaneGenerator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlaneMesh.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GeometryAlgorithm.hpp">
       <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="TestGeometryAlgorithm.hpp">
-      <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="PointListMesh.hpp">
       <Filter>Header Files</Filter>

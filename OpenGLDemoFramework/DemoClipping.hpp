@@ -3,7 +3,6 @@
 #include "GLUTWrapper.hpp"
 #include "GLWrapper.hpp"
 #include "GeometryAlgorithm.hpp"
-#include "TestGeometryAlgorithm.hpp"
 #include "LineListMesh.hpp"
 
 namespace CLPDemo
