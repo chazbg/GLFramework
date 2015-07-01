@@ -6,9 +6,12 @@
 #include "TestGeometryAlgorithm.hpp"
 #include "LineListMesh.hpp"
 
-static LineListMesh* plm1;
-static LineListMesh* plm2;
-static LineListMesh* plm3;
+namespace CLPDemo
+{
+
+LineListMesh* plm1;
+LineListMesh* plm2;
+LineListMesh* plm3;
 
 static void RenderDemoClipping()
 {
@@ -55,4 +58,6 @@ void DemoClipping()
 	plm3 = new LineListMesh(clippingPolygon, Vec3(1, 0, 0), 1.0f);
 
 	GLUTWrapper::RenderLoop();
+}
+
 }

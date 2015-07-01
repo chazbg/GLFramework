@@ -5,11 +5,14 @@
 #include "GeometryAlgorithm.hpp"
 #include "LineListMesh.hpp"
 
-static LineListMesh* p1;
-static LineListMesh* p2;
-static LineListMesh* p3;
+namespace PIDemo
+{
 
-static void RenderDemoIntersectingPolygons()
+LineListMesh* p1;
+LineListMesh* p2;
+LineListMesh* p3;
+
+void RenderDemoIntersectingPolygons()
 {
 	GLWrapper::ClearWindow();
 
@@ -51,4 +54,6 @@ void DemoIntersectingPolygons()
 	p3 = new LineListMesh(outputPolygon, Vec3(0, 1, 1), 4.0f);
 	
 	GLUTWrapper::RenderLoop();
+}
+
 }

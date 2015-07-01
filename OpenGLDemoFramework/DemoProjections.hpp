@@ -10,10 +10,13 @@
 #include "Matrix.hpp"
 #include <iostream>
 
-static std::vector<LineListMesh*> lm1;
-static PointListMesh* plm;
+namespace PRJDemo
+{
 
-static void RenderDemoProjections()
+std::vector<LineListMesh*> lm1;
+PointListMesh* plm;
+
+void RenderDemoProjections()
 {
 	GLWrapper::ClearWindow();
 
@@ -28,7 +31,7 @@ static void RenderDemoProjections()
 	GLUTWrapper::RequestNewFrame();
 }
 
-static std::vector<std::vector<LineSegment3>> initCubeSides(const std::vector<Vec3>& p)
+std::vector<std::vector<LineSegment3>> initCubeSides(const std::vector<Vec3>& p)
 {
 	std::vector<std::vector<LineSegment3>> sides;
 	for (unsigned int i = 0; i < 6; i++)
@@ -69,7 +72,7 @@ static std::vector<std::vector<LineSegment3>> initCubeSides(const std::vector<Ve
 	return sides;
 }
 
-static std::vector<std::vector<LineSegment3>> initOctaederSides(const std::vector<Vec3>& p)
+std::vector<std::vector<LineSegment3>> initOctaederSides(const std::vector<Vec3>& p)
 {
 	std::vector<std::vector<LineSegment3>> sides;
 	for (unsigned int i = 0; i < 8; i++)
@@ -112,7 +115,7 @@ static std::vector<std::vector<LineSegment3>> initOctaederSides(const std::vecto
 	return sides;
 }
 
-static std::vector<Vec3> getConvexHullOrigins(const std::vector<Vec3>& points, const std::vector<Vec2>& projections, const std::vector<Vec2>& convexHull)
+std::vector<Vec3> getConvexHullOrigins(const std::vector<Vec3>& points, const std::vector<Vec2>& projections, const std::vector<Vec2>& convexHull)
 {
 	std::vector<Vec3> origins;
 
@@ -127,7 +130,7 @@ static std::vector<Vec3> getConvexHullOrigins(const std::vector<Vec3>& points, c
 	return origins;
 }
 
-static void removeInvisibleEdges(std::vector<std::vector<LineSegment3>>& sides, std::vector<Vec3> invisPoints)
+void removeInvisibleEdges(std::vector<std::vector<LineSegment3>>& sides, std::vector<Vec3> invisPoints)
 {
 	for (unsigned int i = 0; i < sides.size(); i++)
 	{
@@ -142,12 +145,12 @@ static void removeInvisibleEdges(std::vector<std::vector<LineSegment3>>& sides, 
 	}
 }
 
-static bool isContourPoint(const std::vector<Vec3>& contour, const Vec3& point)
+bool isContourPoint(const std::vector<Vec3>& contour, const Vec3& point)
 {
 	return std::find(contour.begin(), contour.end(), point) != contour.end();
 }
 
-static bool alreadyAdded(const std::vector<Vec3>& points, const Vec3& point)
+bool alreadyAdded(const std::vector<Vec3>& points, const Vec3& point)
 {
 	return std::find(points.begin(), points.end(), point) != points.end();
 }
@@ -210,7 +213,7 @@ void DemoProjections()
 	GLUTWrapper::InitWindow(&RenderDemoProjections);
 	GLWrapper::InitRenderer();
 
-	for (int i = 0; i < sides.size(); i++)
+	for (unsigned int i = 0; i < sides.size(); i++)
 	{
 		std::vector<Vec3> lines;
 		lines.push_back(sides[i][0].a);
@@ -224,7 +227,7 @@ void DemoProjections()
 		lm1.push_back(new LineListMesh(lines, Vec3(0, 1, 1), 2.0f));
 	}
 
-	plm = new PointListMesh(outPoints, Vec3(1, 1, 0), 5.0f);
+	plm = new PointListMesh(outPoints, Vec3(1, 1, 0));
 	GLUTWrapper::RenderLoop();
 }
 
@@ -232,14 +235,14 @@ void DemoProjections2()
 {
 	std::vector<std::vector<Vec3>*> inputPolygon;
 	std::vector<Vec3> points;
-	Matrix4 projectionMat(Vec4(1, 0, -0.35, 1), Vec4(0, 1, -0.35, 1), Vec4(0, 0, 0, 0), Vec4(0, 0, 0, 1));
+	Matrix4 projectionMat(Vec4(1, 0, -0.35f, 1), Vec4(0, 1, -0.35f, 1), Vec4(0, 0, 0, 0), Vec4(0, 0, 0, 1));
 
 	points.push_back(Vec3(0, 0, 0));
 	points.push_back(Vec3(2, 0, 0));
 	points.push_back(Vec3(2, 0, 2));
 	points.push_back(Vec3(0, 0, 2));
-	points.push_back(Vec3(1, 2.4, 1));
-	points.push_back(Vec3(1, -2.4, 1));
+	points.push_back(Vec3(1, 2.4f, 1));
+	points.push_back(Vec3(1, -2.4f, 1));
 
 	std::vector<Vec2> projections = GeometryAlgorithm::ProjectPointList(points, projectionMat);
 	std::vector<Vec2> convexHull = GeometryAlgorithm::ConvexHullGraham(projections);
@@ -301,4 +304,6 @@ void DemoProjections2()
 	plm = new PointListMesh(outPoints, Vec3(1, 1, 0), 5.0f);
 
 	GLUTWrapper::RenderLoop();
+}
+
 }

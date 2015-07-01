@@ -7,10 +7,13 @@
 #include "PointListMesh.hpp"
 #include <iostream>
 
-static LineListMesh* lines[5];
-static PointListMesh* plm;
+namespace LIDemo
+{
 
-static void RenderDemoIntersectingLineSegments()
+LineListMesh* lines[5];
+PointListMesh* plm;
+
+void RenderDemoIntersectingLineSegments()
 {
 	GLWrapper::ClearWindow();
 
@@ -72,4 +75,6 @@ void DemoIntersectingLineSegments()
 	plm = new PointListMesh(intersections, Vec3(0, 1, 0));
 
 	GLUTWrapper::RenderLoop();
+}
+
 }

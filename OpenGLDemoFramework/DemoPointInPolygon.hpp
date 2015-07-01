@@ -5,12 +5,16 @@
 #include "GeometryAlgorithm.hpp"
 #include "TestGeometryAlgorithm.hpp"
 #include "LineListMesh.hpp"
+#include "PointListMesh.hpp"
 
-static LineListMesh* plm1;
-static PointListMesh* plm2;
-static PointListMesh* plm3;
+namespace PIPDemo
+{
 
-static void RenderDemoPointInPolygon()
+LineListMesh* plm1;
+PointListMesh* plm2;
+PointListMesh* plm3;
+
+void RenderDemoPointInPolygon()
 {
 	GLWrapper::ClearWindow();
 
@@ -65,4 +69,6 @@ void DemoPointInPolygon()
 	plm3 = new PointListMesh(pointsOutside, Vec3(1, 0, 0), 1.0f);
 
 	GLUTWrapper::RenderLoop();
+}
+
 }

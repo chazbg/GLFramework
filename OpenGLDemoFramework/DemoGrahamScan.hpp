@@ -7,10 +7,13 @@
 #include "LineListMesh.hpp"
 #include "PointListMesh.hpp"
 
-static PointListMesh* plm1;
-static LineListMesh* plm2;
+namespace GHSCDemo
+{
 
-static void RenderDemoGrahamScan()
+PointListMesh* plm1;
+LineListMesh* plm2;
+
+void RenderDemoGrahamScan()
 {
 	GLWrapper::ClearWindow();
 
@@ -81,4 +84,6 @@ void DemoGrahamScan2()
 	plm2 = new LineListMesh(convexHull, Vec3(1, 1, 0), 3.0f);
 
 	GLUTWrapper::RenderLoop();
+}
+
 }

@@ -7,12 +7,15 @@
 #include "PointListMesh.hpp"
 #include <iostream>
 
-static LineListMesh* llm;
-static LineListMesh* maxDistance;
-static std::vector<PointListMesh*> plm;
-static int time = 0;
+namespace RCDemo
+{
 
-static void RenderDemoRotatingCalipers()
+LineListMesh* llm;
+LineListMesh* maxDistance;
+std::vector<PointListMesh*> plm;
+int time = 0;
+
+void RenderDemoRotatingCalipers()
 {
 	GLWrapper::ClearWindow();
 
@@ -58,9 +61,11 @@ void DemoRotatingCalipers()
 	maxDistance = new LineListMesh(maxDist, Vec3(1, 1, 0), 2.0f);
 	for (unsigned int i = 0; i < antipodPoints.size(); i++)
 	{
-		plm.push_back(new PointListMesh(antipodPoints[i], Vec3(0.7, 0, 0), 10.0f));
+		plm.push_back(new PointListMesh(antipodPoints[i], Vec3(0.7f, 0, 0), 10.0f));
 	}
 	
 
 	GLUTWrapper::RenderLoop();
+}
+
 }
