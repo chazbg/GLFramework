@@ -648,8 +648,8 @@ std::vector<std::vector<Vec2>> GeometryAlgorithm::RotatingCalipers(const std::ve
 		}
 
 		f.push_back(s[0] + 3.14f);
-		int j = 0;
-		int l = k;
+		unsigned int j = 0;
+		unsigned int l = k;
 		while (j < k && l < p.size())
 		{
 			if (f[j] < s[l - k])
@@ -742,7 +742,7 @@ bool nextIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>&
 {
 	bool found = false;
 
-	while (!found && state.current1Index  - 1 < p1.size() && state.current2Index - 1 < p2.size())
+	while (!found && state.current1Index  - 1 < (int) p1.size() && state.current2Index - 1 < (int) p2.size())
 	{
 		if (!GeometryAlgorithm::LineIntersection(state.current[!state.outer].a, state.current[!state.outer].b, state.current[state.outer].a, state.current[state.outer].b, state.intersectionPoint))
 		{

@@ -56,6 +56,7 @@ void DemoRotatingCalipers()
 		}
 	}
 
+	std::cout << "Pairs: " << antipodPoints.size() << std::endl;
 	std::cout << "Max Distance points: " << maxDist[0].toString() << ", " << maxDist[1].toString() << std::endl;
 	std::cout << "Max Distance: " << maxDist[0].distanceTo(maxDist[1]) << std::endl;
 	maxDistance = new LineListMesh(maxDist, Vec3(1, 1, 0), 2.0f);

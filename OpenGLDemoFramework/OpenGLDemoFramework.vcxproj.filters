@@ -173,5 +173,8 @@
     <ClInclude Include="Matrix.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="TestMatrix.hpp">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

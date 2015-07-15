@@ -249,6 +249,11 @@ float* Vec3::raw()
 	return v;
 }
 
+float Vec3::dot(const Vec3& rhs) const
+{
+	return x * rhs.x + y * rhs.y + z * rhs.z;
+}
+
 float Vec3::length() const
 {
 	return sqrt(x*x + y*y + z*z);
@@ -385,6 +390,11 @@ float* Vec4::raw()
 	v[3] = w;
 
 	return v;
+}
+
+float Vec4::dot(const Vec4& rhs) const
+{
+	return x * rhs.x + y * rhs.y + z * rhs.z + w * rhs.w;
 }
 
 float Vec4::length() const

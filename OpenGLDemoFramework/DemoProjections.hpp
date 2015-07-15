@@ -207,7 +207,7 @@ void DemoProjections()
 		}
 	}
 
-	removeInvisibleEdges(sides, invisPoints);
+	//removeInvisibleEdges(sides, invisPoints);
 
 	GLUTWrapper::InitWindow(&RenderDemoProjections);
 	GLWrapper::InitRenderer();

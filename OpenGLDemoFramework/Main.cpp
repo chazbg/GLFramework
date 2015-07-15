@@ -5,10 +5,10 @@
 #include "DemoIntersectingLineSegments.hpp"
 #include "DemoIntersectingPolygons.hpp"
 #include "DemoRotatingCalipers.hpp"
-
+#include "TestMatrix.hpp"
 int main(int argc, char* argv[])
 {
-	PIPDemo::DemoPointInPolygon();
+	//PIPDemo::DemoPointInPolygon();
 	//PRJDemo::DemoProjections();
 	//PRJDemo::DemoProjections2();
 	//GHSCDemo::DemoGrahamScan();
@@ -16,7 +16,8 @@ int main(int argc, char* argv[])
 	//CLPDemo::DemoClipping();
 	//LIDemo::DemoIntersectingLineSegments();
 	//PIDemo::DemoIntersectingPolygons();
+	
 	//RCDemo::DemoRotatingCalipers();
-
+	TestMat4();
 	return 0;
 }

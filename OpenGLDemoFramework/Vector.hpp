@@ -60,6 +60,7 @@ public:
  	operator string() const;
 	string toString() const;
 	float* raw();
+	float dot(const Vec3& rhs) const;
 	float length() const;
 	Vec3 normalize() const;
 	//TODO: Add operations
@@ -91,6 +92,7 @@ public:
 	operator string() const;
 	string toString() const;
 	float* raw();
+	float dot(const Vec4& rhs) const;
 	float length() const;
 	Vec4 normalize() const;
 	//TODO: Add operations

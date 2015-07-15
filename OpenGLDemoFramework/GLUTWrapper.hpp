@@ -8,6 +8,8 @@ public:
 	static void UpdateFrame();
 	static void RequestNewFrame();
 	static void RenderLoop();
+	static void SetKeyboardCallback();
+	static void SetMouseCallback();
 private:
 };
 

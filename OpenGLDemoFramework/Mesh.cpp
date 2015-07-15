@@ -27,6 +27,11 @@ Mesh::~Mesh()
 	}
 }
 
+void Mesh::SetViewMatrix(const Matrix4& view)
+{
+	this->view = view;
+}
+
 void Mesh::generateNormals()
 {
 	normalsBuffer = new float[vertexCount * 3];

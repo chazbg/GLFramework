@@ -21,6 +21,8 @@ void GLUTWrapper::InitWindow(void (*renderScene)())
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("Bar");
 	glutDisplayFunc(renderScene);
+	SetKeyboardCallback();
+	SetMouseCallback();
 }
 
 void GLUTWrapper::UpdateFrame()
@@ -35,4 +37,27 @@ void GLUTWrapper::RequestNewFrame()
 void GLUTWrapper::RenderLoop()
 {
 	glutMainLoop();
+}
+
+#include <iostream>
+using namespace std;
+
+void kbcb(unsigned char c, int x, int y)
+{
+	cout << c << " " << x << " " << y << endl;
+}
+
+void mscb(int button, int state, int x, int y)
+{
+	cout << button << " " << state << " " << x << " " << y << endl;
+}
+
+void GLUTWrapper::SetKeyboardCallback()
+{
+	glutKeyboardFunc(kbcb);
+}
+
+void GLUTWrapper::SetMouseCallback()
+{
+	glutMouseFunc(mscb);
 }

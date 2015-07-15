@@ -119,6 +119,7 @@
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="TestGeometryAlgorithm.hpp" />
     <ClInclude Include="TestLine.hpp" />
+    <ClInclude Include="TestMatrix.hpp" />
     <ClInclude Include="TestPlane.hpp" />
     <ClInclude Include="TestVector.hpp" />
     <ClInclude Include="TextureGenerator.hpp" />
