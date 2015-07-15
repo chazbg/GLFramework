@@ -43,51 +43,51 @@ Mesh(),
 width(_width), 
 height(_height)
 {
-	vertexCount = width * height * 6;
-	vertexBuffer = generatePlaneVertices(width, height);
-	generateNormals();
-	wireframeVertexBuffer = generateWireframe(vertexBuffer, width * height * 18);
+	//vertexCount = width * height * 6;
+	//vertexBuffer = generatePlaneVertices(width, height);
+	//generateNormals();
+	//wireframeVertexBuffer = generateWireframe(vertexBuffer, width * height * 18);
 
-	programID = LoadShaders("Shaders/plane.vs", "Shaders/plane.fs");
-	timeID = glGetUniformLocation(programID, "time");
+	//programID = LoadShaders("Shaders/plane.vs", "Shaders/plane.fs");
+	//timeID = glGetUniformLocation(programID, "time");
 
-	time = 0;
+	//time = 0;
 
-	glUniform1ui(timeID, time);
+	//glUniform1ui(timeID, time);
 
-	glGenBuffers(1, &vertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	//glGenBuffers(1, &vertexBufferID);
+	//glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 
-	//glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4 * 2, wireframeVertexBuffer, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
+	////glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4 * 2, wireframeVertexBuffer, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(
-		0,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(
+	//	0,
+	//	3,
+	//	GL_FLOAT,
+	//	GL_FALSE,
+	//	0,
+	//	BUFFER_OFFSET(0)
+	//	);
 
-	glGenBuffers(1, &normalsBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+	//glGenBuffers(1, &normalsBufferID);
+	//glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
 
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(
-		1,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
+	//glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(
+	//	1,
+	//	3,
+	//	GL_FLOAT,
+	//	GL_FALSE,
+	//	0,
+	//	BUFFER_OFFSET(0)
+	//	);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	//glDisableVertexAttribArray(0);
+	//glDisableVertexAttribArray(1);
 }
 
 PlaneMesh::~PlaneMesh()

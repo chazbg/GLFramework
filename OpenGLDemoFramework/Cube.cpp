@@ -3,51 +3,15 @@
 #include <cmath>
 #include "Vector.hpp"
 
-#define BUFFER_OFFSET(i) ((void*)(i))
-
 Cube::Cube() :
 Mesh()
 {
-	vertexCount = 36; //6 sides * 2 triangles * 3 vertices
-	vertexBuffer = genVerts();
-	generateNormals();
-
-	programID = LoadShaders("Shaders/cube.vs", "Shaders/cube.fs");
-	timeID = glGetUniformLocation(programID, "time");
-
-	time = 0;
-
-	glUniform1ui(timeID, time);
-
-	glGenBuffers(1, &vertexBufferID);
-	glGenBuffers(1, &normalsBufferID);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(
-		0,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
-
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(
-		1,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	unsigned int vertexCount = 36; //6 sides * 2 triangles * 3 vertices
+	float* vertexBuffer = genVerts();
+	SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
+	BindUniform("time");
+	SetUniformValue("time", 0);
+	SetVertexBuffer(vertexBuffer, vertexCount);
 }
 
 Cube::~Cube()
@@ -57,7 +21,7 @@ Cube::~Cube()
 void Cube::SetTime(GLuint time)
 {
 	this->time = time;
-	glUniform1ui(timeID, time);
+	SetUniformValue("time", time);
 }
 
 GLuint Cube::GetTime()
@@ -65,43 +29,11 @@ GLuint Cube::GetTime()
 	return time;
 }
 
-void Cube::UseProgram()
-{
-	glUseProgram(programID);
-}
-
 void Cube::Render()
 {
-	UseProgram();
 	SetTime(time + 1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(
-		0,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
-
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(
-		1,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
-
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	Mesh::Render();
 }
 
 float* Cube::genVerts()

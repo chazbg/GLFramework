@@ -11,7 +11,6 @@ public:
 	void SetTime(GLuint time);
 	GLuint GetTime();
 
-	void UseProgram();
 	void Render();
 private:
 	float* genVerts();
