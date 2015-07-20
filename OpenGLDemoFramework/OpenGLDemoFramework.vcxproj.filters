@@ -81,6 +81,9 @@
     <ClCompile Include="LineSegment.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.hpp">
@@ -177,6 +180,12 @@
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="DemoCube.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoTexture.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
   </ItemGroup>

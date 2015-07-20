@@ -14,3 +14,23 @@ Texture::~Texture()
 {
 	delete[] data;
 }
+
+unsigned int Texture::getWidth() const
+{
+	return width;
+}
+
+unsigned int Texture::getHeight() const
+{
+	return height;
+}
+
+unsigned int Texture::getBpp() const
+{
+	return bpp;
+}
+
+unsigned char* Texture::getData() const
+{
+	return data;
+}

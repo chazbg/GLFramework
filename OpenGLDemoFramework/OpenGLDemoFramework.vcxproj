@@ -90,6 +90,7 @@
     <ClCompile Include="PointListMesh.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
@@ -104,6 +105,7 @@
     <ClInclude Include="DemoPointInPolygon.hpp" />
     <ClInclude Include="DemoProjections.hpp" />
     <ClInclude Include="DemoRotatingCalipers.hpp" />
+    <ClInclude Include="DemoTexture.hpp" />
     <ClInclude Include="GeometryAlgorithm.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />
     <ClInclude Include="GLWrapper.hpp" />
@@ -123,6 +125,7 @@
     <ClInclude Include="TestMatrix.hpp" />
     <ClInclude Include="TestPlane.hpp" />
     <ClInclude Include="TestVector.hpp" />
+    <ClInclude Include="Texture.hpp" />
     <ClInclude Include="TextureGenerator.hpp" />
     <ClInclude Include="Triangle.hpp" />
     <ClInclude Include="Vector.hpp" />

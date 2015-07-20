@@ -1,7 +1,7 @@
-#include "DemoCube.hpp"
+#include "DemoTexture.hpp"
 
 int main(int argc, char* argv[])
 {
-	CubeDemo::DemoCube();
+	TexDemo::DemoTex();
 	return 0;
 }

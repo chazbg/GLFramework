@@ -9,7 +9,9 @@ vertexCount(0),
 vertexBuffer(0),
 normalsBuffer(0),
 wireframeVertexBuffer(0),
-showWireframe(false)
+showWireframe(false),
+castsShadow(false),
+receivesShadow(false)
 {
 
 }
@@ -24,6 +26,11 @@ Mesh::~Mesh()
 	if (0 != normalsBuffer)
 	{
 		delete[] normalsBuffer;
+	}
+
+	if (0 != texCoordsBuffer)
+	{
+		delete[] texCoordsBuffer;
 	}
 
 	if (0 != wireframeVertexBuffer)
@@ -48,23 +55,15 @@ void Mesh::Render()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0,
-		3,
+		vertexSize,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
 		BUFFER_OFFSET(0)
 		);
 
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(
-		1,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
+	activateNormalsBuffer();
+	activateTexCoordsBuffer();
 
 	if (showWireframe)
 	{
@@ -76,7 +75,9 @@ void Mesh::Render()
 	}
 	
 	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+
+	deactivateNormalsBuffer();
+	deactivateTexCoordsBuffer();
 }
 
 void Mesh::SetProjectionMatrix(const Matrix4& projection)
@@ -109,51 +110,80 @@ void Mesh::SetWireframeMode(const bool showWireframe)
 	this->showWireframe = showWireframe;
 }
 
-void Mesh::SetVertexBuffer(const float* vertexBuffer, const unsigned int length)
+void Mesh::SetVertexBuffer(const float* vertexBuffer, const unsigned int length, const unsigned char vertexSize)
 {
 	if (this->vertexBuffer)
 	{
 		delete[] this->vertexBuffer;
 	}
 
-	this->vertexBuffer = new float[length * 3];
-	memcpy(this->vertexBuffer, vertexBuffer, length * 3 * sizeof(float));
+	this->vertexBuffer = new float[length * vertexSize];
+	memcpy(this->vertexBuffer, vertexBuffer, length * vertexSize * sizeof(float));
 	vertexCount = length;
+	this->vertexSize = vertexSize;
 
-	generateNormals();
-	generateWireframe();
-
+	if (vertexSize == 3)
+	{
+		generateNormals();
+		generateWireframe();
+	}
+	
+	
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize * sizeof(float), vertexBuffer, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &wireframeVertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, wireframeVertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4 * 2, wireframeVertexBuffer, GL_STATIC_DRAW);
+	if (vertexSize == 3)
+	{
+		glGenBuffers(1, &normalsBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+		glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &normalsBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
+		glGenBuffers(1, &wireframeVertexBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, wireframeVertexBufferID);
+		glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize * sizeof(float)* 2, wireframeVertexBuffer, GL_STATIC_DRAW);
+	}
 }
 
-void Mesh::SetNormalsBuffer(const float* normalsBuffer, const unsigned int length)
+void Mesh::SetNormalsBuffer(const float* normalsBuffer)
 {
 	if (!this->normalsBuffer)
 	{
 		delete[] this->normalsBuffer;
 	}
 
-	this->normalsBuffer = new float[length];
-	memcpy(this->normalsBuffer, normalsBuffer, length * sizeof(float));
+	this->normalsBuffer = new float[vertexCount];
+	memcpy(this->normalsBuffer, normalsBuffer, vertexCount * sizeof(float));
 
 	glGenBuffers(1, &normalsBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
 	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
 }
 
+void Mesh::SetTexCoordsBuffer(const float* texCoordsBuffer)
+{
+	if (this->texCoordsBuffer)
+	{
+		delete[] this->texCoordsBuffer;
+	}
+
+	this->texCoordsBuffer = new float[vertexCount * 2];
+	memcpy(this->texCoordsBuffer, texCoordsBuffer, vertexCount * 2 * sizeof(float));
+
+	glGenBuffers(1, &texCoordsBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, texCoordsBufferID);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * 2 * 4, texCoordsBuffer, GL_STATIC_DRAW);
+}
+
 void Mesh::BindUniform(string uniform)
 {
 	uniforms[uniform] = glGetUniformLocation(programID, uniform.c_str());
+}
+
+void Mesh::SetUniformValue(string uniform, const int v)
+{
+	glUseProgram(programID);
+	glUniform1i(uniforms[uniform], v);
 }
 
 void Mesh::SetUniformValue(string uniform, const unsigned int v)
@@ -176,6 +206,21 @@ void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 {
 	glUseProgram(programID);
 	glUniformMatrix4fv(uniforms[uniform], 1, false, v.raw());
+}
+
+void Mesh::SetCastsShadow(const bool castsShadow)
+{
+	this->castsShadow = castsShadow;
+}
+
+void Mesh::SetReceivesShadow(const bool receivesShadow)
+{
+	this->receivesShadow = receivesShadow;
+}
+
+void SetTexture(const Texture& tex)
+{
+	//TODO
 }
 
 void Mesh::generateNormals()
@@ -235,5 +280,56 @@ void Mesh::generateWireframe()
 		wireframeVertexBuffer[j + 16] = vertexBuffer[i + 1];
 		wireframeVertexBuffer[j + 17] = vertexBuffer[i + 2];
 		j += 18;
+	}
+}
+
+void Mesh::activateNormalsBuffer()
+{
+	if (normalsBuffer)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(
+			1,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			BUFFER_OFFSET(0)
+			);
+	}
+}
+
+void Mesh::activateTexCoordsBuffer()
+{
+
+	if (texCoordsBuffer)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, texCoordsBufferID);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(
+			2,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			BUFFER_OFFSET(0)
+			);
+	}
+}
+
+void Mesh::deactivateNormalsBuffer()
+{
+	if (normalsBuffer)
+	{
+		glDisableVertexAttribArray(1);
+	}
+}
+
+void Mesh::deactivateTexCoordsBuffer()
+{
+	if (texCoordsBuffer)
+	{
+		glDisableVertexAttribArray(2);
 	}
 }
