@@ -4,15 +4,22 @@
 Texture::Texture(const unsigned int width, const unsigned int height, const unsigned int bpp, const unsigned char* data) :
 width(width),
 height(height),
-bpp(bpp)
+bpp(bpp),
+data(0)
 {
-	this->data = new unsigned char[width * height * bpp];
-	memcpy(this->data, data, width * height * bpp);
+	if (0 != data)
+	{
+		this->data = new unsigned char[width * height * bpp];
+		memcpy(this->data, data, width * height * bpp);
+	}
 }
 
 Texture::~Texture()
 {
-	delete[] data;
+	if (0 != data)
+	{
+		delete[] data;
+	}
 }
 
 unsigned int Texture::getWidth() const

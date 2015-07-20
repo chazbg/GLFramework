@@ -39,6 +39,13 @@ void Cube::Render()
 	Mesh::Render();
 }
 
+void Cube::RenderToTexture(const unsigned int texId)
+{
+	SetTime(time + 1);
+
+	Mesh::RenderToTexture(texId);
+}
+
 float* Cube::genVerts()
 {
 	float* verts = new float[6 * 6 * 3];

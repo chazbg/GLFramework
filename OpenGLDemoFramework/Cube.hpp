@@ -12,6 +12,7 @@ public:
 	GLuint GetTime();
 
 	void Render();
+	void RenderToTexture(const unsigned int texId);
 private:
 	float* genVerts();
 	GLuint vertexBufferID;

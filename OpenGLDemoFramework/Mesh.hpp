@@ -11,6 +11,7 @@ class Mesh
 public:
 	Mesh();
 	virtual void Render();
+	virtual void RenderToTexture(const unsigned int texId);
 	~Mesh();
 	void SetProjectionMatrix(const Matrix4& projection);
 	void SetViewMatrix(const Matrix4& view);
@@ -54,5 +55,6 @@ protected:
 	map<string, GLuint> uniforms;
 	bool castsShadow;
 	bool receivesShadow;
+	GLuint fbo;
 };
 
