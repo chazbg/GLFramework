@@ -8,7 +8,7 @@ uniform mat4 mvp;
 smooth out vec3 inColor;
 
 void main(){
-    vec3 light = vec3(-1,-1,-1);
+    vec3 light = vec3(0, 1, 1);
     float step = 0.01;
     float thetaRot = time * step;
     mat4 rotation;
@@ -48,7 +48,7 @@ void main(){
     rotation[2] = vec4(-sin(thetaRot), 0, cos(thetaRot), 0);
     rotation[3] = vec4(0, 0, 0, 1);
 
-    vec4 n = rotation * vec4(normal,1);
+    vec4 n = normalize(transpose(rotY) * vec4(normal,1));
     gl_Position = mvp * (transl + transpose(rotY) * vec4(vertexPosition_modelspace,1.0));
     inColor = vec3(dot(n.xyz, light)*0.5,0,0);
 }
