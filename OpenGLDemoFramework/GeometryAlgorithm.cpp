@@ -613,7 +613,7 @@ std::vector<std::vector<Vec2>> GeometryAlgorithm::RotatingCalipers(const std::ve
 	std::vector<std::vector<Vec2>> antipodPoints;
 
 	Vec2 v = p[1] - p[0];
-	int k = 2;
+	unsigned int k = 2;
 	if (p.size() >= 4)
 	{
 		while (area(p[0], p[1], p[k + 1]) > area(p[0], p[1], p[k]))
@@ -625,7 +625,7 @@ std::vector<std::vector<Vec2>> GeometryAlgorithm::RotatingCalipers(const std::ve
 
 		std::vector<float> f;
 		std::vector<float> s;
-		for (int j = 0; j < k; j++)
+		for (unsigned int j = 0; j < k; j++)
 		{
 			Vec2 v2 = p[j + 1] - p[j];
 			float angle = atan2(v2.y, v2.x) - atan2(v.y, v.x);
@@ -713,7 +713,7 @@ bool firstIntersectionPoint(const std::vector<Vec2>& p1, const std::vector<Vec2>
 	state.current[1] = LineSegment(p2[0], p2[1]);
 
 	bool empty = false;
-	for (state.current1Index = 0, state.current2Index = 0; state.current1Index < p1.size() - 1, state.current2Index < p2.size() - 1;)
+	for (state.current1Index = 0, state.current2Index = 0; state.current1Index < (int) p1.size() - 1, state.current2Index < (int)p2.size() - 1;)
 	{
 		if (GeometryAlgorithm::Determinant(state.current[!state.outer].a, state.current[state.outer].a, state.current[!state.outer].b) > 0)
 		{
@@ -811,4 +811,14 @@ std::vector<Vec2> GeometryAlgorithm::ProjectPointList(const std::vector<Vec3>& p
 	}
 
 	return projections;
+}
+
+Matrix4 GeometryAlgorithm::CreatePerspectiveMatrix(const float angleOfView, const float aspectRatio, const float zNear, const float zFar)
+{
+
+	return Matrix4(
+		Vec4(1.0f / tan(angleOfView), 0.0f, 0.0f, 0.0f),
+		Vec4(0.0f, aspectRatio / tan(angleOfView), 0.0f, 0.0f),
+		Vec4(0.0f, 0.0f, (zFar + zNear) / (zFar - zNear), 1.0f),
+		Vec4(0.0f, 0.0f, -2.0f * zFar * zNear / (zFar - zNear), 0.0f));
 }

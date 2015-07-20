@@ -11,7 +11,9 @@ public:
 	Mesh();
 	virtual void Render();
 	~Mesh();
+	void SetProjectionMatrix(const Matrix4& projection);
 	void SetViewMatrix(const Matrix4& view);
+	void SetModelMatrix(const Matrix4& model);
 	void SetShaders(const string vertexShaderPath, const string fragmentShaderPath);
 	void SetWireframeMode(const bool showWireframe);
 	void SetVertexBuffer(const float* vertexBuffer, const unsigned int length);
@@ -32,8 +34,11 @@ protected:
 	GLuint normalsBufferID;
 	GLuint wireframeVertexBufferID;
 	GLuint programID;
+	Matrix4 projection;
 	Matrix4 view;
+	Matrix4 model;
 	bool showWireframe;
 	map<string, GLuint> uniforms;
+
 };
 

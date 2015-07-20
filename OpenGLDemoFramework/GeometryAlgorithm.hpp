@@ -24,6 +24,7 @@ public:
 	static std::vector<Vec2> IntersectPolygons(const std::vector<Vec2>& inputPolygon1, const std::vector<Vec2>& inputPolygon2);
 	static std::vector<Vec2> TestVisibility(const std::vector<Vec2>& inputPolygon1, const std::vector<Vec2>& inputPolygon2);
 	static std::vector<Vec2> ProjectPointList(const std::vector<Vec3>& points, const Matrix4& mat);
+	static Matrix4 CreatePerspectiveMatrix(const float angleOfView, const float aspectRatio, const float zNear, const float zFar);
 private:
 	
 };

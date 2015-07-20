@@ -2,6 +2,8 @@
 #include "Shader.hpp"
 #include <cmath>
 #include "Vector.hpp"
+#include "Matrix.hpp"
+#include "GeometryAlgorithm.hpp"
 
 Cube::Cube() :
 Mesh()
@@ -11,6 +13,7 @@ Mesh()
 	SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
 	BindUniform("time");
 	SetUniformValue("time", 0);
+	SetProjectionMatrix(GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 0.5f, 5));
 	SetVertexBuffer(vertexBuffer, vertexCount);
 }
 

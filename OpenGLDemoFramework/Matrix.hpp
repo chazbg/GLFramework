@@ -6,8 +6,42 @@ using namespace std;
 
 class Matrix4 {
 public:
-	Matrix4() { m[0] = Vec4(0, 0, 0, 0); m[1] = Vec4(0, 0, 0, 0); m[2] = Vec4(0, 0, 0, 0); m[3] = Vec4(0, 0, 0, 0); }
-	Matrix4(Vec4 a, Vec4 b, Vec4 c, Vec4 d) { m[0] = a; m[1] = b; m[2] = c; m[3] = d; }
+	Matrix4() 
+	{
+		m[0] = Vec4(1, 0, 0, 0);
+		m[1] = Vec4(0, 1, 0, 0); 
+		m[2] = Vec4(0, 0, 1, 0); 
+		m[3] = Vec4(0, 0, 0, 1);
+
+		for (int i = 0; i < 4; i++)
+		{
+			rawData[i * 4] = m[i].x;
+			rawData[i * 4 + 1] = m[i].y;
+			rawData[i * 4 + 2] = m[i].z;
+			rawData[i * 4 + 3] = m[i].w;
+		}
+	}
+
+	Matrix4(Vec4 a, Vec4 b, Vec4 c, Vec4 d) 
+	{ 
+		m[0] = a; 
+		m[1] = b; 
+		m[2] = c; 
+		m[3] = d; 
+
+		for (int i = 0; i < 4; i++)
+		{
+			rawData[i * 4] = m[i].x;
+			rawData[i * 4 + 1] = m[i].y;
+			rawData[i * 4 + 2] = m[i].z;
+			rawData[i * 4 + 3] = m[i].w;
+		}
+	}
+
+	~Matrix4()
+	{
+	}
+
 	Vec4 operator*(const Vec4& vec) const
 	{
 		Vec4 res;
@@ -51,6 +85,12 @@ public:
 	{
 		return this->operator std::string();
 	}
+
+	const float* raw() const
+	{
+		return rawData;
+	}
 private:
 	Vec4 m[4];
+	float rawData[16];
 };

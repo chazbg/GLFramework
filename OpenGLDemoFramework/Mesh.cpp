@@ -11,6 +11,7 @@ normalsBuffer(0),
 wireframeVertexBuffer(0),
 showWireframe(false)
 {
+
 }
 
 Mesh::~Mesh()
@@ -78,14 +79,29 @@ void Mesh::Render()
 	glDisableVertexAttribArray(1);
 }
 
+void Mesh::SetProjectionMatrix(const Matrix4& projection)
+{
+	this->projection = projection;
+	SetUniformValue("mvp", projection * view * model);
+}
+
 void Mesh::SetViewMatrix(const Matrix4& view)
 {
 	this->view = view;
+	SetUniformValue("mvp", projection * view * model);
+}
+
+void Mesh::SetModelMatrix(const Matrix4& model)
+{
+	this->model = model;
+	SetUniformValue("mvp", projection * view * model);
 }
 
 void Mesh::SetShaders(const string vertexShaderPath, const string fragmentShaderPath)
 {
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
+	BindUniform("mvp");
+	SetUniformValue("mvp", projection * view * model);
 }
 
 void Mesh::SetWireframeMode(const bool showWireframe)
@@ -158,7 +174,8 @@ void Mesh::SetUniformValue(string uniform, const Vec4& v)
 
 void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 {
-	//TODO
+	glUseProgram(programID);
+	glUniformMatrix4fv(uniforms[uniform], 1, false, v.raw());
 }
 
 void Mesh::generateNormals()
