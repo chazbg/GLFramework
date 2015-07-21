@@ -16,7 +16,7 @@ public:
 	void SetProjectionMatrix(const Matrix4& projection);
 	void SetViewMatrix(const Matrix4& view);
 	void SetModelMatrix(const Matrix4& model);
-	void SetShaders(const string vertexShaderPath, const string fragmentShaderPath);
+	virtual void SetShaders(const string vertexShaderPath, const string fragmentShaderPath);
 	void SetWireframeMode(const bool showWireframe);
 	void SetVertexBuffer(const float* vertexBuffer, const unsigned int length, const unsigned char vertexSize = 3);
 	void SetNormalsBuffer(const float* normalsBuffer);

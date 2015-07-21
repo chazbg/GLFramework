@@ -822,3 +822,16 @@ Matrix4 GeometryAlgorithm::CreatePerspectiveMatrix(const float angleOfView, cons
 		Vec4(0.0f, 0.0f, (zFar + zNear) / (zFar - zNear), 1.0f),
 		Vec4(0.0f, 0.0f, -2.0f * zFar * zNear / (zFar - zNear), 0.0f));
 }
+
+Matrix4 GeometryAlgorithm::CreateLookAtMatrix(const Vec3& cameraPosition, const Vec3& cameraTarget, const Vec3& cameraUpVector)
+{
+	Vec3 zAxis = (cameraTarget - cameraPosition).normalize();
+	Vec3 xAxis = (cameraUpVector * zAxis).normalize();
+	Vec3 yAxis = (zAxis * xAxis).normalize();
+
+	return Matrix4(
+		Vec4(xAxis, -(cameraPosition.dot(xAxis))),
+		Vec4(yAxis, -(cameraPosition.dot(yAxis))),
+		Vec4(zAxis, -(cameraPosition.dot(zAxis))),
+		Vec4(0, 0, 0, 1));
+}

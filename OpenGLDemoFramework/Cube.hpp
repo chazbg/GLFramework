@@ -11,8 +11,9 @@ public:
 	void SetTime(GLuint time);
 	GLuint GetTime();
 
-	void Render();
-	void RenderToTexture(const unsigned int texId);
+	virtual void Render();
+	virtual void RenderToTexture(const unsigned int texId);
+	virtual void SetShaders(const string vertexShaderPath, const string fragmentShaderPath);
 private:
 	float* genVerts();
 	GLuint vertexBufferID;

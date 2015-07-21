@@ -54,6 +54,7 @@ public:
 	Vec3& operator/=(const float scalar);
 	Vec3 operator*(const Vec3& rhs) const;
 	friend Vec3 operator*(const float scalar, const Vec3& rhs);
+	friend Vec3 operator-(const Vec3& rhs);
 	bool operator==(const Vec3& rhs) const;
 	float distanceTo(const Vec3& point);
 	float distanceSquaredTo(const Vec3& point);
@@ -75,6 +76,7 @@ class Vec4
 public:
 	inline Vec4() {}
 	inline Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+	inline Vec4(const Vec3& v, const float w) : x(v.x), y(v.y), z(v.z), w(w) {}
 	inline ~Vec4() {}
 	Vec4(const Vec4& vec);
 	Vec4& operator=(const Vec4& vec);

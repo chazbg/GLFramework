@@ -204,6 +204,11 @@ Vec3 operator*(const float scalar, const Vec3& rhs)
 	return Vec3(scalar * rhs.x, scalar * rhs.y, scalar * rhs.z);
 }
 
+Vec3 operator-(const Vec3& rhs)
+{
+	return Vec3(-rhs.x, -rhs.y, -rhs.z);
+}
+
 bool Vec3::operator== (const Vec3& rhs) const
 {
 	return x == rhs.x && y == rhs.y && z == rhs.z;

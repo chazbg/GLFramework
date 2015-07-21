@@ -11,9 +11,6 @@ Mesh()
 	unsigned int vertexCount = 36; //6 sides * 2 triangles * 3 vertices
 	float* vertexBuffer = genVerts();
 	SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-	BindUniform("time");
-	SetUniformValue("time", 0);
-	SetProjectionMatrix(GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 0.5f, 5));
 	SetVertexBuffer(vertexBuffer, vertexCount);
 }
 
@@ -44,6 +41,15 @@ void Cube::RenderToTexture(const unsigned int texId)
 	SetTime(time + 1);
 
 	Mesh::RenderToTexture(texId);
+}
+
+void Cube::SetShaders(const string vertexShaderPath, const string fragmentShaderPath)
+{
+	Mesh::SetShaders(vertexShaderPath, fragmentShaderPath);
+	BindUniform("time");
+	SetUniformValue("time", 0);
+	//SetProjectionMatrix(GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 6.0f, 1.0f, 0.5f, 5));
+	SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 5, -5), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 }
 
 float* Cube::genVerts()

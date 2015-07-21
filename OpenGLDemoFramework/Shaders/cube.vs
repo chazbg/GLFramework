@@ -36,20 +36,21 @@ void main(){
     // proj[3] = vec4(0, 0, 0, 1);
 	
     mat4 scale;
-    scale[0] = vec4(0.2,0,0,0);
-    scale[1] = vec4(0,0.2,0,0);
-    scale[2] = vec4(0,0,0.2,0);
+    scale[0] = vec4(0.7,0,0,0);
+    scale[1] = vec4(0,0.7,0,0);
+    scale[2] = vec4(0,0,0.7,0);
     scale[3] = vec4(0,0,0,1);
     vec4 transl;
-    transl = vec4(cos(thetaRot), 0.0, 3.0+sin(thetaRot),0);
-    
+    //transl = vec4(cos(thetaRot), 0.0, 3.0+sin(thetaRot),0);
+    //transl = vec4(-0.5, -0.5, 0,0);
+    transl = vec4(0, -2, 0.5, 0);
     rotation[0] = vec4(cos(thetaRot), 0, sin(thetaRot), 0);
     rotation[1] = vec4(0, 1, 0, 0);
     rotation[2] = vec4(-sin(thetaRot), 0, cos(thetaRot), 0);
     rotation[3] = vec4(0, 0, 0, 1);
 
     vec4 n = normalize(transpose(rotY) * vec4(normal,1));
-    gl_Position = mvp * (transl + transpose(rotY) * vec4(vertexPosition_modelspace,1.0));
+    gl_Position = mvp * (transl + transpose(rotY) * scale * vec4(vertexPosition_modelspace,1.0));
     inColor = vec3(dot(n.xyz, light)*0.5,0,0);
 }
 
