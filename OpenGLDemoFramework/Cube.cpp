@@ -40,7 +40,7 @@ void Cube::RenderToTexture(const unsigned int texId)
 {
 	SetTime(time + 1);
 
-	Mesh::RenderToTexture(texId);
+	//Mesh::RenderToTexture(texId);
 }
 
 void Cube::SetShaders(const string vertexShaderPath, const string fragmentShaderPath)

@@ -26,6 +26,7 @@ public:
 	static std::vector<Vec2> ProjectPointList(const std::vector<Vec3>& points, const Matrix4& mat);
 	static Matrix4 CreatePerspectiveMatrix(const float angleOfView, const float aspectRatio, const float zNear, const float zFar);
 	static Matrix4 CreateLookAtMatrix(const Vec3& cameraPosition, const Vec3& cameraTarget, const Vec3& cameraUpVector);
+	static Matrix4 CreateSRTMatrix(const Vec3& scale, const Vec3& rotationInRadians, const Vec3& translation);
 private:
 	
 };

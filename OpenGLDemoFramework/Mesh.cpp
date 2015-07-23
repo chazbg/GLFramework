@@ -18,30 +18,16 @@ receivesShadow(false)
 
 Mesh::~Mesh()
 {
-	if (0 != vertexBuffer)
-	{
-		delete[] vertexBuffer;
-	}
-
-	if (0 != normalsBuffer)
-	{
-		delete[] normalsBuffer;
-	}
-
-	if (0 != texCoordsBuffer)
-	{
-		delete[] texCoordsBuffer;
-	}
-
-	if (0 != wireframeVertexBuffer)
-	{
-		delete[] wireframeVertexBuffer;
-	}
+	delete[] vertexBuffer;	
+	delete[] texCoordsBuffer;
+	delete[] wireframeVertexBuffer;
 }
 
 void Mesh::Render()
 {
 	glUseProgram(programID);
+
+	SetUniformValue("mvp", projection * view * model);
 
 	if (showWireframe)
 	{
@@ -80,7 +66,7 @@ void Mesh::Render()
 	deactivateTexCoordsBuffer();
 }
 
-void Mesh::RenderToTexture(const unsigned int texId)
+void Mesh::RenderToTexture(const unsigned int fbo, const unsigned int texId)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -185,13 +171,13 @@ void Mesh::SetVertexBuffer(const float* vertexBuffer, const unsigned int length,
 
 		glGenBuffers(1, &wireframeVertexBufferID);
 		glBindBuffer(GL_ARRAY_BUFFER, wireframeVertexBufferID);
-		glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize * sizeof(float)* 2, wireframeVertexBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize * sizeof(float) * 2, wireframeVertexBuffer, GL_STATIC_DRAW);
 	}
 }
 
 void Mesh::SetNormalsBuffer(const float* normalsBuffer)
 {
-	if (!this->normalsBuffer)
+	if (this->normalsBuffer)
 	{
 		delete[] this->normalsBuffer;
 	}
@@ -265,6 +251,12 @@ void Mesh::SetReceivesShadow(const bool receivesShadow)
 void Mesh::SetTexture(const Texture& tex)
 {
 	//TODO
+}
+
+void Mesh::SetPosition(const Vec3& position)
+{
+	model.setTranslation(position);
+	SetUniformValue("mvp", projection * view * model);
 }
 
 void Mesh::generateNormals()

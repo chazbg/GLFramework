@@ -1,7 +1,10 @@
 #version 330 core
 
+uniform sampler2D sampler;
+
 // Input data
 smooth in vec3 inColor;
+smooth in vec3 shadowCoord;
 
 // Ouput data
 out vec3 outColor;
@@ -28,5 +31,11 @@ void main()
         outColor = vec3(1,1,1);
     }
     
-    outColor = inColor;
+    float visibility = 1.0;
+    if (texture(sampler, shadowCoord.xy).z < shadowCoord.z)
+    {
+        visibility = 0.5;
+    }
+    
+    outColor = visibility * inColor;
 }

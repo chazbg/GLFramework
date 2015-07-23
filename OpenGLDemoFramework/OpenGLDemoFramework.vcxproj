@@ -75,7 +75,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bar.cpp" />
+    <ClCompile Include="BlockMesh.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="GeometryAlgorithm.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineListMesh.cpp" />
@@ -96,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.hpp" />
+    <ClInclude Include="BlockMesh.hpp" />
     <ClInclude Include="Cube.hpp" />
     <ClInclude Include="DemoClipping.hpp" />
     <ClInclude Include="DemoCube.hpp" />
@@ -106,6 +109,7 @@
     <ClInclude Include="DemoProjections.hpp" />
     <ClInclude Include="DemoRotatingCalipers.hpp" />
     <ClInclude Include="DemoTexture.hpp" />
+    <ClInclude Include="FrameBuffer.hpp" />
     <ClInclude Include="GeometryAlgorithm.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />
     <ClInclude Include="GLWrapper.hpp" />

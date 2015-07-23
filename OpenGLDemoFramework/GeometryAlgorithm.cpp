@@ -819,19 +819,29 @@ Matrix4 GeometryAlgorithm::CreatePerspectiveMatrix(const float angleOfView, cons
 	return Matrix4(
 		Vec4(1.0f / tan(angleOfView), 0.0f, 0.0f, 0.0f),
 		Vec4(0.0f, aspectRatio / tan(angleOfView), 0.0f, 0.0f),
-		Vec4(0.0f, 0.0f, (zFar + zNear) / (zFar - zNear), 1.0f),
-		Vec4(0.0f, 0.0f, -2.0f * zFar * zNear / (zFar - zNear), 0.0f));
+		Vec4(0.0f, 0.0f, (zFar + zNear) / (zFar - zNear), -2.0f * zFar * zNear / (zFar - zNear)),
+		Vec4(0.0f, 0.0f, 1.0f, 0.0f));
 }
 
 Matrix4 GeometryAlgorithm::CreateLookAtMatrix(const Vec3& cameraPosition, const Vec3& cameraTarget, const Vec3& cameraUpVector)
 {
 	Vec3 zAxis = (cameraTarget - cameraPosition).normalize();
-	Vec3 xAxis = (cameraUpVector * zAxis).normalize();
-	Vec3 yAxis = (zAxis * xAxis).normalize();
-
+	Vec3 xAxis = (zAxis * cameraUpVector).normalize();
+	Vec3 yAxis = (xAxis * zAxis);
+	Vec3 nPos = cameraPosition.normalize();
 	return Matrix4(
-		Vec4(xAxis, -(cameraPosition.dot(xAxis))),
-		Vec4(yAxis, -(cameraPosition.dot(yAxis))),
-		Vec4(zAxis, -(cameraPosition.dot(zAxis))),
+		Vec4(xAxis, 0),
+		Vec4(yAxis, 0),
+		Vec4(-zAxis, 0),
+		Vec4(-(xAxis.dot(nPos)), -(yAxis.dot(nPos)), (zAxis.dot(nPos)), 1));
+}
+
+Matrix4 GeometryAlgorithm::CreateSRTMatrix(const Vec3& scale, const Vec3& rotationInRadians, const Vec3& translation)
+{
+	//TODO: include rotation
+	return Matrix4(
+		Vec4(scale.x, 0, 0, translation.x),
+		Vec4(0, scale.y, 0, translation.y),
+		Vec4(0, 0, scale.z, translation.z),
 		Vec4(0, 0, 0, 1));
 }

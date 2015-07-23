@@ -15,10 +15,10 @@ public:
 
 		for (int i = 0; i < 4; i++)
 		{
-			rawData[i * 4] = m[i].x;
-			rawData[i * 4 + 1] = m[i].y;
-			rawData[i * 4 + 2] = m[i].z;
-			rawData[i * 4 + 3] = m[i].w;
+			rawData[i * 4] = m[0].raw()[i];
+			rawData[i * 4 + 1] = m[1].raw()[i];
+			rawData[i * 4 + 2] = m[2].raw()[i];
+			rawData[i * 4 + 3] = m[3].raw()[i];
 		}
 	}
 
@@ -31,10 +31,10 @@ public:
 
 		for (int i = 0; i < 4; i++)
 		{
-			rawData[i * 4] = m[i].x;
-			rawData[i * 4 + 1] = m[i].y;
-			rawData[i * 4 + 2] = m[i].z;
-			rawData[i * 4 + 3] = m[i].w;
+			rawData[i * 4] = m[0].raw()[i];
+			rawData[i * 4 + 1] = m[1].raw()[i];
+			rawData[i * 4 + 2] = m[2].raw()[i];
+			rawData[i * 4 + 3] = m[3].raw()[i];
 		}
 	}
 
@@ -89,6 +89,14 @@ public:
 	const float* raw() const
 	{
 		return rawData;
+	}
+
+	void setTranslation(const Vec3& translation)
+	{
+		m[0].w = translation.x;
+		m[1].w = translation.y;
+		m[2].w = translation.z;
+		cout << toString() << endl;
 	}
 private:
 	Vec4 m[4];

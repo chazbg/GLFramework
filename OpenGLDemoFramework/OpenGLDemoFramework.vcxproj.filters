@@ -84,6 +84,12 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="BlockMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.hpp">
@@ -187,6 +193,12 @@
     </ClInclude>
     <ClInclude Include="DemoTexture.hpp">
       <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockMesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.hpp">
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

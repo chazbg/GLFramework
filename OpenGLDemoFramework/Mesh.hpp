@@ -11,7 +11,7 @@ class Mesh
 public:
 	Mesh();
 	virtual void Render();
-	virtual void RenderToTexture(const unsigned int texId);
+	virtual void RenderToTexture(const unsigned int fbo, const unsigned int texId);
 	~Mesh();
 	void SetProjectionMatrix(const Matrix4& projection);
 	void SetViewMatrix(const Matrix4& view);
@@ -30,6 +30,7 @@ public:
 	void SetCastsShadow(const bool castsShadow);
 	void SetReceivesShadow(const bool receivesShadow);
 	void SetTexture(const Texture& tex);
+	void SetPosition(const Vec3& position);
 protected:
 	void generateNormals();
 	void generateWireframe();
