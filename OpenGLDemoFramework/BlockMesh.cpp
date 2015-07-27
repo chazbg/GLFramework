@@ -31,8 +31,8 @@ void BlockMesh::SetShaders(const string vertexShaderPath, const string fragmentS
 	BindUniform("depthMvp");
 	BindUniform("sampler");
 	SetUniformValue("sampler", 0);
-	SetUniformValue("depthMvp", GeometryAlgorithm::CreateLookAtMatrix(Vec3(1, 0, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-	//SetProjectionMatrix(GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 0.001f, 5));
+	SetUniformValue("depthMvp", GeometryAlgorithm::CreateLookAtMatrix(Vec3(-1, 1, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+	//SetProjectionMatrix(GeometryAlgorithm::CreatePer	spectiveMatrix(3.14f / 4.0f, 1.0f, 0.001f, 5));
 	//SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(1, 8, -10), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 }
 

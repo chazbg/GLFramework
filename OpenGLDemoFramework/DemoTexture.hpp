@@ -15,6 +15,7 @@ namespace TexDemo
 	BlockMesh* c1;
 	BlockMesh* c2;
 	BlockMesh* c3;
+	BlockMesh* c4;
 	Rectangle* r;
 	FrameBuffer* fb;
 
@@ -38,8 +39,11 @@ namespace TexDemo
 		//c3->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0.3, 0.3, 0.3), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 		c3->Render();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		c4->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
+		c4->Render();
 
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindTexture(GL_TEXTURE, r->GetTexId());
 		//r->Render();
 
 		c1->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
@@ -54,6 +58,9 @@ namespace TexDemo
 		//c3->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 5, -5), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 		c3->Render();
 
+		c4->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
+		//c3->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 5, -5), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+		c4->Render();
 
 		//c->Render();
 
@@ -73,11 +80,13 @@ namespace TexDemo
 		//c = new Cube();
 		//c = new BlockMesh(1, 1, 1);
 		c1 = new BlockMesh(0.2f, 0.5, 0.5);
-		c1->SetPosition(Vec3(-0.3, 0, 0));
+		c1->SetPosition(Vec3(-0.5, 0, -0.3));
 		c2 = new BlockMesh(0.2f, 0.5, 0.5);
 		c2->SetPosition(Vec3(0, 0, 0));
 		c3 = new BlockMesh(0.2f, 0.5, 0.5);
-		c3->SetPosition(Vec3(0.3, 0, -0.2));
+		c3->SetPosition(Vec3(0.5, 0, 0.3));
+		c4 = new BlockMesh(2, 0.01f, 2);
+		c4->SetPosition(Vec3(0, -0.1, 0));
 		//c->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 		r = new Rectangle();
 		//r->attachTexture(Texture(256, 1, 4, (unsigned char*) gen.generateGradient()));
