@@ -10,7 +10,7 @@ smooth out vec3 inColor;
 smooth out vec3 shadowCoord;
 
 void main(){
-    vec3 light = vec3(1, -1, 0);
+    vec3 light = vec3(0, 1, 1);
     float step = 0.01;
     float thetaRot = time * step;
     mat4 rotation;
@@ -42,13 +42,22 @@ void main(){
     shadowBias[1] = vec4(0,0.5,0,0);
     shadowBias[2] = vec4(0,0,0.5,0);
     shadowBias[3] = vec4(0.5,0.5,0.5,1);
+    
+    mat4 scale;
+    scale[0] = vec4(0.1,0,0,0);
+    scale[1] = vec4(0,0.1,0,0);
+    scale[2] = vec4(0,0,0.1,0);
+    scale[3] = vec4(0,0,0,1);
+    
     vec4 transl;
-    //transl = vec4(cos(thetaRot), 0.0, 3.0+sin(thetaRot),0);
+    transl = vec4(0, 0, sin(thetaRot),0);
     //transl = vec4(-0.5, -0.5, 0,0);
-    transl = vec4(0, 0, -0.7, 0);
+    //transl = vec4(0, 0, -10.0, 0);
 
-    vec4 n = normalize(transpose(rotY) * vec4(normal,1));
-    gl_Position = transpose(rotX) * mvp * transpose(rotY) * (vec4(vertexPosition_modelspace,1.0));
+    vec4 n = transpose(rotY) * normalize(vec4(normal,1));
+    gl_Position = mvp * transpose(rotY) * vec4(vertexPosition_modelspace,1.0);
+    gl_Position = gl_Position / gl_Position.w;
+
     inColor = vec3(dot(n.xyz, light)*0.5,0,0);
     shadowCoord = (shadowBias * depthMvp * transpose(rotY) * vec4(vertexPosition_modelspace,1.0)).xyz;
 }

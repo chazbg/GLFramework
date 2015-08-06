@@ -48,8 +48,8 @@ void Cube::SetShaders(const string vertexShaderPath, const string fragmentShader
 	Mesh::SetShaders(vertexShaderPath, fragmentShaderPath);
 	BindUniform("time");
 	SetUniformValue("time", 0);
-	//SetProjectionMatrix(GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 6.0f, 1.0f, 0.5f, 5));
-	SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 5, -5), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+	SetProjectionMatrix(GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 0.0001f, 1000));
+	//SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 5, -5), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 }
 
 float* Cube::genVerts()

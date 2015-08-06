@@ -32,10 +32,11 @@ void main()
     // }
     
     float visibility = 1.0;
-    if (texture(sampler, shadowCoord.xy).z < shadowCoord.z)
-    {
-        visibility = 0.5;
-    }
+    // if (texture(sampler, shadowCoord.xy).z < shadowCoord.z)
+    // {
+        // visibility = 0.5;
+    // }
     
+    //outColor = vec3(1, 0, 0);
     outColor = visibility * inColor;
 }

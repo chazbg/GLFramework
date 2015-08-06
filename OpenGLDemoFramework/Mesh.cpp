@@ -1,6 +1,8 @@
 #include "Mesh.hpp"
 #include "Vector.hpp"
 #include "Shader.hpp"
+#include <algorithm>
+#include <cstdio>
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -113,6 +115,10 @@ void Mesh::RenderToTexture(const unsigned int fbo, const unsigned int texId)
 void Mesh::SetProjectionMatrix(const Matrix4& projection)
 {
 	this->projection = projection;
+	cout << "Projection " << endl << projection.toString() << endl;
+	cout << "* " << (projection * Vec4(1, 1, -1, 1)).toString() << endl;
+	cout << "* " << (projection * Vec4(1, 1, -0.5, 1)).toString() << endl;
+	cout << "Projection2 " << endl << (this->projection * view * model).toString() << endl;
 	SetUniformValue("mvp", projection * view * model);
 }
 
@@ -288,7 +294,7 @@ void Mesh::generateNormals()
 
 void Mesh::generateWireframe()
 {
-	wireframeVertexBuffer = new float[vertexCount * 2];
+	wireframeVertexBuffer = new float[vertexCount * 3 * 2];
 	unsigned int j = 0;
 	for (unsigned int i = 0; i < vertexCount; i += 9)
 	{

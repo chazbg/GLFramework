@@ -8,6 +8,7 @@
 #include <sstream>
 #include "LineSegment.hpp"
 #include "Matrix.hpp"
+
 using namespace std;
 
 #define EPS 0.0001f
@@ -815,25 +816,36 @@ std::vector<Vec2> GeometryAlgorithm::ProjectPointList(const std::vector<Vec3>& p
 
 Matrix4 GeometryAlgorithm::CreatePerspectiveMatrix(const float angleOfView, const float aspectRatio, const float zNear, const float zFar)
 {
+	float f = 1 / tan(angleOfView / 2);
+	float yMax = zNear * tan(angleOfView / 2);
+	float yMin = -yMax;
+	float xMax = yMax * aspectRatio;
+	float xMin = yMin * aspectRatio;
 
+	float x = 2 * zNear / (xMax - xMin);
+	float y = 2 * zNear / (yMax - yMin);
+	float a = (xMax + xMin) / (xMax - xMin);
+	float b = (yMax + yMin) / (yMax - yMin);
+	float c = -(zFar + zNear) / (zFar - zNear);
+	float d = -2 * zFar * zNear / (zFar - zNear);
 	return Matrix4(
-		Vec4(1.0f / tan(angleOfView), 0.0f, 0.0f, 0.0f),
-		Vec4(0.0f, aspectRatio / tan(angleOfView), 0.0f, 0.0f),
-		Vec4(0.0f, 0.0f, (zFar + zNear) / (zFar - zNear), -2.0f * zFar * zNear / (zFar - zNear)),
-		Vec4(0.0f, 0.0f, 1.0f, 0.0f));
+		Vec4(x, 0.0f, a, 0.0f),
+		Vec4(0.0f, y, b, 0.0f),
+		Vec4(0.0f, 0.0f, c, d),
+		Vec4(0.0f, 0.0f, -1.0f, 0.0f));
 }
 
 Matrix4 GeometryAlgorithm::CreateLookAtMatrix(const Vec3& cameraPosition, const Vec3& cameraTarget, const Vec3& cameraUpVector)
 {
-	Vec3 zAxis = (cameraTarget - cameraPosition).normalize();
-	Vec3 xAxis = (zAxis * cameraUpVector).normalize();
-	Vec3 yAxis = (xAxis * zAxis);
-	Vec3 nPos = cameraPosition.normalize();
+	Vec3 zAxis = (cameraPosition - cameraTarget).normalize();
+	Vec3 xAxis = (cameraUpVector * zAxis).normalize();
+	Vec3 yAxis = zAxis * xAxis;
+
 	return Matrix4(
-		Vec4(xAxis, 0),
-		Vec4(yAxis, 0),
-		Vec4(-zAxis, 0),
-		Vec4(-(xAxis.dot(nPos)), -(yAxis.dot(nPos)), (zAxis.dot(nPos)), 1));
+		Vec4(xAxis, -xAxis.dot(cameraPosition)),
+		Vec4(yAxis, -yAxis.dot(cameraPosition)),
+		Vec4(zAxis, -zAxis.dot(cameraPosition)),
+		Vec4(0, 0, 0, 1));
 }
 
 Matrix4 GeometryAlgorithm::CreateSRTMatrix(const Vec3& scale, const Vec3& rotationInRadians, const Vec3& translation)
