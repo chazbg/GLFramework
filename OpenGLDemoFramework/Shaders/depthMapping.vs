@@ -15,15 +15,5 @@ void main()
     rotY[2] = vec4(-sin(thetaRot), 0, cos(thetaRot), 0);
     rotY[3] = vec4(0, 0, 0, 1);
     
-    mat4 scale;
-    scale[0] = vec4(0.7,0,0,0);
-    scale[1] = vec4(0,0.7,0,0);
-    scale[2] = vec4(0,0,0.7,0);
-    scale[3] = vec4(0,0,0,1);
-    
-    vec4 transl;
-    //transl = vec4(cos(thetaRot), 0.0, 3.0+sin(thetaRot),0);
-    //transl = vec4(-0.5, -0.5, 0,0);
-    //transl = vec4(0, 0, -0.7, 0);
     gl_Position = mvp * transpose(rotY) * vec4(vertexPosition_modelspace,1.0);
 }

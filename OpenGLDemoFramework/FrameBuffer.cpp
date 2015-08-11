@@ -10,7 +10,7 @@ FrameBuffer::FrameBuffer() : fbo(0), colorTex(0), depthTex(0)
 
 FrameBuffer::~FrameBuffer()
 {
-
+	//TODO: delete fbo
 }
 
 unsigned int FrameBuffer::getFbo()

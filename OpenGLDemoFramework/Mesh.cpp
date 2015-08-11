@@ -15,7 +15,7 @@ showWireframe(false),
 castsShadow(false),
 receivesShadow(false)
 {
-	glGenFramebuffers(1, &fbo);
+
 }
 
 Mesh::~Mesh()
@@ -115,10 +115,6 @@ void Mesh::RenderToTexture(const unsigned int fbo, const unsigned int texId)
 void Mesh::SetProjectionMatrix(const Matrix4& projection)
 {
 	this->projection = projection;
-	cout << "Projection " << endl << projection.toString() << endl;
-	cout << "* " << (projection * Vec4(1, 1, -1, 1)).toString() << endl;
-	cout << "* " << (projection * Vec4(1, 1, -0.5, 1)).toString() << endl;
-	cout << "Projection2 " << endl << (this->projection * view * model).toString() << endl;
 	SetUniformValue("mvp", projection * view * model);
 }
 
@@ -132,6 +128,21 @@ void Mesh::SetModelMatrix(const Matrix4& model)
 {
 	this->model = model;
 	SetUniformValue("mvp", projection * view * model);
+}
+
+Matrix4 Mesh::GetProjectionMatrix()
+{
+	return projection;
+}
+
+Matrix4 Mesh::GetViewMatrix()
+{
+	return view;
+}
+
+Matrix4 Mesh::GetModelMatrix()
+{
+	return model;
 }
 
 void Mesh::SetShaders(const string vertexShaderPath, const string fragmentShaderPath)
