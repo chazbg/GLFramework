@@ -1,6 +1,6 @@
-#include "Mesh.hpp"
-#include "Vector.hpp"
-#include "Shader.hpp"
+#include "Core/Mesh.hpp"
+#include "Math/Vector.hpp"
+#include "Core/Shader.hpp"
 #include <algorithm>
 #include <cstdio>
 

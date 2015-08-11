@@ -1,5 +1,5 @@
-#include "Rectangle.hpp"
-#include "Shader.hpp"
+#include "Geometry/Rectangle.hpp"
+#include "Core/Shader.hpp"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 

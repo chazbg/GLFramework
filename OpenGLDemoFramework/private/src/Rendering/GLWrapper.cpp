@@ -1,6 +1,6 @@
-#include "GLWrapper.hpp"
+#include "Rendering/GLWrapper.hpp"
 #include <GL/glew.h>
-#include "Shader.hpp"
+#include "Core/Shader.hpp"
 #include <cstdio>
 #include <cstdlib>
 

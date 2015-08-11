@@ -1,4 +1,4 @@
-#include "GeometryAlgorithm.hpp"
+#include "Math/GeometryAlgorithm.hpp"
 #include <cstdio>
 #include <cmath>
 #include <algorithm>
@@ -6,8 +6,8 @@
 #include <map>
 #include <iostream>
 #include <sstream>
-#include "LineSegment.hpp"
-#include "Matrix.hpp"
+#include "Math/LineSegment.hpp"
+#include "Math/Matrix.hpp"
 
 using namespace std;
 

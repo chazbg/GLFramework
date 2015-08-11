@@ -1,9 +1,9 @@
-#include "Cube.hpp"
-#include "Shader.hpp"
+#include "Geometry/Cube.hpp"
+#include "Core/Shader.hpp"
 #include <cmath>
-#include "Vector.hpp"
-#include "Matrix.hpp"
-#include "GeometryAlgorithm.hpp"
+#include "Math/Vector.hpp"
+#include "Math/Matrix.hpp"
+#include "Math/GeometryAlgorithm.hpp"
 
 Cube::Cube() :
 Mesh()

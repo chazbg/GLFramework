@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Vector.hpp"
+#include "Math/Vector.hpp"
 #include <cstdio>
 #define SIZE 256
 class TextureGenerator

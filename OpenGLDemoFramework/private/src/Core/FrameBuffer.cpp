@@ -1,4 +1,4 @@
-#include "FrameBuffer.hpp"
+#include "Core/FrameBuffer.hpp"
 #include <GL/glew.h>
 
 FrameBuffer::FrameBuffer() : fbo(0), colorTex(0), depthTex(0)

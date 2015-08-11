@@ -1,5 +1,5 @@
-#include "BlockMesh.hpp"
-#include "GeometryAlgorithm.hpp"
+#include "Geometry/BlockMesh.hpp"
+#include "Math/GeometryAlgorithm.hpp"
 
 BlockMesh::BlockMesh(const float width, const float height, const float length) :
 width(width),

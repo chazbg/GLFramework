@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mesh.hpp"
+#include "Core/Mesh.hpp"
 
 class BlockMesh : public Mesh
 {

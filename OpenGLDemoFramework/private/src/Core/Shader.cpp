@@ -9,7 +9,7 @@
 
 #include <GL/glew.h>
 
-#include "Shader.hpp"
+#include "Core/Shader.hpp"
 #include <map>
 
 using namespace std;

@@ -1,5 +1,5 @@
-#include "Triangle.hpp"
-#include "GeometryAlgorithm.hpp"
+#include "Geometry/Triangle.hpp"
+#include "Math/GeometryAlgorithm.hpp"
 
 Triangle::Triangle()
 {

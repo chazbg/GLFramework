@@ -1,5 +1,5 @@
-#include "LineListMesh.hpp"
-#include "Shader.hpp"
+#include "Geometry/LineListMesh.hpp"
+#include "Core/Shader.hpp"
 #include <cmath>
 
 #include <iostream>

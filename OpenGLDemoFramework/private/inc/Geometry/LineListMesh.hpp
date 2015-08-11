@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Mesh.hpp"
+#include "Core/Mesh.hpp"
 #include <vector>
-#include "Vector.hpp"
+#include "Math/Vector.hpp"
 
 class LineListMesh : public Mesh
 {

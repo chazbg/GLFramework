@@ -1,4 +1,4 @@
-#include "PlaneGenerator.hpp"
+#include "Core/PlaneGenerator.hpp"
 
 float* generatePlaneVertices(int width, int height)
 {

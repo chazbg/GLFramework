@@ -1,6 +1,6 @@
-#include "PlaneMesh.hpp"
-#include "PlaneGenerator.hpp"
-#include "Shader.hpp"
+#include "Geometry/PlaneMesh.hpp"
+#include "Core/PlaneGenerator.hpp"
+#include "Core/Shader.hpp"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 

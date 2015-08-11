@@ -1,7 +1,7 @@
 #pragma once
-#include "Mesh.hpp"
-#include "Vector.hpp"
-#include "Texture.hpp"
+#include "Core/Mesh.hpp"
+#include "Math/Vector.hpp"
+#include "Core/Texture.hpp"
 #include <string>
 
 class Rectangle : public Mesh

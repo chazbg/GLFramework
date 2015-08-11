@@ -13,192 +13,216 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Engine">
-      <UniqueIdentifier>{419db822-0b88-4986-a59c-abe5cbe9a82a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine">
-      <UniqueIdentifier>{7ace5328-3289-4f80-a471-cc17b2e905c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Tests">
       <UniqueIdentifier>{d1399962-f5c7-4958-b1d7-9dc9a0d68f4b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Demos">
       <UniqueIdentifier>{e8574c73-2bbb-4369-a5ba-85bdf333428b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{d69bb209-ec4b-4644-ad3a-2ee7b424a839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{e6a09cbe-a2b8-407b-9a88-49321e5bafc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Windowing">
+      <UniqueIdentifier>{4819e71d-bc3a-4d68-b4ca-e7ac775b3474}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math">
+      <UniqueIdentifier>{7ace5328-3289-4f80-a471-cc17b2e905c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Geometry">
+      <UniqueIdentifier>{2964d88a-29a9-471d-b740-6ad57b16c4da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{419db822-0b88-4986-a59c-abe5cbe9a82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{a62fa10b-1b48-4a99-b1b8-ca58abc3a3b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Geometry">
+      <UniqueIdentifier>{7902519b-3666-4e6b-870b-7525727a86e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windowing">
+      <UniqueIdentifier>{2061a4ba-ebd5-4cd1-8a19-b057dbc3f89e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering">
+      <UniqueIdentifier>{4758cf82-5948-4cfd-bb5e-f47dab6fa2d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLUTWrapper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLWrapper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vector.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="private\src\Math\GeometryAlgorithm.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Line.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="private\src\Math\Line.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Rectangle.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Math\LineSegment.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Math\Plane.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Math\Vector.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="PlaneGenerator.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Core\FrameBuffer.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="PlaneMesh.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Core\Mesh.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Plane.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="private\src\Core\PlaneGenerator.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryAlgorithm.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="private\src\Core\Shader.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="PointListMesh.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Core\Texture.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="LineListMesh.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Geometry\Bar.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="LineSegment.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="private\src\Geometry\BlockMesh.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="private\src\Geometry\Cube.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="BlockMesh.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\src\Geometry\LineListMesh.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="FrameBuffer.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="private\src\Geometry\PlaneMesh.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Geometry\PointListMesh.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Geometry\Rectangle.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Geometry\Triangle.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Rendering\GLWrapper.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Windowing\GLUTWrapper.cpp">
+      <Filter>Source Files\Windowing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bar.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="private\inc\Geometry\Bar.hpp">
+      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="private\inc\Geometry\BlockMesh.hpp">
+      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="GLUTWrapper.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="private\inc\Geometry\Cube.hpp">
+      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="GLWrapper.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="private\inc\Geometry\LineListMesh.hpp">
+      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="private\inc\Geometry\PlaneMesh.hpp">
+      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.hpp">
-      <Filter>Header Files\Engine</Filter>
+    <ClInclude Include="private\inc\Geometry\PointListMesh.hpp">
+      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="TestVector.hpp">
+    <ClInclude Include="private\inc\Geometry\rectangle.hpp">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Geometry\Triangle.hpp">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\FrameBuffer.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Mesh.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\PlaneGenerator.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Shader.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Texture.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureGenerator.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Math\GeometryAlgorithm.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Math\Line.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Math\LineSegment.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Math\Matrix.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Math\Plane.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Math\Vector.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoClipping.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoCube.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoGrahamScan.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoIntersectingLineSegments.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoIntersectingPolygons.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoPointInPolygon.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoProjections.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoRotatingCalipers.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoTexture.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\GLUTWrapper.hpp">
+      <Filter>Header Files\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\GLWrapper.hpp">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Tests\TestGeometryAlgorithm.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="Line.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="TestLine.hpp">
+    <ClInclude Include="private\inc\Tests\TestLine.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="Plane.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="TestPlane.hpp">
+    <ClInclude Include="private\inc\Tests\TestMatrix.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="Rectangle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureGenerator.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Triangle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlaneGenerator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlaneMesh.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryAlgorithm.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="TestGeometryAlgorithm.hpp">
+    <ClInclude Include="private\inc\Tests\TestPlane.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="PointListMesh.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LineListMesh.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoGrahamScan.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoClipping.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoPointInPolygon.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoIntersectingLineSegments.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoRotatingCalipers.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoIntersectingPolygons.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="LineSegment.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoProjections.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="TestMatrix.hpp">
+    <ClInclude Include="private\inc\Tests\TestVector.hpp">
       <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoCube.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoTexture.hpp">
-      <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="BlockMesh.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameBuffer.hpp">
-      <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

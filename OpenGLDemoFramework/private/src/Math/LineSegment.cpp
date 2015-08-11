@@ -1,4 +1,4 @@
-#include "LineSegment.hpp"
+#include "Math/LineSegment.hpp"
 
 LineSegment::LineSegment()
 {

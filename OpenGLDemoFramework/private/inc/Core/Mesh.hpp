@@ -1,7 +1,7 @@
 #pragma once
 #include <GL/glew.h>
-#include "Matrix.hpp"
-#include "Texture.hpp"
+#include "Math/Matrix.hpp"
+#include "Core/Texture.hpp"
 #include <map>
 
 using namespace std;

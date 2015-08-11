@@ -1,4 +1,4 @@
-#include "Plane.hpp"
+#include "Math/Plane.hpp"
 
 //Plane2
 Plane2::Plane2(const float a, const float b, const float c) :

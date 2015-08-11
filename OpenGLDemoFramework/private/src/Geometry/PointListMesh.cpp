@@ -1,5 +1,5 @@
-#include "PointListMesh.hpp"
-#include "Shader.hpp"
+#include "Geometry/PointListMesh.hpp"
+#include "Core/Shader.hpp"
 #include <cmath>
 
 #define BUFFER_OFFSET(i) ((void*)(i))

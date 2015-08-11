@@ -1,4 +1,4 @@
-#include "Texture.hpp"
+#include "Core/Texture.hpp"
 #include <cstring>
 
 Texture::Texture(const unsigned int width, const unsigned int height, const unsigned int bpp, const unsigned char* data) :
