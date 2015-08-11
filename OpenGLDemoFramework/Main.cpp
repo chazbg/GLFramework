@@ -1,4 +1,4 @@
-#include "DemoTexture.hpp"
+#include "Demos/DemoTexture.hpp"
 #include <cstdio>
 int main(int argc, char* argv[])
 {

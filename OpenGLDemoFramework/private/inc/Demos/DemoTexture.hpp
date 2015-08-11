@@ -1,15 +1,14 @@
 #pragma once
-#include "Texture.hpp"
-#include "GLUTWrapper.hpp"
-#include "GLWrapper.hpp"
-#include "Rectangle.hpp"
-#include "TextureGenerator.hpp"
-//#include "Cube.hpp"
-#include "Cube.hpp"
-#include "BlockMesh.hpp"
-#include "FrameBuffer.hpp"
-#include "GeometryAlgorithm.hpp"
-#include "Triangle.hpp"
+#include "Core/Texture.hpp"
+#include "Windowing/GLUTWrapper.hpp"
+#include "Rendering/GLWrapper.hpp"
+#include "Geometry/Rectangle.hpp"
+#include "Core/TextureGenerator.hpp"
+#include "Geometry/Cube.hpp"
+#include "Geometry/BlockMesh.hpp"
+#include "Core/FrameBuffer.hpp"
+#include "Math/GeometryAlgorithm.hpp"
+#include "Geometry/Triangle.hpp"
 #include <GL/glew.h>
 namespace TexDemo
 {
