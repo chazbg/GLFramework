@@ -49,6 +49,12 @@
     <Filter Include="Source Files\Rendering">
       <UniqueIdentifier>{4758cf82-5948-4cfd-bb5e-f47dab6fa2d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Windowing\Variants">
+      <UniqueIdentifier>{fe5beecd-5b75-4373-8bfc-6ebddc138c5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windowing\Variants">
+      <UniqueIdentifier>{51c40784-45ad-49bc-8085-8c93e6ba61dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -111,7 +117,10 @@
     <ClCompile Include="private\src\Rendering\GLWrapper.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Windowing\GLUTWrapper.cpp">
+    <ClCompile Include="private\src\Windowing\Variants\GLUTWrapper.cpp">
+      <Filter>Source Files\Windowing\Variants</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Windowing\Window.cpp">
       <Filter>Source Files\Windowing</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,9 +212,6 @@
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Windowing\GLUTWrapper.hpp">
-      <Filter>Header Files\Windowing</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Rendering\GLWrapper.hpp">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
@@ -222,6 +228,18 @@
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Tests\TestVector.hpp">
+      <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\Variants\WindowDX.hpp">
+      <Filter>Header Files\Windowing\Variants</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\Window.hpp">
+      <Filter>Header Files\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\Variants\GLUTWrapper.hpp">
+      <Filter>Header Files\Windowing\Variants</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Tests\TestWindow.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>

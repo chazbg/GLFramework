@@ -1,4 +1,4 @@
-#include "Windowing/GLUTWrapper.hpp"
+#include "Windowing/Variants/GLUTWrapper.hpp"
 #include <GL/freeglut.h>
 #include <cstring>
 

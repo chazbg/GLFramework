@@ -1,7 +1,6 @@
-#include "Demos/DemoTexture.hpp"
-#include <cstdio>
+#include "Tests/TestWindow.hpp"
 int main(int argc, char* argv[])
 {
-	TexDemo::DemoTex();
+	TestWindow::TestWindow();
 	return 0;
 }
