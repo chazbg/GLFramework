@@ -14,7 +14,19 @@ namespace TexDemo
 	void KeyboardCallback(unsigned char c, int x, int y)
 	{
 		cout << c << " " << x << " " << y << endl;
-		stopTime = !stopTime;
+
+		switch (c)
+		{
+		case 'a':
+			time -= 5;
+			break;
+		case 'd':
+			time += 5;
+			break;
+		default:
+			stopTime = !stopTime;
+			break;
+		}
 	}
 
 	void MouseCallback(int button, int state, int x, int y)
@@ -29,10 +41,10 @@ namespace TexDemo
 
 		if (!stopTime)
 		{
-			r->SetTime(time);
 			time++;
 		}
 
+		r->SetTime(time);
 		r->Render();
 
 		GLUTWrapper::UpdateFrame();
