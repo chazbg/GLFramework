@@ -8,9 +8,23 @@ out vec3 color;
 
 uniform sampler2D sampler;
 
+// float f(float x, float z)
+// {
+    // return sin(x)*sin(z);
+// }
+
 float f(float x, float z)
 {
-    return sin(x)*sin(z);
+    float radius = 0.3f;
+    float xzLength = sqrt(x * x + z * z);
+    
+    float y = 0;
+    if (xzLength * xzLength  <= radius * radius)
+    {
+        y = sqrt(radius * radius - xzLength * xzLength);
+    }
+
+    return y;
 }
 
 bool castRay(const vec3 ro, const vec3 rd, out float resT)
@@ -32,8 +46,8 @@ bool castRay(const vec3 ro, const vec3 rd, out float resT)
     
 void genRay(float x, float y, out vec3 origin, out vec3 dir)
 {
-    origin = vec3(sin(float(time) * 0.02), abs(sin(float(time) * 0.01)), sin(float(time)*0.01));
-    vec3 end = vec3(x,y,2.0);
+    origin = vec3(sin(time * 0.01f) * 2.0f, 2.0f, sin(time * 0.01f) * 2.0f);
+    vec3 end = vec3(x,0,y);
     dir = end - origin;
 }
 
@@ -50,21 +64,11 @@ vec3 terrainColor(vec3 origin, vec3 direction, float t)
 {
     vec3 p = origin + direction * t;
     vec3 n = getNormal(p);
-    //dot(n, direction) *
     return  abs(dot(n,direction)) * vec3(0.4,0.2,0);
 }
 
 void main()
 {
-    //color = vec3(sin(interpolatedCoords.x*100), sin(interpolatedCoords.y*100), 0);
-    // if (interpolatedcoords.y - sin(interpolatedcoords.x * 3.14) * sin(interpolatedcoords.y * 3.14) >= 0.0001)
-    // {
-        // color = vec3(interpolatedcoords.y + 0.5,0,0);
-    // }
-    // else
-    // {
-        // color = vec3(1,1,1);
-    // }
     float res = 0;
     vec3 origin, dir;
     genRay(interpolatedCoords.x,interpolatedCoords.y,origin,dir);
@@ -76,7 +80,4 @@ void main()
     {
         color = vec3(0,0,0);
     }
-	//color = texture2D(videoFrame, texCoords).rgb;
-    //color = vec3(interpolatedCoords, 0.0);
-    //color = vec3(1.0, 1.0, 0.0);
 }

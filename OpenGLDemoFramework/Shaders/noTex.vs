@@ -7,6 +7,8 @@ layout(location = 1) in vec2 texCoord;
 out vec2 texCoords;
 out vec2 interpolatedCoords;
 
+uniform uint time;
+
 void main(){
 
     gl_Position.xy = vertexPosition_modelspace;
