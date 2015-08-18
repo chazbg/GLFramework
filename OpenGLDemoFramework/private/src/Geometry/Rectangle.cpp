@@ -20,7 +20,6 @@ Rectangle::~Rectangle()
 
 void Rectangle::Render()
 {
-	SetTime(time + 1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texID);
 
