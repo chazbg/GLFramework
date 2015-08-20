@@ -9,6 +9,8 @@ public:
 	~BlockMesh();
 	virtual void Render();
 	virtual void SetShaders(const string vertexShaderPath, const string fragmentShaderPath);
+	void setTime(const unsigned int time);
+	unsigned int getTime();
 private:
 	float width;
 	float height;
