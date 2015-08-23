@@ -11,13 +11,15 @@
 #include "GeometryAlgorithm.hpp"
 #include "Triangle.hpp"
 #include <GL/glew.h>
+#include <vector>
+
+using namespace std;
+
 namespace TexDemo
 {
 	BlockMesh* c;
 	BlockMesh* c1;
-	BlockMesh* c2;
-	BlockMesh* c3;
-	BlockMesh* c4;
+	vector<BlockMesh*> meshes;
 	Rectangle* r;
 	FrameBuffer* fb;
 	Triangle* t;
@@ -28,8 +30,8 @@ namespace TexDemo
 		GLWrapper::ClearWindow();
 
 		c1->setTime(time);
-		c2->setTime(time);
-		c3->setTime(time);
+		meshes[0]->setTime(time);
+		meshes[1]->setTime(time);
 
 		c1->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 		c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
@@ -37,37 +39,27 @@ namespace TexDemo
 
 		glBindFramebuffer(GL_FRAMEBUFFER, fb->getFbo());
 
-		c2->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-		c2->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-		c2->Render();
-
-		c3->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-		c3->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-		c3->Render();
-
-		c4->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-		c4->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-		c4->Render();
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			meshes[i]->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
+			meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+			meshes[i]->Render();
+		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		r->Render();
 
 		c1->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-		c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 15, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+		c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 10, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 		c1->Render();
 
-		c2->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-		c2->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 15, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-		c2->Render();
 
-		c3->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-		c3->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 15, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-		c3->Render();
-
-		c4->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-		c4->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 15, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-		c4->Render();
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			meshes[i]->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
+			meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 10, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+			meshes[i]->Render();
+		}
 
 		time++;
 
@@ -82,12 +74,15 @@ namespace TexDemo
 		GLWrapper::InitRenderer();
 		time = 0;
 		c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
-		c2 = new BlockMesh(2.0f, 5.0f, 5.0f);
-		c2->SetPosition(Vec3(2, 0, -6));
-		c3 = new BlockMesh(2.0f, 5.0f, 5.0f);
-		c3->SetPosition(Vec3(-2, 0, 6));
-		c4 = new BlockMesh(30.0f, 0.2f, 30.0f);
-		c4->SetPosition(Vec3(0, -3, 0));
+		c1->SetPosition(Vec3(0, -3, 0));
+		meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
+		meshes[0]->SetPosition(Vec3(-2, -3, -6));
+		meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
+		meshes[1]->SetPosition(Vec3(2, -3, 6));
+		meshes.push_back(new BlockMesh(20.0f, 0.2f, 20.0f));
+		meshes[2]->SetPosition(Vec3(0, -3, 0));
+		meshes.push_back(new BlockMesh(20.0f, 20.0f, 0.2f));
+		meshes[3]->SetPosition(Vec3(0, -3, -10));
 
 		r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
 		r->attachTexture(Texture(800, 800, 4, 0));
