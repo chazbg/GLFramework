@@ -24,6 +24,52 @@ namespace TexDemo
 	FrameBuffer* fb;
 	Triangle* t;
 	unsigned int time;
+	bool stopTime;
+	Vec3 cameraPos;
+
+	void KeyboardCallback(unsigned char c, int x, int y)
+	{
+		cout << c << " " << x << " " << y << endl;
+		stopTime = !stopTime;
+		
+			switch (c)
+			{
+
+			case 'j':
+				time -= 5;
+				break;
+			case 'l':
+				time += 5;
+				break;
+			case 'a':
+				cameraPos.x -= 1;
+				break;
+			case 's':
+				cameraPos.y -= 1;
+				break;
+			case 'd':
+				cameraPos.x += 1;
+				break;
+			case 'w':
+				cameraPos.y += 1;
+				break;
+			case 'q':
+				cameraPos.z -= 1;
+				break;
+			case 'e':
+				cameraPos.z += 1;
+				break;
+			default:
+				stopTime = !stopTime;
+				break;
+			}
+	}
+
+	void MouseCallback(int button, int state, int x, int y)
+	{
+		cout << button << " " << state << " " << x << " " << y << endl;
+		stopTime = !stopTime;
+	}
 
 	void RenderDemoTex()
 	{
@@ -50,14 +96,14 @@ namespace TexDemo
 		r->Render();
 
 		c1->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-		c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 10, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+		c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(cameraPos, Vec3(0, 0, 0), Vec3(0, 1, 0)));
 		c1->Render();
 
 
 		for (int i = 0; i < meshes.size(); i++)
 		{
 			meshes[i]->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-			meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(-25, 10, 0), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+			meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(cameraPos, Vec3(0, 0, 0), Vec3(0, 1, 0)));
 			meshes[i]->Render();
 		}
 
@@ -71,8 +117,13 @@ namespace TexDemo
 	{
 		TextureGenerator gen;
 		GLUTWrapper::InitWindow(&RenderDemoTex);
+		GLUTWrapper::SetKeyboardCallback(KeyboardCallback);
+		GLUTWrapper::SetMouseCallback(MouseCallback);
 		GLWrapper::InitRenderer();
+		
 		time = 0;
+		stopTime = false;
+		cameraPos = Vec3(-25, 10, 0);
 		c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
 		c1->SetPosition(Vec3(0, -3, 0));
 		meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
