@@ -80,7 +80,7 @@ namespace TexDemo
 		meshes[1]->setTime(time);
 
 		c1->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-		c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+		c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 15, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 		c1->RenderToTexture(fb->getFbo(), r->GetTexId());
 
 		glBindFramebuffer(GL_FRAMEBUFFER, fb->getFbo());
@@ -88,7 +88,7 @@ namespace TexDemo
 		for (int i = 0; i < meshes.size(); i++)
 		{
 			meshes[i]->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-			meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
+			meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 15, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
 			meshes[i]->Render();
 		}
 
@@ -107,7 +107,10 @@ namespace TexDemo
 			meshes[i]->Render();
 		}
 
-		time++;
+		if (!stopTime)
+		{
+			time++;
+		}
 
 		GLUTWrapper::UpdateFrame();
 		GLUTWrapper::RequestNewFrame();
@@ -123,13 +126,13 @@ namespace TexDemo
 		
 		time = 0;
 		stopTime = false;
-		cameraPos = Vec3(-25, 10, 0);
+		cameraPos = Vec3(0, 15, 25);
 		c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
-		c1->SetPosition(Vec3(0, -3, 0));
+		c1->SetPosition(Vec3(0, -1, 0));
 		meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
-		meshes[0]->SetPosition(Vec3(-2, -3, -6));
+		meshes[0]->SetPosition(Vec3(-2, -1, -6));
 		meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
-		meshes[1]->SetPosition(Vec3(2, -3, 6));
+		meshes[1]->SetPosition(Vec3(2, -1, 6));
 		meshes.push_back(new BlockMesh(20.0f, 0.2f, 20.0f));
 		meshes[2]->SetPosition(Vec3(0, -3, 0));
 		meshes.push_back(new BlockMesh(20.0f, 20.0f, 0.2f));

@@ -7,10 +7,10 @@ uniform mat4 mvp;
 uniform mat4 depthMvp;
 
 smooth out vec3 inColor;
-smooth out vec3 shadowCoord;
+smooth out vec4 shadowCoord;
 
 void main(){
-    vec3 light = normalize(vec3(0, 0.1, 0.25));
+    vec3 light = normalize(vec3(0, 0.15, 0.25));
     float step = 0.01;
     float thetaRot = time * step;
     mat4 rotation;
@@ -54,6 +54,6 @@ void main(){
     inColor = vec3(dot(n.xyz, light),0,0);// + vec3(0.1, 0.1, 0.1);
     vec4 sc = shadowBias * depthMvp * transpose(rotY) * vec4(vertexPosition_modelspace,1.0);
     //shadowCoord = (shadowBias * depthMvp * transpose(rotY) * vec4(vertexPosition_modelspace,1.0)).xyz;
-    shadowCoord = sc.xyz / sc.w;
+    shadowCoord = sc;//sc.xyz;// / sc.w;
 }
 
