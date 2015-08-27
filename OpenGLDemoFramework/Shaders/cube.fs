@@ -4,7 +4,7 @@ uniform sampler2D sampler;
 
 // Input data
 smooth in vec3 inColor;
-smooth in vec3 shadowCoord;
+smooth in vec4 shadowCoord;
 
 // Ouput data
 out vec3 outColor;
@@ -31,12 +31,25 @@ void main()
         // outColor = vec3(1,1,1);
     // }
     
-    float visibility = 1.0;
-    if (texture(sampler, shadowCoord.xy).z < shadowCoord.z)
+    vec4 scw = shadowCoord / shadowCoord.w;
+    scw.z += 0.0005;
+    float dfl = texture2D(sampler, scw.st).z;
+    float sh = 1.0;
+    if (shadowCoord.w > 0.0)
     {
-        visibility = 0.5;
+        sh = dfl < scw.z ? 0.5 : 1.0;
     }
     
+    // float visibility = 1.0;
+    // if (texture2D(sampler, shadowCoord.xy).z < shadowCoord.z)
+    // {
+        // visibility = 0.5;
+    // }
+    
+
     //outColor = vec3(1, 0, 0);
-    outColor = visibility * inColor;
+    //outColor = vec3(texture2D(sampler, shadowCoord.xy).z, texture2D(sampler, shadowCoord.xy).z, texture2D(sampler, shadowCoord.xy).z);
+    //outColor = vec3(shadowCoord.z, shadowCoord.z, shadowCoord.z);
+    //outColor = texture2D(sampler, shadowCoord.xy).xyz;
+    outColor = sh * inColor;
 }

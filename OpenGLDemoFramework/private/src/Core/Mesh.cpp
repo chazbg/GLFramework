@@ -53,6 +53,8 @@ void Mesh::Render()
 	activateNormalsBuffer();
 	activateTexCoordsBuffer();
 
+	printf("DRAWARRAYS\n");
+
 	if (showWireframe)
 	{
 		glDrawArrays(GL_LINES, 0, vertexCount * 2);
@@ -115,19 +117,19 @@ void Mesh::RenderToTexture(const unsigned int fbo, const unsigned int texId)
 void Mesh::SetProjectionMatrix(const Matrix4& projection)
 {
 	this->projection = projection;
-	SetUniformValue("mvp", projection * view * model);
+	//SetUniformValue("mvp", projection * view * model);
 }
 
 void Mesh::SetViewMatrix(const Matrix4& view)
 {
 	this->view = view;
-	SetUniformValue("mvp", projection * view * model);
+	//SetUniformValue("mvp", projection * view * model);
 }
 
 void Mesh::SetModelMatrix(const Matrix4& model)
 {
 	this->model = model;
-	SetUniformValue("mvp", projection * view * model);
+	//SetUniformValue("mvp", projection * view * model);
 }
 
 Matrix4 Mesh::GetProjectionMatrix()
@@ -251,6 +253,7 @@ void Mesh::SetUniformValue(string uniform, const Vec4& v)
 
 void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 {
+	printf("SetUniformValue %s - %s\n", uniform.c_str(), v.toString().c_str());
 	glUseProgram(programID);
 	glUniformMatrix4fv(uniforms[uniform], 1, false, v.raw());
 }

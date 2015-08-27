@@ -19,9 +19,7 @@ BlockMesh::~BlockMesh()
 
 void BlockMesh::Render()
 {
-	time += 1;
 	SetUniformValue("time", time);
-	SetUniformValue("depthMvp", GetProjectionMatrix() * GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 0, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)) * GetModelMatrix());
 	Mesh::Render();
 }
 
@@ -32,12 +30,22 @@ void BlockMesh::SetShaders(const string vertexShaderPath, const string fragmentS
 	BindUniform("depthMvp");
 	BindUniform("sampler");
 	SetUniformValue("sampler", 0);
-	Matrix4 proj = GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 10.0f, 1000);
-	SetUniformValue("depthMvp", proj * GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 0, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)) * model);
+	Matrix4 proj = GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 10.0f, 100);
+	SetUniformValue("depthMvp", proj * GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 10, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)) * model);
 	Matrix4 view = GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 0, 2), Vec3(0, 0, 0), Vec3(0, 1, 0));
 
 	SetProjectionMatrix(proj);
 	SetViewMatrix(view);
+}
+
+void BlockMesh::setTime(const unsigned int time)
+{
+	this->time = time;
+}
+
+unsigned int BlockMesh::getTime()
+{
+	return time;
 }
 
 float* BlockMesh::genVerts()
