@@ -242,5 +242,8 @@
     <ClInclude Include="private\inc\Tests\TestWindow.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoWindow.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

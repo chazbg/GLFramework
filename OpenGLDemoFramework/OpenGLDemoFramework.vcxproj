@@ -185,6 +185,7 @@
     <ClInclude Include="private\inc\Demos\DemoProjections.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRotatingCalipers.hpp" />
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoWindow.hpp" />
     <ClInclude Include="private\inc\Geometry\Bar.hpp" />
     <ClInclude Include="private\inc\Geometry\BlockMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\Cube.hpp" />

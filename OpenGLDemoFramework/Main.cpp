@@ -1,6 +1,6 @@
-#include "Tests/TestWindow.hpp"
+#include "Demos/DemoWindow.hpp"
 int main(int argc, char* argv[])
 {
-	TestWindow::TestWindow();
+	WindowDemo::main();
 	return 0;
 }
