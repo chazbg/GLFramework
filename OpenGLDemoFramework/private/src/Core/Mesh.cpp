@@ -253,7 +253,7 @@ void Mesh::SetUniformValue(string uniform, const Vec4& v)
 
 void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 {
-	printf("SetUniformValue %s - %s\n", uniform.c_str(), v.toString().c_str());
+	//printf("SetUniformValue %s - %s\n", uniform.c_str(), v.toString().c_str());
 	glUseProgram(programID);
 	glUniformMatrix4fv(uniforms[uniform], 1, false, v.raw());
 }

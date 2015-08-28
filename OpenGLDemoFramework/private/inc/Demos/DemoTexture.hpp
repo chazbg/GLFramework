@@ -26,6 +26,8 @@ namespace TexDemo
 	unsigned int time;
 	bool stopTime;
 	Vec3 cameraPos;
+	Vec3 meshPos;
+	Vec3 prevDir;
 
 	void KeyboardCallback(unsigned char c, int x, int y)
 	{
@@ -58,6 +60,10 @@ namespace TexDemo
 				break;
 			case 'e':
 				cameraPos.z += 1;
+				break;
+			case 'r':
+				meshPos = Vec3(-10.0, 3, 0);
+				prevDir = Vec3(0.01f, 0.1f, 0);
 				break;
 			default:
 				stopTime = !stopTime;
@@ -107,6 +113,13 @@ namespace TexDemo
 			meshes[i]->Render();
 		}
 
+		prevDir += Vec3(0, -0.001f, 0);
+		meshPos += prevDir;
+		meshes[4]->SetPosition(meshPos);
+		meshes[4]->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
+		meshes[4]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(cameraPos, Vec3(0, 0, 0), Vec3(0, 1, 0)));
+		meshes[4]->Render();
+
 		if (!stopTime)
 		{
 			time++;
@@ -127,6 +140,8 @@ namespace TexDemo
 		time = 0;
 		stopTime = false;
 		cameraPos = Vec3(0, 15, 25);
+		meshPos = Vec3(-10.0, 3, 0);
+		prevDir = Vec3(0.01f, 0.1f, 0);
 		c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
 		c1->SetPosition(Vec3(0, -1, 0));
 		meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
@@ -137,6 +152,8 @@ namespace TexDemo
 		meshes[2]->SetPosition(Vec3(0, -3, 0));
 		meshes.push_back(new BlockMesh(20.0f, 20.0f, 0.2f));
 		meshes[3]->SetPosition(Vec3(0, -3, -10));
+		meshes.push_back(new BlockMesh(0.5f, 0.5f, 0.5f));
+		//meshes[4]->SetPosition(Vec3(0, 10, 0));
 
 		r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
 		r->attachTexture(Texture(800, 800, 4, 0));
