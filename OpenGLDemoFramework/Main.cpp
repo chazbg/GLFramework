@@ -1,6 +1,6 @@
-#include "Demos/DemoWindow.hpp"
+#include "Demos/DemoRenderer.hpp"
 int main(int argc, char* argv[])
 {
-	WindowDemo::main();
+	RendererDemo::main();
 	return 0;
 }

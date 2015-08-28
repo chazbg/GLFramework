@@ -55,6 +55,12 @@
     <Filter Include="Source Files\Windowing\Variants">
       <UniqueIdentifier>{51c40784-45ad-49bc-8085-8c93e6ba61dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Rendering\Variants">
+      <UniqueIdentifier>{81318863-2107-4ebe-beac-173dd25ffbb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering\Variants">
+      <UniqueIdentifier>{be63ae54-01de-465f-9a6d-58ea525985c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -114,14 +120,14 @@
     <ClCompile Include="private\src\Geometry\Triangle.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Rendering\GLWrapper.cpp">
-      <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Windowing\Variants\GLUTWrapper.cpp">
       <Filter>Source Files\Windowing\Variants</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Windowing\Window.cpp">
       <Filter>Source Files\Windowing</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Rendering\Variants\GLWrapper.cpp">
+      <Filter>Source Files\Rendering\Variants</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +218,6 @@
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Rendering\GLWrapper.hpp">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Tests\TestGeometryAlgorithm.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
@@ -243,6 +246,15 @@
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoWindow.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\Renderer.hpp">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\Variants\GLWrapper.hpp">
+      <Filter>Header Files\Rendering\Variants</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoRenderer.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
   </ItemGroup>

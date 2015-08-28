@@ -22,7 +22,6 @@ struct WindowParameters
 	int height;
 	int posX;
 	int posY;
-	Vec4 clearColor;
 	std::string name;
 };
 
