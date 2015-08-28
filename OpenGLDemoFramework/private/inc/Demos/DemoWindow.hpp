@@ -12,10 +12,12 @@ namespace WindowDemo
 		TestWindowApp() {}
 		~TestWindowApp() {}
 		virtual void onInit() { cout << "onInit" << endl; }
-		virtual void onUpdate(const unsigned int deltaTime) { cout << "onUpdate: " << deltaTime << endl; }
-		virtual void onRender(const unsigned int deltaTime) { cout << "onRender: " << deltaTime << endl; }
+		virtual void onUpdate(const unsigned int deltaTime) { /*cout << "onUpdate: " << deltaTime << endl;*/ }
+		virtual void onRender(const unsigned int deltaTime) { /*cout << "onRender: " << deltaTime << endl;*/ }
 		virtual void onDestroy() { cout << "onDestroy" << endl; }
 		virtual void onEvent(const unsigned int event) { cout << "onEvent: " << event << endl; }
+		virtual void onMouseEvent(int button, int state, int x, int y) { cout << button << " " << state << " " << x << " " << y << endl; }
+		virtual void onKeyboardEvent(unsigned char c, int x, int y) { cout << c << " " << x << " " << y << endl; }
 	};
 
 	void main()

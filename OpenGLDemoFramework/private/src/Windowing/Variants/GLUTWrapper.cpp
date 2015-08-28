@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include <GL/freeglut.h>
 using namespace std;
 
 static map<int, Window*> windows;
@@ -12,6 +13,18 @@ void Window::render()
 {
 	int i = glutGetWindow();
 	windows[i]->onRender();
+}
+
+void Window::mouseEvent(int button, int state, int x, int y)
+{
+	int i = glutGetWindow();
+	windows[i]->onMouseEvent(button, state, x, y);
+}
+
+void Window::keyboardEvent(unsigned char c, int x, int y)
+{
+	int i = glutGetWindow();
+	windows[i]->onKeyboardEvent(c, x, y);
 }
 
 Window::Window(const WindowParameters& params, IApplication& app) : params(params), app(app)
@@ -30,7 +43,9 @@ Window::Window(const WindowParameters& params, IApplication& app) : params(param
 	glutInitWindowSize(params.width, params.height);
 	glutInitWindowPosition(params.posX, params.posY);
 	window = glutCreateWindow(params.name.c_str());
-	windows[window] = this;
+	windows[window] = this; 
+	glutMouseFunc(Window::mouseEvent);
+	glutKeyboardFunc(Window::keyboardEvent);
 	glutDisplayFunc(Window::render);
 }
 
@@ -55,23 +70,12 @@ void Window::onRender()
 	glutPostRedisplay();
 }
 
-//TODO: add callbacks
-//void kbcb(unsigned char c, int x, int y)
-//{
-//	cout << c << " " << x << " " << y << endl;
-//}
-//
-//void mscb(int button, int state, int x, int y)
-//{
-//	cout << button << " " << state << " " << x << " " << y << endl;
-//}
-//
-//void GLUTWrapper::SetKeyboardCallback(void(*callback)(unsigned char, int, int))
-//{
-//	glutKeyboardFunc(callback);
-//}
-//
-//void GLUTWrapper::SetMouseCallback(void(*callback)(int, int, int, int))
-//{
-//	glutMouseFunc(callback);
-//}
+void Window::onMouseEvent(int button, int state, int x, int y)
+{
+	app.onMouseEvent(button, state, x, y);
+}
+
+void Window::onKeyboardEvent(unsigned char c, int x, int y)
+{
+	app.onKeyboardEvent(c, x, y);
+}

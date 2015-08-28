@@ -11,7 +11,6 @@
 //#include "d3dx12.h"
 
 #include <string>
-#include <GL/freeglut.h>
 
 //#include <wrl.h>
 
@@ -36,6 +35,8 @@ public:
 	virtual void onRender(const unsigned int deltaTime) = 0;
 	virtual void onDestroy() = 0;
 	virtual void onEvent(const unsigned int event) = 0;
+	virtual void onMouseEvent(int button, int state, int x, int y) = 0;
+	virtual void onKeyboardEvent(unsigned char c, int x, int y) = 0;
 };
 
 class Window
