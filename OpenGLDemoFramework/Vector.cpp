@@ -388,7 +388,7 @@ string Vec4::toString() const
 
 float* Vec4::raw()
 {
-	float* v = new float[4];
+	float v[4];
 	v[0] = x;
 	v[1] = y;
 	v[2] = z;
