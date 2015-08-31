@@ -12,6 +12,7 @@
 #include "Triangle.hpp"
 #include <GL/glew.h>
 #include <vector>
+#include "TextRenderer.hpp"
 
 using namespace std;
 
@@ -26,6 +27,7 @@ namespace TexDemo
 	unsigned int time;
 	bool stopTime;
 	Vec3 cameraPos;
+	TextRenderer* textRenderer;
 
 	void KeyboardCallback(unsigned char c, int x, int y)
 	{
@@ -109,6 +111,7 @@ namespace TexDemo
 
 		time++;
 
+		textRenderer->render("TEST", -1, 1);
 		GLUTWrapper::UpdateFrame();
 		GLUTWrapper::RequestNewFrame();
 	}
@@ -139,6 +142,9 @@ namespace TexDemo
 		r->attachTexture(Texture(800, 800, 4, 0));
 
 		fb = new FrameBuffer();
+
+		textRenderer = new TextRenderer();
+		textRenderer->init();
 
 		GLUTWrapper::RenderLoop();
 	}
