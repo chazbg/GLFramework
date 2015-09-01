@@ -178,6 +178,7 @@
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp" />
     <ClInclude Include="private\inc\Demos\DemoGrahamScan.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingLineSegments.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingPolygons.hpp" />

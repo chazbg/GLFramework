@@ -257,5 +257,8 @@
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
