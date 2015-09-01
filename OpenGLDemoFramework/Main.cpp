@@ -1,7 +1,7 @@
-#include "Demos/DemoFragmentShaderSandbox.hpp"
+#include "Demos/DemoCube.hpp"
 
 int main(int argc, char* argv[])
 {
-	FragmentShaderSandboxDemo::main();
+	CubeDemo::main();
 	return 0;
 }
