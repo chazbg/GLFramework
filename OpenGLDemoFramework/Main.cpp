@@ -1,7 +1,7 @@
-#include "Demos/DemoClipping.hpp"
+#include "Demos/DemoGrahamScan.hpp"
 
 int main(int argc, char* argv[])
 {
-	CLPDemo::main();
+	GHSCDemo::main();
 	return 0;
 }
