@@ -53,8 +53,6 @@ void Mesh::Render()
 	activateNormalsBuffer();
 	activateTexCoordsBuffer();
 
-	printf("DRAWARRAYS\n");
-
 	if (showWireframe)
 	{
 		glDrawArrays(GL_LINES, 0, vertexCount * 2);
@@ -88,23 +86,6 @@ void Mesh::RenderToTexture(const unsigned int fbo, const unsigned int texId)
 
 	glDrawBuffer(GL_NONE); // No color buffer is drawn to.
 
-	//// "Bind" the newly created texture : all future texture functions will modify this texture
-	//glBindTexture(GL_TEXTURE_2D, texId);
-
-	//// Give an empty image to OpenGL ( the last "0" )
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 800, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-
-	//// Poor filtering. Needed !
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	//// Set "renderedTexture" as our colour attachement #0
-	//glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId, 0);
-
-	//// Set the list of draw buffers.
-	//GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	//glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
 	// Always check that our framebuffer is ok
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		printf("INVALID\n");
@@ -117,19 +98,16 @@ void Mesh::RenderToTexture(const unsigned int fbo, const unsigned int texId)
 void Mesh::SetProjectionMatrix(const Matrix4& projection)
 {
 	this->projection = projection;
-	//SetUniformValue("mvp", projection * view * model);
 }
 
 void Mesh::SetViewMatrix(const Matrix4& view)
 {
 	this->view = view;
-	//SetUniformValue("mvp", projection * view * model);
 }
 
 void Mesh::SetModelMatrix(const Matrix4& model)
 {
 	this->model = model;
-	//SetUniformValue("mvp", projection * view * model);
 }
 
 Matrix4 Mesh::GetProjectionMatrix()
@@ -253,7 +231,6 @@ void Mesh::SetUniformValue(string uniform, const Vec4& v)
 
 void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 {
-	//printf("SetUniformValue %s - %s\n", uniform.c_str(), v.toString().c_str());
 	glUseProgram(programID);
 	glUniformMatrix4fv(uniforms[uniform], 1, false, v.raw());
 }

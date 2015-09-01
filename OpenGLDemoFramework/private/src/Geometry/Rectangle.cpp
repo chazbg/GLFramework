@@ -48,13 +48,12 @@ void Rectangle::attachTexture(const Texture& texture)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.getWidth(), texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getData());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 	SetUniformValue("sampler", 0);
 }
 
-void Rectangle::attachShaders(const std::string vertexShader, const std::string fragmentShader)
+void Rectangle::SetShaders(const string vertexShaderPath, const string fragmentShaderPath)
 {
-	SetShaders(vertexShader.c_str(), fragmentShader.c_str());
+	Mesh::SetShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 	BindUniform("time");
 	BindUniform("sampler");
 }

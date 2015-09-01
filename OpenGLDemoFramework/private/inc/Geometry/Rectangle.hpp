@@ -12,7 +12,7 @@ public:
 	~Rectangle();
 	void Render();
 	void attachTexture(const Texture& texture);
-	void Rectangle::attachShaders(const std::string vertexShader, const std::string fragmentShader);
+	virtual void  SetShaders(const std::string vertexShader, const std::string fragmentShader);
 	void SetTime(GLuint time);
 	GLuint GetTime();
 	unsigned int GetTexId();

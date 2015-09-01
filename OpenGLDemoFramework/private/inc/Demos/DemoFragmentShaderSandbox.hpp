@@ -20,6 +20,8 @@ namespace FragmentShaderSandboxDemo
 		virtual void onRender(const unsigned int deltaTime) 
 		{ 
 			renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f)); 
+
+			rectangle->SetTime(rectangle->GetTime() + 1);
 			rectangle->Render();
 		}
 
