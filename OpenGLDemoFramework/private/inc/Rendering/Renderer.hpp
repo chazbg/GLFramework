@@ -8,6 +8,7 @@ public:
 	Renderer();
 	~Renderer();
 	void clear(const Vec4& color);
+	void setDepthTest(const bool enabled);
 private:
 	#ifdef USE_DX12
 	#include "../private/inc/Rendering/Variants/RendererDX.hpp"

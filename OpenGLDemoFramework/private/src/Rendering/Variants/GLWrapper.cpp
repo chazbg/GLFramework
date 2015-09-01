@@ -16,8 +16,6 @@ Renderer::Renderer()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_PROGRAM_POINT_SIZE);
-
-	//glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
 }
 
 
@@ -30,4 +28,17 @@ void Renderer::clear(const Vec4& color)
 {
 	glClearColor(color.x, color.y, color.z, color.w);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::setDepthTest(const bool enabled)
+{
+	if (enabled)
+	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+	}
+	else
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
 }
