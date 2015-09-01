@@ -1,7 +1,7 @@
-#include "Demos/DemoCube.hpp"
+#include "Demos/DemoClipping.hpp"
 
 int main(int argc, char* argv[])
 {
-	CubeDemo::main();
+	CLPDemo::main();
 	return 0;
 }
