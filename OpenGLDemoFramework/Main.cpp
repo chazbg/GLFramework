@@ -1,7 +1,7 @@
-#include "Demos/DemoRotatingCalipers.hpp"
+#include "Demos/DemoTexture.hpp"
 
 int main(int argc, char* argv[])
 {
-	RCDemo::main();
+	TexDemo::main();
 	return 0;
 }
