@@ -1,7 +1,7 @@
-#include "Demos/DemoIntersectingPolygons.hpp"
+#include "Demos/DemoPointInPolygon.hpp"
 
 int main(int argc, char* argv[])
 {
-	PIDemo::main();
+	PIPDemo::main();
 	return 0;
 }
