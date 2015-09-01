@@ -1,7 +1,7 @@
-#include "Demos/DemoIntersectingLineSegments.hpp"
+#include "Demos/DemoIntersectingPolygons.hpp"
 
 int main(int argc, char* argv[])
 {
-	LIDemo::main();
+	PIDemo::main();
 	return 0;
 }
