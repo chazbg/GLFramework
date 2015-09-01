@@ -1,7 +1,7 @@
-#include "Demos/DemoPointInPolygon.hpp"
+#include "Demos/DemoRotatingCalipers.hpp"
 
 int main(int argc, char* argv[])
 {
-	PIPDemo::main();
+	RCDemo::main();
 	return 0;
 }
