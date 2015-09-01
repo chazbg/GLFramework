@@ -30,6 +30,7 @@ namespace CLPDemo
 		void setRenderer(Renderer* renderer)
 		{
 			this->renderer = renderer;
+			renderer->setDepthTest(false);
 
 			std::vector<Vec2> inputPolygon;
 			std::vector<Vec2> clippingPolygon;

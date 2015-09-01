@@ -30,6 +30,7 @@ namespace GHSCDemo
 		void setRenderer(Renderer* renderer)
 		{
 			this->renderer = renderer;
+			renderer->setDepthTest(false);
 
 			std::vector<Vec2> inputPolygon, convexHull;
 

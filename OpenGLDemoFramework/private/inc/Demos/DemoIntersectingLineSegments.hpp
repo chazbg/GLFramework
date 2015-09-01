@@ -17,6 +17,7 @@ namespace LIDemo
 		virtual void onInit() 
 		{ 
 			renderer = new Renderer();
+			renderer->setDepthTest(false);
 
 			std::vector<std::vector<Vec2>> lineSegments;
 
