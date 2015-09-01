@@ -1,7 +1,7 @@
-#include "Demos/DemoTexture.hpp"
+#include "Demos/DemoProjections.hpp"
 
 int main(int argc, char* argv[])
 {
-	TexDemo::main();
+	PRJDemo::main();
 	return 0;
 }
