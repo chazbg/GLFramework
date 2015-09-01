@@ -33,6 +33,7 @@ namespace FragmentShaderSandboxDemo
 			TextureGenerator gen;
 			rectangle = new Rectangle();
 			rectangle->attachTexture(Texture(256, 1, 4, (unsigned char*) gen.generateGradient()));
+			rectangle->SetShaders("Shaders/fragmentShaderSandbox.vs", "Shaders/fragmentShaderSandbox.fs");
 		}
 	private:
 		Renderer* renderer;
