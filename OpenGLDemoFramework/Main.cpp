@@ -1,7 +1,7 @@
-#include "Demos/DemoGrahamScan.hpp"
+#include "Demos/DemoIntersectingLineSegments.hpp"
 
 int main(int argc, char* argv[])
 {
-	GHSCDemo::main();
+	LIDemo::main();
 	return 0;
 }
