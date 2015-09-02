@@ -27,12 +27,9 @@ namespace TexDemo
 	unsigned int time;
 	bool stopTime;
 	Vec3 cameraPos;
-<<<<<<< HEAD
 	Vec3 meshPos;
 	Vec3 prevDir;
-=======
 	TextRenderer* textRenderer;
->>>>>>> c4f908b2ea3a08d0c7e7bffa9815dd9146c6a7e0
 
 	void KeyboardCallback(unsigned char c, int x, int y)
 	{
