@@ -18,7 +18,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -113,6 +113,8 @@
     <ClInclude Include="GeometryAlgorithm.hpp" />
     <ClInclude Include="GLUTWrapper.hpp" />
     <ClInclude Include="GLWrapper.hpp" />
+    <ClInclude Include="glyphs.hpp" />
+    <ClInclude Include="Gl_utils.hpp" />
     <ClInclude Include="Line.hpp" />
     <ClInclude Include="LineListMesh.hpp" />
     <ClInclude Include="LineSegment.hpp" />
@@ -129,6 +131,7 @@
     <ClInclude Include="TestMatrix.hpp" />
     <ClInclude Include="TestPlane.hpp" />
     <ClInclude Include="TestVector.hpp" />
+    <ClInclude Include="TextRenderer.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="TextureGenerator.hpp" />
     <ClInclude Include="Triangle.hpp" />
