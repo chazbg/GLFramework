@@ -3,7 +3,7 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-Rectangle::Rectangle() : topLeft(-1, 1), bottomRight(1, -1)
+Rectangle::Rectangle() : topLeft(-1, 1), bottomRight(1, -1), vertices(0), texCoords(0)
 {
 	init();
 }
@@ -15,29 +15,27 @@ Rectangle::Rectangle(Vec2 topLeft, Vec2 bottomRight) : topLeft(topLeft), bottomR
 
 Rectangle::~Rectangle() 
 {
-	delete[] texCoords;
-}
-
-void Rectangle::Render()
-{
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texID);
-
-	Mesh::Render();
+	delete vertices;
+	delete texCoords;
 }
 
 void Rectangle::init()
 {
 	vertexCount = 6;
 	time = 0;
+	
 	float* vertexBuffer = genVertices();
-	texCoords = genTexCoords();
-	SetShaders("Shaders/tex.vs", "Shaders/tex.fs");
-	BindUniform("time");
-	SetUniformValue("time", time);
-	BindUniform("sampler");
-	SetVertexBuffer(vertexBuffer, vertexCount, 2);	
-	SetTexCoordsBuffer(texCoords);
+	float* uvs = genTexCoords();
+
+	vertices = new VertexBufferObject(vertexBuffer, vertexCount, 2);
+	texCoords = new VertexBufferObject(uvs, vertexCount, 2);
+
+	setVertices(*vertices);
+	setTexCoords(*texCoords);
+
+	delete[] vertexBuffer;
+	delete[] uvs;
+
 	glGenTextures(1, &texID);
 }
 
@@ -48,14 +46,6 @@ void Rectangle::attachTexture(const Texture& texture)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.getWidth(), texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getData());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	SetUniformValue("sampler", 0);
-}
-
-void Rectangle::SetShaders(const string vertexShaderPath, const string fragmentShaderPath)
-{
-	Mesh::SetShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
-	BindUniform("time");
-	BindUniform("sampler");
 }
 
 float* Rectangle::genVertices()

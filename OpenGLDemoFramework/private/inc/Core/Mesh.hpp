@@ -2,28 +2,30 @@
 #include <GL/glew.h>
 #include "Math/Matrix.hpp"
 #include "Core/Texture.hpp"
+#include "Core/IMesh.hpp"
 #include <map>
 
 using namespace std;
 
-class Mesh
+class Mesh : public IMesh
 {
 public:
 	Mesh();
-	virtual void Render();
-	virtual void RenderToTexture(const unsigned int fbo, const unsigned int texId);
 	~Mesh();
-	void SetProjectionMatrix(const Matrix4& projection);
-	void SetViewMatrix(const Matrix4& view);
-	void SetModelMatrix(const Matrix4& model);
-	Matrix4 GetProjectionMatrix();
-	Matrix4 GetViewMatrix();
-	Matrix4 GetModelMatrix();
-	virtual void SetShaders(const string vertexShaderPath, const string fragmentShaderPath);
-	void SetWireframeMode(const bool showWireframe);
-	void SetVertexBuffer(const float* vertexBuffer, const unsigned int length, const unsigned char vertexSize = 3);
-	void SetNormalsBuffer(const float* normalsBuffer);
-	void SetTexCoordsBuffer(const float* texCoordsBuffer);
+	virtual std::vector<IVertexBufferObject*>& getVBOs();
+	virtual void setProjectionMatrix(const Matrix4& projection);
+	virtual void setViewMatrix(const Matrix4& view);
+	virtual void setModelMatrix(const Matrix4& model);
+	virtual Matrix4 getProjectionMatrix() const;
+	virtual Matrix4 getViewMatrix() const;
+	virtual Matrix4 getModelMatrix() const;
+	virtual void setWireframeMode(const bool showWireframe);
+	virtual void setVertices(const IVertexBufferObject& vertices);
+	virtual void setNormals(const IVertexBufferObject& normals);
+	virtual void setTexCoords(const IVertexBufferObject& texCoords);
+	virtual int getVertexCount() const;
+	virtual void setMaterial(IMaterial* material);
+	virtual IMaterial& getMaterial() const;
 	void BindUniform(string uniform);
 	void SetUniformValue(string uniform, const int v);
 	void SetUniformValue(string uniform, const unsigned int v);
@@ -43,15 +45,10 @@ protected:
 	void deactivateTexCoordsBuffer();
 	unsigned int vertexCount;
 	unsigned char vertexSize;
-	float* vertexBuffer;
-	float* normalsBuffer;
-	float* texCoordsBuffer;
+	IMaterial* material;
+	std::vector<IVertexBufferObject*> vbos;
 	float* wireframeVertexBuffer;
-	GLuint vertexBufferID;
-	GLuint normalsBufferID;
-	GLuint texCoordsBufferID;
 	GLuint wireframeVertexBufferID;
-	GLuint programID;
 	Matrix4 projection;
 	Matrix4 view;
 	Matrix4 model;

@@ -147,11 +147,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
     <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\PlaneGenerator.cpp" />
+    <ClCompile Include="private\src\Core\Scene.cpp" />
     <ClCompile Include="private\src\Core\Shader.cpp" />
+    <ClCompile Include="private\src\Core\ShaderMaterial.cpp" />
     <ClCompile Include="private\src\Core\Texture.cpp" />
+    <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
     <ClCompile Include="private\src\Geometry\Bar.cpp" />
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />
     <ClCompile Include="private\src\Geometry\Cube.cpp" />
@@ -170,12 +174,21 @@
     <ClCompile Include="private\src\Windowing\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="private\inc\Core\DefaultCamera.hpp" />
     <ClInclude Include="private\inc\Core\FrameBuffer.hpp" />
+    <ClInclude Include="private\inc\Core\ICamera.hpp" />
+    <ClInclude Include="private\inc\Core\IMaterial.hpp" />
+    <ClInclude Include="private\inc\Core\IMesh.hpp" />
+    <ClInclude Include="private\inc\Core\IScene.hpp" />
+    <ClInclude Include="private\inc\Core\IVertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Core\Mesh.hpp" />
     <ClInclude Include="private\inc\Core\PlaneGenerator.hpp" />
+    <ClInclude Include="private\inc\Core\Scene.hpp" />
     <ClInclude Include="private\inc\Core\Shader.hpp" />
+    <ClInclude Include="private\inc\Core\ShaderMaterial.hpp" />
     <ClInclude Include="private\inc\Core\Texture.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
+    <ClInclude Include="private\inc\Core\VertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp" />
