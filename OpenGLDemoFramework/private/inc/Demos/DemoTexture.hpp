@@ -11,6 +11,7 @@
 #include "Geometry/Triangle.hpp"
 #include <GL/glew.h>
 #include <vector>
+#include <Core/Text/TextRenderer.hpp>
 
 using namespace std;
 
@@ -48,6 +49,9 @@ namespace TexDemo
 			r->attachTexture(Texture(800, 800, 4, 0));
 
 			fb = new FrameBuffer();
+
+			textRenderer = new TextRenderer();
+			textRenderer->init();
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
 		virtual void onRender(const unsigned int deltaTime)
@@ -97,6 +101,8 @@ namespace TexDemo
 			{
 				time++;
 			}
+
+			textRenderer->render("TEST", -1, 1);
 		}
 
 		virtual void onDestroy()
@@ -170,6 +176,7 @@ namespace TexDemo
 		Vec3 cameraPos;
 		Vec3 meshPos;
 		Vec3 prevDir;
+		TextRenderer* textRenderer;
 	};
 
 	void main()

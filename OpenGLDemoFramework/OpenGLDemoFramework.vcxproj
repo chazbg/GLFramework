@@ -176,6 +176,9 @@
     <ClInclude Include="private\inc\Core\Shader.hpp" />
     <ClInclude Include="private\inc\Core\Texture.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
+    <ClInclude Include="private\inc\Core\Text\glyphs.hpp" />
+    <ClInclude Include="private\inc\Core\Text\Gl_utils.hpp" />
+    <ClInclude Include="private\inc\Core\Text\TextRenderer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp" />

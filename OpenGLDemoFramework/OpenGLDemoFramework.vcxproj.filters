@@ -61,6 +61,9 @@
     <Filter Include="Source Files\Rendering\Variants">
       <UniqueIdentifier>{be63ae54-01de-465f-9a6d-58ea525985c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Text">
+      <UniqueIdentifier>{1cb5a558-37f0-4123-8982-70ee0aebccad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -259,6 +262,15 @@
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp">
       <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Text\glyphs.hpp">
+      <Filter>Header Files\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Text\TextRenderer.hpp">
+      <Filter>Header Files\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Text\Gl_utils.hpp">
+      <Filter>Header Files\Core\Text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
