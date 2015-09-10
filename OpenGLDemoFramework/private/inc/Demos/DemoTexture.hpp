@@ -128,6 +128,10 @@ namespace TexDemo
 		{ 
 			cout << c << " " << x << " " << y << endl; 
 			stopTime = !stopTime;
+			Vec3 zAxis = (-cameraPos).normalize();
+			Vec3 up(0, 1, 0);
+			Vec3 xAxis = (zAxis * up).normalize();
+			Vec3 yAxis = xAxis * zAxis;
 
 			switch (c)
 			{
@@ -139,22 +143,22 @@ namespace TexDemo
 				time += 5;
 				break;
 			case 'a':
-				cameraPos.x -= 1;
+				cameraPos -= xAxis;
 				break;
 			case 's':
-				cameraPos.y -= 1;
+				cameraPos -= yAxis;
 				break;
 			case 'd':
-				cameraPos.x += 1;
+				cameraPos += xAxis;
 				break;
 			case 'w':
-				cameraPos.y += 1;
+				cameraPos += yAxis;
 				break;
 			case 'q':
-				cameraPos.z -= 1;
+				cameraPos -= zAxis;
 				break;
 			case 'e':
-				cameraPos.z += 1;
+				cameraPos += zAxis;
 				break;
 			case 'r':
 				meshPos = Vec3(-10.0, 3, 0);
