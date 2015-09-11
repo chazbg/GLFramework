@@ -36,6 +36,7 @@ public:
 	virtual void onEvent(const unsigned int event) = 0;
 	virtual void onMouseEvent(int button, int state, int x, int y) = 0;
 	virtual void onKeyboardEvent(unsigned char c, int x, int y) = 0;
+	virtual void onMouseMove(int x, int y) = 0;
 };
 
 class Window

@@ -52,6 +52,8 @@ namespace TexDemo
 
 			textRenderer = new TextRenderer();
 			textRenderer->init();
+
+			prevMousePos = Vec2(0.5, 0.5);
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
 		virtual void onRender(const unsigned int deltaTime)
@@ -169,6 +171,22 @@ namespace TexDemo
 				break;
 			}
 		}
+		virtual void onMouseMove(int x, int y)
+		{
+			float nx = x / 800.0f;
+			float ny = y / 800.0f;
+			Vec2 delta = Vec2(nx, ny) - prevMousePos;
+
+			Vec3 zAxis = (-cameraPos).normalize();
+			Vec3 up(0, 1, 0);
+			Vec3 xAxis = (zAxis * up).normalize();
+			Vec3 yAxis = xAxis * zAxis;
+
+			cameraPos -= xAxis * delta.x * 50;
+			cameraPos += yAxis * delta.y * 50;
+
+			prevMousePos = Vec2(nx, ny);
+		}
 	private:
 		Renderer* renderer;
 		BlockMesh* c1;
@@ -181,6 +199,7 @@ namespace TexDemo
 		Vec3 meshPos;
 		Vec3 prevDir;
 		TextRenderer* textRenderer;
+		Vec2 prevMousePos;
 	};
 
 	void main()
