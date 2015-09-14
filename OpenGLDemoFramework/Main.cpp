@@ -1,7 +1,7 @@
-#include "Demos/DemoTexture.hpp"
+#include "Demos/DemoFragmentShaderSandbox.hpp"
 
 int main(int argc, char* argv[])
 {
-	TexDemo::main();
+	FragmentShaderSandboxDemo::main();
 	return 0;
 }
