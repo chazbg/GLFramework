@@ -11,5 +11,5 @@ uniform sampler2D sampler;
 void main()
 {
 	color = texture2D(sampler, texCoords).rgb;
-    color.g = abs(sin(float(time)*0.01)) / 2.0;
+    //color.g = abs(sin(float(time)*0.01)) / 2.0;
 }

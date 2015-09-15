@@ -68,7 +68,7 @@ public:
 		{
 			for (int j = 0; j < SIZE * 4; j+=4)
 			{
-				float v = 255.0f * perlin(j / 1024.0f, i / 256.0f, 0, p);
+				float v = 255.0f * perlin(j / 64.0f, i / 16.0f, 0, p);
 				tex[i * SIZE * 4 + j] = v;
 				tex[i * SIZE * 4 + j + 1] = v;
 				tex[i * SIZE * 4 + j + 2] = v;

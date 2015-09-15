@@ -51,10 +51,10 @@ bool castRay(const vec3 ro, const vec3 rd, out float resT)
     
 void genRay(float x, float y, out vec3 origin, out vec3 dir)
 {
-    origin = vec3(5.0 * sin(float(time) * 0.02),3, 5.0 * sin(float(time)*0.01));
-    vec3 end = vec3(x,y,1.0);
-    // origin = vec3(sin(time * 0.01f) * 2.0f, 2.0f, sin(time * 0.01f) * 2.0f);
-    // vec3 end = vec3(x,0,y);
+    // origin = vec3(sin(float(time) * 0.02),0.5, sin(float(time)*0.01));
+    // vec3 end = vec3(x,y,1.0);
+    origin = vec3(sin(time * 0.01f) * 2.0f, 2.0f, sin(time * 0.01f) * 2.0f);
+    vec3 end = vec3(x,0,y);
     dir = end - origin;
 }
 
