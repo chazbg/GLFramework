@@ -12,7 +12,7 @@
 #include <GL/glew.h>
 #include <vector>
 #include <Core/Text/TextRenderer.hpp>
-
+#include <Core/TextureFactory.hpp>
 using namespace std;
 
 namespace TexDemo
@@ -27,6 +27,8 @@ namespace TexDemo
 			renderer = new Renderer();
 
 			TextureGenerator gen;
+			TextureFactory texFactory;
+
 			time = 0;
 			stopTime = false;
 			cameraPos = Vec3(0, 15, 25);
@@ -34,6 +36,7 @@ namespace TexDemo
 			prevDir = Vec3(0.01f, 0.1f, 0);
 			c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
 			c1->SetPosition(Vec3(0, -1, 0));
+			c1->AddTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise())));
 			meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
 			meshes[0]->SetPosition(Vec3(-2, -1, -6));
 			meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));

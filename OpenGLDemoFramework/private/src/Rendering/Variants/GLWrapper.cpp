@@ -42,3 +42,19 @@ void Renderer::setDepthTest(const bool enabled)
 		glDisable(GL_DEPTH_TEST);
 	}
 }
+
+int Renderer::getTexId(const Texture* tex)
+{
+	if (textures.find(tex->getId()) == textures.end())
+	{
+		textures[tex->getId()] = 0;
+		glGenTextures(1, &textures[tex->getId()]);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textures[tex->getId()]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->getWidth(), tex->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getData());
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+
+	return textures[tex->getId];
+}

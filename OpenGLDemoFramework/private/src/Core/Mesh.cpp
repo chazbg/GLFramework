@@ -15,7 +15,6 @@ showWireframe(false),
 castsShadow(false),
 receivesShadow(false)
 {
-
 }
 
 Mesh::~Mesh()
@@ -29,6 +28,14 @@ void Mesh::Render()
 {
 	glUseProgram(programID);
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, shadowTexID);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+	SetUniformValue("sampler", 0);
+	SetUniformValue("shadow", 1);
 	SetUniformValue("mvp", projection * view * model);
 
 	if (showWireframe)
@@ -129,7 +136,9 @@ void Mesh::SetShaders(const string vertexShaderPath, const string fragmentShader
 {
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 	BindUniform("mvp");
+	BindUniform("sampler");
 	SetUniformValue("mvp", projection * view * model);
+	SetUniformValue("sampler", 0);
 }
 
 void Mesh::SetWireframeMode(const bool showWireframe)
@@ -154,7 +163,6 @@ void Mesh::SetVertexBuffer(const float* vertexBuffer, const unsigned int length,
 		generateNormals();
 		generateWireframe();
 	}
-	
 	
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
@@ -245,9 +253,18 @@ void Mesh::SetReceivesShadow(const bool receivesShadow)
 	this->receivesShadow = receivesShadow;
 }
 
-void Mesh::SetTexture(const Texture& tex)
+void Mesh::AddTexture(const Texture* tex)
 {
-	//TODO
+	textures.push_back(tex);
+}
+
+void Mesh::RemoveTexture(const Texture* tex)
+{
+	vector<const Texture*>::iterator it = find(textures.begin(), textures.end(), tex);
+	if (textures.end() != it)
+	{
+		textures.erase(it);
+	}
 }
 
 void Mesh::SetPosition(const Vec3& position)

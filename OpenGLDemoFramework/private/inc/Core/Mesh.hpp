@@ -3,6 +3,7 @@
 #include "Math/Matrix.hpp"
 #include "Core/Texture.hpp"
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -32,7 +33,8 @@ public:
 	void SetUniformValue(string uniform, const Matrix4& v);
 	void SetCastsShadow(const bool castsShadow);
 	void SetReceivesShadow(const bool receivesShadow);
-	void SetTexture(const Texture& tex);
+	void AddTexture(const Texture* tex);
+	void RemoveTexture(const Texture* tex);
 	void SetPosition(const Vec3& position);
 protected:
 	void generateNormals();
@@ -52,6 +54,8 @@ protected:
 	GLuint texCoordsBufferID;
 	GLuint wireframeVertexBufferID;
 	GLuint programID;
+	GLuint shadowTexID;
+	GLuint texID;
 	Matrix4 projection;
 	Matrix4 view;
 	Matrix4 model;
@@ -59,5 +63,6 @@ protected:
 	map<string, GLuint> uniforms;
 	bool castsShadow;
 	bool receivesShadow;
+	vector<const Texture*> textures;
 };
 

@@ -272,5 +272,8 @@
     <ClInclude Include="private\inc\Core\Text\Gl_utils.hpp">
       <Filter>Header Files\Core\Text</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureFactory.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
