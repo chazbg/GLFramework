@@ -110,8 +110,3 @@ GLuint Rectangle::GetTime()
 {
 	return time;
 }
-
-unsigned int Rectangle::GetTexId()
-{
-	return texID;
-}

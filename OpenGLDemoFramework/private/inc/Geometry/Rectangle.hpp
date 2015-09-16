@@ -13,7 +13,6 @@ public:
 	~Rectangle();
 	void SetTime(GLuint time);
 	GLuint GetTime();
-	unsigned int GetTexId();
 private:
 	Vec2 topLeft;
 	Vec2 bottomRight;
