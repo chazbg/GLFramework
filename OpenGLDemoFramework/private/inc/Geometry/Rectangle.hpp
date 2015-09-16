@@ -19,7 +19,6 @@ private:
 	float* genVertices();
 	float* genTexCoords();
 	void init();
-	GLuint texID;
 	unsigned int time;
 	VertexBufferObject* vertices;
 	VertexBufferObject* texCoords;

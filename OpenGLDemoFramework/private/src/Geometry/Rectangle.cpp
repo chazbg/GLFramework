@@ -35,8 +35,6 @@ void Rectangle::init()
 
 	delete[] vertexBuffer;
 	delete[] uvs;
-
-	glGenTextures(1, &texID);
 }
 
 float* Rectangle::genVertices()
