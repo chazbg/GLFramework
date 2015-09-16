@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Math/Vector.hpp"
-#include "Core/IScene.hpp"
-#include "Core/ICamera.hpp"
+#include <Math/Vector.hpp>
+#include <Core/IScene.hpp>
+#include <Core/ICamera.hpp>
+#include <Core/Texture.hpp>
 #include <vector>
+#include <map>
 
 class Renderer
 {
@@ -16,6 +18,7 @@ public:
 private:
 	void render(std::vector<IMesh*>& meshes, ICamera& camera);
 	void render(IMesh* mesh, ICamera& camera);
+	unsigned int getTexId(const Texture * tex);
 	#ifdef USE_DX12
 	#include "../private/inc/Rendering/Variants/RendererDX.hpp"
 	#else

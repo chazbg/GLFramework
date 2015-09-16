@@ -11,7 +11,6 @@ public:
 	Rectangle();
 	Rectangle(Vec2 topLeft, Vec2 bottomRight);
 	~Rectangle();
-	void attachTexture(const Texture& texture);
 	void SetTime(GLuint time);
 	GLuint GetTime();
 	unsigned int GetTexId();

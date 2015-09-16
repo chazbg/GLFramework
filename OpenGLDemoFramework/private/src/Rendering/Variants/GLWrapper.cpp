@@ -61,6 +61,14 @@ void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 void Renderer::render(IMesh* mesh, ICamera& camera)
 {
 	glUseProgram(mesh->getMaterial().getId());
+	std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
+
+	for (unsigned int i = 0; i < textures.size(); i++)
+	{
+		unsigned int texId = getTexId(textures[i]);
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, texId);
+	}
 
 	std::vector<IVertexBufferObject*> vbos = mesh->getVBOs();
 	for (unsigned int i = 0; i < vbos.size(); i++)
@@ -83,4 +91,20 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
 			glDisableVertexAttribArray(i);
 		}
 	}
+}
+
+unsigned int Renderer::getTexId(const Texture* tex)
+{
+	if (textures.find(tex->getId()) == textures.end())
+	{
+		textures[tex->getId()] = 0;
+		glGenTextures(1, &textures[tex->getId()]);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textures[tex->getId()]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->getWidth(), tex->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getData());
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+
+	return textures[tex->getId()];
 }

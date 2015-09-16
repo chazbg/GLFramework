@@ -7,7 +7,7 @@
 #include <Core/DefaultCamera.hpp>
 #include <Core/Scene.hpp>
 #include <Core/ShaderMaterial.hpp>
-
+#include <Core/TextureFactory.hpp>
 #include <iostream>
 using namespace std;
 
@@ -22,9 +22,11 @@ namespace FragmentShaderSandboxDemo
 		{ 
 			renderer = new Renderer();
 			TextureGenerator gen;
+			TextureFactory texFactory;
+			shaderMaterial = new ShaderMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/fragmentShaderSandbox.fs");
+			shaderMaterial->addTexture(texFactory.createTexture(256, 1, 4, (unsigned char*)gen.generateGradient()));
 			rectangle = new Rectangle();
-			rectangle->attachTexture(Texture(256, 1, 4, (unsigned char*) gen.generateGradient()));
-			rectangle->setMaterial(new ShaderMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/fragmentShaderSandbox.fs"));
+			rectangle->setMaterial(shaderMaterial);
 			scene.add(rectangle);
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
@@ -45,6 +47,7 @@ namespace FragmentShaderSandboxDemo
 		Scene scene;
 		Renderer* renderer;
 		Rectangle* rectangle;
+		ShaderMaterial* shaderMaterial;
 	};
 
 	void main()

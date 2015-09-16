@@ -187,6 +187,7 @@
     <ClInclude Include="private\inc\Core\Shader.hpp" />
     <ClInclude Include="private\inc\Core\ShaderMaterial.hpp" />
     <ClInclude Include="private\inc\Core\Texture.hpp" />
+    <ClInclude Include="private\inc\Core\TextureFactory.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
     <ClInclude Include="private\inc\Core\VertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />

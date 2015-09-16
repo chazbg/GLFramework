@@ -299,5 +299,8 @@
     <ClInclude Include="private\inc\Core\DefaultCamera.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureFactory.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
