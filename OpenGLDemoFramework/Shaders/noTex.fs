@@ -51,11 +51,21 @@ bool castRay(const vec3 ro, const vec3 rd, out float resT)
     
 void genRay(float x, float y, out vec3 origin, out vec3 dir)
 {
+	origin = vec3(0, 3.0 * abs(sin(float(time) * 0.01)), 3);
+	vec3 lookAt = vec3(0,0,0);
+	float near = 2.0;
+	vec3 za = (lookAt - origin) * (near / length(lookAt - origin));
+	vec3 up = vec3(0,1,0);
+	vec3 xa = normalize(cross(za, up));
+	vec3 ya = normalize(cross(xa, za));
+	vec3 p = origin + za;
+	p = p + xa * x + ya * y;
+	dir = p - origin;
     // origin = vec3(sin(float(time) * 0.02),0.5, sin(float(time)*0.01));
     // vec3 end = vec3(x,y,1.0);
-    origin = vec3(sin(time * 0.01f) * 2.0f, 2.0f, sin(time * 0.01f) * 2.0f);
-    vec3 end = vec3(x,0,y);
-    dir = end - origin;
+    //origin = vec3(sin(time * 0.01f) * 2.0f, 2.0f, sin(time * 0.01f) * 2.0f);
+    //vec3 end = vec3(x,0,y);
+    //dir = end - origin;
 }
 
 vec3 getNormal(vec3 p)
@@ -78,7 +88,7 @@ void main()
 {
     float res = 0;
     vec3 origin, dir;
-    genRay(interpolatedCoords.x,interpolatedCoords.y,origin,dir);
+    genRay((interpolatedCoords.x - 0.5) * 2.0,(interpolatedCoords.y - 0.5) * 2.0,origin,dir);
     if (castRay(origin, dir, res))
     {
         color = terrainColor(origin, dir, res);
