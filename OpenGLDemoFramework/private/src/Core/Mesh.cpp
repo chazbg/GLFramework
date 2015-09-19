@@ -103,19 +103,17 @@ void Mesh::BindUniform(string uniform)
 
 void Mesh::SetUniformValue(string uniform, const int v)
 {
-	glUseProgram(material->getId());
-	glUniform1i(uniforms[uniform], v);
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetUniformValue(string uniform, const unsigned int v)
 {
-	glUseProgram(material->getId());
-	glUniform1ui(uniforms[uniform], v);
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetUniformValue(string uniform, const Vec3& v)
 {
-	//TODO
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetUniformValue(string uniform, const Vec4& v)
@@ -125,8 +123,7 @@ void Mesh::SetUniformValue(string uniform, const Vec4& v)
 
 void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 {
-	glUseProgram(material->getId());
-	glUniformMatrix4fv(uniforms[uniform], 1, false, v.raw());
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetCastsShadow(const bool castsShadow)

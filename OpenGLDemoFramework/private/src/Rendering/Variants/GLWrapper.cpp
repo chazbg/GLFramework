@@ -60,7 +60,7 @@ void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 
 void Renderer::render(IMesh* mesh, ICamera& camera)
 {
-	glUseProgram(mesh->getMaterial().getId());
+    updateUniforms(mesh->getMaterial());
 	std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
 
 	for (unsigned int i = 0; i < textures.size(); i++)
@@ -107,4 +107,51 @@ unsigned int Renderer::getTexId(const Texture* tex)
 	}
 
 	return textures[tex->getId()];
+}
+
+void Renderer::updateUniforms(const IMaterial& material)
+{
+    unsigned int programId = material.getId();
+    map<string, float> fUniforms = material.getFloatProperties();
+    map<string, float>::iterator fIt;
+    map<string, int> iUniforms = material.getIntProperties();
+    map<string, int>::iterator iIt;
+    map<string, unsigned int> uiUniforms = material.getUintProperties();
+    map<string, unsigned int>::iterator uiIt;
+    map<string, Vec3> vUniforms = material.getVec3Properties();
+    map<string, Vec3>::iterator vIt;
+    map<string, Matrix4> mUniforms = material.getMatrix4Properties();
+    map<string, Matrix4>::iterator mIt;
+
+    glUseProgram(programId);
+
+    for (fIt = fUniforms.begin(); fIt != fUniforms.end(); fIt++)
+    {
+        int loc = glGetAttribLocation(programId, fIt->first.c_str());
+        glUniform1f(loc, fIt->second);
+    }
+
+    for (iIt = iUniforms.begin(); iIt != iUniforms.end(); iIt++)
+    {
+        int loc = glGetAttribLocation(programId, iIt->first.c_str());
+        glUniform1i(loc, iIt->second);
+    }
+
+    for (uiIt = uiUniforms.begin(); uiIt != uiUniforms.end(); uiIt++)
+    {
+        int loc = glGetAttribLocation(programId, uiIt->first.c_str());
+        glUniform1ui(loc, uiIt->second);
+    }
+
+    for (vIt = vUniforms.begin(); vIt != vUniforms.end(); vIt++)
+    {
+        int loc = glGetAttribLocation(programId, vIt->first.c_str());
+        glUniform3f(loc, vIt->second.x, vIt->second.y, vIt->second.z);
+    }
+
+    for (mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
+    {
+        int loc = glGetAttribLocation(programId, fIt->first.c_str());
+        glUniformMatrix4fv(loc, 1, false, mIt->second.raw());
+    }
 }
