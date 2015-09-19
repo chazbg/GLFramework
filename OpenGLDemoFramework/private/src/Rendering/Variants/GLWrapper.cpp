@@ -133,25 +133,25 @@ void Renderer::updateUniforms(const IMaterial& material)
 
     for (iIt = iUniforms.begin(); iIt != iUniforms.end(); iIt++)
     {
-        int loc = glGetAttribLocation(programId, iIt->first.c_str());
+        int loc = glGetUniformLocation(programId, iIt->first.c_str());
         glUniform1i(loc, iIt->second);
     }
 
     for (uiIt = uiUniforms.begin(); uiIt != uiUniforms.end(); uiIt++)
     {
-        int loc = glGetAttribLocation(programId, uiIt->first.c_str());
+        int loc = glGetUniformLocation(programId, uiIt->first.c_str());
         glUniform1ui(loc, uiIt->second);
     }
 
     for (vIt = vUniforms.begin(); vIt != vUniforms.end(); vIt++)
     {
-        int loc = glGetAttribLocation(programId, vIt->first.c_str());
+        int loc = glGetUniformLocation(programId, vIt->first.c_str());
         glUniform3f(loc, vIt->second.x, vIt->second.y, vIt->second.z);
     }
 
     for (mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
     {
-        int loc = glGetAttribLocation(programId, fIt->first.c_str());
+        int loc = glGetUniformLocation(programId, fIt->first.c_str());
         glUniformMatrix4fv(loc, 1, false, mIt->second.raw());
     }
 }

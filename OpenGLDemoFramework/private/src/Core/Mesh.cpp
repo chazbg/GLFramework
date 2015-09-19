@@ -96,11 +96,6 @@ IMaterial & Mesh::getMaterial() const
 	return *material;
 }
 
-void Mesh::BindUniform(string uniform)
-{
-	uniforms[uniform] = glGetUniformLocation(material->getId(), uniform.c_str());
-}
-
 void Mesh::SetUniformValue(string uniform, const int v)
 {
     material->setProperty(uniform, v);

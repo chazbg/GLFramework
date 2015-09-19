@@ -28,6 +28,7 @@ namespace FragmentShaderSandboxDemo
 			rectangle = new Rectangle();
 			rectangle->setMaterial(shaderMaterial);
 			scene.add(rectangle);
+            time = 0;
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
 		virtual void onRender(const unsigned int deltaTime) 
@@ -48,6 +49,7 @@ namespace FragmentShaderSandboxDemo
 		Renderer* renderer;
 		Rectangle* rectangle;
 		ShaderMaterial* shaderMaterial;
+        unsigned int time;
 	};
 
 	void main()

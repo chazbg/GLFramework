@@ -26,7 +26,6 @@ public:
 	virtual int getVertexCount() const;
 	virtual void setMaterial(IMaterial* material);
 	virtual IMaterial& getMaterial() const;
-	void BindUniform(string uniform);
 	void SetUniformValue(string uniform, const int v);
 	void SetUniformValue(string uniform, const unsigned int v);
 	void SetUniformValue(string uniform, const Vec3& v);
@@ -53,7 +52,6 @@ protected:
 	Matrix4 view;
 	Matrix4 model;
 	bool showWireframe;
-	map<string, GLuint> uniforms;
 	bool castsShadow;
 	bool receivesShadow;
 };
