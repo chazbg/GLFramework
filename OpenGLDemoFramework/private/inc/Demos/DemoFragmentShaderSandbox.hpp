@@ -24,7 +24,12 @@ namespace FragmentShaderSandboxDemo
 			TextureGenerator gen;
 			TextureFactory texFactory;
 			shaderMaterial = new ShaderMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/fragmentShaderSandbox.fs");
+            shaderMaterial->setProperty("sampler0", 0);
+            shaderMaterial->setProperty("sampler1", 1);
+            shaderMaterial->setProperty("sampler2", 2);
 			shaderMaterial->addTexture(texFactory.createTexture(256, 1, 4, (unsigned char*)gen.generateGradient()));
+            shaderMaterial->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(0.5)));
+            shaderMaterial->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(1)));
 			rectangle = new Rectangle();
 			rectangle->setMaterial(shaderMaterial);
 			scene.add(rectangle);
