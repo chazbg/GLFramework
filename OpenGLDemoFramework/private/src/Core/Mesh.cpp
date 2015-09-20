@@ -30,29 +30,9 @@ std::vector<IVertexBufferObject*>& Mesh::getVBOs()
 	return vbos;
 }
 
-void Mesh::setProjectionMatrix(const Matrix4 & projection)
-{
-	this->projection = projection;
-}
-
-void Mesh::setViewMatrix(const Matrix4 & view)
-{
-	this->view = view;
-}
-
 void Mesh::setModelMatrix(const Matrix4 & model)
 {
 	this->model = model;
-}
-
-Matrix4 Mesh::getProjectionMatrix() const
-{
-	return projection;
-}
-
-Matrix4 Mesh::getViewMatrix() const
-{
-	return view;
 }
 
 Matrix4 Mesh::getModelMatrix() const
@@ -128,7 +108,6 @@ void Mesh::SetReceivesShadow(const bool receivesShadow)
 void Mesh::SetPosition(const Vec3& position)
 {
 	model.setTranslation(position);
-	SetUniformValue("mvp", projection * view * model);
 }
 
 float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int vertexCount)
@@ -190,56 +169,5 @@ void Mesh::generateWireframe()
 	//	wireframeVertexBuffer[j + 16] = vertexBuffer[i + 1];
 	//	wireframeVertexBuffer[j + 17] = vertexBuffer[i + 2];
 	//	j += 18;
-	//}
-}
-
-void Mesh::activateNormalsBuffer()
-{
-	//if (normalsBuffer)
-	//{
-	//	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	//	glEnableVertexAttribArray(1);
-	//	glVertexAttribPointer(
-	//		1,
-	//		3,
-	//		GL_FLOAT,
-	//		GL_FALSE,
-	//		0,
-	//		BUFFER_OFFSET(0)
-	//		);
-	//}
-}
-
-void Mesh::activateTexCoordsBuffer()
-{
-
-	//if (texCoordsBuffer)
-	//{
-	//	glBindBuffer(GL_ARRAY_BUFFER, texCoordsBufferID);
-	//	glEnableVertexAttribArray(2);
-	//	glVertexAttribPointer(
-	//		2,
-	//		2,
-	//		GL_FLOAT,
-	//		GL_FALSE,
-	//		0,
-	//		BUFFER_OFFSET(0)
-	//		);
-	//}
-}
-
-void Mesh::deactivateNormalsBuffer()
-{
-	//if (normalsBuffer)
-	//{
-	//	glDisableVertexAttribArray(1);
-	//}
-}
-
-void Mesh::deactivateTexCoordsBuffer()
-{
-	//if (texCoordsBuffer)
-	//{
-	//	glDisableVertexAttribArray(2);
 	//}
 }

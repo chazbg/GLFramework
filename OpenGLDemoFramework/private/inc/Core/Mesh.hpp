@@ -13,11 +13,7 @@ public:
 	Mesh();
 	~Mesh();
 	virtual std::vector<IVertexBufferObject*>& getVBOs();
-	virtual void setProjectionMatrix(const Matrix4& projection);
-	virtual void setViewMatrix(const Matrix4& view);
 	virtual void setModelMatrix(const Matrix4& model);
-	virtual Matrix4 getProjectionMatrix() const;
-	virtual Matrix4 getViewMatrix() const;
 	virtual Matrix4 getModelMatrix() const;
 	virtual void setWireframeMode(const bool showWireframe);
 	virtual void setVertices(const IVertexBufferObject& vertices);
@@ -36,16 +32,10 @@ public:
 protected:
     float* generateNormals(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();
-	void activateNormalsBuffer();
-	void activateTexCoordsBuffer();
-	void deactivateNormalsBuffer();
-	void deactivateTexCoordsBuffer();
 	IMaterial* material;
 	std::vector<IVertexBufferObject*> vbos;
 	float* wireframeVertexBuffer;
 	GLuint wireframeVertexBufferID;
-	Matrix4 projection;
-	Matrix4 view;
 	Matrix4 model;
 	bool showWireframe;
 	bool castsShadow;

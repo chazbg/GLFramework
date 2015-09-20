@@ -150,6 +150,7 @@
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
     <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
+    <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
     <ClCompile Include="private\src\Core\PlaneGenerator.cpp" />
     <ClCompile Include="private\src\Core\Scene.cpp" />
     <ClCompile Include="private\src\Core\Shader.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="private\inc\Core\IScene.hpp" />
     <ClInclude Include="private\inc\Core\IVertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Core\Mesh.hpp" />
+    <ClInclude Include="private\inc\Core\PerspectiveCamera.hpp" />
     <ClInclude Include="private\inc\Core\PlaneGenerator.hpp" />
     <ClInclude Include="private\inc\Core\Scene.hpp" />
     <ClInclude Include="private\inc\Core\Shader.hpp" />

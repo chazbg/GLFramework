@@ -60,6 +60,7 @@ void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 
 void Renderer::render(IMesh* mesh, ICamera& camera)
 {
+    mesh->getMaterial().setProperty("mvp", camera.getViewMatrix() * mesh->getModelMatrix());
     updateUniforms(mesh->getMaterial());
 	std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
 
@@ -151,7 +152,7 @@ void Renderer::updateUniforms(const IMaterial& material)
 
     for (mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
     {
-        int loc = glGetUniformLocation(programId, fIt->first.c_str());
+        int loc = glGetUniformLocation(programId, mIt->first.c_str());
         glUniformMatrix4fv(loc, 1, false, mIt->second.raw());
     }
 }
