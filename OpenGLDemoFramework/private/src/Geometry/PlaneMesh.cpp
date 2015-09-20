@@ -110,34 +110,34 @@ void PlaneMesh::UseProgram()
 	glUseProgram(programID);
 }
 
-void PlaneMesh::Render()
-{
-	UseProgram();
-	SetTime(time + 1);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-		);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(
-		1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-		);
-	//glDrawArrays(GL_LINES, 0, vertexCount * 2);
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-}
+//void PlaneMesh::Render()
+//{
+//	UseProgram();
+//	SetTime(time + 1);
+//	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+//	glEnableVertexAttribArray(0);
+//	glVertexAttribPointer(
+//		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+//		3,                  // size
+//		GL_FLOAT,           // type
+//		GL_FALSE,           // normalized?
+//		0,                  // stride
+//		(void*)0            // array buffer offset
+//		);
+//	
+//	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
+//	glEnableVertexAttribArray(1);
+//	glVertexAttribPointer(
+//		1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+//		3,                  // size
+//		GL_FLOAT,           // type
+//		GL_FALSE,           // normalized?
+//		0,                  // stride
+//		(void*)0            // array buffer offset
+//		);
+//	//glDrawArrays(GL_LINES, 0, vertexCount * 2);
+//	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+//
+//	glDisableVertexAttribArray(0);
+//	glDisableVertexAttribArray(1);
+//}

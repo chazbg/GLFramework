@@ -21,7 +21,7 @@ Rectangle::~Rectangle()
 
 void Rectangle::init()
 {
-	vertexCount = 6;
+	unsigned int vertexCount = 6;
 	time = 0;
 	
 	float* vertexBuffer = genVertices();

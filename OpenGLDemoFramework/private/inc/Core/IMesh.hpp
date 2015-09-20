@@ -20,7 +20,6 @@ public:
 	virtual void setVertices(const IVertexBufferObject& vertices) = 0;
 	virtual void setNormals(const IVertexBufferObject& normals) = 0;
 	virtual void setTexCoords(const IVertexBufferObject& texCoords) = 0;
-	virtual int getVertexCount() const = 0;
 	virtual void setMaterial(IMaterial* material) = 0;
 	virtual IMaterial& getMaterial() const = 0;
 };

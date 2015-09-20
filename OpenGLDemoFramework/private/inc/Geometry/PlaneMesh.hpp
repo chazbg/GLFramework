@@ -10,7 +10,7 @@ public:
 	GLuint GetTime();
 
 	void UseProgram();
-	void Render();
+	//void Render();
 private:
 	GLuint vertexBufferID;
 	GLuint normalsBufferID;

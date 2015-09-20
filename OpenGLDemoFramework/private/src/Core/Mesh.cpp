@@ -8,7 +8,6 @@
 #define BUFFER_OFFSET(i) ((void*)(i))
 
 Mesh::Mesh() : 
-vertexCount(0),
 material(0),
 wireframeVertexBuffer(0),
 showWireframe(false),
@@ -81,11 +80,6 @@ void Mesh::setTexCoords(const IVertexBufferObject & texCoords)
 	vbos[2] = &const_cast<IVertexBufferObject&>(texCoords);
 }
 
-int Mesh::getVertexCount() const
-{
-	return vertexCount;
-}
-
 void Mesh::setMaterial(IMaterial * material)
 {
 	this->material = material;
@@ -131,42 +125,39 @@ void Mesh::SetReceivesShadow(const bool receivesShadow)
 	this->receivesShadow = receivesShadow;
 }
 
-void Mesh::SetTexture(const Texture& tex)
-{
-	//TODO
-}
-
 void Mesh::SetPosition(const Vec3& position)
 {
 	model.setTranslation(position);
 	SetUniformValue("mvp", projection * view * model);
 }
 
-void Mesh::generateNormals()
+float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int vertexCount)
 {
-	//normalsBuffer = new float[vertexCount * 3];
+	float* normalsBuffer = new float[vertexCount * 3];
 
-	//for (unsigned int i = 0; i < vertexCount * 3; i += 9)
-	//{
-	//	Vec3 a(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
-	//	Vec3 b(vertexBuffer[i + 3], vertexBuffer[i + 4], vertexBuffer[i + 5]);
-	//	Vec3 c(vertexBuffer[i + 6], vertexBuffer[i + 7], vertexBuffer[i + 8]);
-	//	Vec3 cb = c - b;
-	//	Vec3 ab = a - b;
-	//	Vec3 res = (cb * ab).normalize();
+	for (unsigned int i = 0; i < vertexCount * 3; i += 9)
+	{
+		Vec3 a(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
+		Vec3 b(vertexBuffer[i + 3], vertexBuffer[i + 4], vertexBuffer[i + 5]);
+		Vec3 c(vertexBuffer[i + 6], vertexBuffer[i + 7], vertexBuffer[i + 8]);
+		Vec3 cb = c - b;
+		Vec3 ab = a - b;
+		Vec3 res = (cb * ab).normalize();
 
-	//	normalsBuffer[i] = res.x;
-	//	normalsBuffer[i + 1] = res.y;
-	//	normalsBuffer[i + 2] = res.z;
+		normalsBuffer[i] = res.x;
+		normalsBuffer[i + 1] = res.y;
+		normalsBuffer[i + 2] = res.z;
 
-	//	normalsBuffer[i + 3] = res.x;
-	//	normalsBuffer[i + 4] = res.y;
-	//	normalsBuffer[i + 5] = res.z;
+		normalsBuffer[i + 3] = res.x;
+		normalsBuffer[i + 4] = res.y;
+		normalsBuffer[i + 5] = res.z;
 
-	//	normalsBuffer[i + 6] = res.x;
-	//	normalsBuffer[i + 7] = res.y;
-	//	normalsBuffer[i + 8] = res.z;
-	//}
+		normalsBuffer[i + 6] = res.x;
+		normalsBuffer[i + 7] = res.y;
+		normalsBuffer[i + 8] = res.z;
+	}
+
+    return normalsBuffer;
 }
 
 void Mesh::generateWireframe()

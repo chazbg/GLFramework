@@ -23,7 +23,6 @@ public:
 	virtual void setVertices(const IVertexBufferObject& vertices);
 	virtual void setNormals(const IVertexBufferObject& normals);
 	virtual void setTexCoords(const IVertexBufferObject& texCoords);
-	virtual int getVertexCount() const;
 	virtual void setMaterial(IMaterial* material);
 	virtual IMaterial& getMaterial() const;
 	void SetUniformValue(string uniform, const int v);
@@ -33,17 +32,14 @@ public:
 	void SetUniformValue(string uniform, const Matrix4& v);
 	void SetCastsShadow(const bool castsShadow);
 	void SetReceivesShadow(const bool receivesShadow);
-	void SetTexture(const Texture& tex);
 	void SetPosition(const Vec3& position);
 protected:
-	void generateNormals();
+    float* generateNormals(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();
 	void activateNormalsBuffer();
 	void activateTexCoordsBuffer();
 	void deactivateNormalsBuffer();
 	void deactivateTexCoordsBuffer();
-	unsigned int vertexCount;
-	unsigned char vertexSize;
 	IMaterial* material;
 	std::vector<IVertexBufferObject*> vbos;
 	float* wireframeVertexBuffer;

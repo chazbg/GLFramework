@@ -82,7 +82,7 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
 	}
 
 	//TODO: Strategy pattern
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei) mesh->getVertexCount());
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vbos[0]->getVertexCount());
 
 	for (unsigned int i = 0; i < vbos.size(); i++)
 	{
