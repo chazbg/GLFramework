@@ -6,6 +6,10 @@
 #include <Core/Texture.hpp>
 #include <vector>
 #include <map>
+#include <Core/ShaderMaterial.hpp>
+#include <Geometry/Rectangle.hpp>
+#include <Core/FrameBuffer.hpp>
+#include <Core/TextureFactory.hpp>
 
 class Renderer
 {

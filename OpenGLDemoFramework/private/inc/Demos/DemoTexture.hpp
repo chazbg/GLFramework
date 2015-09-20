@@ -28,16 +28,12 @@ namespace TexDemo
 		{
 			renderer = new Renderer();
 
-			TextureGenerator gen;
-            TextureFactory texFactory;
 			time = 0;
 			stopTime = false;
 			cameraPos = Vec3(0, 15, 25);
 			meshPos = Vec3(-10.0, 3, 0);
 			prevDir = Vec3(0.01f, 0.1f, 0);
-            depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
             cubeMat = new ShaderMaterial("Shaders/cube.vs", "Shaders/cube.fs");
-            rectMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
 			c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
 			c1->SetPosition(Vec3(0, -1, 0));
             c1->setMaterial(cubeMat);
@@ -57,10 +53,6 @@ namespace TexDemo
             meshes[4]->setMaterial(cubeMat);
 			//meshes[4]->SetPosition(Vec3(0, 10, 0));
 
-			r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
-            rectMat->addTexture(texFactory.createTexture(800, 800, 4, 0));
-            r->setMaterial(rectMat);
-			fb = new FrameBuffer();
             scene.add(c1);
             //scene.add(r);
             scene.add(meshes[0]);
@@ -94,13 +86,10 @@ namespace TexDemo
 		{
 			delete renderer;
 			delete c1;
-			for (unsigned int i = 0; i < meshes.size(); i++)
-			{
-				delete meshes[i];
-			}
-
-			delete r;
-			delete fb;
+            for (unsigned int i = 0; i < meshes.size(); i++)
+            {
+                delete meshes[i];
+            }
 		}
 		virtual void onEvent(const unsigned int event) { cout << "onEvent: " << event << endl; }
 		virtual void onMouseEvent(int button, int state, int x, int y) 
@@ -154,8 +143,6 @@ namespace TexDemo
 		Renderer* renderer;
 		BlockMesh* c1;
 		vector<BlockMesh*> meshes;
-		Rectangle* r;
-		FrameBuffer* fb;
 		unsigned int time;
 		bool stopTime;
 		Vec3 cameraPos;
@@ -163,9 +150,7 @@ namespace TexDemo
 		Vec3 prevDir;
         Scene scene;
         PerspectiveCamera camera;
-        ShaderMaterial* depthMat;
         ShaderMaterial* cubeMat;
-        ShaderMaterial* rectMat;
 	};
 
 	void main()

@@ -3,6 +3,7 @@
 #include "Core/Shader.hpp"
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -18,6 +19,19 @@ Renderer::Renderer()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_PROGRAM_POINT_SIZE);
+
+    rectMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
+    depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
+   
+    TextureFactory texFactory;
+    shadowMap = texFactory.createTexture(800, 800, 4, 0);
+
+    rectMat->addTexture(shadowMap);
+    depthMat->addTexture(shadowMap);
+
+    r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
+    r->setMaterial(rectMat);
+    fb = new FrameBuffer();
 }
 
 
@@ -47,6 +61,7 @@ void Renderer::setDepthTest(const bool enabled)
 
 void Renderer::render(IScene& scene, ICamera& camera)
 {
+    renderToTexture(scene.getChildren(), camera);
 	render(scene.getChildren(), camera);
 }
 
@@ -155,4 +170,57 @@ void Renderer::updateUniforms(const IMaterial& material)
         int loc = glGetUniformLocation(programId, mIt->first.c_str());
         glUniformMatrix4fv(loc, 1, false, mIt->second.raw());
     }
+}
+
+void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera)
+{
+    unsigned int fbo = fb->getFbo();
+    unsigned int texId = getTexId(shadowMap);
+    Vec3 cameraPos = camera.getPosition();
+    camera.setPosition(Vec3(0, 15, 25));
+    std::vector<IMaterial*> originalMaterials;
+    for (unsigned int i = 0; i < meshes.size(); i++)
+    {
+        originalMaterials.push_back(&meshes[i]->getMaterial());
+        meshes[i]->setMaterial(depthMat);
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+    glBindTexture(GL_TEXTURE_2D, texId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 800, 800, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texId, 0);
+
+    glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+
+                           // Always check that our framebuffer is ok
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        printf("INVALID\n");
+
+    render(meshes, camera);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    for (unsigned int i = 0; i < meshes.size(); i++)
+    {
+        originalMaterials[i]->setProperty("depthMvp", camera.getViewMatrix() * meshes[i]->getModelMatrix());
+        vector<const Texture*> textures = originalMaterials[i]->getTextures();
+        vector<const Texture*>::iterator it = find(textures.begin(), textures.end(), shadowMap);
+        if (textures.end() == it)
+        {
+            originalMaterials[i]->addTexture(shadowMap);
+        }
+        meshes[i]->setMaterial(originalMaterials[i]);
+    }
+    camera.setPosition(cameraPos);
+
+    render(r, camera);
 }

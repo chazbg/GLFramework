@@ -11,8 +11,8 @@ public:
 	~ShaderMaterial();
 	virtual int getId() const;
 	virtual vector<const Texture*> getTextures() const;
-	void addTexture(const Texture* tex);
-	void removeTexture(const Texture* tex);
+    virtual void addTexture(const Texture* tex);
+    virtual void removeTexture(const Texture* tex);
     virtual map<string, int>          getIntProperties() const;
     virtual map<string, unsigned int> getUintProperties() const;
     virtual map<string, float>        getFloatProperties() const;
