@@ -29,6 +29,7 @@ public:
 	void SetCastsShadow(const bool castsShadow);
 	void SetReceivesShadow(const bool receivesShadow);
 	void SetPosition(const Vec3& position);
+    void SetRotation(const float thetaX, const float thetaY, const float thetaZ);
 protected:
     float* generateNormals(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();

@@ -110,6 +110,11 @@ void Mesh::SetPosition(const Vec3& position)
 	model.setTranslation(position);
 }
 
+void Mesh::SetRotation(const float thetaX, const float thetaY, const float thetaZ)
+{
+    model.setRotation(thetaX, thetaY, thetaZ);
+}
+
 float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int vertexCount)
 {
 	float* normalsBuffer = new float[vertexCount * 3];

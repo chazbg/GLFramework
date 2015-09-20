@@ -4,13 +4,16 @@
 #include "Rendering/Renderer.hpp"
 #include "Geometry/Rectangle.hpp"
 #include "Core/TextureGenerator.hpp"
-#include "Geometry/Cube.hpp"
 #include "Geometry/BlockMesh.hpp"
 #include "Core/FrameBuffer.hpp"
 #include "Math/GeometryAlgorithm.hpp"
 #include "Geometry/Triangle.hpp"
 #include <GL/glew.h>
 #include <vector>
+#include <Core/PerspectiveCamera.hpp>
+#include <Core/Scene.hpp>
+#include <Core/ShaderMaterial.hpp>
+#include <Core/TextureFactory.hpp>
 
 using namespace std;
 
@@ -26,73 +29,61 @@ namespace TexDemo
 			renderer = new Renderer();
 
 			TextureGenerator gen;
+            TextureFactory texFactory;
 			time = 0;
 			stopTime = false;
 			cameraPos = Vec3(0, 15, 25);
 			meshPos = Vec3(-10.0, 3, 0);
 			prevDir = Vec3(0.01f, 0.1f, 0);
+            depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
+            cubeMat = new ShaderMaterial("Shaders/cube.vs", "Shaders/cube.fs");
+            rectMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
 			c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
 			c1->SetPosition(Vec3(0, -1, 0));
+            c1->setMaterial(cubeMat);
 			meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
 			meshes[0]->SetPosition(Vec3(-2, -1, -6));
+            meshes[0]->setMaterial(cubeMat);
 			meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
 			meshes[1]->SetPosition(Vec3(2, -1, 6));
+            meshes[1]->setMaterial(cubeMat);
 			meshes.push_back(new BlockMesh(20.0f, 0.2f, 20.0f));
 			meshes[2]->SetPosition(Vec3(0, -3, 0));
+            meshes[2]->setMaterial(cubeMat);
 			meshes.push_back(new BlockMesh(20.0f, 20.0f, 0.2f));
 			meshes[3]->SetPosition(Vec3(0, -3, -10));
-			meshes.push_back(new BlockMesh(0.5f, 0.5f, 0.5f));
+            meshes[3]->setMaterial(cubeMat);
+            meshes.push_back(new BlockMesh(0.5f, 0.5f, 0.5f));
+            meshes[4]->setMaterial(cubeMat);
 			//meshes[4]->SetPosition(Vec3(0, 10, 0));
 
 			r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
-			r->attachTexture(Texture(800, 800, 4, 0));
-
+            rectMat->addTexture(texFactory.createTexture(800, 800, 4, 0));
+            r->setMaterial(rectMat);
 			fb = new FrameBuffer();
+            scene.add(c1);
+            //scene.add(r);
+            scene.add(meshes[0]);
+            scene.add(meshes[1]);
+            scene.add(meshes[2]);
+            scene.add(meshes[3]);
+            scene.add(meshes[4]);
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
 		virtual void onRender(const unsigned int deltaTime)
 		{
 			renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
-			c1->setTime(time);
-			meshes[0]->setTime(time);
-			meshes[1]->setTime(time);
-
-			c1->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-			c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 15, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-			c1->RenderToTexture(fb->getFbo(), r->GetTexId());
-
-			glBindFramebuffer(GL_FRAMEBUFFER, fb->getFbo());
-
-			for (int i = 0; i < meshes.size(); i++)
-			{
-				meshes[i]->SetShaders("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-				meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(Vec3(0, 15, 25), Vec3(0, 0, 0), Vec3(0, 1, 0)));
-				meshes[i]->Render();
-			}
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			r->Render();
-
-			c1->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-			c1->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(cameraPos, Vec3(0, 0, 0), Vec3(0, 1, 0)));
-			c1->Render();
-
-
-			for (int i = 0; i < meshes.size(); i++)
-			{
-				meshes[i]->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-				meshes[i]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(cameraPos, Vec3(0, 0, 0), Vec3(0, 1, 0)));
-				meshes[i]->Render();
-			}
+            camera.setPosition(cameraPos);
 
 			prevDir += Vec3(0, -0.001f, 0);
 			meshPos += prevDir;
 			meshes[4]->SetPosition(meshPos);
-			meshes[4]->SetShaders("Shaders/cube.vs", "Shaders/cube.fs");
-			meshes[4]->SetViewMatrix(GeometryAlgorithm::CreateLookAtMatrix(cameraPos, Vec3(0, 0, 0), Vec3(0, 1, 0)));
-			meshes[4]->Render();
 
+            c1->SetRotation(0, time * 0.01f, 0);
+            meshes[0]->SetRotation(0, time * 0.01f, 0);
+            meshes[1]->SetRotation(0, time * 0.01f, 0);
+            renderer->render(scene, camera);
 			if (!stopTime)
 			{
 				time++;
@@ -170,6 +161,11 @@ namespace TexDemo
 		Vec3 cameraPos;
 		Vec3 meshPos;
 		Vec3 prevDir;
+        Scene scene;
+        PerspectiveCamera camera;
+        ShaderMaterial* depthMat;
+        ShaderMaterial* cubeMat;
+        ShaderMaterial* rectMat;
 	};
 
 	void main()
