@@ -32,8 +32,9 @@ Renderer::Renderer()
     r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
     r->setMaterial(rectMat);
     fb = new FrameBuffer();
-}
 
+    lightCamera.setPosition(Vec3(0, 15, 25));
+}
 
 Renderer::~Renderer()
 {
@@ -75,7 +76,9 @@ void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 
 void Renderer::render(IMesh* mesh, ICamera& camera)
 {
-    mesh->getMaterial().setProperty("mvp", camera.getViewMatrix() * mesh->getModelMatrix());
+    mesh->getMaterial().setProperty("depthMvp", lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
+    mesh->getMaterial().setProperty("mvp", camera.getViewProjectionMatrix() * mesh->getModelMatrix());
+    mesh->getMaterial().setProperty("mv", camera.getViewMatrix() * mesh->getModelMatrix());
     updateUniforms(mesh->getMaterial());
 	std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
 
@@ -176,8 +179,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     unsigned int fbo = fb->getFbo();
     unsigned int texId = getTexId(shadowMap);
-    Vec3 cameraPos = camera.getPosition();
-    camera.setPosition(Vec3(0, 15, 25));
+
     std::vector<IMaterial*> originalMaterials;
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
@@ -205,13 +207,12 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera)
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         printf("INVALID\n");
 
-    render(meshes, camera);
+    render(meshes, lightCamera);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        originalMaterials[i]->setProperty("depthMvp", camera.getViewMatrix() * meshes[i]->getModelMatrix());
         vector<const Texture*> textures = originalMaterials[i]->getTextures();
         vector<const Texture*>::iterator it = find(textures.begin(), textures.end(), shadowMap);
         if (textures.end() == it)
@@ -220,7 +221,6 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera)
         }
         meshes[i]->setMaterial(originalMaterials[i]);
     }
-    camera.setPosition(cameraPos);
 
     render(r, camera);
 }

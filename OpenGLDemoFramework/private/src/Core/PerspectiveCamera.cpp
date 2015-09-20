@@ -28,5 +28,10 @@ Vec3 PerspectiveCamera::getLookDirection() const
 
 Matrix4 PerspectiveCamera::getViewMatrix() const
 {
+    return GeometryAlgorithm::CreateLookAtMatrix(pos, lookAt, Vec3(0, 1, 0));   
+}
+
+Matrix4 PerspectiveCamera::getViewProjectionMatrix() const
+{
     return perspective * GeometryAlgorithm::CreateLookAtMatrix(pos, lookAt, Vec3(0, 1, 0));
 }

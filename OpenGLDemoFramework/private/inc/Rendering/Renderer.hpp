@@ -10,6 +10,7 @@
 #include <Geometry/Rectangle.hpp>
 #include <Core/FrameBuffer.hpp>
 #include <Core/TextureFactory.hpp>
+#include <Core/PerspectiveCamera.hpp>
 
 class Renderer
 {

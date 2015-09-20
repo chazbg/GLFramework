@@ -5,5 +5,6 @@ ShaderMaterial* rectMat;
 Rectangle* r;
 FrameBuffer* fb;
 Texture* shadowMap;
+PerspectiveCamera lightCamera;
 void updateUniforms(const IMaterial& material);
 void renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera);
