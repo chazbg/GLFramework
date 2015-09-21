@@ -57,9 +57,11 @@ namespace TexDemo
             //scene.add(r);
             scene.add(meshes[0]);
             scene.add(meshes[1]);
-            scene.add(meshes[2]);
-            scene.add(meshes[3]);
-            scene.add(meshes[4]);
+            //scene.add(meshes[2]);
+            //scene.add(meshes[3]);
+            //scene.add(meshes[4]);
+
+            prevMousePos = Vec2(0.5, 0.5);
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
 		virtual void onRender(const unsigned int deltaTime)
@@ -98,47 +100,68 @@ namespace TexDemo
 			stopTime = !stopTime;
 		}
 
-		virtual void onKeyboardEvent(unsigned char c, int x, int y) 
-		{ 
-			cout << c << " " << x << " " << y << endl; 
-			stopTime = !stopTime;
+        virtual void onKeyboardEvent(unsigned char c, int x, int y)
+        {
+            cout << c << " " << x << " " << y << endl;
+            stopTime = !stopTime;
+            Vec3 zAxis = (-cameraPos).normalize();
+            Vec3 up(0, 1, 0);
+            Vec3 xAxis = (zAxis * up).normalize();
+            Vec3 yAxis = xAxis * zAxis;
 
-			switch (c)
-			{
+            switch (c)
+            {
 
-			case 'j':
-				time -= 5;
-				break;
-			case 'l':
-				time += 5;
-				break;
-			case 'a':
-				cameraPos.x -= 1;
-				break;
-			case 's':
-				cameraPos.y -= 1;
-				break;
-			case 'd':
-				cameraPos.x += 1;
-				break;
-			case 'w':
-				cameraPos.y += 1;
-				break;
-			case 'q':
-				cameraPos.z -= 1;
-				break;
-			case 'e':
-				cameraPos.z += 1;
-				break;
-			case 'r':
-				meshPos = Vec3(-10.0, 3, 0);
-				prevDir = Vec3(0.01f, 0.1f, 0);
-				break;
-			default:
-				stopTime = !stopTime;
-				break;
-			}
-		}
+            case 'j':
+                time -= 5;
+                break;
+            case 'l':
+                time += 5;
+                break;
+            case 'a':
+                cameraPos -= xAxis;
+                break;
+            case 's':
+                cameraPos -= yAxis;
+                break;
+            case 'd':
+                cameraPos += xAxis;
+                break;
+            case 'w':
+                cameraPos += yAxis;
+                break;
+            case 'q':
+                cameraPos -= zAxis;
+                break;
+            case 'e':
+                cameraPos += zAxis;
+                break;
+            case 'r':
+                meshPos = Vec3(-10.0, 3, 0);
+                prevDir = Vec3(0.01f, 0.1f, 0);
+                break;
+            default:
+                stopTime = !stopTime;
+                break;
+            }
+        }
+
+        virtual void onMouseMove(int x, int y)
+        {
+            float nx = x / 800.0f;
+            float ny = y / 800.0f;
+            Vec2 delta = Vec2(nx, ny) - prevMousePos;
+
+            Vec3 zAxis = (-cameraPos).normalize();
+            Vec3 up(0, 1, 0);
+            Vec3 xAxis = (zAxis * up).normalize();
+            Vec3 yAxis = xAxis * zAxis;
+
+            cameraPos -= xAxis * delta.x * 50;
+            cameraPos += yAxis * delta.y * 50;
+
+            prevMousePos = Vec2(nx, ny);
+        }
 	private:
 		Renderer* renderer;
 		BlockMesh* c1;
@@ -151,6 +174,7 @@ namespace TexDemo
         Scene scene;
         PerspectiveCamera camera;
         ShaderMaterial* cubeMat;
+        Vec2 prevMousePos;
 	};
 
 	void main()
