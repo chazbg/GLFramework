@@ -88,8 +88,16 @@ public:
 		return this->operator std::string();
 	}
 
-	const float* raw() const
+	const float* raw()
 	{
+        for (int i = 0; i < 4; i++)
+        {
+            rawData[i * 4] = m[0].raw()[i];
+            rawData[i * 4 + 1] = m[1].raw()[i];
+            rawData[i * 4 + 2] = m[2].raw()[i];
+            rawData[i * 4 + 3] = m[3].raw()[i];
+        }
+
 		return rawData;
 	}
 

@@ -21,8 +21,7 @@ void main(){
 
     vec4 n = normalize(mv * normalize(vec4(normal,0)));
     gl_Position = mvp * vec4(vertexPosition_modelspace,1.0);
-
-    inColor = vec3(dot(n.xyz, light),0,0);
+    inColor = dot(n.xyz, light) * vec3(1,0,0);
     vec4 sc = shadowBias * depthMvp * vec4(vertexPosition_modelspace,1.0);
     shadowCoord = sc;
 }

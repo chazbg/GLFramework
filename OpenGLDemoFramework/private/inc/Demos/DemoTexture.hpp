@@ -57,9 +57,9 @@ namespace TexDemo
             //scene.add(r);
             scene.add(meshes[0]);
             scene.add(meshes[1]);
-            //scene.add(meshes[2]);
-            //scene.add(meshes[3]);
-            //scene.add(meshes[4]);
+            scene.add(meshes[2]);
+            scene.add(meshes[3]);
+            scene.add(meshes[4]);
 
             prevMousePos = Vec2(0.5, 0.5);
 		}
