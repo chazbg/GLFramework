@@ -85,6 +85,8 @@ namespace TexDemo
             c1->SetRotation(0, time * 0.01f, 0);
             meshes[0]->SetRotation(0, time * 0.01f, 0);
             meshes[1]->SetRotation(0, time * 0.01f, 0);
+            cubeTexturedMat->setProperty("time", time);
+
             renderer->render(scene, camera);
 			if (!stopTime)
 			{

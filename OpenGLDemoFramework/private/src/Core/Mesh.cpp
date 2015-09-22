@@ -146,13 +146,13 @@ float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int verte
 
 float* Mesh::generateUVs(const float* vertexBuffer, const unsigned int vertexCount)
 {
-    float* uvBuffer = new float[vertexCount * 3];
+    float* uvBuffer = new float[vertexCount * 2];
 
     unsigned int j = 0;
     for (unsigned int i = 0; i < vertexCount * 3; i += 3, j += 2)
     {
         Vec3 v(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
-
+        v = v.normalize();
         uvBuffer[j] = asinf(v.x) / 3.14f + 0.5f;
         uvBuffer[j + 1] = asinf(v.y) / 3.14f + 0.5f;
     }
