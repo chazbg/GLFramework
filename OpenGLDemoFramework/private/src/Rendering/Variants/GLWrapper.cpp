@@ -79,7 +79,6 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
     mesh->getMaterial().setProperty("depthMvp", lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
     mesh->getMaterial().setProperty("mvp", camera.getViewProjectionMatrix() * mesh->getModelMatrix());
     mesh->getMaterial().setProperty("mv", mesh->getModelMatrix());
-    mesh->getMaterial().setProperty("sampler", 0);
     updateUniforms(mesh->getMaterial());
 	std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
 

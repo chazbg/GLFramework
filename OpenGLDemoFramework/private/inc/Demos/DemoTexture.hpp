@@ -28,15 +28,23 @@ namespace TexDemo
 		{
 			renderer = new Renderer();
 
+            TextureFactory texFactory;
+            TextureGenerator gen;
+ 
 			time = 0;
 			stopTime = false;
 			cameraPos = Vec3(0, 15, 25);
 			meshPos = Vec3(-10.0, 3, 0);
 			prevDir = Vec3(0.01f, 0.1f, 0);
             cubeMat = new ShaderMaterial("Shaders/cube.vs", "Shaders/cube.fs");
+            cubeTexturedMat = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+            cubeTexturedMat->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*) gen.generatePerlinNoise(1)));
+            cubeTexturedMat->setProperty("colorMap", 0);
+            cubeTexturedMat->setProperty("sampler", 1);
+
 			c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
 			c1->SetPosition(Vec3(0, -1, 0));
-            c1->setMaterial(cubeMat);
+            c1->setMaterial(cubeTexturedMat);
 			meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
 			meshes[0]->SetPosition(Vec3(-2, -1, -6));
             meshes[0]->setMaterial(cubeMat);
@@ -174,6 +182,7 @@ namespace TexDemo
         Scene scene;
         PerspectiveCamera camera;
         ShaderMaterial* cubeMat;
+        ShaderMaterial* cubeTexturedMat;
         Vec2 prevMousePos;
 	};
 

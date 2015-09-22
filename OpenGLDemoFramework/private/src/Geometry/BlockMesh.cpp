@@ -9,21 +9,26 @@ length(length)
 	unsigned int vertexCount = 36; //6 sides * 2 triangles * 3 vertices
 	float* vb = genVerts();
     float* normalBuffer = generateNormals(vb, vertexCount);
+    float* uvBuffer = generateUVs(vb, vertexCount);
 
     vertices = new VertexBufferObject(vb, vertexCount, 3);
     normals = new VertexBufferObject(normalBuffer, vertexCount, 3);
+    uvs = new VertexBufferObject(uvBuffer, vertexCount, 2);
 
     setVertices(*vertices);
     setNormals(*normals);
+    setTexCoords(*uvs);
 
     delete[] vb;
     delete[] normalBuffer;
+    delete[] uvBuffer;
 }
 
 BlockMesh::~BlockMesh()
 {
     delete[] vertices;
     delete[] normals;
+    delete[] uvs;
 }
 
 //void BlockMesh::Render()

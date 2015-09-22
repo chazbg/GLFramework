@@ -32,6 +32,7 @@ public:
     void SetRotation(const float thetaX, const float thetaY, const float thetaZ);
 protected:
     float* generateNormals(const float* vertexBuffer, const unsigned int vertexCount);
+    float* generateUVs(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();
 	IMaterial* material;
 	std::vector<IVertexBufferObject*> vbos;

@@ -156,6 +156,7 @@
     <ClCompile Include="private\src\Core\Shader.cpp" />
     <ClCompile Include="private\src\Core\ShaderMaterial.cpp" />
     <ClCompile Include="private\src\Core\Texture.cpp" />
+    <ClCompile Include="private\src\Core\TextureFactory.cpp" />
     <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
     <ClCompile Include="private\src\Geometry\Bar.cpp" />
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />

@@ -144,6 +144,22 @@ float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int verte
     return normalsBuffer;
 }
 
+float* Mesh::generateUVs(const float* vertexBuffer, const unsigned int vertexCount)
+{
+    float* uvBuffer = new float[vertexCount * 3];
+
+    unsigned int j = 0;
+    for (unsigned int i = 0; i < vertexCount * 3; i += 3, j += 2)
+    {
+        Vec3 v(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
+
+        uvBuffer[j] = asinf(v.x) / 3.14f + 0.5f;
+        uvBuffer[j + 1] = asinf(v.y) / 3.14f + 0.5f;
+    }
+
+    return uvBuffer;
+}
+
 void Mesh::generateWireframe()
 {
 	//wireframeVertexBuffer = new float[vertexCount * 3 * 2];

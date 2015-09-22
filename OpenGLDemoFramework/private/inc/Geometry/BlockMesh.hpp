@@ -18,4 +18,5 @@ private:
 	unsigned int time;
     VertexBufferObject* vertices;
     VertexBufferObject* normals;
+    VertexBufferObject* uvs;
 };
