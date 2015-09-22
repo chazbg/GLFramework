@@ -152,9 +152,9 @@ float* Mesh::generateUVs(const float* vertexBuffer, const unsigned int vertexCou
     for (unsigned int i = 0; i < vertexCount * 3; i += 3, j += 2)
     {
         Vec3 v(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
-        v = v.normalize();
-        uvBuffer[j] = asinf(v.x) / 3.14f + 0.5f;
-        uvBuffer[j + 1] = asinf(v.y) / 3.14f + 0.5f;
+        v = -v.normalize();
+        uvBuffer[j] = atan2f(v.z, v.x) / (2.0f * 3.14f) + 0.5f;
+        uvBuffer[j + 1] = 0.5f - asinf(v.y) / 3.14f;
     }
 
     return uvBuffer;

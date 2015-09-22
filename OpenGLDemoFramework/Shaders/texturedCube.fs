@@ -24,7 +24,8 @@ void main()
     }
     
     //outColor = inColor;
-    outColor = sh * (texture2D(colorMap, 
-                              inUVs + vec2(abs(sin(float(time) * 0.005)), 
-                              abs(cos(float(time) * 0.005)))).xyz + vec3(0.3,0,0));
+    // outColor = sh * (texture2D(colorMap, 
+                              // inUVs + vec2(abs(sin(float(time) * 0.005)), 
+                              // abs(cos(float(time) * 0.005)))).xyz + vec3(0.3,0,0));
+    outColor = sh * texture2D(colorMap, inUVs).xyz;
 }
