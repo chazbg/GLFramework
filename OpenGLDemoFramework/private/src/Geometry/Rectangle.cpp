@@ -97,14 +97,3 @@ float* Rectangle::genTexCoords()
 
 	return tc;
 }
-
-void Rectangle::SetTime(GLuint time)
-{
-	this->time = time;
-	SetUniformValue("time", time);
-}
-
-GLuint Rectangle::GetTime()
-{
-	return time;
-}

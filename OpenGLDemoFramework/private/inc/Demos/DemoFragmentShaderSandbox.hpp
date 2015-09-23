@@ -44,7 +44,7 @@ namespace FragmentShaderSandboxDemo
         {
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
-            rectangle->SetTime(rectangle->GetTime() + 1);
+            shaderMaterial->setProperty("time", time);
             shaderMaterial->setProperty("cameraPos", cameraPos);
             renderer->render(scene, camera);
             if (!stopTime)

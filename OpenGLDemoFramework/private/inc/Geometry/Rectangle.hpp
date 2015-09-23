@@ -11,8 +11,6 @@ public:
 	Rectangle();
 	Rectangle(Vec2 topLeft, Vec2 bottomRight);
 	~Rectangle();
-	void SetTime(GLuint time);
-	GLuint GetTime();
 private:
 	Vec2 topLeft;
 	Vec2 bottomRight;
