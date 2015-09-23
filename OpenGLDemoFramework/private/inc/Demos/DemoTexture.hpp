@@ -38,13 +38,20 @@ namespace TexDemo
             prevDir = Vec3(0.01f, 0.1f, 0);
             cubeMat = new ShaderMaterial("Shaders/cube.vs", "Shaders/cube.fs");
             cubeTexturedMat = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
-            cubeTexturedMat->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generateOctavePerlinNoise(1, time * 0.03f, 3, 0.5)));
+            cubeTexturedMat->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generateOctavePerlinNoise(1, 0, 3, 0.5)));
             cubeTexturedMat->setProperty("colorMap", 0);
             cubeTexturedMat->setProperty("sampler", 1);
+            cubeTexturedMat->setProperty("diffuse", Vec3(0, 0, 0.8f));
+
+            cubeTexturedMat2 = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+            cubeTexturedMat2->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generateOctavePerlinNoise(1, 0, 4, 0.7)));
+            cubeTexturedMat2->setProperty("colorMap", 0);
+            cubeTexturedMat2->setProperty("sampler", 1);
+            cubeTexturedMat2->setProperty("diffuse", Vec3(0.3f, 0, 0));
 
             c1 = new BlockMesh(2.0f, 5.0f, 5.0f);
             c1->SetPosition(Vec3(0, -1, 0));
-            c1->setMaterial(cubeTexturedMat);
+            c1->setMaterial(cubeMat);
             meshes.push_back(new BlockMesh(2.0f, 5.0f, 5.0f));
             meshes[0]->SetPosition(Vec3(-2, -1, -6));
             meshes[0]->setMaterial(cubeMat);
@@ -53,10 +60,10 @@ namespace TexDemo
             meshes[1]->setMaterial(cubeMat);
             meshes.push_back(new BlockMesh(20.0f, 0.2f, 20.0f));
             meshes[2]->SetPosition(Vec3(0, -3, 0));
-            meshes[2]->setMaterial(cubeMat);
+            meshes[2]->setMaterial(cubeTexturedMat2);
             meshes.push_back(new BlockMesh(20.0f, 20.0f, 0.2f));
             meshes[3]->SetPosition(Vec3(0, -3, -10));
-            meshes[3]->setMaterial(cubeMat);
+            meshes[3]->setMaterial(cubeTexturedMat);
             meshes.push_back(new BlockMesh(0.5f, 0.5f, 0.5f));
             meshes[4]->setMaterial(cubeMat);
             //meshes[4]->SetPosition(Vec3(0, 10, 0));
@@ -85,7 +92,8 @@ namespace TexDemo
             c1->SetRotation(0, time * 0.01f, 0);
             meshes[0]->SetRotation(0, time * 0.01f, 0);
             meshes[1]->SetRotation(0, time * 0.01f, 0);
-            cubeTexturedMat->setProperty("time", time);
+            cubeTexturedMat->setProperty("time", (float) time);
+            cubeTexturedMat2->setProperty("time", time * 0.1f);
 
             renderer->render(scene, camera);
             if (!stopTime)
@@ -185,6 +193,7 @@ namespace TexDemo
         PerspectiveCamera camera;
         ShaderMaterial* cubeMat;
         ShaderMaterial* cubeTexturedMat;
+        ShaderMaterial* cubeTexturedMat2;
         Vec2 prevMousePos;
     };
 

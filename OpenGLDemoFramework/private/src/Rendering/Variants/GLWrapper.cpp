@@ -146,7 +146,7 @@ void Renderer::updateUniforms(const IMaterial& material)
 
     for (fIt = fUniforms.begin(); fIt != fUniforms.end(); fIt++)
     {
-        int loc = glGetAttribLocation(programId, fIt->first.c_str());
+        int loc = glGetUniformLocation(programId, fIt->first.c_str());
         glUniform1f(loc, fIt->second);
     }
 

@@ -2,7 +2,8 @@
 
 uniform sampler2D colorMap;
 uniform sampler2D sampler;
-uniform uint time;
+uniform float time;
+uniform vec3 diffuse;
 
 // Input data
 smooth in vec3 inColor;
@@ -24,8 +25,8 @@ void main()
     }
     
     //outColor = inColor;
-    // outColor = sh * (texture2D(colorMap, 
-                              // inUVs + vec2(abs(sin(float(time) * 0.005)), 
-                              // abs(cos(float(time) * 0.005)))).xyz + vec3(0.3,0,0));
-    outColor = sh * texture2D(colorMap, inUVs).xyz;
+    outColor = sh * (texture2D(colorMap, 
+                              inUVs + vec2(-time * 0.005, (sin(time * 0.01)) * 0.5)).xyz + 
+                              diffuse) / 2.0;
+    // outColor = sh * texture2D(colorMap, inUVs).xyz;
 }
