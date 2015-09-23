@@ -16,7 +16,7 @@ void DefaultCamera::setPosition(const Vec3& position)
 
 Vec3 DefaultCamera::getPosition() const
 {
-	return Vec3();
+    return Vec3();
 }
 
 void DefaultCamera::setLookDirection(const Vec3& position)
@@ -25,10 +25,15 @@ void DefaultCamera::setLookDirection(const Vec3& position)
 
 Vec3 DefaultCamera::getLookDirection() const
 {
-	return Vec3();
+    return Vec3();
 }
 
 Matrix4 DefaultCamera::getViewMatrix() const
 {
-	return Matrix4();
+    return Matrix4();
+}
+
+Matrix4 DefaultCamera::getViewProjectionMatrix() const
+{
+    return Matrix4();
 }
