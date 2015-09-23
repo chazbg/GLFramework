@@ -38,7 +38,7 @@ namespace TexDemo
             prevDir = Vec3(0.01f, 0.1f, 0);
             cubeMat = new ShaderMaterial("Shaders/cube.vs", "Shaders/cube.fs");
             cubeTexturedMat = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
-            cubeTexturedMat->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(1)));
+            cubeTexturedMat->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generateOctavePerlinNoise(1, time * 0.03f, 3, 0.5)));
             cubeTexturedMat->setProperty("colorMap", 0);
             cubeTexturedMat->setProperty("sampler", 1);
 
