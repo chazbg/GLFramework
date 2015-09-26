@@ -87,9 +87,6 @@
     <ClCompile Include="private\src\Core\Mesh.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Core\PlaneGenerator.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\Shader.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -177,9 +174,6 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\Mesh.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Core\PlaneGenerator.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\Shader.hpp">
@@ -310,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="private\inc\Core\PerspectiveCamera.hpp">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoWave.hpp">
+      <Filter>Header Files\Demos</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

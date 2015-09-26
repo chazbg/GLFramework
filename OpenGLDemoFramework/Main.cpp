@@ -1,7 +1,6 @@
-#include "Demos/DemoTexture.hpp"
-
+#include "Demos/DemoWave.hpp"
 int main(int argc, char* argv[])
 {
-    TexDemo::main();
+    WaveDemo::main();
     return 0;
 }

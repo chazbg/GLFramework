@@ -1,25 +1,19 @@
 #pragma once
-#include "Core/Mesh.hpp"
+#include <Core/Mesh.hpp>
+#include <Core/VertexBufferObject.hpp>
+
 class PlaneMesh : public Mesh
 {
 public:
-	PlaneMesh(int _width, int _height);
-	~PlaneMesh();
+    PlaneMesh(int _width, int _height);
+    ~PlaneMesh();
 
-	void SetTime(GLuint time);
-	GLuint GetTime();
-
-	void UseProgram();
-	//void Render();
 private:
-	GLuint vertexBufferID;
-	GLuint normalsBufferID;
-	GLuint programID;
-	GLuint timeID;
-	GLuint time;
-	GLfloat* buffer;
-private:
-	int width;
-	int height;
+    float* generatePlaneVertices(int width, int height);
+    float* generateUVs(int width, int height);
+    int width;
+    int height;
+    VertexBufferObject* vertices;
+    VertexBufferObject* uvs;
 };
 

@@ -151,7 +151,6 @@
     <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
-    <ClCompile Include="private\src\Core\PlaneGenerator.cpp" />
     <ClCompile Include="private\src\Core\Scene.cpp" />
     <ClCompile Include="private\src\Core\Shader.cpp" />
     <ClCompile Include="private\src\Core\ShaderMaterial.cpp" />
@@ -185,7 +184,6 @@
     <ClInclude Include="private\inc\Core\IVertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Core\Mesh.hpp" />
     <ClInclude Include="private\inc\Core\PerspectiveCamera.hpp" />
-    <ClInclude Include="private\inc\Core\PlaneGenerator.hpp" />
     <ClInclude Include="private\inc\Core\Scene.hpp" />
     <ClInclude Include="private\inc\Core\Shader.hpp" />
     <ClInclude Include="private\inc\Core\ShaderMaterial.hpp" />
@@ -204,6 +202,7 @@
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRotatingCalipers.hpp" />
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoWave.hpp" />
     <ClInclude Include="private\inc\Demos\DemoWindow.hpp" />
     <ClInclude Include="private\inc\Geometry\Bar.hpp" />
     <ClInclude Include="private\inc\Geometry\BlockMesh.hpp" />
