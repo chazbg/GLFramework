@@ -1,6 +1,7 @@
-#include "Demos/DemoWave.hpp"
+#include "Demos/DemoCustomGeometry.hpp"
 int main(int argc, char* argv[])
 {
-    WaveDemo::main();
+    CustomGeometryDemo::main();
+    
     return 0;
 }

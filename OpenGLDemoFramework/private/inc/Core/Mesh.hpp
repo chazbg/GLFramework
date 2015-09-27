@@ -12,10 +12,12 @@ class Mesh : public IMesh
 public:
 	Mesh();
 	~Mesh();
+    virtual IIndexBufferObject* getIBO();
 	virtual std::vector<IVertexBufferObject*>& getVBOs();
 	virtual void setModelMatrix(const Matrix4& model);
 	virtual Matrix4 getModelMatrix() const;
 	virtual void setWireframeMode(const bool showWireframe);
+    virtual void setIndices(const IIndexBufferObject& indices);
 	virtual void setVertices(const IVertexBufferObject& vertices);
 	virtual void setNormals(const IVertexBufferObject& normals);
 	virtual void setTexCoords(const IVertexBufferObject& texCoords);
@@ -35,6 +37,7 @@ protected:
     float* generateUVs(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();
 	IMaterial* material;
+    IIndexBufferObject* ibo;
 	std::vector<IVertexBufferObject*> vbos;
 	float* wireframeVertexBuffer;
 	GLuint wireframeVertexBufferID;

@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FC1515D7-9984-4B42-9909-6305D61155C3}</ProjectGuid>
     <RootNamespace>OpenGLDemoFramework</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -107,8 +108,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\bin;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -124,8 +125,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\bin;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -149,6 +150,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
     <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
+    <ClCompile Include="private\src\Core\IndexBufferObject.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
     <ClCompile Include="private\src\Core\Scene.cpp" />
@@ -160,6 +162,7 @@
     <ClCompile Include="private\src\Geometry\Bar.cpp" />
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />
     <ClCompile Include="private\src\Geometry\Cube.cpp" />
+    <ClCompile Include="private\src\Geometry\CustomGeometry.cpp" />
     <ClCompile Include="private\src\Geometry\LineListMesh.cpp" />
     <ClCompile Include="private\src\Geometry\PlaneMesh.cpp" />
     <ClCompile Include="private\src\Geometry\PointListMesh.cpp" />
@@ -178,8 +181,10 @@
     <ClInclude Include="private\inc\Core\DefaultCamera.hpp" />
     <ClInclude Include="private\inc\Core\FrameBuffer.hpp" />
     <ClInclude Include="private\inc\Core\ICamera.hpp" />
+    <ClInclude Include="private\inc\Core\IIndexBufferObject.hpp" />
     <ClInclude Include="private\inc\Core\IMaterial.hpp" />
     <ClInclude Include="private\inc\Core\IMesh.hpp" />
+    <ClInclude Include="private\inc\Core\IndexBufferObject.hpp" />
     <ClInclude Include="private\inc\Core\IScene.hpp" />
     <ClInclude Include="private\inc\Core\IVertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Core\Mesh.hpp" />
@@ -193,6 +198,7 @@
     <ClInclude Include="private\inc\Core\VertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp" />
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp" />
     <ClInclude Include="private\inc\Demos\DemoGrahamScan.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingLineSegments.hpp" />
@@ -207,6 +213,7 @@
     <ClInclude Include="private\inc\Geometry\Bar.hpp" />
     <ClInclude Include="private\inc\Geometry\BlockMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\Cube.hpp" />
+    <ClInclude Include="private\inc\Geometry\CustomGeometry.hpp" />
     <ClInclude Include="private\inc\Geometry\LineListMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\PlaneMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\PointListMesh.hpp" />
@@ -230,7 +237,19 @@
     <ClInclude Include="private\inc\Windowing\Variants\WindowDX.hpp" />
     <ClInclude Include="private\inc\Windowing\Window.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets" Condition="Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" />
+    <Import Project="..\packages\Assimp.3.0.0\build\native\Assimp.targets" Condition="Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.3.0.0\build\native\Assimp.targets'))" />
+  </Target>
 </Project>

@@ -9,6 +9,7 @@
 
 Mesh::Mesh() : 
 material(0),
+ibo(0),
 wireframeVertexBuffer(0),
 showWireframe(false),
 castsShadow(false),
@@ -23,6 +24,11 @@ receivesShadow(false)
 Mesh::~Mesh()
 {
 	delete[] wireframeVertexBuffer;
+}
+
+IIndexBufferObject * Mesh::getIBO()
+{
+    return ibo;
 }
 
 std::vector<IVertexBufferObject*>& Mesh::getVBOs()
@@ -43,6 +49,11 @@ Matrix4 Mesh::getModelMatrix() const
 void Mesh::setWireframeMode(const bool showWireframe)
 {
 	this->showWireframe = showWireframe;
+}
+
+void Mesh::setIndices(const IIndexBufferObject & indices)
+{
+    ibo = &const_cast<IIndexBufferObject&>(indices);
 }
 
 void Mesh::setVertices(const IVertexBufferObject & vertices)

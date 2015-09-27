@@ -101,8 +101,17 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
     }
 
     //TODO: Strategy pattern
-    glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vbos[0]->getVertexCount());
-
+    IIndexBufferObject* ibo = mesh->getIBO();
+    if (ibo)
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo->getId());
+        glDrawElements(GL_TRIANGLES, (GLsizei)ibo->getIndexCount(), GL_UNSIGNED_INT, NULL);
+    }
+    else
+    {
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vbos[0]->getVertexCount());
+    }
+    
     for (unsigned int i = 0; i < vbos.size(); i++)
     {
         if (vbos[i]->getId() != -1)
