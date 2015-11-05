@@ -10,6 +10,7 @@ FrameBuffer* postProcessFbo;
 Texture* shadowMap;
 Texture* postProcessTex;
 PerspectiveCamera lightCamera;
+unsigned int depthRenderBuffer;
 void render(std::vector<IMesh*>& meshes, ICamera& camera);
 void render(IMesh* mesh, ICamera& camera);
 void updateUniforms(const IMaterial& material);
