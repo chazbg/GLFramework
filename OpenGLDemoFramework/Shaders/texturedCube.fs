@@ -11,7 +11,7 @@ smooth in vec4 shadowCoord;
 smooth in vec2 inUVs;
 
 // Ouput data
-out vec3 outColor;
+layout(location = 0) out vec3 outColor;
 
 void main()
 {

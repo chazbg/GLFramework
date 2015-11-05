@@ -21,9 +21,6 @@ public:
 	void setDepthTest(const bool enabled);
 	void render(IScene& scene, ICamera& camera);
 private:
-	void render(std::vector<IMesh*>& meshes, ICamera& camera);
-	void render(IMesh* mesh, ICamera& camera);
-	unsigned int getTexId(const Texture * tex);
 	#ifdef USE_DX12
 	#include "../private/inc/Rendering/Variants/RendererDX.hpp"
 	#else

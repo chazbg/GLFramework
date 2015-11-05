@@ -1,7 +1,7 @@
-#include "Demos/DemoCustomGeometry.hpp"
+#include "Demos/DemoTexture.hpp"
 int main(int argc, char* argv[])
 {
-    CustomGeometryDemo::main();
+    TexDemo::main();
     
     return 0;
 }

@@ -7,6 +7,9 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
+#define FB_WIDTH 1024
+#define FB_HEIGHT 1024
+
 Renderer::Renderer()
 {
     if (glewInit() != GLEW_OK) {
@@ -21,17 +24,25 @@ Renderer::Renderer()
     glEnable(GL_PROGRAM_POINT_SIZE);
 
     rectMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
+    postProcessMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
     depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 
     TextureFactory texFactory;
-    shadowMap = texFactory.createTexture(800, 800, 4, 0);
+    postProcessTex = texFactory.createTexture(FB_WIDTH, FB_HEIGHT, 4, 0);
+    shadowMap = texFactory.createTexture(FB_WIDTH, FB_HEIGHT, 4, 0);
 
     rectMat->addTexture(shadowMap);
+    postProcessMat->addTexture(postProcessTex);
     depthMat->addTexture(shadowMap);
 
     r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
     r->setMaterial(rectMat);
+
+    postProcessRect = new Rectangle();
+    postProcessRect->setMaterial(postProcessMat);
+
     fb = new FrameBuffer();
+    postProcessFbo = new FrameBuffer();
 
     lightCamera.setPosition(Vec3(0, 15, 25));
 }
@@ -62,8 +73,8 @@ void Renderer::setDepthTest(const bool enabled)
 
 void Renderer::render(IScene& scene, ICamera& camera)
 {
-    //renderToTexture(scene.getChildren(), camera);
-    render(scene.getChildren(), camera);
+    renderToTexture(scene.getChildren(), camera);
+    renderWithPostProcess(scene.getChildren(), camera);
 }
 
 void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -119,6 +130,11 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
             glDisableVertexAttribArray(i);
         }
     }
+}
+
+void Renderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
+{
+    render(postProcessRect, camera);
 }
 
 unsigned int Renderer::getTexId(const Texture* tex)
@@ -204,7 +220,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera)
 
     // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
     glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 800, 800, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, FB_WIDTH, FB_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -234,4 +250,44 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera)
     }
 
     render(r, camera);
+}
+
+void  Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
+{
+    unsigned int fbo = postProcessFbo->getFbo();
+    unsigned int texId = getTexId(postProcessTex);
+    unsigned int depthTexId;
+
+    glGenTextures(1, &depthTexId);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glBindTexture(GL_TEXTURE_2D, texId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FB_WIDTH, FB_HEIGHT, 0, GL_RGBA, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    //GLuint depthrenderbuffer;
+    //glGenRenderbuffers(1, &depthrenderbuffer);
+    //glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, FB_WIDTH, FB_HEIGHT);
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId, 0);
+    GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+    glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+                                   // Always check that our framebuffer is ok
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        printf("INVALID %d\n", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+
+    render(meshes, camera);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    postProcess(meshes, camera);
 }

@@ -166,8 +166,8 @@ namespace TexDemo
 
         virtual void onMouseMove(int x, int y)
         {
-            float nx = x / 800.0f;
-            float ny = y / 800.0f;
+            float nx = x / 1024.0f;
+            float ny = y / 1024.0f;
             Vec2 delta = Vec2(nx, ny) - prevMousePos;
 
             Vec3 zAxis = (-cameraPos).normalize();
@@ -200,8 +200,8 @@ namespace TexDemo
     void main()
     {
         WindowParameters params;
-        params.width = 800;
-        params.height = 800;
+        params.width = 1024;
+        params.height = 1024;
         params.posX = 100;
         params.posY = 100;
         params.name = "TestWindow";
