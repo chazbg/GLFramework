@@ -186,21 +186,8 @@ void Renderer::setDepthTest(const bool enabled)
 }
 
 void Renderer::render(IScene& scene, ICamera& camera)
-{
-    glViewport(0, 0, 512, 512);
+{  
     renderDeferred(scene.getChildren(), camera);
-    
-    glViewport(512, 0, 512, 512);
-    render(deferredShadingRect[0], camera);
-    
-    glViewport(0, 512, 512, 512);
-    render(deferredShadingRect[1], camera);
-
-    glViewport(512, 512, 512, 512);
-    render(deferredShadingRect[2], camera);
-
-    glViewport(0, 0, 512, 512);
-    render(deferredShadingRect[3], camera);
 }
 
 void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -402,6 +389,8 @@ void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camer
 
 void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
 {
+    glViewport(0, 0, 512, 512);
+
     unsigned int fbo = deferredShadingFbo->getFbo();
 
     std::vector<IMaterial*> originalMaterials;
@@ -428,4 +417,15 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
+    glViewport(512, 0, 512, 512);
+    render(deferredShadingRect[0], camera);
+
+    glViewport(0, 512, 512, 512);
+    render(deferredShadingRect[1], camera);
+
+    glViewport(512, 512, 512, 512);
+    render(deferredShadingRect[2], camera);
+
+    glViewport(0, 0, 512, 512);
+    render(deferredShadingRect[3], camera);
 }
