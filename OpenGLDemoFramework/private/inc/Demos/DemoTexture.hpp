@@ -26,7 +26,7 @@ namespace TexDemo
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            renderer = new Renderer();
+            renderer = new Renderer(Vec2(1024, 1024));
 
             TextureFactory texFactory;
             TextureGenerator gen;

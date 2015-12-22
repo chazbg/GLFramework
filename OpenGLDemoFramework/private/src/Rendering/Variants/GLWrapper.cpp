@@ -7,10 +7,7 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-#define FB_WIDTH 512
-#define FB_HEIGHT 512
-
-Renderer::Renderer()
+Renderer::Renderer(const Vec2& resolution) : resolution(resolution)
 {
     if (glewInit() != GLEW_OK) {
         fprintf(stderr, "Failed to initialize GLEW\n");
@@ -39,9 +36,9 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->setProperty("normalMap", 1);
     deferredShadingRectMat[3]->setProperty("depthMap", 2);
 
-    deferredShadingTex[0] = texFactory.createTexture(FB_WIDTH, FB_HEIGHT, 3, 0);
-    deferredShadingTex[1] = texFactory.createTexture(FB_WIDTH, FB_HEIGHT, 3, 0);
-    deferredShadingTex[2] = texFactory.createTexture(FB_WIDTH, FB_HEIGHT, 3, 0);
+    deferredShadingTex[0] = texFactory.createTexture(resolution.x, resolution.y, 3, 0);
+    deferredShadingTex[1] = texFactory.createTexture(resolution.x, resolution.y, 3, 0);
+    deferredShadingTex[2] = texFactory.createTexture(resolution.x, resolution.y, 3, 0);
 
     deferredShadingRectMat[0]->addTexture(deferredShadingTex[0]);
     deferredShadingRectMat[1]->addTexture(deferredShadingTex[1]);
@@ -73,7 +70,7 @@ void Renderer::initDeferredShading()
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
     glBindTexture(GL_TEXTURE_2D, texId[0]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, FB_WIDTH, FB_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -83,7 +80,7 @@ void Renderer::initDeferredShading()
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId[0], 0);
 
     glBindTexture(GL_TEXTURE_2D, texId[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, FB_WIDTH, FB_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -93,7 +90,7 @@ void Renderer::initDeferredShading()
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, texId[1], 0);
 
     glBindTexture(GL_TEXTURE_2D, texId[2]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, FB_WIDTH, FB_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, resolution.x, resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -111,7 +108,7 @@ void Renderer::initPostProcessing()
     postProcessMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
     postProcessMat->addTexture(postProcessTex);
 
-    postProcessTex = texFactory.createTexture(FB_WIDTH, FB_HEIGHT, 4, 0);
+    postProcessTex = texFactory.createTexture(resolution.x, resolution.y, 4, 0);
 
     postProcessRect = new Rectangle();
     postProcessRect->setMaterial(postProcessMat);
@@ -123,7 +120,7 @@ void Renderer::initPostProcessing()
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, FB_WIDTH, FB_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -132,7 +129,7 @@ void Renderer::initPostProcessing()
 
     glGenRenderbuffers(1, &depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, FB_WIDTH, FB_HEIGHT);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.x, resolution.y);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 
@@ -147,7 +144,7 @@ void Renderer::initShadowMapping()
 
     depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 
-    shadowMap = texFactory.createTexture(FB_WIDTH, FB_HEIGHT, 4, 0);
+    shadowMap = texFactory.createTexture(resolution.x, resolution.y, 4, 0);
 
     rectMat->addTexture(shadowMap);
 
@@ -187,7 +184,8 @@ void Renderer::setDepthTest(const bool enabled)
 
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
-    renderDeferred(scene.getChildren(), camera);
+    renderToTexture(scene.getChildren(), camera);
+    render(scene.getChildren(), camera);
 }
 
 void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -329,13 +327,11 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-    glViewport(0, 0, 512, 512);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
     glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, FB_WIDTH, FB_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, resolution.x, resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -364,7 +360,6 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
-    glViewport(viewport.x, viewport.y, viewport.z, viewport.w);
     render(r, camera);
 }
 

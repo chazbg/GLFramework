@@ -15,7 +15,7 @@
 class Renderer
 {
 public:
-	Renderer();
+	Renderer(const Vec2& resolution);
 	~Renderer();
 	void clear(const Vec4& color);
 	void setDepthTest(const bool enabled);
