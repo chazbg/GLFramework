@@ -72,10 +72,10 @@
     <SourcePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Geometry;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Rendering;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Windowing;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Math;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Core;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OpenGLDebug|Win32'">
-    <IncludePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\inc;E:\Git\GLFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
+    <IncludePath>./private/inc;./include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
-    <SourcePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Geometry;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Rendering;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Windowing;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Math;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Core;$(SourcePath)</SourcePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DirectXDebug|Win32'">
     <IncludePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\inc;E:\Git\GLFramework\OpenGLDemoFramework\include;C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.10240.0\um;C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.10240.0\shared;$(IncludePath)</IncludePath>
