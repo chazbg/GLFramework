@@ -46,8 +46,6 @@ namespace PBRDemo
 		{
 			renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
-			shaderMaterial->setProperty("time", (float)time);
-			shaderMaterial->setProperty("cameraPos", cameraPos);
 			camera.setPosition(cameraPos);
 			renderer->render(scene, camera);
 			if (!stopTime)
