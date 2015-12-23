@@ -9,7 +9,8 @@ CustomGeometry::CustomGeometry(const std::string fileName)
     const aiScene* scene = importer.ReadFile(fileName,
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
-        aiProcess_SortByPType);
+        aiProcess_SortByPType | 
+		aiProcess_FlipWindingOrder);
 
     if (!scene)
     {
@@ -24,6 +25,7 @@ CustomGeometry::CustomGeometry(const std::string fileName)
         unsigned int* indexBuffer = new unsigned int[3 * mesh->mNumFaces];
         float* vertexBuffer = new float[3 * mesh->mNumVertices];
         float* normalsBuffer = new float[3 * mesh->mNumVertices];
+		float* texCoordsBuffer = new float[2 * mesh->mNumVertices];
 
         for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
         {
@@ -42,6 +44,14 @@ CustomGeometry::CustomGeometry(const std::string fileName)
             normalsBuffer[k + 1] = normal.y;
             normalsBuffer[k + 2] = normal.z;
         }
+
+		for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 2)
+		{
+			aiVector3D uv = mesh->mTextureCoords[0][j];
+			printf("uv %f, %f\n", uv.x, uv.y);
+			texCoordsBuffer[k] = uv.x;
+			texCoordsBuffer[k + 1] = uv.y;
+		}
         
         for (int j = 0, k = 0; j < mesh->mNumFaces; j++, k += 3)
         {
@@ -52,17 +62,21 @@ CustomGeometry::CustomGeometry(const std::string fileName)
             indexBuffer[k + 2] = face.mIndices[2];
         }
 
+
         indices = new IndexBufferObject(indexBuffer, 3 * mesh->mNumFaces);
         vertices = new VertexBufferObject(vertexBuffer, mesh->mNumVertices, 3);
         normals = new VertexBufferObject(normalsBuffer, mesh->mNumVertices, 3);
+		uvs = new VertexBufferObject(texCoordsBuffer, mesh->mNumVertices, 2);
 
         setIndices(*indices);
         setVertices(*vertices);
         setNormals(*normals);
+		setTexCoords(*uvs);
 
         delete[] indexBuffer;
         delete[] vertexBuffer;
         delete[] normalsBuffer;
+		delete[] texCoordsBuffer;
     }
 }
 
@@ -71,4 +85,5 @@ CustomGeometry::~CustomGeometry()
     delete indices;
     delete vertices;
     delete normals;
+	delete uvs;
 }

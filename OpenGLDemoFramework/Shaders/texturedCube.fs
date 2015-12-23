@@ -28,5 +28,5 @@ void main()
     outColor = sh * (diffuse + (texture2D(colorMap, 
                               inUVs + vec2(-time * 0.005, (sin(time * 0.01)) * 0.5)).x ) * 
                               (vec3(1,1,1) - diffuse));
-    // outColor = sh * texture2D(colorMap, inUVs).xyz;
+    outColor = sh * texture2D(colorMap, inUVs).xyz;
 }

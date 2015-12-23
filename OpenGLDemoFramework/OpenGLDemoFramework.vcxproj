@@ -206,6 +206,7 @@
     <ClInclude Include="private\inc\Demos\DemoGrahamScan.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingLineSegments.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingPolygons.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoPBR.hpp" />
     <ClInclude Include="private\inc\Demos\DemoPointInPolygon.hpp" />
     <ClInclude Include="private\inc\Demos\DemoProjections.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp" />

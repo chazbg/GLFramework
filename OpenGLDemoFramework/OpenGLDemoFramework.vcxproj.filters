@@ -338,6 +338,9 @@
     <ClInclude Include="private\inc\Demos\DemoTextureLoader.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoPBR.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

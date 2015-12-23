@@ -184,7 +184,7 @@ void Renderer::setDepthTest(const bool enabled)
 
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
-    renderToTexture(scene.getChildren(), camera);
+    //renderToTexture(scene.getChildren(), camera);
     render(scene.getChildren(), camera);
 }
 
