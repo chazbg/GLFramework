@@ -1,7 +1,8 @@
-#include "Demos/DemoTexture.hpp"
+#include "Demos/DemoTextureLoader.hpp"
+
 int main(int argc, char* argv[])
 {
-    TexDemo::main();
-    
+	TextureLoaderDemo::main();
+
     return 0;
 }

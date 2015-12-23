@@ -27,7 +27,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OpenGLDebug|Win32'" Label="Configuration">
@@ -66,7 +66,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\inc;E:\Git\GLFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Git\GLFramework\OpenGLDemoFramework\private\inc;D:\Git\GLFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\inc;E:\Git\GLFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Geometry;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Rendering;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Windowing;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Math;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Core;$(SourcePath)</SourcePath>
@@ -92,8 +92,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\bin;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Git\GLFramework\OpenGLDemoFramework;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\bin;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FreeImage.lib;glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -158,6 +158,7 @@
     <ClCompile Include="private\src\Core\ShaderMaterial.cpp" />
     <ClCompile Include="private\src\Core\Texture.cpp" />
     <ClCompile Include="private\src\Core\TextureFactory.cpp" />
+    <ClCompile Include="private\src\Core\TextureLoader.cpp" />
     <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
     <ClCompile Include="private\src\Geometry\Bar.cpp" />
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="private\inc\Core\DefaultCamera.hpp" />
     <ClInclude Include="private\inc\Core\FrameBuffer.hpp" />
     <ClInclude Include="private\inc\Core\ICamera.hpp" />
+    <ClInclude Include="private\inc\Core\IImageLoader.hpp" />
     <ClInclude Include="private\inc\Core\IIndexBufferObject.hpp" />
     <ClInclude Include="private\inc\Core\IMaterial.hpp" />
     <ClInclude Include="private\inc\Core\IMesh.hpp" />
@@ -195,6 +197,7 @@
     <ClInclude Include="private\inc\Core\Texture.hpp" />
     <ClInclude Include="private\inc\Core\TextureFactory.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
+    <ClInclude Include="private\inc\Core\TextureLoader.hpp" />
     <ClInclude Include="private\inc\Core\VertexBufferObject.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
@@ -208,6 +211,7 @@
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRotatingCalipers.hpp" />
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoTextureLoader.hpp" />
     <ClInclude Include="private\inc\Demos\DemoWave.hpp" />
     <ClInclude Include="private\inc\Demos\DemoWindow.hpp" />
     <ClInclude Include="private\inc\Geometry\Bar.hpp" />
