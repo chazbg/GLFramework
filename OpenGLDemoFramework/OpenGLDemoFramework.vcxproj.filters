@@ -153,6 +153,9 @@
     <ClCompile Include="private\src\Core\TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Core\TextureCubemap.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -340,6 +343,9 @@
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoPBR.hpp">
       <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureCubemap.hpp">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

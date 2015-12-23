@@ -26,6 +26,17 @@ namespace PBRDemo
 
 			shaderMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
 			shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
+			shaderMaterial->addTextureCubemap(texLoader.loadTextureCubemap(
+				"Images/DefaultTexture.png", 
+				"Images/DefaultTexture.png", 
+				"Images/DefaultTexture.png", 
+				"Images/DefaultTexture.png", 
+				"Images/DefaultTexture.png", 
+				"Images/DefaultTexture.png"));
+
+			shaderMaterial->setProperty("colorMap", 0);
+			shaderMaterial->setProperty("sampler", 1);
+			shaderMaterial->setProperty("cubeMap", 2);
 
 			g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
 			g->setMaterial(shaderMaterial);

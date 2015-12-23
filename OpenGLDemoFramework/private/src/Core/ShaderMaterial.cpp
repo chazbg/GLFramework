@@ -22,9 +22,19 @@ std::vector<const Texture*> ShaderMaterial::getTextures() const
 	return textures;
 }
 
+std::vector<const TextureCubemap*> ShaderMaterial::getTextureCubemaps() const
+{
+	return textureCubemaps;
+}
+
 void ShaderMaterial::addTexture(const Texture* tex)
 {
 	textures.push_back(tex);
+}
+
+void ShaderMaterial::addTextureCubemap(const TextureCubemap* tex)
+{
+	textureCubemaps.push_back(tex);
 }
 
 void ShaderMaterial::removeTexture(const Texture* tex)
@@ -33,6 +43,15 @@ void ShaderMaterial::removeTexture(const Texture* tex)
 	if (textures.end() != it)
 	{
 		textures.erase(it);
+	}
+}
+
+void ShaderMaterial::removeTextureCubemap(const TextureCubemap* tex)
+{
+	vector<const TextureCubemap*>::iterator it = find(textureCubemaps.begin(), textureCubemaps.end(), tex);
+	if (textureCubemaps.end() != it)
+	{
+		textureCubemaps.erase(it);
 	}
 }
 

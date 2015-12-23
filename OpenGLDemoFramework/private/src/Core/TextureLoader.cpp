@@ -69,3 +69,28 @@ Texture* TextureLoader::loadTexture(const std::string path)
 
 	return tex;
 }
+
+TextureCubemap* TextureLoader::loadTextureCubemap(
+	const std::string pathFront,
+	const std::string pathBack,
+	const std::string pathTop,
+	const std::string pathBottom,
+	const std::string pathLeft,
+	const std::string pathRight)
+{
+	Texture* texFront  = loadTexture(pathFront);
+	Texture* texBack   = loadTexture(pathBack);
+	Texture* texTop    = loadTexture(pathTop);
+	Texture* texBottom = loadTexture(pathBottom);
+	Texture* texLeft   = loadTexture(pathLeft);
+	Texture* texRight  = loadTexture(pathRight);
+
+	return TextureFactory::createTextureCubemap(
+			texFront,
+			texBack,
+			texTop,
+			texBottom,
+			texLeft,
+			texRight
+		);
+}

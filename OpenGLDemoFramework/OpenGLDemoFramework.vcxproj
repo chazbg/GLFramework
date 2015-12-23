@@ -157,6 +157,7 @@
     <ClCompile Include="private\src\Core\Shader.cpp" />
     <ClCompile Include="private\src\Core\ShaderMaterial.cpp" />
     <ClCompile Include="private\src\Core\Texture.cpp" />
+    <ClCompile Include="private\src\Core\TextureCubemap.cpp" />
     <ClCompile Include="private\src\Core\TextureFactory.cpp" />
     <ClCompile Include="private\src\Core\TextureLoader.cpp" />
     <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="private\inc\Core\Shader.hpp" />
     <ClInclude Include="private\inc\Core\ShaderMaterial.hpp" />
     <ClInclude Include="private\inc\Core\Texture.hpp" />
+    <ClInclude Include="private\inc\Core\TextureCubemap.hpp" />
     <ClInclude Include="private\inc\Core\TextureFactory.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
     <ClInclude Include="private\inc\Core\TextureLoader.hpp" />

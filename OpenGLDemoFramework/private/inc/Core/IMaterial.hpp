@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <Core/Texture.hpp>
+#include <Core/TextureCubemap.hpp>
 #include <Math/Vector.hpp>
 #include <Math/Matrix.hpp>
 
@@ -14,8 +15,11 @@ public:
 	virtual ~IMaterial() {}
 	virtual int getId() const = 0;
 	virtual vector<const Texture*>    getTextures() const = 0; //TODO: Don't copy the vector.
+	virtual vector<const TextureCubemap*> getTextureCubemaps() const = 0; //TODO: Don't copy the vector.
     virtual void addTexture(const Texture* tex) = 0;
+	virtual void addTextureCubemap(const TextureCubemap* tex) = 0;
     virtual void removeTexture(const Texture* tex) = 0;
+	virtual void removeTextureCubemap(const TextureCubemap* tex) = 0;
     virtual map<string, int>          getIntProperties() const = 0; //TODO: Don't copy the map. Refactor the many similar calls.
 	virtual map<string, unsigned int> getUintProperties() const = 0; //TODO: Don't copy the map. Refactor the many similar calls.
 	virtual map<string, float>        getFloatProperties() const = 0;//TODO: Don't copy the map. Refactor the many similar calls.

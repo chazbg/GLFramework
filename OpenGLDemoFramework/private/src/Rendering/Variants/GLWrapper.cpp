@@ -184,7 +184,7 @@ void Renderer::setDepthTest(const bool enabled)
 
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
-    //renderToTexture(scene.getChildren(), camera);
+    renderToTexture(scene.getChildren(), camera);
     render(scene.getChildren(), camera);
 }
 
@@ -203,6 +203,7 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
     mesh->getMaterial().setProperty("mv", mesh->getModelMatrix());
     updateUniforms(mesh->getMaterial());
     std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
+	std::vector<const TextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
 
     for (unsigned int i = 0; i < textures.size(); i++)
     {
@@ -210,6 +211,13 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, texId);
     }
+
+	for (unsigned int i = textures.size(); i < textures.size() + textureCubemaps.size(); i++)
+	{
+		unsigned int texId = getTexId(textureCubemaps[i - textures.size()]);
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
+	}
 
     std::vector<IVertexBufferObject*> vbos = mesh->getVBOs();
     for (unsigned int i = 0; i < vbos.size(); i++)
@@ -264,6 +272,26 @@ unsigned int Renderer::getTexId(const Texture* tex)
     }
 
     return textures[tex->getId()];
+}
+
+unsigned int Renderer::getTexId(const TextureCubemap * tex)
+{
+	if (textures.find(tex->getId()) == textures.end())
+	{
+		textures[tex->getId()] = 0;
+		glGenTextures(1, &textures[tex->getId()]);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, textures[tex->getId()]);
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
+	}
+
+	return textures[tex->getId()];
 }
 
 void Renderer::updateUniforms(const IMaterial& material)

@@ -3,6 +3,7 @@
 #include <Core/IMaterial.hpp>
 #include <string>
 #include <Core/Texture.hpp>
+#include <Core/TextureCubemap.hpp>
 
 class ShaderMaterial : public IMaterial
 {
@@ -11,8 +12,11 @@ public:
 	~ShaderMaterial();
 	virtual int getId() const;
 	virtual vector<const Texture*> getTextures() const;
+	virtual vector<const TextureCubemap*> getTextureCubemaps() const;
     virtual void addTexture(const Texture* tex);
+	virtual void addTextureCubemap(const TextureCubemap* tex);
     virtual void removeTexture(const Texture* tex);
+	virtual void removeTextureCubemap(const TextureCubemap* tex);
     virtual map<string, int>          getIntProperties() const;
     virtual map<string, unsigned int> getUintProperties() const;
     virtual map<string, float>        getFloatProperties() const;
@@ -26,6 +30,7 @@ public:
 private:
 	int id;
 	vector<const Texture*> textures;
+	vector<const TextureCubemap*> textureCubemaps;
     map<string, int> iUniforms;
     map<string, unsigned int> uiUniforms;
     map<string, float> fUniforms;

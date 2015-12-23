@@ -2,6 +2,8 @@
 
 uniform sampler2D colorMap;
 uniform sampler2D sampler;
+uniform samplerCube cubeMap;
+
 uniform float time;
 uniform vec3 diffuse;
 
@@ -27,8 +29,11 @@ void main()
     }
     
     //outColor = inColor;
-    outColor = sh * (lambert * vec3(1.0) + (texture2D(colorMap, 
-                              inUVs + vec2(-time * 0.005, (sin(time * 0.01)) * 0.5)).x ) * 
-                              (vec3(1,1,1) - diffuse));
+    // outColor = sh * (lambert * vec3(1.0) + (texture2D(colorMap, 
+                              // inUVs + vec2(-time * 0.005, (sin(time * 0.01)) * 0.5)).x ) * 
+                              // (vec3(1,1,1) - diffuse));
     //outColor = sh * texture2D(colorMap, inUVs).xyz;
+	
+	vec3 r = -reflect(inNormal, light);
+	outColor = texture(cubeMap, r).xyz;
 }

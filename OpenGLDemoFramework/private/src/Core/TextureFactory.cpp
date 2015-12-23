@@ -6,3 +6,23 @@ Texture* TextureFactory::createTexture(const unsigned int width, const unsigned 
 {
     return new Texture(nextId++, width, height, bpp, data);
 }
+
+TextureCubemap* TextureFactory::createTextureCubemap(
+	const Texture* texFront,
+	const Texture* texBack,
+	const Texture* texTop,
+	const Texture* texBottom,
+	const Texture* texLeft,
+	const Texture* texRight
+	)
+{
+	return new TextureCubemap(
+			nextId++,
+			texFront,
+			texBack,
+			texTop,
+			texBottom,
+			texLeft,
+			texRight
+		);
+}
