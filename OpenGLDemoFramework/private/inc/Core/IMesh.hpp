@@ -21,4 +21,6 @@ public:
 	virtual void setTexCoords(const IVertexBufferObject& texCoords) = 0;
 	virtual void setMaterial(IMaterial* material) = 0;
 	virtual IMaterial& getMaterial() const = 0;
+    virtual void addChild(IMesh* child) = 0;
+    virtual std::vector<IMesh*>& getChildren() = 0;
 };

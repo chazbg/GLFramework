@@ -198,55 +198,67 @@ void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 
 void Renderer::render(IMesh* mesh, ICamera& camera)
 {
-    mesh->getMaterial().setProperty("depthMvp", lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
-    mesh->getMaterial().setProperty("mvp", camera.getViewProjectionMatrix() * mesh->getModelMatrix());
-    mesh->getMaterial().setProperty("mv", mesh->getModelMatrix());
-    updateUniforms(mesh->getMaterial());
-    std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
-	std::vector<const TextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
+    std::vector<IMesh*> children = mesh->getChildren();
 
-    for (unsigned int i = 0; i < textures.size(); i++)
+    if (children.size() == 0)
     {
-        unsigned int texId = getTexId(textures[i]);
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, texId);
-    }
+        mesh->getMaterial().setProperty("depthMvp", lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
+        mesh->getMaterial().setProperty("mvp", camera.getViewProjectionMatrix() * mesh->getModelMatrix());
+        mesh->getMaterial().setProperty("mv", mesh->getModelMatrix());
+        updateUniforms(mesh->getMaterial());
+        std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
+        std::vector<const TextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
 
-	for (unsigned int i = textures.size(); i < textures.size() + textureCubemaps.size(); i++)
-	{
-		unsigned int texId = getTexId(textureCubemaps[i - textures.size()]);
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
-	}
-
-    std::vector<IVertexBufferObject*> vbos = mesh->getVBOs();
-    for (unsigned int i = 0; i < vbos.size(); i++)
-    {
-        if (vbos[i]->getId() != -1)
+        for (unsigned int i = 0; i < textures.size(); i++)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, vbos[i]->getId());
-            glEnableVertexAttribArray(i);
-            glVertexAttribPointer(i, vbos[i]->getAttributeSize(), GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+            unsigned int texId = getTexId(textures[i]);
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, texId);
         }
-    }
 
-    //TODO: Strategy pattern
-    IIndexBufferObject* ibo = mesh->getIBO();
-    if (ibo)
-    {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo->getId());
-        glDrawElements(GL_TRIANGLES, (GLsizei)ibo->getIndexCount(), GL_UNSIGNED_INT, NULL);
+        for (unsigned int i = textures.size(); i < textures.size() + textureCubemaps.size(); i++)
+        {
+            unsigned int texId = getTexId(textureCubemaps[i - textures.size()]);
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
+        }
+
+        std::vector<IVertexBufferObject*> vbos = mesh->getVBOs();
+        for (unsigned int i = 0; i < vbos.size(); i++)
+        {
+            if (vbos[i]->getId() != -1)
+            {
+                glBindBuffer(GL_ARRAY_BUFFER, vbos[i]->getId());
+                glEnableVertexAttribArray(i);
+                glVertexAttribPointer(i, vbos[i]->getAttributeSize(), GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+            }
+        }
+
+        //TODO: Strategy pattern
+        IIndexBufferObject* ibo = mesh->getIBO();
+        if (ibo)
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo->getId());
+            glDrawElements(GL_TRIANGLES, (GLsizei)ibo->getIndexCount(), GL_UNSIGNED_INT, NULL);
+        }
+        else
+        {
+            glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vbos[0]->getVertexCount());
+        }
+
+        for (unsigned int i = 0; i < vbos.size(); i++)
+        {
+            if (vbos[i]->getId() != -1)
+            {
+                glDisableVertexAttribArray(i);
+            }
+        }
     }
     else
     {
-        glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vbos[0]->getVertexCount());
-    }
-    
-    for (unsigned int i = 0; i < vbos.size(); i++)
-    {
-        if (vbos[i]->getId() != -1)
+        for (unsigned int i = 0; i < children.size(); i++)
         {
-            glDisableVertexAttribArray(i);
+            render(children[i], camera);
         }
     }
 }
@@ -283,13 +295,21 @@ unsigned int Renderer::getTexId(const TextureCubemap * tex)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textures[tex->getId()]);
 
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
-	}
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_RGB, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
+	     
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
 
 	return textures[tex->getId()];
 }

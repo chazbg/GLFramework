@@ -23,6 +23,8 @@ public:
 	virtual void setTexCoords(const IVertexBufferObject& texCoords);
 	virtual void setMaterial(IMaterial* material);
 	virtual IMaterial& getMaterial() const;
+    virtual void addChild(IMesh* child);
+    virtual std::vector<IMesh*>& getChildren();
 	void SetUniformValue(string uniform, const int v);
 	void SetUniformValue(string uniform, const unsigned int v);
 	void SetUniformValue(string uniform, const Vec3& v);
@@ -39,6 +41,7 @@ protected:
 	IMaterial* material;
     IIndexBufferObject* ibo;
 	std::vector<IVertexBufferObject*> vbos;
+    std::vector<IMesh*> children;
 	float* wireframeVertexBuffer;
 	GLuint wireframeVertexBufferID;
 	Matrix4 model;

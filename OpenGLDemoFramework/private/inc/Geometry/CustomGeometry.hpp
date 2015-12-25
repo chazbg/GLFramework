@@ -4,6 +4,7 @@
 #include <Core/VertexBufferObject.hpp>
 #include <Core/IndexBufferObject.hpp>
 #include <string>
+#include <vector>
 
 class CustomGeometry : public Mesh
 {
@@ -12,8 +13,8 @@ public:
     ~CustomGeometry();
 
 private:
-    IndexBufferObject* indices;
-    VertexBufferObject* vertices;
-    VertexBufferObject* normals;
-    VertexBufferObject* uvs;
+    std::vector<IndexBufferObject*> indexBuffers;
+    std::vector<VertexBufferObject*> vertexBuffers;
+    std::vector<VertexBufferObject*> normalBuffers;
+    std::vector<VertexBufferObject*> uvBuffers;
 };

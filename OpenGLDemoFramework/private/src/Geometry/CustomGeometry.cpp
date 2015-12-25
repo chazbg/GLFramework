@@ -9,8 +9,7 @@ CustomGeometry::CustomGeometry(const std::string fileName)
     const aiScene* scene = importer.ReadFile(fileName,
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
-        aiProcess_SortByPType | 
-		aiProcess_FlipWindingOrder);
+        aiProcess_SortByPType);
 
     if (!scene)
     {
@@ -19,71 +18,109 @@ CustomGeometry::CustomGeometry(const std::string fileName)
 
     aiNode* node = scene->mRootNode;
    
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < scene->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[i];
-        unsigned int* indexBuffer = new unsigned int[3 * mesh->mNumFaces];
-        float* vertexBuffer = new float[3 * mesh->mNumVertices];
-        float* normalsBuffer = new float[3 * mesh->mNumVertices];
-		float* texCoordsBuffer = new float[2 * mesh->mNumVertices];
+        Mesh* bufferGeometry = new Mesh();
 
-        for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+        if (mesh->HasPositions())
         {
-            aiVector3D pos = mesh->mVertices[j];
-            printf("%f, %f, %f\n", pos.x, pos.y, pos.z);
-            vertexBuffer[k] = pos.x;
-            vertexBuffer[k + 1] = pos.y;
-            vertexBuffer[k + 2] = pos.z;
-        }
+            float* vertexBuffer = new float[3 * mesh->mNumVertices];
 
-        for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
-        {
-            aiVector3D normal = mesh->mNormals[j];
-            printf("normal %f, %f, %f\n", normal.x, normal.y, normal.z);
-            normalsBuffer[k] = normal.x;
-            normalsBuffer[k + 1] = normal.y;
-            normalsBuffer[k + 2] = normal.z;
-        }
+            for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+            {
+                aiVector3D pos = mesh->mVertices[j];
+                //printf("%f, %f, %f\n", pos.x, pos.y, pos.z);
+                vertexBuffer[k] = pos.x;
+                vertexBuffer[k + 1] = pos.y;
+                vertexBuffer[k + 2] = pos.z;
+            }
 
-		for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 2)
-		{
-			aiVector3D uv = mesh->mTextureCoords[0][j];
-			printf("uv %f, %f\n", uv.x, uv.y);
-			texCoordsBuffer[k] = uv.x;
-			texCoordsBuffer[k + 1] = uv.y;
-		}
+            VertexBufferObject* vertices = new VertexBufferObject(vertexBuffer, mesh->mNumVertices, 3);
+            delete[] vertexBuffer;
+            bufferGeometry->setVertices(*vertices);
+            vertexBuffers.push_back(vertices);
+        }
         
-        for (int j = 0, k = 0; j < mesh->mNumFaces; j++, k += 3)
+        if (mesh->HasNormals())
         {
-            aiFace face = mesh->mFaces[j];
-            printf("%d, %d, %d\n", face.mIndices[0], face.mIndices[1], face.mIndices[2]);
-            indexBuffer[k] = face.mIndices[0];
-            indexBuffer[k + 1] = face.mIndices[1];
-            indexBuffer[k + 2] = face.mIndices[2];
+            float* normalsBuffer = new float[3 * mesh->mNumVertices];
+
+            for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+            {
+                aiVector3D normal = mesh->mNormals[j];
+                //printf("normal %f, %f, %f\n", normal.x, normal.y, normal.z);
+                normalsBuffer[k] = normal.x;
+                normalsBuffer[k + 1] = normal.y;
+                normalsBuffer[k + 2] = normal.z;
+            }
+
+            VertexBufferObject* normals = new VertexBufferObject(normalsBuffer, mesh->mNumVertices, 3);
+            delete[] normalsBuffer;
+            bufferGeometry->setNormals(*normals);
+            normalBuffers.push_back(normals);
         }
+       
+        if (mesh->HasTextureCoords(0))
+        {
+            float* texCoordsBuffer = new float[2 * mesh->mNumVertices];
 
+            for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 2)
+            {
+                aiVector3D uv = mesh->mTextureCoords[0][j];
+                //printf("uv %f, %f\n", uv.x, uv.y);
+                texCoordsBuffer[k] = uv.x;
+                texCoordsBuffer[k + 1] = uv.y;
+            }
 
-        indices = new IndexBufferObject(indexBuffer, 3 * mesh->mNumFaces);
-        vertices = new VertexBufferObject(vertexBuffer, mesh->mNumVertices, 3);
-        normals = new VertexBufferObject(normalsBuffer, mesh->mNumVertices, 3);
-		uvs = new VertexBufferObject(texCoordsBuffer, mesh->mNumVertices, 2);
+            VertexBufferObject* uvs = new VertexBufferObject(texCoordsBuffer, mesh->mNumVertices, 2);
+            delete[] texCoordsBuffer;
+            bufferGeometry->setTexCoords(*uvs);
+            uvBuffers.push_back(uvs);
+        }
+		
+        if (mesh->HasFaces())
+        {
+            unsigned int* indexBuffer = new unsigned int[3 * mesh->mNumFaces];
 
-        setIndices(*indices);
-        setVertices(*vertices);
-        setNormals(*normals);
-		setTexCoords(*uvs);
+            for (int j = 0, k = 0; j < mesh->mNumFaces; j++, k += 3)
+            {
+                aiFace face = mesh->mFaces[j];
+                //printf("%d, %d, %d\n", face.mIndices[0], face.mIndices[1], face.mIndices[2]);
+                indexBuffer[k] = face.mIndices[0];
+                indexBuffer[k + 1] = face.mIndices[1];
+                indexBuffer[k + 2] = face.mIndices[2];
+            }
 
-        delete[] indexBuffer;
-        delete[] vertexBuffer;
-        delete[] normalsBuffer;
-		delete[] texCoordsBuffer;
+            IndexBufferObject* indices= new IndexBufferObject(indexBuffer, 3 * mesh->mNumFaces);
+            delete[] indexBuffer;
+            bufferGeometry->setIndices(*indices);
+            indexBuffers.push_back(indices);
+        }		
+
+        addChild(bufferGeometry);
     }
 }
 
 CustomGeometry::~CustomGeometry()
 {
-    delete indices;
-    delete vertices;
-    delete normals;
-	delete uvs;
+    for (unsigned int i = 0; i < indexBuffers.size(); i++)
+    {
+        delete indexBuffers[i];
+    }
+
+    for (unsigned int i = 0; i < vertexBuffers.size(); i++)
+    {
+        delete vertexBuffers[i];
+    }
+
+    for (unsigned int i = 0; i < normalBuffers.size(); i++)
+    {
+        delete normalBuffers[i];
+    }
+
+    for (unsigned int i = 0; i < uvBuffers.size(); i++)
+    {
+        delete uvBuffers[i];
+    }
 }

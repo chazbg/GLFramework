@@ -150,10 +150,10 @@
     <ClCompile Include="private\src\Core\IndexBufferObject.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Core\TextureLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\TextureCubemap.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\TextureLoader.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -335,9 +335,6 @@
     <ClInclude Include="private\inc\Core\IImageLoader.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Core\TextureLoader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoTextureLoader.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
@@ -345,6 +342,9 @@
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\TextureCubemap.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureLoader.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>

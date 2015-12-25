@@ -24,6 +24,11 @@ receivesShadow(false)
 Mesh::~Mesh()
 {
 	delete[] wireframeVertexBuffer;
+
+    for (int i = 0; i < children.size(); i++)
+    {
+        delete children[i];
+    }
 }
 
 IIndexBufferObject * Mesh::getIBO()
@@ -39,6 +44,11 @@ std::vector<IVertexBufferObject*>& Mesh::getVBOs()
 void Mesh::setModelMatrix(const Matrix4 & model)
 {
 	this->model = model;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->setModelMatrix(model);
+    }
 }
 
 Matrix4 Mesh::getModelMatrix() const
@@ -74,11 +84,27 @@ void Mesh::setTexCoords(const IVertexBufferObject & texCoords)
 void Mesh::setMaterial(IMaterial * material)
 {
 	this->material = material;
+
+    for (int i = 0; i < children.size(); i++)
+    {
+        children[i]->setMaterial(material);
+    }
+
 }
 
 IMaterial & Mesh::getMaterial() const
 {
 	return *material;
+}
+
+void Mesh::addChild(IMesh* child)
+{
+    children.push_back(child);
+}
+
+std::vector<IMesh*>& Mesh::getChildren() 
+{
+    return children;
 }
 
 void Mesh::SetUniformValue(string uniform, const int v)

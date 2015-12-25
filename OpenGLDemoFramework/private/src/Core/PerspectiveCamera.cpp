@@ -3,7 +3,7 @@
 
 PerspectiveCamera::PerspectiveCamera()
 {
-    perspective = GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 10.0f, 100);
+    perspective = GeometryAlgorithm::CreatePerspectiveMatrix(3.14f / 4.0f, 1.0f, 5.0f, 10000);
 }
 
 void PerspectiveCamera::setPosition(const Vec3 & position)

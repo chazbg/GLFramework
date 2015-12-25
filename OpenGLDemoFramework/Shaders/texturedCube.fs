@@ -32,8 +32,8 @@ void main()
     // outColor = sh * (lambert * vec3(1.0) + (texture2D(colorMap, 
                               // inUVs + vec2(-time * 0.005, (sin(time * 0.01)) * 0.5)).x ) * 
                               // (vec3(1,1,1) - diffuse));
-    //outColor = sh * texture2D(colorMap, inUVs).xyz;
+    //outColor = sh * texture2D(colorMap, inUVs);
 	
-	vec3 r = -reflect(inNormal, light);
-	outColor = texture(cubeMap, r).xyz;
+	vec3 r = reflect(inNormal, light);
+	outColor = texture(cubeMap, r).rgb;
 }

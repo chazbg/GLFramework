@@ -27,21 +27,28 @@ namespace PBRDemo
 			shaderMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
 			shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
 			shaderMaterial->addTextureCubemap(texLoader.loadTextureCubemap(
-				"Images/DefaultTexture.png", 
-				"Images/DefaultTexture.png", 
-				"Images/DefaultTexture.png", 
-				"Images/DefaultTexture.png", 
-				"Images/DefaultTexture.png", 
-				"Images/DefaultTexture.png"));
+				"Images/front.jpg", 
+				"Images/back.jpg", 
+				"Images/top.jpg", 
+				"Images/bottom.jpg", 
+				"Images/left.jpg", 
+				"Images/right.jpg"));
 
 			shaderMaterial->setProperty("colorMap", 0);
 			shaderMaterial->setProperty("sampler", 1);
 			shaderMaterial->setProperty("cubeMap", 2);
-
+            
 			g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
 			g->setMaterial(shaderMaterial);
 			g->setModelMatrix(GeometryAlgorithm::CreateSRTMatrix(Vec3(0.1, 0.1, 0.1), Vec3(0, 0, 0), Vec3(0, 0, 0)));
+
+           // environmentCube = new CustomGeometry("3DAssets/Toy_Cube.3ds");
+           // environmentCube->setMaterial(shaderMaterial);
+           // environmentCube->setModelMatrix(GeometryAlgorithm::CreateSRTMatrix(Vec3(10,10,10), Vec3(0, 0, 0), Vec3(0, 0, 0)));
+
+
 			scene.add(g);
+            //scene.add(environmentCube);
 			time = 0;
 			stopTime = false;
 			//cameraPos = Vec3(0, 10, 10);
@@ -49,7 +56,7 @@ namespace PBRDemo
 			prevMousePos = Vec2(0.5, 0.5);
 			phi = 0;
 			theta = 0;
-			radius = 10;
+			radius = 30;
 			cameraPos = Vec3(radius * cos(theta) * sin(phi), radius * sin(theta) * sin(phi), radius * cos(phi));
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
@@ -127,6 +134,7 @@ namespace PBRDemo
 		Scene scene;
 		Renderer* renderer;
 		CustomGeometry* g;
+        CustomGeometry* environmentCube;
 		ShaderMaterial* shaderMaterial;
 		unsigned int time;
 		bool stopTime;
