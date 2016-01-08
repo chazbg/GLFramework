@@ -67,6 +67,7 @@ namespace PBRDemo
 			renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
 			camera.setPosition(cameraPos);
+            g->getMaterial().setProperty("cameraPos", Vec3(cameraPos));
 			renderer->render(scene, camera);
 			if (!stopTime)
 			{

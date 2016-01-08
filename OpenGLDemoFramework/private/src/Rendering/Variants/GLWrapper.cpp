@@ -184,7 +184,7 @@ void Renderer::setDepthTest(const bool enabled)
 
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
-    //renderToTexture(scene.getChildren(), camera);
+    renderToTexture(scene.getChildren(), camera);
     render(scene.getChildren(), camera);
 }
 
@@ -295,15 +295,15 @@ unsigned int Renderer::getTexId(const TextureCubemap * tex)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textures[tex->getId()]);
 
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_RGB, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
 	     
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);

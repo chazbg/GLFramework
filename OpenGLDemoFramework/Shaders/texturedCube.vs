@@ -11,6 +11,7 @@ uniform mat4 depthMvp;
 smooth out vec3 inNormal;
 smooth out vec4 shadowCoord;
 smooth out vec2 inUVs;
+smooth out vec3 pos;
 
 void main(){
     vec3 light = normalize(vec3(0, 0.15, 0.25));
@@ -29,5 +30,6 @@ void main(){
     shadowCoord = sc;
     
     inUVs = uv;
+    pos = (mv * vec4(vertexPosition_modelspace, 1.0)).xyz;
 }
 
