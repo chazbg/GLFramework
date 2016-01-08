@@ -244,14 +244,13 @@ string Vec3::toString() const
 	return this->operator string();
 }
 
-float* Vec3::raw()
+const float* Vec3::raw()
 {
-	float* v = new float[3];
-	v[0] = x;
-	v[1] = y;
-	v[2] = z;
+	rawData[0] = x;
+	rawData[1] = y;
+	rawData[2] = z;
 
-	return v;
+	return rawData;
 }
 
 float Vec3::dot(const Vec3& rhs) const
@@ -386,15 +385,14 @@ string Vec4::toString() const
 	return this->operator string();
 }
 
-float* Vec4::raw()
+const float* Vec4::raw()
 {
-	float v[4];
-	v[0] = x;
-	v[1] = y;
-	v[2] = z;
-	v[3] = w;
+	rawData[0] = x;
+	rawData[1] = y;
+	rawData[2] = z;
+	rawData[3] = w;
 
-	return v;
+	return rawData;
 }
 
 float Vec4::dot(const Vec4& rhs) const

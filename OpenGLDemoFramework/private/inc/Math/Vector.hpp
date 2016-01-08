@@ -60,7 +60,7 @@ public:
 	float distanceSquaredTo(const Vec3& point);
  	operator string() const;
 	string toString() const;
-	float* raw();
+	const float* raw();
 	float dot(const Vec3& rhs) const;
 	float length() const;
 	Vec3 normalize() const;
@@ -69,6 +69,9 @@ public:
 	float x;
 	float y;
 	float z;
+private:
+private:
+    float rawData[3];
 };
 
 class Vec4
@@ -93,7 +96,7 @@ public:
 	float distanceSquaredTo(const Vec4& point);
 	operator string() const;
 	string toString() const;
-	float* raw();
+	const float* raw();
 	float dot(const Vec4& rhs) const;
 	float length() const;
 	Vec4 normalize() const;
@@ -103,4 +106,6 @@ public:
 	float y;
 	float z;
 	float w;
+private:
+    float rawData[4];
 };

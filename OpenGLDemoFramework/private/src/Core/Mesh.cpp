@@ -26,7 +26,7 @@ Mesh::~Mesh()
 {
 	delete[] wireframeVertexBuffer;
 
-    for (int i = 0; i < children.size(); i++)
+    for (unsigned int i = 0; i < children.size(); i++)
     {
         delete children[i];
     }
@@ -87,7 +87,7 @@ void Mesh::setMaterial(IMaterial * material)
 {
 	this->material = material;
 
-    for (int i = 0; i < children.size(); i++)
+    for (unsigned int i = 0; i < children.size(); i++)
     {
         children[i]->setMaterial(material);
     }

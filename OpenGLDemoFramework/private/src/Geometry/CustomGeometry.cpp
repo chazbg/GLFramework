@@ -18,7 +18,7 @@ CustomGeometry::CustomGeometry(const std::string fileName)
 
     aiNode* node = scene->mRootNode;
    
-    for (int i = 0; i < scene->mNumMeshes; i++)
+    for (unsigned int i = 0; i < scene->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[i];
         Mesh* bufferGeometry = new Mesh();
@@ -27,7 +27,7 @@ CustomGeometry::CustomGeometry(const std::string fileName)
         {
             float* vertexBuffer = new float[3 * mesh->mNumVertices];
 
-            for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+            for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
             {
                 aiVector3D pos = mesh->mVertices[j];
                 //printf("%f, %f, %f\n", pos.x, pos.y, pos.z);
@@ -46,7 +46,7 @@ CustomGeometry::CustomGeometry(const std::string fileName)
         {
             float* normalsBuffer = new float[3 * mesh->mNumVertices];
 
-            for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+            for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
             {
                 aiVector3D normal = mesh->mNormals[j];
                 //printf("normal %f, %f, %f\n", normal.x, normal.y, normal.z);
@@ -65,7 +65,7 @@ CustomGeometry::CustomGeometry(const std::string fileName)
         {
             float* texCoordsBuffer = new float[2 * mesh->mNumVertices];
 
-            for (int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 2)
+            for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 2)
             {
                 aiVector3D uv = mesh->mTextureCoords[0][j];
                 //printf("uv %f, %f\n", uv.x, uv.y);
@@ -83,7 +83,7 @@ CustomGeometry::CustomGeometry(const std::string fileName)
         {
             unsigned int* indexBuffer = new unsigned int[3 * mesh->mNumFaces];
 
-            for (int j = 0, k = 0; j < mesh->mNumFaces; j++, k += 3)
+            for (unsigned int j = 0, k = 0; j < mesh->mNumFaces; j++, k += 3)
             {
                 aiFace face = mesh->mFaces[j];
                 //printf("%d, %d, %d\n", face.mIndices[0], face.mIndices[1], face.mIndices[2]);

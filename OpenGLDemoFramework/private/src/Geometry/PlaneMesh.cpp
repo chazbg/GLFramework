@@ -33,34 +33,34 @@ float* PlaneMesh::generatePlaneVertices(int width, int height)
         for (int j = 0; j < width * 18; j += 18)
         {
             //1
-            verts[i * width * 18 + j] = j / 18;
-            verts[i * width * 18 + j + 1] = i;
-            verts[i * width * 18 + j + 2] = 0;
+            verts[i * width * 18 + j] = j / 18.0f;
+            verts[i * width * 18 + j + 1] = (float) i;
+            verts[i * width * 18 + j + 2] = 0.0f;
 
             //2
-            verts[i * width * 18 + j + 3] = j / 18 + 1;
-            verts[i * width * 18 + j + 4] = i;
-            verts[i * width * 18 + j + 5] = 0;
+            verts[i * width * 18 + j + 3] = j / 18.0f + 1.0f;
+            verts[i * width * 18 + j + 4] = (float) i;
+            verts[i * width * 18 + j + 5] = 0.0f;
 
             //3
-            verts[i * width * 18 + j + 6] = j / 18;
-            verts[i * width * 18 + j + 7] = i + 1;
-            verts[i * width * 18 + j + 8] = 0;
+            verts[i * width * 18 + j + 6] = j / 18.0f;
+            verts[i * width * 18 + j + 7] = (float) i + 1.0f;
+            verts[i * width * 18 + j + 8] = 0.0f;
 
             //4
-            verts[i * width * 18 + j + 9] = j / 18 + 1;
-            verts[i * width * 18 + j + 10] = i;
-            verts[i * width * 18 + j + 11] = 0;
+            verts[i * width * 18 + j + 9] = j / 18.0f + 1.0f;
+            verts[i * width * 18 + j + 10] = (float) i;
+            verts[i * width * 18 + j + 11] = 0.0f;
 
             //5
-            verts[i * width * 18 + j + 12] = j / 18 + 1;
-            verts[i * width * 18 + j + 13] = i + 1;
-            verts[i * width * 18 + j + 14] = 0;
+            verts[i * width * 18 + j + 12] = j / 18.0f + 1.0f;
+            verts[i * width * 18 + j + 13] = (float) i + 1.0f;
+            verts[i * width * 18 + j + 14] = 0.0f;
 
             //6
-            verts[i * width * 18 + j + 15] = j / 18;
-            verts[i * width * 18 + j + 16] = i + 1;
-            verts[i * width * 18 + j + 17] = 0;
+            verts[i * width * 18 + j + 15] = j / 18.0f;
+            verts[i * width * 18 + j + 16] = (float) i + 1.0f;
+            verts[i * width * 18 + j + 17] = 0.0f;
         }
     }
     return verts;
@@ -74,28 +74,28 @@ float * PlaneMesh::generateUVs(int width, int height)
         for (int j = 0, k = 0; j < width * 18; j += 18, k += 12)
         {
             //1
-            uvs[i * width * 12 + k] = (k / 12) / (float)width;
-            uvs[i * width * 12 + k + 1] = i / (float)height;
+            uvs[i * width * 12 + k] = (k / 12) / (float) width;
+            uvs[i * width * 12 + k + 1] = i / (float) height;
 
             //2
-            uvs[i * width * 12 + k + 2] = ((k / 12) + 1) / (float)width;
-            uvs[i * width * 12 + k + 3] = i / (float)height;
+            uvs[i * width * 12 + k + 2] = ((k / 12) + 1) / (float) width;
+            uvs[i * width * 12 + k + 3] = i / (float) height;
 
             //3
-            uvs[i * width * 12 + k + 4] = (k / 12) / (float)width;
-            uvs[i * width * 12 + k + 5] = (i + 1) / (float)height;
+            uvs[i * width * 12 + k + 4] = (k / 12) / (float) width;
+            uvs[i * width * 12 + k + 5] = (i + 1) / (float) height;
 
             //4
-            uvs[i * width * 12 + k + 6] = ((k / 12) + 1) / (float)width;
-            uvs[i * width * 12 + k + 7] = i / (float)height;
+            uvs[i * width * 12 + k + 6] = ((k / 12) + 1) / (float) width;
+            uvs[i * width * 12 + k + 7] = i / (float) height;
 
             //5
-            uvs[i * width * 12 + k + 8] = ((k / 12) + 1) / (float)width;
-            uvs[i * width * 12 + k + 9] = (i + 1) / (float)height;
+            uvs[i * width * 12 + k + 8] = ((k / 12) + 1) / (float) width;
+            uvs[i * width * 12 + k + 9] = (i + 1) / (float) height;
 
             //6
-            uvs[i * width * 12 + k + 10] = (k / 12) / (float)width;
-            uvs[i * width * 12 + k + 11] = (i + 1) / (float)height;
+            uvs[i * width * 12 + k + 10] = (k / 12) / (float) width;
+            uvs[i * width * 12 + k + 11] = (i + 1) / (float) height;
         }
     }
     return uvs;

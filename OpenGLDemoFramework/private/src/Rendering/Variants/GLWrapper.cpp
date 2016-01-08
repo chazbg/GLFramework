@@ -36,9 +36,9 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->setProperty("normalMap", 1);
     deferredShadingRectMat[3]->setProperty("depthMap", 2);
 
-    deferredShadingTex[0] = texFactory.createTexture(resolution.x, resolution.y, 3, 0);
-    deferredShadingTex[1] = texFactory.createTexture(resolution.x, resolution.y, 3, 0);
-    deferredShadingTex[2] = texFactory.createTexture(resolution.x, resolution.y, 3, 0);
+    deferredShadingTex[0] = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, 0);
+    deferredShadingTex[1] = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, 0);
+    deferredShadingTex[2] = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, 0);
 
     deferredShadingRectMat[0]->addTexture(deferredShadingTex[0]);
     deferredShadingRectMat[1]->addTexture(deferredShadingTex[1]);
@@ -70,7 +70,7 @@ void Renderer::initDeferredShading()
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
     glBindTexture(GL_TEXTURE_2D, texId[0]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -80,7 +80,7 @@ void Renderer::initDeferredShading()
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId[0], 0);
 
     glBindTexture(GL_TEXTURE_2D, texId[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -90,7 +90,7 @@ void Renderer::initDeferredShading()
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, texId[1], 0);
 
     glBindTexture(GL_TEXTURE_2D, texId[2]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, resolution.x, resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -108,7 +108,7 @@ void Renderer::initPostProcessing()
     postProcessMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
     postProcessMat->addTexture(postProcessTex);
 
-    postProcessTex = texFactory.createTexture(resolution.x, resolution.y, 4, 0);
+    postProcessTex = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, 0);
 
     postProcessRect = new Rectangle();
     postProcessRect->setMaterial(postProcessMat);
@@ -120,7 +120,7 @@ void Renderer::initPostProcessing()
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -129,7 +129,7 @@ void Renderer::initPostProcessing()
 
     glGenRenderbuffers(1, &depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.x, resolution.y);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, (unsigned int) resolution.x, (unsigned int) resolution.y);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 
@@ -144,7 +144,7 @@ void Renderer::initShadowMapping()
 
     depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 
-    shadowMap = texFactory.createTexture(resolution.x, resolution.y, 4, 0);
+    shadowMap = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, 0);
 
     rectMat->addTexture(shadowMap);
 
@@ -295,12 +295,12 @@ unsigned int Renderer::getTexId(const TextureCubemap * tex)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textures[tex->getId()]);
 
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_RGB, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_RGBA, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
 	     
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -379,7 +379,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
 
     // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
     glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, resolution.x, resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
