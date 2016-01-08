@@ -40,7 +40,8 @@ namespace PBRDemo
             
 			g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
 			g->setMaterial(shaderMaterial);
-			g->setModelMatrix(GeometryAlgorithm::CreateSRTMatrix(Vec3(0.1, 0.1, 0.1), Vec3(0, 0, 0), Vec3(0, 0, 0)));
+            g->Scale(0.1f, 0.1f, 0.1f);
+            g->Rotate(-3.14f / 2.0f, 0, 0);
 
            // environmentCube = new CustomGeometry("3DAssets/Toy_Cube.3ds");
            // environmentCube->setMaterial(shaderMaterial);
@@ -54,10 +55,11 @@ namespace PBRDemo
 			//cameraPos = Vec3(0, 10, 10);
 			prevDir = Vec3(0.01f, 0.1f, 0);
 			prevMousePos = Vec2(0.5, 0.5);
-			phi = 0;
+			phi = 3.14f/2.0f;
 			theta = 0;
 			radius = 30;
-			cameraPos = Vec3(radius * cos(theta) * sin(phi), radius * sin(theta) * sin(phi), radius * cos(phi));
+            float t = radius * cos(theta);
+			cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
 		virtual void onRender(const unsigned int deltaTime)
@@ -101,16 +103,17 @@ namespace PBRDemo
 				theta += 0.1f;
 				break;
 			case 'q':
-				radius += 0.1f;
+				radius += 0.5f;
 				break;
 			case 'e':
-				radius -= 0.1f;
+				radius -= 0.5f;
 				break;
 			default:
 				stopTime = !stopTime;
 				break;
 			}
-			cameraPos = Vec3(radius * sin(theta) * sin(phi), radius * cos(phi), radius * cos(theta) * sin(phi));
+            float t = radius * cos(theta);
+            cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
 		}
 
 		virtual void onMouseMove(int x, int y)

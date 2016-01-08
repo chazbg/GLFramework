@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <Core/VertexBufferObject.hpp>
+#include <Math/GeometryAlgorithm.hpp>
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -43,7 +44,8 @@ std::vector<IVertexBufferObject*>& Mesh::getVBOs()
 
 void Mesh::setModelMatrix(const Matrix4 & model)
 {
-	this->model = model;
+    //TODO: WHAT DO? REMOVE?
+	//this->model = model;
 
     for (unsigned int i = 0; i < children.size(); i++)
     {
@@ -53,7 +55,7 @@ void Mesh::setModelMatrix(const Matrix4 & model)
 
 Matrix4 Mesh::getModelMatrix() const
 {
-	return model;
+	return scale * rotation * translation;
 }
 
 void Mesh::setWireframeMode(const bool showWireframe)
@@ -89,7 +91,6 @@ void Mesh::setMaterial(IMaterial * material)
     {
         children[i]->setMaterial(material);
     }
-
 }
 
 IMaterial & Mesh::getMaterial() const
@@ -142,14 +143,68 @@ void Mesh::SetReceivesShadow(const bool receivesShadow)
 	this->receivesShadow = receivesShadow;
 }
 
+void Mesh::SetScale(const Vec3 & scale)
+{
+    //TODO: Implement
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->SetScale(scale);
+    }
+}
+
 void Mesh::SetPosition(const Vec3& position)
 {
-	model.setTranslation(position);
+    translation.setTranslation(position);
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->SetPosition(position);
+    }
 }
 
 void Mesh::SetRotation(const float thetaX, const float thetaY, const float thetaZ)
 {
-    model.setRotation(thetaX, thetaY, thetaZ);
+    rotation.setRotation(thetaX, thetaY, thetaZ);
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->SetRotation(thetaX, thetaY, thetaZ);
+    }
+}
+
+void Mesh::Scale(const float scaleX, const float scaleY, const float scaleZ)
+{
+    Matrix4 m = GeometryAlgorithm::CreateSRTMatrix(Vec3(scaleX, scaleY, scaleZ), Vec3(0, 0, 0), Vec3(0, 0, 0));
+    scale = scale * m;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->Scale(scaleX, scaleY, scaleZ);
+    }
+}
+
+void Mesh::Rotate(const float thetaX, const float thetaY, const float thetaZ)
+{
+    Matrix4 m;
+    m.setRotation(thetaX, thetaY, thetaZ);
+    rotation = rotation * m;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->Rotate(thetaX, thetaY, thetaZ);
+    }
+}
+
+void Mesh::Translate(const float transX, const float transY, const float transZ)
+{
+    Matrix4 m;
+    m.setTranslation(Vec3(transX, transY, transZ));
+    translation = translation * m;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->Translate(transX, transY, transZ);
+    }
 }
 
 float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int vertexCount)

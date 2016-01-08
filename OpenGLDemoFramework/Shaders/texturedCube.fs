@@ -34,6 +34,7 @@ void main()
                               // (vec3(1,1,1) - diffuse));
     //outColor = sh * texture2D(colorMap, inUVs);
 	
-	vec3 r = reflect(inNormal, light);
-	outColor = texture(cubeMap, r).rgb;
+	//vec3 r = reflect(inNormal, light);
+	//outColor = texture(cubeMap, r).rgb;
+    outColor = vec3(1,1,0) * lambert;
 }
