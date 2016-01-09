@@ -205,6 +205,7 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
         mesh->getMaterial().setProperty("depthMvp", lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
         mesh->getMaterial().setProperty("mvp", camera.getViewProjectionMatrix() * mesh->getModelMatrix());
         mesh->getMaterial().setProperty("mv", mesh->getModelMatrix());
+
         updateUniforms(mesh->getMaterial());
         std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
         std::vector<const TextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
@@ -408,7 +409,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
-    render(r, camera);
+    //render(r, camera);
 }
 
 void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
