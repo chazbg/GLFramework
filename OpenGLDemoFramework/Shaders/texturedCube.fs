@@ -7,6 +7,7 @@ uniform samplerCube cubeMap;
 uniform float time;
 uniform vec3 diffuse;
 uniform vec3 cameraPos;
+uniform float ior;
 
 // Input data
 smooth in vec3 inNormal;
@@ -69,7 +70,7 @@ void main()
 {
 	vec3 ambColor = vec3(1, 1, 0);
 	vec3 emissiveColor = vec3(1,1,1);
-	vec4 diffuseColor = vec4(1,1,0,1);
+	vec3 diffuseColor = vec3(1,1,0);
 	vec3 specularColor = vec3(1,1,1);
 	vec3 lightAmbDiffSpec = vec3(0.02,0.68,0.3);
 	vec3 lightColor = vec3(1,1,1);
@@ -95,14 +96,14 @@ void main()
                               // (vec3(1,1,1) - diffuse));
     //outColor = sh * texture2D(colorMap, inUVs);
 	
-	//vec3 r = normalize(reflect(n, light));
-	//outColor = texture(cubeMap, r);
+	vec3 r = normalize(reflect(n, light.L));
+    vec3 diff = texture(cubeMap, r).xyz * ior + diffuseColor * (1 - ior);
     vec3 v = normalize(cameraPos - pos);
     //outColor = normalize(n);
     //outColor = (vec3(1,1,0) + texture(cubeMap, r).rgb) * lambert * 0.33 + vec3(1,1,1) * pow(max(0.0, dot(r, v)), 5.0) * 0.33;
         
     vec3 ambComp = computeAmbientComponent(light, ambColor, lightAmbDiffSpec, lightColor);
-	vec3 diffComp = computeDiffuseComponent(n, light, diffuseColor.xyz, lightAmbDiffSpec, lightColor);
+	vec3 diffComp = computeDiffuseComponent(n, light, diff, lightAmbDiffSpec, lightColor);
 	vec3 specComp = computeSpecularComponent(n, pos, light, specularColor, specExp, lightAmbDiffSpec, lightColor, cameraPos);
     
     outColor = ambComp + diffComp + specComp;    

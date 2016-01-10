@@ -9,6 +9,8 @@
 #include <Geometry/CustomGeometry.hpp>
 #include <Math/GeometryAlgorithm.hpp>
 #include <iostream>
+#include <algorithm>
+
 using namespace std;
 
 namespace PBRDemo
@@ -60,6 +62,7 @@ namespace PBRDemo
 			radius = 30;
             float t = radius * cos(theta);
 			cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
+            ior = 0.0f;
 		}
 		virtual void onUpdate(const unsigned int deltaTime) {}
 		virtual void onRender(const unsigned int deltaTime)
@@ -67,7 +70,8 @@ namespace PBRDemo
 			renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
 			camera.setPosition(cameraPos);
-            g->getMaterial().setProperty("cameraPos", Vec3(cameraPos));
+            g->getMaterial().setProperty("cameraPos", cameraPos);
+            g->getMaterial().setProperty("ior", ior);
 			renderer->render(scene, camera);
 			if (!stopTime)
 			{
@@ -109,6 +113,12 @@ namespace PBRDemo
 			case 'e':
 				radius -= 0.5f;
 				break;
+            case '[':
+                ior = max(0.0f, ior - 0.1f);
+                break;
+            case ']':
+                ior = min(1.0f, ior + 0.1f);
+                break;
 			default:
 				stopTime = !stopTime;
 				break;
@@ -148,6 +158,7 @@ namespace PBRDemo
 		float phi;
 		float theta;
 		float radius;
+        float ior;
 	};
 
 	void main()
