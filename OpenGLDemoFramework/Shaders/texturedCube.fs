@@ -68,15 +68,16 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 
 void main()
 {
-	vec3 ambColor = vec3(1, 1, 0);
+	vec3 ambColor = vec3(1, 1, 1);
 	vec3 emissiveColor = vec3(1,1,1);
 	vec3 diffuseColor = vec3(1,1,0);
 	vec3 specularColor = vec3(1,1,1);
-	vec3 lightAmbDiffSpec = vec3(0.02,0.68,0.3);
+	vec3 lightAmbDiffSpec = vec3(0.02, (1.0 - ior) * 0.98, ior * 0.98);
 	vec3 lightColor = vec3(1,1,1);
 	float specExp = 6.0;
     
-    lightSampleValues light = computeDirLightValues(normalize(vec3(0, 0.15, 0.25)), 1);
+    lightSampleValues light = computeDirLightValues(normalize(vec3(1, 0.0, 0.5)), 0.5);
+    lightSampleValues light2 = computeDirLightValues(normalize(vec3(-1, 0.0, 0.5)), 0.5);
     //lightSampleValues light = computePointLightValues(vec4(0, 3, 8, 0).xyz, vec3(0,0,1), 4, pos);
     
     vec3 n = normalize(inNormal);
@@ -97,14 +98,18 @@ void main()
     //outColor = sh * texture2D(colorMap, inUVs);
 	
 	vec3 r = normalize(reflect(n, light.L));
-    vec3 diff = texture(cubeMap, r).xyz * ior + diffuseColor * (1 - ior);
+    vec3 r2 = normalize(reflect(n, light2.L));
+    vec3 diff = diffuseColor;
     vec3 v = normalize(cameraPos - pos);
     //outColor = normalize(n);
     //outColor = (vec3(1,1,0) + texture(cubeMap, r).rgb) * lambert * 0.33 + vec3(1,1,1) * pow(max(0.0, dot(r, v)), 5.0) * 0.33;
         
     vec3 ambComp = computeAmbientComponent(light, ambColor, lightAmbDiffSpec, lightColor);
 	vec3 diffComp = computeDiffuseComponent(n, light, diff, lightAmbDiffSpec, lightColor);
-	vec3 specComp = computeSpecularComponent(n, pos, light, specularColor, specExp, lightAmbDiffSpec, lightColor, cameraPos);
+	vec3 specComp = computeSpecularComponent(n, pos, light, specularColor, specExp, lightAmbDiffSpec, texture(cubeMap, r).xyz, cameraPos);
     
-    outColor = ambComp + diffComp + specComp;    
+    vec3 diffComp2 = computeDiffuseComponent(n, light2, diff, lightAmbDiffSpec, lightColor);
+	vec3 specComp2 = computeSpecularComponent(n, pos, light2, specularColor, specExp, lightAmbDiffSpec, texture(cubeMap, r2).xyz, cameraPos);
+    
+    outColor = ambComp + diffComp + specComp + diffComp2 + specComp2;    
 }
