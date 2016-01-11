@@ -66,10 +66,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Git\GLFramework\OpenGLDemoFramework\private\inc;D:\Git\GLFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\inc;E:\Git\GLFramework\OpenGLDemoFramework\include;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\include;$(IncludePath)</IncludePath>
+    <IncludePath>./include;./private/inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
-    <SourcePath>E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Geometry;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Rendering;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Windowing;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Math;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\private\src\Core;$(SourcePath)</SourcePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OpenGLDebug|Win32'">
     <IncludePath>./private/inc;./include;$(IncludePath)</IncludePath>
@@ -92,7 +92,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Git\GLFramework\OpenGLDemoFramework;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\bin\bin;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib;E:\Dev\C++\OpenGLDemoFramework\OpenGLDemoFramework\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FreeImage.lib;glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
