@@ -18,6 +18,8 @@ public:
     virtual void setIndices(const IIndexBufferObject& indices) = 0;
 	virtual void setVertices(const IVertexBufferObject& vertices) = 0;
 	virtual void setNormals(const IVertexBufferObject& normals) = 0;
+	virtual void setTangents(const IVertexBufferObject& tangents) = 0;
+	virtual void setBitangents(const IVertexBufferObject& bitangents) = 0;
 	virtual void setTexCoords(const IVertexBufferObject& texCoords) = 0;
 	virtual void setMaterial(IMaterial* material) = 0;
 	virtual IMaterial& getMaterial() const = 0;

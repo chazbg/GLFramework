@@ -16,7 +16,7 @@ showWireframe(false),
 castsShadow(false),
 receivesShadow(false)
 {
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		vbos.push_back(new VertexBufferObject());
 	}
@@ -81,6 +81,16 @@ void Mesh::setNormals(const IVertexBufferObject & normals)
 void Mesh::setTexCoords(const IVertexBufferObject & texCoords)
 {
 	vbos[2] = &const_cast<IVertexBufferObject&>(texCoords);
+}
+
+void Mesh::setTangents(const IVertexBufferObject& tangents)
+{
+    vbos[3] = &const_cast<IVertexBufferObject&>(tangents);
+}
+
+void Mesh::setBitangents(const IVertexBufferObject& bitangents)
+{
+    vbos[4] = &const_cast<IVertexBufferObject&>(bitangents);
 }
 
 void Mesh::setMaterial(IMaterial * material)

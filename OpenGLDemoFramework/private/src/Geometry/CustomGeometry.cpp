@@ -9,7 +9,8 @@ CustomGeometry::CustomGeometry(const std::string fileName)
     const aiScene* scene = importer.ReadFile(fileName,
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
-        aiProcess_SortByPType);
+        aiProcess_SortByPType |
+        aiProcess_CalcTangentSpace);
 
     if (!scene)
     {
@@ -39,7 +40,6 @@ CustomGeometry::CustomGeometry(const std::string fileName)
             VertexBufferObject* vertices = new VertexBufferObject(vertexBuffer, mesh->mNumVertices, 3);
             delete[] vertexBuffer;
             bufferGeometry->setVertices(*vertices);
-            vertexBuffers.push_back(vertices);
         }
         
         if (mesh->HasNormals())
@@ -58,7 +58,33 @@ CustomGeometry::CustomGeometry(const std::string fileName)
             VertexBufferObject* normals = new VertexBufferObject(normalsBuffer, mesh->mNumVertices, 3);
             delete[] normalsBuffer;
             bufferGeometry->setNormals(*normals);
-            normalBuffers.push_back(normals);
+        }
+
+        if (mesh->HasTangentsAndBitangents())
+        {
+            float* tangentsBuffer = new float[3 * mesh->mNumVertices];
+            float* bitangentsBuffer = new float[3 * mesh->mNumVertices];
+
+            for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+            {
+                aiVector3D tangent = mesh->mTangents[j];
+                tangentsBuffer[k] = tangent.x;
+                tangentsBuffer[k + 1] = tangent.y;
+                tangentsBuffer[k + 2] = tangent.z;
+
+                aiVector3D bitangent = mesh->mBitangents[j];
+                bitangentsBuffer[k] = bitangent.x;
+                bitangentsBuffer[k + 1] = bitangent.y;
+                bitangentsBuffer[k + 2] = bitangent.z;
+            }
+
+            VertexBufferObject* tangents = new VertexBufferObject(tangentsBuffer, mesh->mNumVertices, 3);
+            VertexBufferObject* bitangents = new VertexBufferObject(bitangentsBuffer, mesh->mNumVertices, 3);
+            delete[] tangentsBuffer;
+            delete[] bitangentsBuffer;
+
+            bufferGeometry->setTangents(*tangents);
+            bufferGeometry->setBitangents(*bitangents);
         }
        
         if (mesh->HasTextureCoords(0))
@@ -76,7 +102,6 @@ CustomGeometry::CustomGeometry(const std::string fileName)
             VertexBufferObject* uvs = new VertexBufferObject(texCoordsBuffer, mesh->mNumVertices, 2);
             delete[] texCoordsBuffer;
             bufferGeometry->setTexCoords(*uvs);
-            uvBuffers.push_back(uvs);
         }
 		
         if (mesh->HasFaces())
@@ -95,7 +120,6 @@ CustomGeometry::CustomGeometry(const std::string fileName)
             IndexBufferObject* indices= new IndexBufferObject(indexBuffer, 3 * mesh->mNumFaces);
             delete[] indexBuffer;
             bufferGeometry->setIndices(*indices);
-            indexBuffers.push_back(indices);
         }		
 
         addChild(bufferGeometry);
@@ -104,23 +128,5 @@ CustomGeometry::CustomGeometry(const std::string fileName)
 
 CustomGeometry::~CustomGeometry()
 {
-    for (unsigned int i = 0; i < indexBuffers.size(); i++)
-    {
-        delete indexBuffers[i];
-    }
 
-    for (unsigned int i = 0; i < vertexBuffers.size(); i++)
-    {
-        delete vertexBuffers[i];
-    }
-
-    for (unsigned int i = 0; i < normalBuffers.size(); i++)
-    {
-        delete normalBuffers[i];
-    }
-
-    for (unsigned int i = 0; i < uvBuffers.size(); i++)
-    {
-        delete uvBuffers[i];
-    }
 }
