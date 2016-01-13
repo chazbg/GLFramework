@@ -26,7 +26,7 @@ namespace PBRDemo
 
 			renderer = new Renderer(Vec2(800, 800));
 
-			shaderMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+			shaderMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/bumpMapping.fs");
 			shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
 			shaderMaterial->addTextureCubemap(texLoader.loadTextureCubemap(
 				"Images/front.jpg", 

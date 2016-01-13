@@ -8,6 +8,7 @@ uniform float time;
 uniform vec3 diffuse;
 uniform vec3 cameraPos;
 uniform float ior;
+uniform mat4 mv;
 
 // Input data
 smooth in vec3 inNormal;
@@ -87,6 +88,24 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 	return values;
 }
 
+vec3 computeBumpNormal(sampler2D sampler, vec2 uvs)
+{
+	float N  = texture2D(sampler, uvs + vec2(0, 0.001)).x;
+	float NE  = texture2D(sampler, uvs + vec2(0.001, 0.001)).x;
+	float E  = texture2D(sampler, uvs + vec2(0.001, 0)).x;
+	float SE  = texture2D(sampler, uvs + vec2(0.001, -0.001)).x;
+	float S  = texture2D(sampler, uvs + vec2(0, -0.001)).x;
+	float SW  = texture2D(sampler, uvs + vec2(-0.001, -0.001)).x;
+	float W  = texture2D(sampler, uvs + vec2(-0.001, 0)).x;
+	float NW  = texture2D(sampler, uvs + vec2(-0.001, 0.001)).x;
+	float C  = texture2D(sampler, uvs).x;
+	
+	float dx = ((NE + E + SE) - (NW + W + SW)) / 3.0;
+	float dy = ((NW + N + NE) - (SW + S + SE)) / 3.0;
+	
+	return vec3(dx, 0, dy) * 4.0f;
+}
+
 void main()
 {
 	vec3 ambColor = vec3(1, 1, 1);
@@ -101,7 +120,7 @@ void main()
     lightSampleValues light2 = computeDirLightValues(normalize(vec3(-1, 0.0, 0.5)), 0.5);
     //lightSampleValues light = computePointLightValues(vec4(0, 3, 8, 0).xyz, vec3(0,0,1), 4, pos);
     
-    vec3 n = normalize(inNormal);
+    vec3 n = normalize((mv * vec4(computeBumpNormal(colorMap, inUVs),0.0)).xyz + normalize(inNormal));
     
     vec4 scw = shadowCoord / shadowCoord.w;
     scw.z -= 0.0005;
@@ -132,6 +151,7 @@ void main()
     vec3 diffComp2 = computeDiffuseComponent(n, light2, diff, lightAmbDiffSpec, lightColor);
 	vec3 specComp2 = computeSpecularComponent(n, pos, light2, specularColor, specExp, lightAmbDiffSpec, texture(cubeMap, r2).xyz, cameraPos);
     
-    outColor = linearToSRGB(ambComp + diffComp + specComp + diffComp2 + specComp2);    
+    outColor = linearToSRGB(ambComp + diffComp + specComp + diffComp2 + specComp2); 	
 	// outColor = ambComp + diffComp + specComp + diffComp2 + specComp2; 
+	//outColor = texture(colorMap, inUVs).xyz;
 }
