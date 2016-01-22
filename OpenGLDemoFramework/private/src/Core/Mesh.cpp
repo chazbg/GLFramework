@@ -44,8 +44,7 @@ std::vector<IVertexBufferObject*>& Mesh::getVBOs()
 
 void Mesh::setModelMatrix(const Matrix4 & model)
 {
-    //TODO: WHAT DO? REMOVE?
-	//this->model = model;
+	this->model = model;
 
     for (unsigned int i = 0; i < children.size(); i++)
     {
@@ -55,7 +54,8 @@ void Mesh::setModelMatrix(const Matrix4 & model)
 
 Matrix4 Mesh::getModelMatrix() const
 {
-	return scale * rotation * translation;
+	//return translation * rotation * scale;
+    return model;
 }
 
 void Mesh::setWireframeMode(const bool showWireframe)
@@ -153,39 +153,17 @@ void Mesh::SetReceivesShadow(const bool receivesShadow)
 	this->receivesShadow = receivesShadow;
 }
 
-void Mesh::SetScale(const Vec3 & scale)
+Vec3 Mesh::getPosition()
 {
-    //TODO: Implement
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->SetScale(scale);
-    }
-}
-
-void Mesh::SetPosition(const Vec3& position)
-{
-    translation.setTranslation(position);
-
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->SetPosition(position);
-    }
-}
-
-void Mesh::SetRotation(const float thetaX, const float thetaY, const float thetaZ)
-{
-    rotation.setRotation(thetaX, thetaY, thetaZ);
-
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->SetRotation(thetaX, thetaY, thetaZ);
-    }
+    Vec4 base(0.0f, 0.0f, 0.0f, 1.0f);
+    base = model * base;
+    return Vec3(base.x, base.y, base.z);
 }
 
 void Mesh::Scale(const float scaleX, const float scaleY, const float scaleZ)
 {
     Matrix4 m = GeometryAlgorithm::CreateSRTMatrix(Vec3(scaleX, scaleY, scaleZ), Vec3(0, 0, 0), Vec3(0, 0, 0));
-    scale = scale * m;
+    model = m * model;
 
     for (unsigned int i = 0; i < children.size(); i++)
     {
@@ -197,8 +175,7 @@ void Mesh::Rotate(const float thetaX, const float thetaY, const float thetaZ)
 {
     Matrix4 m;
     m.setRotation(thetaX, thetaY, thetaZ);
-    rotation = rotation * m;
-
+    model = m * model;
     for (unsigned int i = 0; i < children.size(); i++)
     {
         children[i]->Rotate(thetaX, thetaY, thetaZ);
@@ -209,7 +186,7 @@ void Mesh::Translate(const float transX, const float transY, const float transZ)
 {
     Matrix4 m;
     m.setTranslation(Vec3(transX, transY, transZ));
-    translation = translation * m;
+    model = m * model;
 
     for (unsigned int i = 0; i < children.size(); i++)
     {

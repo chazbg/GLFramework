@@ -106,7 +106,6 @@ public:
 		m[0].w = translation.x;
 		m[1].w = translation.y;
 		m[2].w = translation.z;
-		cout << toString() << endl;
 	}
 
     void setRotation(const float thetaX, const float thetaY, const float thetaZ)

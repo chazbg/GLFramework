@@ -25,9 +25,6 @@ public:
 	virtual IMaterial& getMaterial() const = 0;
     virtual void addChild(IMesh* child) = 0;
     virtual std::vector<IMesh*>& getChildren() = 0;
-    virtual void SetScale(const Vec3& scale) = 0;
-    virtual void SetPosition(const Vec3& position) = 0;
-    virtual void SetRotation(const float thetaX, const float thetaY, const float thetaZ) = 0; //TODO: Use Vec3
     virtual void Scale(const float scaleX, const float scaleY, const float scaleZ) = 0;//TODO: Use Vec3
     virtual void Rotate(const float thetaX, const float thetaY, const float thetaZ) = 0;//TODO: Use Vec3
     virtual void Translate(const float transX, const float transY, const float transZ) = 0;//TODO: Use Vec3

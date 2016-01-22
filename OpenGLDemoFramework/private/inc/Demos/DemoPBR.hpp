@@ -26,7 +26,7 @@ namespace PBRDemo
 
 			renderer = new Renderer(Vec2(800, 800));
 
-			shaderMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/bumpMapping.fs");
+			shaderMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
 			shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
 			shaderMaterial->addTextureCubemap(texLoader.loadTextureCubemap(
 				"Images/front.jpg", 
@@ -40,21 +40,27 @@ namespace PBRDemo
 			shaderMaterial->setProperty("sampler", 1);
 			shaderMaterial->setProperty("cubeMap", 2);
             
+            lightMeshMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+
 			g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
 			g->setMaterial(shaderMaterial);
             g->Scale(0.1f, 0.1f, 0.1f);
             g->Rotate(-3.14f / 2.0f, 0, 0);
-
+            
            // environmentCube = new CustomGeometry("3DAssets/Toy_Cube.3ds");
            // environmentCube->setMaterial(shaderMaterial);
            // environmentCube->setModelMatrix(GeometryAlgorithm::CreateSRTMatrix(Vec3(10,10,10), Vec3(0, 0, 0), Vec3(0, 0, 0)));
-
+           
+            lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            lights[0]->setMaterial(lightMeshMaterial);
+            lights[0]->Scale(0.1f, 0.1f, 0.1f);
+            lights[0]->Translate(5.0f, 0.1f, 0.1f);
 
 			scene.add(g);
+            scene.add(lights[0]);
             //scene.add(environmentCube);
 			time = 0;
 			stopTime = false;
-			//cameraPos = Vec3(0, 10, 10);
 			prevDir = Vec3(0.01f, 0.1f, 0);
 			prevMousePos = Vec2(0.5, 0.5);
 			phi = 3.14f/2.0f;
@@ -70,8 +76,12 @@ namespace PBRDemo
 			renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
 			camera.setPosition(cameraPos);
+            lights[0]->Rotate(0, 3.14f / 60.0f, 0);
             g->getMaterial().setProperty("cameraPos", cameraPos);
             g->getMaterial().setProperty("ior", ior);
+            g->getMaterial().setProperty("lightPos", lights[0]->getPosition());
+            //g->SetPosition(Vec3(cos(time * 0.03f)*4.0, sin(time * 0.03f)*4.0, 0));
+            
 			renderer->render(scene, camera);
 			if (!stopTime)
 			{
@@ -150,6 +160,7 @@ namespace PBRDemo
 		CustomGeometry* g;
         CustomGeometry* environmentCube;
 		ShaderMaterial* shaderMaterial;
+        ShaderMaterial* lightMeshMaterial;
 		unsigned int time;
 		bool stopTime;
 		Vec3 cameraPos;
@@ -159,6 +170,7 @@ namespace PBRDemo
 		float theta;
 		float radius;
         float ior;
+        vector<CustomGeometry*> lights;
 	};
 
 	void main()
