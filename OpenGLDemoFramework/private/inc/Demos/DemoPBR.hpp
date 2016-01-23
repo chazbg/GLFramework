@@ -40,8 +40,8 @@ namespace PBRDemo
 			shaderMaterial->setProperty("sampler", 1);
 			shaderMaterial->setProperty("cubeMap", 2);
             
-            lightMeshMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
-
+            lightMeshMaterial = new ShaderMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs");
+            lightMeshMaterial->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
 			g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
 			g->setMaterial(shaderMaterial);
             g->Scale(0.1f, 0.1f, 0.1f);
@@ -53,11 +53,23 @@ namespace PBRDemo
            
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[0]->setMaterial(lightMeshMaterial);
-            lights[0]->Scale(0.1f, 0.1f, 0.1f);
-            lights[0]->Translate(5.0f, 0.1f, 0.1f);
+            lights[0]->Scale(0.05f, 0.05f, 0.05f);
+            lights[0]->Translate(5.0f, 0.0f, 0.0f);
+
+            lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            lights[1]->setMaterial(lightMeshMaterial);
+            lights[1]->Scale(0.05f, 0.05f, 0.05f);
+            lights[1]->Translate(8.0f, 8.0f, 0.0f);
+
+            lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            lights[2]->setMaterial(lightMeshMaterial);
+            lights[2]->Scale(0.05f, 0.05f, 0.05f);
+            lights[2]->Translate(8.0f, -10.0f, 0.0f);
 
 			scene.add(g);
             scene.add(lights[0]);
+            scene.add(lights[1]);
+            scene.add(lights[2]);
             //scene.add(environmentCube);
 			time = 0;
 			stopTime = false;
@@ -76,17 +88,22 @@ namespace PBRDemo
 			renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
 			camera.setPosition(cameraPos);
-            lights[0]->Rotate(0, 3.14f / 60.0f, 0);
+
+            if (!stopTime)
+            {
+                time++;
+                lights[0]->Rotate(0, 3.14f / 100.0f, 0);
+                lights[1]->Rotate(0, 3.14f / 360.0f, -3.14f / 360.0f);
+                lights[2]->Rotate(0, -3.14f / 360.0f, -3.14f / 360.0f);
+            }
+
             g->getMaterial().setProperty("cameraPos", cameraPos);
             g->getMaterial().setProperty("ior", ior);
-            g->getMaterial().setProperty("lightPos", lights[0]->getPosition());
-            //g->SetPosition(Vec3(cos(time * 0.03f)*4.0, sin(time * 0.03f)*4.0, 0));
-            
+            g->getMaterial().setProperty("light0Pos", lights[0]->getPosition());
+            g->getMaterial().setProperty("light1Pos", lights[1]->getPosition());
+            g->getMaterial().setProperty("light2Pos", lights[2]->getPosition());
+
 			renderer->render(scene, camera);
-			if (!stopTime)
-			{
-				time++;
-			}
 		}
 
 		virtual void onDestroy() { delete g; }
