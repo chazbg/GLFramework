@@ -10,5 +10,6 @@ class CustomGeometry : public Mesh
 {
 public:
     CustomGeometry(const std::string fileName);
+    CustomGeometry(const std::string fileName, const bool flipFaces);
     ~CustomGeometry();
 };

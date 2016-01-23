@@ -3,14 +3,25 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-CustomGeometry::CustomGeometry(const std::string fileName)
+CustomGeometry::CustomGeometry(const std::string fileName) : CustomGeometry(fileName, false)
+{
+}
+
+CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(fileName,
+    unsigned int flags = 
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
         aiProcess_SortByPType |
-        aiProcess_CalcTangentSpace);
+        aiProcess_CalcTangentSpace;
+
+    if (flipFaces)
+    {
+        flags |= aiProcess_FlipWindingOrder;
+    }
+
+    const aiScene* scene = importer.ReadFile(fileName, flags);
 
     if (!scene)
     {
