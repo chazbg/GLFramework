@@ -10,5 +10,5 @@ layout(location = 0) out vec3 outColor;
 
 void main()
 {
-    outColor = texture(envMap, iPos).rgb;
+    outColor = texture(envMap, iPos).bgr;
 }
