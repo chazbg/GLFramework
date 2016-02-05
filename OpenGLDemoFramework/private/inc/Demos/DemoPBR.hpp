@@ -34,21 +34,26 @@ namespace PBRDemo
                 "Images/left.jpg",
                 "Images/right.jpg");
 
-            shaderMaterial = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/semiGGX.vs", "Shaders/semiGGX.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
             shaderMaterial->addTextureCubemap(envMap);
 
             shaderMaterial->setProperty("colorMap", 0);
             shaderMaterial->setProperty("sampler", 1);
-            shaderMaterial->setProperty("cubeMap", 2);
+            shaderMaterial->setProperty("envMap", 2);
+            shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+            shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
 
-            g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+            //g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+            g = new CustomGeometry("3DAssets/ogrehead.obj");
             g->setMaterial(shaderMaterial);
-            g->Scale(0.1f, 0.1f, 0.1f);
-            g->Rotate(-3.14f / 2.0f, 0, 0);
+            g->Scale(7.0f, 7.0f, 7.0f);
+            //g->Scale(0.1f, 0.1f, 0.1f);
+            //g->Rotate(-3.14f / 2.0f, 0, 0);
 
             initEnvMap();
             initLights();
+            initGround();
 
             scene.add(g);
             
@@ -62,6 +67,7 @@ namespace PBRDemo
             float t = radius * cos(theta);
             cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
             ior = 0.0f;
+            glossiness = 0.0f;
         }
         virtual void onUpdate(const unsigned int deltaTime) {}
         virtual void onRender(const unsigned int deltaTime)
@@ -73,16 +79,24 @@ namespace PBRDemo
             if (!stopTime)
             {
                 time++;
-                lights[0]->Rotate(0, 3.14f / 100.0f, 0);
+                /*lights[0]->Rotate(0, 3.14f / 100.0f, 0);
                 lights[1]->Rotate(0, 3.14f / 360.0f, -3.14f / 360.0f);
-                lights[2]->Rotate(0, -3.14f / 360.0f, -3.14f / 360.0f);
+                lights[2]->Rotate(0, -3.14f / 360.0f, -3.14f / 360.0f);*/
             }
 
             g->getMaterial().setProperty("cameraPos", cameraPos);
             g->getMaterial().setProperty("ior", ior);
+            g->getMaterial().setProperty("glossiness", glossiness);
             g->getMaterial().setProperty("light0Pos", lights[0]->getPosition());
             g->getMaterial().setProperty("light1Pos", lights[1]->getPosition());
             g->getMaterial().setProperty("light2Pos", lights[2]->getPosition());
+
+            ground->getMaterial().setProperty("cameraPos", cameraPos);
+            ground->getMaterial().setProperty("ior", ior);
+            ground->getMaterial().setProperty("glossiness", glossiness);
+            ground->getMaterial().setProperty("light0Pos", lights[0]->getPosition());
+            ground->getMaterial().setProperty("light1Pos", lights[1]->getPosition());
+            ground->getMaterial().setProperty("light2Pos", lights[2]->getPosition());
 
             renderer->render(scene, camera);
         }
@@ -122,10 +136,26 @@ namespace PBRDemo
                 radius -= 0.5f;
                 break;
             case '[':
-                ior = max(0.0f, ior - 0.1f);
+                ior = max(0.01f, ior - 0.01f);
+                cout << "ior: " << ior << endl;
                 break;
             case ']':
-                ior = min(1.0f, ior + 0.1f);
+                ior = min(0.99f, ior + 0.01f);
+                cout << "ior: " << ior << endl;
+                break;
+            case '-':
+                glossiness = max(0.01f, glossiness - 0.01f);
+                cout << "glossiness: " << glossiness << endl;
+                break;
+            case '=':
+                glossiness = min(0.99f, glossiness + 0.01f);
+                cout << "glossiness: " << glossiness << endl;
+                break;
+            case '1':
+                ground->setMaterial(anisotropicMaterial);
+                break;
+            case '2':
+                ground->setMaterial(shaderMaterial);
                 break;
             default:
                 stopTime = !stopTime;
@@ -161,7 +191,7 @@ namespace PBRDemo
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[0]->setMaterial(lightMeshMaterial);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
-            lights[0]->Translate(5.0f, 0.0f, 0.0f);
+            lights[0]->Translate(7.0f, 10.0f, 0.0f);
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[1]->setMaterial(lightMeshMaterial);
@@ -171,7 +201,7 @@ namespace PBRDemo
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[2]->setMaterial(lightMeshMaterial);
             lights[2]->Scale(0.05f, 0.05f, 0.05f);
-            lights[2]->Translate(8.0f, -10.0f, 0.0f);
+            lights[2]->Translate(8.0f, 10.0f, 0.0f);
 
             scene.add(lights[0]);
             scene.add(lights[1]);
@@ -191,14 +221,34 @@ namespace PBRDemo
             envMapMaterial->addTextureCubemap(envMap);
         }
 
+        void initGround()
+        {
+            anisotropicMaterial = new ShaderMaterial("Shaders/anisotropicBRDF.vs", "Shaders/anisotropicBRDF.fs");
+            shaderMaterial->setProperty("colorMap", 0);
+            shaderMaterial->setProperty("sampler", 1);
+            shaderMaterial->setProperty("envMap", 2);
+            shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+            shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+
+            ground = new CustomGeometry("3DAssets/cube.3ds");
+            ground->setMaterial(anisotropicMaterial);
+            ground->Translate(0.0f, -5.0f, 0.0f);
+            ground->Scale(20.0f, 1.0f, 20.0f);
+            scene.add(ground);
+
+            anisotropicMaterial->addTextureCubemap(envMap);
+        }
+
         PerspectiveCamera camera;
         Scene scene;
         Renderer* renderer;
         CustomGeometry* g;
         CustomGeometry* environmentCube;
+        CustomGeometry* ground;
         ShaderMaterial* shaderMaterial;
         ShaderMaterial* lightMeshMaterial;
         ShaderMaterial* envMapMaterial;
+        ShaderMaterial* anisotropicMaterial;
         unsigned int time;
         bool stopTime;
         Vec3 cameraPos;
@@ -208,6 +258,7 @@ namespace PBRDemo
         float theta;
         float radius;
         float ior;
+        float glossiness;
         vector<CustomGeometry*> lights;
         TextureCubemap* envMap;
     };

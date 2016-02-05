@@ -19,6 +19,9 @@ smooth in vec3 inNormal;
 smooth in vec4 shadowCoord;
 smooth in vec2 inUVs;
 smooth in vec3 pos;
+smooth in vec3 posV;
+smooth in vec3 inTangent;
+smooth in vec3 inBitangent;
 
 // Ouput data
 layout(location = 0) out vec3 outColor;
@@ -115,9 +118,6 @@ float G(vec3 l, vec3 v, vec3 h, vec3 n)
 
 float NDF(vec3 n, vec3 m, float glossiness)
 {
-    const int SAMPLES = 16;
-    const float INV_SAMPLES = 1.0 / 16.0;
-    
     float glossinessSquared = glossiness * glossiness;
     float dotNM = dot(n, m);
     float dotNMSquared = dotNM * dotNM;
@@ -127,8 +127,36 @@ float NDF(vec3 n, vec3 m, float glossiness)
 
 vec3 f(vec3 l, vec3 v, vec3 n)
 {
+    vec3 dir = vec3(1,0,0);
+    const float m = 16;
+    float dotLT = dot(l, dir);
+    float dotVT = dot(v, dir);
+    vec3 projV = normalize(dir * dotVT + v);
+    vec3 projL = normalize(dir * dotLT + l);
+    //float cosAr = max(0, sqrt(1 - dotLT*dotLT)*sqrt(1 - dotVT*dotVT) - dotLT*dotVT);
+    //return diffuse/3.14 + (m+2)/(2*3.14)*specular*pow(cosAr, m);
+    
     vec3 h = normalize(v + l);
-    return F(l,h)*G(l,v,h,n)*NDF(n, h, glossiness)/(4*dot(n,l)*dot(n,v));
+    return F(l,h)*G(l,v,h,projV)*NDF(projV, h, glossiness)/(4*dot(projV,l)*dot(projV,v));
+    
+    // float nu = 5;
+    // float nv = 5;
+    // float dotNH = dot(n, h);
+    // float dotHL = dot(h, l);
+    // float dotNL = dot(n, l);
+    // float dotNV = dot(n, v);
+    // float F = F(l, h);
+    
+    // float m1 = sqrt((nu+1)*(nv+1))/(8*3.14);
+    // float m2 = 
+}
+
+float getLambertTerm(vec3 n, vec3 l)
+{
+    vec3 dir = vec3(1,0,0);
+    float dotLT = dot(l, dir);
+    vec3 projL = normalize(dir * dotLT + l);
+    return max(0,dot(l, projL));
 }
 
 void main()
@@ -141,16 +169,16 @@ void main()
 	vec3 lightColor = vec3(1,1,1);
 	float specExp = 6.0;
     
-    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 4, pos);
-    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 4, pos);
-    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 8, pos);
+    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 40, pos);
+    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 40, pos);
+    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 120, pos);
     
     vec3 n = normalize(inNormal);    
     vec3 v = normalize(cameraPos - pos);
 
-    vec3 cl0 = f(light0.L, v, n)*max(0,dot(light0.L, n));
-    vec3 cl1 = f(light1.L, v, n)*max(0,dot(light1.L, n));
-    vec3 cl2 = f(light2.L, v, n)*max(0,dot(light2.L, n));
+    vec3 cl0 = f(light0.L, v, n)*getLambertTerm(n, light0.L) * light0.iL;
+    vec3 cl1 = f(light1.L, v, n)*getLambertTerm(n, light1.L) * light1.iL;
+    vec3 cl2 = f(light2.L, v, n)*getLambertTerm(n, light2.L) * light2.iL;
     
     outColor = cl0 + cl1 + cl2;
 }
