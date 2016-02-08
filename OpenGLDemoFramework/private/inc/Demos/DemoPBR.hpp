@@ -44,13 +44,13 @@ namespace PBRDemo
             shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
 
-            //g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
-            g = new CustomGeometry("3DAssets/ogrehead.obj");
+            g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+            //g = new CustomGeometry("3DAssets/ogrehead.obj");
             g->setMaterial(shaderMaterial);
-            g->Scale(7.0f, 7.0f, 7.0f);
-            //g->Scale(0.1f, 0.1f, 0.1f);
-            //g->Rotate(-3.14f / 2.0f, 0, 0);
-
+            //g->Scale(7.0f, 7.0f, 7.0f);
+            g->Scale(0.1f, 0.1f, 0.1f);
+            g->Rotate(-3.14f / 2.0f, 0, 0);
+			g->Translate(0, -20, 0);
             initEnvMap();
             initLights();
             initGround();
