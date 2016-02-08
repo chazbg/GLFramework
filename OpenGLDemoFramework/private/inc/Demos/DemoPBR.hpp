@@ -34,7 +34,7 @@ namespace PBRDemo
                 "Images/cubemap_miramar/miramar_negx.png",
                 "Images/cubemap_miramar/miramar_posx.png");
 
-            shaderMaterial = new ShaderMaterial("Shaders/semiGGX.vs", "Shaders/semiGGX.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/anisotropicBRDF.vs", "Shaders/anisotropicBRDF.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
             shaderMaterial->addTextureCubemap(envMap);
 
@@ -44,13 +44,13 @@ namespace PBRDemo
             shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
 
-            g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
-            //g = new CustomGeometry("3DAssets/ogrehead.obj");
+            //g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+            g = new CustomGeometry("3DAssets/ogrehead.obj");
             g->setMaterial(shaderMaterial);
-            //g->Scale(7.0f, 7.0f, 7.0f);
-            g->Scale(0.1f, 0.1f, 0.1f);
-            g->Rotate(-3.14f / 2.0f, 0, 0);
-			g->Translate(0, -20, 0);
+            g->Scale(7.0f, 7.0f, 7.0f);
+            //g->Scale(0.1f, 0.1f, 0.1f);
+            //g->Rotate(-3.14f / 2.0f, 0, 0);
+			//g->Translate(0, -20, 0);
             initEnvMap();
             initLights();
             initGround();
@@ -79,9 +79,9 @@ namespace PBRDemo
             if (!stopTime)
             {
                 time++;
-                /*lights[0]->Rotate(0, 3.14f / 100.0f, 0);
+                lights[0]->Rotate(0, 3.14f / 100.0f, 0);
                 lights[1]->Rotate(0, 3.14f / 360.0f, -3.14f / 360.0f);
-                lights[2]->Rotate(0, -3.14f / 360.0f, -3.14f / 360.0f);*/
+                lights[2]->Rotate(0, -3.14f / 360.0f, -3.14f / 360.0f);
             }
 
             g->getMaterial().setProperty("cameraPos", cameraPos);
@@ -191,7 +191,7 @@ namespace PBRDemo
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[0]->setMaterial(lightMeshMaterial);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
-            lights[0]->Translate(7.0f, 10.0f, 0.0f);
+            lights[0]->Translate(5.0f, 0.0f, 0.0f);
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[1]->setMaterial(lightMeshMaterial);
@@ -201,7 +201,7 @@ namespace PBRDemo
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[2]->setMaterial(lightMeshMaterial);
             lights[2]->Scale(0.05f, 0.05f, 0.05f);
-            lights[2]->Translate(8.0f, 10.0f, 0.0f);
+            lights[2]->Translate(8.0f, -10.0f, 0.0f);
 
             scene.add(lights[0]);
             scene.add(lights[1]);

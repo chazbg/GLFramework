@@ -127,7 +127,7 @@ float NDF(vec3 n, vec3 m, float glossiness)
 
 vec3 f(vec3 l, vec3 v, vec3 n)
 {
-    vec3 dir = vec3(1,0,0);
+    vec3 dir = normalize(inTangent);//vec3(1,0,0);
     const float m = 16;
     float dotLT = dot(l, dir);
     float dotVT = dot(v, dir);
