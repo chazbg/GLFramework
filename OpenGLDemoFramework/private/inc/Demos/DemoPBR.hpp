@@ -34,7 +34,7 @@ namespace PBRDemo
                 "Images/cubemap_miramar/miramar_posx.png",
                 "Images/cubemap_miramar/miramar_negx.png");
 
-            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/semiGGX.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
             shaderMaterial->addTextureCubemap(envMap);
 
@@ -44,18 +44,18 @@ namespace PBRDemo
             shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
 
-            //g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
-            //g->Scale(0.1f, 0.1f, 0.1f);
-            //g->Rotate(-3.14f / 2.0f, 0, 0);
-            //g->Translate(0, -20, 0);
+            g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+            g->Scale(0.1f, 0.1f, 0.1f);
+            g->Rotate(-3.14f / 2.0f, 0, 0);
+            g->Translate(0, -20, 0);
 
             //g = new CustomGeometry("3DAssets/ogrehead.obj");
             //g->Scale(7.0f, 7.0f, 7.0f);
 
-            g = new CustomGeometry("3DAssets/buddha.3ds");
+            /*g = new CustomGeometry("3DAssets/buddha.3ds");
             g->Scale(0.01f, 0.01f, 0.01f);
             g->Rotate(-3.14f / 2.0f, 0, 0);
-            g->Translate(0, 1, 0);
+            g->Translate(0, 1, 0);*/
 
             g->setMaterial(shaderMaterial);
 
