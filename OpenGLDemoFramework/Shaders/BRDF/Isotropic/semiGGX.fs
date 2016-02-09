@@ -85,7 +85,7 @@ vec3 getIncidentLighting()
 // IBL. Use HDR for best results.
 vec3 getLightingFromDirection(vec3 vInDirection) 
 {
-	return vec3(texture(envMap, vInDirection));
+	return vec3(texture(envMap, vInDirection)).bgr;
 }
 
 // https://en.wikipedia.org/wiki/Fresnel_equations
@@ -194,11 +194,11 @@ vec3 importanceSampleGGX(vec2 xi, float roughness, vec3 n)
 	return tx * h.x + ty * h.y + n * h.z;
 }
  
-vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v)
+vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float NoL)
 {
 	vec3 specLighting = vec3(0);
 	
-	const uint nSamples = 256u;
+	const uint nSamples = 16u;
 	for (uint i = 0u; i < nSamples; i++)
 	{
 		vec2 xi = Hammersley(i, nSamples);
@@ -207,7 +207,7 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v)
 		vec3 l = 2 * dot(v, h) * h - v;
 		
 		float NoV = clamp(dot(n, v), 0, 1);
-		float NoL = clamp(dot(n, l), 0, 1);
+              NoL = clamp(dot(n, l), 0, 1);
 		float NoH = clamp(dot(n, h), 0, 1);
 		float VoH = clamp(dot(v, h), 0, 1);
 		
@@ -303,7 +303,7 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 void main()
 {
     vec3 diffuseContribution = getIncidentLighting();
-    diffuseContribution *= diffuse;
+    diffuseContribution *= diffuse * INVERSE_PI;
 	
     lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 4, pos);
     lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 4, pos);
@@ -322,7 +322,8 @@ void main()
     
     //specularContribution *= specular;
 	
-	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection);
+    float NoL;
+	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL);
     // Energy preservation
     vec3 result = mix(diffuseContribution, specularContribution, specularWeight);
     

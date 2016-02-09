@@ -216,9 +216,9 @@ void main()
     
     vec3 specularContribution = vec3(0.0);
     
-    specularContribution += getSpecularContribution(vOutDirection, normalize(inNormal), light0.L, ior, 1.0 - glossiness);
-    specularContribution += getSpecularContribution(vOutDirection, normalize(inNormal), light1.L, ior, 1.0 - glossiness);
-    specularContribution += getSpecularContribution(vOutDirection, normalize(inNormal), light2.L, ior, 1.0 - glossiness);
+    // specularContribution += getSpecularContribution(vOutDirection, normalize(inNormal), light0.L, ior, 1.0 - glossiness);
+    // specularContribution += getSpecularContribution(vOutDirection, normalize(inNormal), light1.L, ior, 1.0 - glossiness);
+    // specularContribution += getSpecularContribution(vOutDirection, normalize(inNormal), light2.L, ior, 1.0 - glossiness);
     
     //specularContribution *= specular;
 	

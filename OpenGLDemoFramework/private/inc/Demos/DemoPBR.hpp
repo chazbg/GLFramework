@@ -34,7 +34,7 @@ namespace PBRDemo
                 "Images/cubemap_miramar/miramar_posx.png",
                 "Images/cubemap_miramar/miramar_negx.png");
 
-            shaderMaterial = new ShaderMaterial("Shaders/microfacet0.vs", "Shaders/microfacet0.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/semiGGX.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
             shaderMaterial->addTextureCubemap(envMap);
 
@@ -231,7 +231,7 @@ namespace PBRDemo
 
         void initGround()
         {
-            anisotropicMaterial = new ShaderMaterial("Shaders/anisotropicBRDF.vs", "Shaders/anisotropicBRDF.fs");
+            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Anisotropic/anisotropicBRDF.vs", "Shaders/BRDF/Anisotropic/anisotropicBRDF.fs");
             shaderMaterial->setProperty("colorMap", 0);
             shaderMaterial->setProperty("sampler", 1);
             shaderMaterial->setProperty("envMap", 2);
