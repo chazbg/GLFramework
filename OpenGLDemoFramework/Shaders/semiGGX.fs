@@ -159,6 +159,73 @@ float GGXBRDFValue(vec3 vOutDirection, vec3 vNormal, vec3 vMicroNormal, vec3 vIn
 	return 0.25 * (F * G * D) / (dotNL * dotNV);
 }
 
+float radicalInverse_VdC(uint bits) {
+     bits = (bits << 16u) | (bits >> 16u);
+     bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+     bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+     bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+     bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+     return float(bits) * 2.3283064365386963e-10; // / 0x100000000
+ }
+ // http://holger.dammertz.org/stuff/notes_HammersleyOnHemisphere.html
+ vec2 Hammersley(uint i, uint N) {
+     return vec2(float(i)/float(N), radicalInverse_VdC(i));
+ }
+ 
+ 
+vec3 importanceSampleGGX(vec2 xi, float roughness, vec3 n)
+{
+	float a = roughness * roughness;
+	
+	float phi = DOUBLE_PI * xi.x;
+	float cosTheta = sqrt((1-xi.y)/(1 + (a*a - 1) * xi.y));
+	float sinTheta = sqrt(1 - cosTheta * cosTheta);
+	
+	vec3 h = vec3(
+		sinTheta * cos(phi),
+		sinTheta * sin(phi),
+		cosTheta
+	);
+	
+	vec3 up = abs(n.z) < 0.999 ? vec3(0,0,1) : vec3(1,0,0);
+	vec3 tx = normalize(cross(up, n));
+	vec3 ty = cross(n, tx);
+	
+	return tx * h.x + ty * h.y + n * h.z;
+}
+ 
+vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v)
+{
+	vec3 specLighting = vec3(0);
+	
+	const uint nSamples = 256u;
+	for (uint i = 0u; i < nSamples; i++)
+	{
+		vec2 xi = Hammersley(i, nSamples);
+		
+		vec3 h = getGGXMicroNormal(xi.x, xi.y, roughness);//importanceSampleGGX(xi, roughness, n);
+		vec3 l = 2 * dot(v, h) * h - v;
+		
+		float NoV = clamp(dot(n, v), 0, 1);
+		float NoL = clamp(dot(n, l), 0, 1);
+		float NoH = clamp(dot(n, h), 0, 1);
+		float VoH = clamp(dot(v, h), 0, 1);
+		
+		if (NoL > 0)
+		{
+			vec3 sampleColor = getLightingFromDirection(l);
+			
+			float F = getFresnelReflectionWeight(v, h, ENVIRONMENT_IOR / ior);
+			float G = GGXShadowingMasking(v, h, l, roughness);
+			float D = GGXMicronormalDistribution(n, h, roughness);
+			
+			specLighting += sampleColor * F * G * VoH / (NoH * NoV);
+		}
+	}
+	
+	return specLighting / nSamples;
+}
+
 // Integrates the specular microfacet BRDF using Monter Carlo
 vec3 getSpecularContribution(vec3 vOutDirection, vec3 vNormal, float ior, float glossiness) {
 	vec3 specularContribution = vec3(0.0);
@@ -247,14 +314,15 @@ void main()
     float specularWeight = getFresnelReflectionWeight(vOutDirection, normalize(inNormal), ENVIRONMENT_IOR / ior);
     
 	// Calculate the specular contribution
-    vec3 specularContribution = getSpecularContribution(vOutDirection, normalize(inNormal), ior, 1.0 - glossiness);
+    //vec3 specularContribution = getSpecularContribution(vOutDirection, normalize(inNormal), ior, 1.0 - glossiness);
     
-    specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light0.L, ior, 1.0 - glossiness);
-    specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light1.L, ior, 1.0 - glossiness);
-    specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light2.L, ior, 1.0 - glossiness);
+    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light0.L, ior, 1.0 - glossiness);
+    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light1.L, ior, 1.0 - glossiness);
+    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light2.L, ior, 1.0 - glossiness);
     
-    specularContribution *= specular;
+    //specularContribution *= specular;
 	
+	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection);
     // Energy preservation
     vec3 result = mix(diffuseContribution, specularContribution, specularWeight);
     
