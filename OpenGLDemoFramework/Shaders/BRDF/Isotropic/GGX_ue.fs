@@ -126,11 +126,11 @@ vec3 ImportanceSampleGGX(vec2 Xi, float Roughness, vec3 N)
     return TangentX * H.x + TangentY * H.y + N * H.z;
 }
 
-vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float NoL)
+vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float dotNL)
 {
 	vec3 specLighting = vec3(0);
-	
-	const uint nSamples = 512u;
+	dotNL = 0;
+	const uint nSamples = 16u;
 	for (uint i = 0u; i < nSamples; i++)
 	{
 		vec2 xi = Hammersley(i, nSamples);
@@ -139,7 +139,7 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 		vec3 l = 2 * dot(v, h) * h - v;
 		
 		float NoV = clamp(dot(n, v), 0, 1);
-              NoL = clamp(dot(n, l), 0, 1);
+        float NoL = clamp(dot(n, l), 0, 1);
 		float NoH = clamp(dot(n, h), 0, 1);
 		float VoH = clamp(dot(v, h), 0, 1);
 		
@@ -152,9 +152,12 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 			float G = G_Smith(v, h, l, roughness);
 
 			specLighting += sampleColor * F * G * VoH / (NoH * NoV);
+            
+            dotNL += NoL;
 		}
 	}
 	
+    dotNL /= nSamples;
 	return specLighting / nSamples;
 }
 
@@ -179,8 +182,7 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 void main()
 {
     vec3 diffuseContribution = getIncidentLighting();
-    diffuseContribution *= diffuse * INVERSE_PI;
-	
+
     lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 4, pos);
     lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 4, pos);
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 8, pos);
@@ -200,6 +202,8 @@ void main()
 	
     float NoL;
 	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL);
+    diffuseContribution *= diffuse * INVERSE_PI * NoL;
+    
     // Energy preservation
     vec3 result = mix(diffuseContribution, specularContribution, specularWeight);
     
