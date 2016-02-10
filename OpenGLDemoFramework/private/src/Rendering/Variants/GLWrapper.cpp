@@ -297,12 +297,12 @@ unsigned int Renderer::getTexId(const TextureCubemap * tex)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textures[tex->getId()]);
 
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_RGB, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_RGB, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_RGB, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_LUMINANCE, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_LUMINANCE, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_LUMINANCE, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_LUMINANCE, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_LUMINANCE, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_LUMINANCE, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
 	     
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

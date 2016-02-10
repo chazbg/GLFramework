@@ -50,6 +50,8 @@ Texture* TextureLoader::loadTexture(const std::string path)
 		return tex;
 
 	//retrieve the image data
+	FreeImage_FlipVertical(dib);
+
 	bits = FreeImage_GetBits(dib);
 	//get the image width and height
 	width = FreeImage_GetWidth(dib);

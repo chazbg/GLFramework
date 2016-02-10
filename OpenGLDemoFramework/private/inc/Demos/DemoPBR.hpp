@@ -27,12 +27,13 @@ namespace PBRDemo
             renderer = new Renderer(Vec2(800, 800));
 
             envMap = texLoader.loadTextureCubemap(
-                "Images/cubemap_miramar/miramar_posz.png",
-                "Images/cubemap_miramar/miramar_negz.png",
-                "Images/cubemap_miramar/miramar_posy.png",
-                "Images/cubemap_miramar/miramar_negy.png",
-                "Images/cubemap_miramar/miramar_posx.png",
-                "Images/cubemap_miramar/miramar_negx.png");
+				"Images/cubemap_0/Cubemap_Back.png",
+				"Images/cubemap_0/Cubemap_Front.png",
+				"Images/cubemap_0/Cubemap_Top.png",
+				"Images/cubemap_0/Cubemap_Bottom.png",
+				"Images/cubemap_0/Cubemap_Right.png",
+				"Images/cubemap_0/Cubemap_Left.png"
+			);
 
             shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
