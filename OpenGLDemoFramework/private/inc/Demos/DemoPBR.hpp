@@ -35,7 +35,7 @@ namespace PBRDemo
 				"Images/cubemap_0/Cubemap_Left.png"
 			);
 
-            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
             shaderMaterial->addTextureCubemap(envMap);
 
@@ -232,7 +232,7 @@ namespace PBRDemo
 
         void initGround()
         {
-            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Anisotropic/anisotropicBRDF.vs", "Shaders/BRDF/Anisotropic/anisotropicBRDF.fs");
+            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs");
             shaderMaterial->setProperty("colorMap", 0);
             shaderMaterial->setProperty("sampler", 1);
             shaderMaterial->setProperty("envMap", 2);
