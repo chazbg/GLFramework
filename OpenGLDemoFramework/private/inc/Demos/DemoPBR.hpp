@@ -50,8 +50,8 @@ namespace PBRDemo
             g->Rotate(-3.14f / 2.0f, 0, 0);
             g->Translate(0, -20, 0);
 
-            //g = new CustomGeometry("3DAssets/ogrehead.obj");
-            //g->Scale(7.0f, 7.0f, 7.0f);
+            /*g = new CustomGeometry("3DAssets/ogrehead.obj");
+            g->Scale(7.0f, 7.0f, 7.0f);*/
 
             /*g = new CustomGeometry("3DAssets/buddha.3ds");
             g->Scale(0.01f, 0.01f, 0.01f);
