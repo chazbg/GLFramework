@@ -278,7 +278,7 @@ unsigned int Renderer::getTexId(const Texture* tex)
         glGenTextures(1, &textures[tex->getId()]);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[tex->getId()]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->getWidth(), tex->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getData());
+        glTexImage2D(GL_TEXTURE_2D, 0, getTexFormat(tex->getBpp()), tex->getWidth(), tex->getHeight(), 0, getTexFormat(tex->getBpp()), GL_UNSIGNED_BYTE, tex->getData());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -297,12 +297,12 @@ unsigned int Renderer::getTexId(const TextureCubemap * tex)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textures[tex->getId()]);
 
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_LUMINANCE, tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_LUMINANCE, tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_LUMINANCE, tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_LUMINANCE, tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_LUMINANCE, tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_LUMINANCE, tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     GL_LUMINANCE, GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, getTexFormat(tex->getTexLeft()->getBpp()),   tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     getTexFormat(tex->getTexLeft()->getBpp()),   GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, getTexFormat(tex->getTexRight()->getBpp()),  tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   getTexFormat(tex->getTexRight()->getBpp()),  GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, getTexFormat(tex->getTexTop()->getBpp()),    tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       getTexFormat(tex->getTexTop()->getBpp()),    GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, getTexFormat(tex->getTexBottom()->getBpp()), tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, getTexFormat(tex->getTexBottom()->getBpp()), GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, getTexFormat(tex->getTexFront()->getBpp()),  tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   getTexFormat(tex->getTexFront()->getBpp()),  GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, getTexFormat(tex->getTexBack()->getBpp()),   tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     getTexFormat(tex->getTexBack()->getBpp()),   GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
 	     
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -473,4 +473,31 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
 
     glViewport(0, 0, 512, 512);
     render(deferredShadingRect[3], camera);
+}
+
+unsigned int Renderer::getTexFormat(unsigned int bpp)
+{
+    unsigned int format = 0;
+    switch (bpp)
+    {
+    case 1:
+    {
+        format = GL_LUMINANCE;
+        break;
+    }
+    case 3:
+    {
+        format = GL_RGB;
+        break;
+    }
+    case 4:
+    {
+        format = GL_RGBA;
+        break;
+    }
+    default:
+        break;
+    }
+
+    return format;
 }

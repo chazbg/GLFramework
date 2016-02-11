@@ -35,7 +35,7 @@ namespace PBRDemo
 				"Images/cubemap_0/Cubemap_Left.png"
 			);
 
-            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
             shaderMaterial->addTextureCubemap(envMap);
 
@@ -62,7 +62,7 @@ namespace PBRDemo
 
             initEnvMap();
             initLights();
-            initGround();
+            initGround(texLoader);
 
             scene.add(g);
             
@@ -230,16 +230,19 @@ namespace PBRDemo
             envMapMaterial->addTextureCubemap(envMap);
         }
 
-        void initGround()
+        void initGround(TextureLoader& texLoader)
         {
-            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs");
-            shaderMaterial->setProperty("colorMap", 0);
-            shaderMaterial->setProperty("sampler", 1);
-            shaderMaterial->setProperty("envMap", 2);
-            shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
-            shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
-
-            ground = new CustomGeometry("3DAssets/cube.3ds");
+            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs");
+            anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
+            anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/normal.png"));
+            anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/specular.png"));
+            anisotropicMaterial->setProperty("diffuseMap", 0);
+            anisotropicMaterial->setProperty("normalMap", 1);
+            anisotropicMaterial->setProperty("specMap", 2);
+            anisotropicMaterial->setProperty("sampler", 3);
+            anisotropicMaterial->setProperty("envMap", 4);
+            anisotropicMaterial->setProperty("specular", Vec3(0.7f, 0.7f, 0.7f));
+            ground = new CustomGeometry("3DAssets/cube_uv.3ds");
             ground->setMaterial(anisotropicMaterial);
             ground->Translate(0.0f, -5.0f, 0.0f);
             ground->Scale(20.0f, 1.0f, 20.0f);

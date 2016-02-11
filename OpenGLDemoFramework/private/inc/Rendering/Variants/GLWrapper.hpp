@@ -30,3 +30,4 @@ void renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera);
 unsigned int getTexId(const Texture * tex);
 unsigned int getTexId(const TextureCubemap * tex);
 void postProcess(std::vector<IMesh*>& meshes, ICamera& camera);
+unsigned int getTexFormat(unsigned int bpp);

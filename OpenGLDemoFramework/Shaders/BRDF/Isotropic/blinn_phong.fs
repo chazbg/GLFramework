@@ -90,15 +90,20 @@ void main()
 {
     vec3 diffuseContribution = diffuse;
 
-    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 20, pos);
-    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 20, pos);
-    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 40, pos);
+    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 64, pos);
+    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 64, pos);
+    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 r = normalize(reflect(-v, normalize(inNormal)));
-    float RoL0 = max(0.0, dot(light0.L, r));
-    float RoL1 = max(0.0, dot(light1.L, r));
-    float RoL2 = max(0.0, dot(light2.L, r));
+    vec3 n = normalize(inNormal);
+    vec3 r = normalize(reflect(-v, n));
+    vec3 h0 = normalize(light0.L + v);
+    vec3 h1 = normalize(light1.L + v);
+    vec3 h2 = normalize(light2.L + v);
+    
+    float NoH0 = max(0.0, dot(n, h0));
+    float NoH1 = max(0.0, dot(n, h1));
+    float NoH2 = max(0.0, dot(n, h2));
     
     float specularWeight = 1 - ior;
     
@@ -106,11 +111,11 @@ void main()
     
 	vec3 specularContribution  = vec3(0);
     
-    specularContribution += specular * (m + 2) * pow(RoL0, m) * light0.iL * texture(envMap, r).bgr;
-    specularContribution += specular * (m + 2) * pow(RoL1, m) * light1.iL * texture(envMap, r).bgr;
-    specularContribution += specular * (m + 2) * pow(RoL2, m) * light2.iL * texture(envMap, r).bgr;
+    specularContribution += specular * (m + 8) * pow(NoH0, m) * light0.iL;
+    specularContribution += specular * (m + 8) * pow(NoH1, m) * light1.iL;
+    specularContribution += specular * (m + 8) * pow(NoH2, m) * light2.iL;
     
-    vec3 result = mix(diffuseContribution * INVERSE_PI, specularContribution * 0.5 * INVERSE_PI, glossiness);
+    vec3 result = diffuseContribution * INVERSE_PI + specularContribution * 0.125 * INVERSE_PI;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

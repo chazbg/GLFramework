@@ -85,7 +85,7 @@ vec3 getIncidentLighting()
 // IBL. Use HDR for best results.
 vec3 getLightingFromDirection(vec3 vInDirection) 
 {
-	return vec3(texture(envMap, vInDirection)).bgr;
+	return vec3(texture(envMap, vInDirection));
 }
 
 // https://en.wikipedia.org/wiki/Fresnel_equations
