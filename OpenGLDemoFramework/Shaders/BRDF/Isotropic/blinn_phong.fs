@@ -88,8 +88,6 @@ vec3 sRGBToLinear(vec3 sRGB)
 
 void main()
 {
-    vec3 diffuseContribution = diffuse;
-
     lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 64, pos);
     lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 64, pos);
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
@@ -105,10 +103,16 @@ void main()
     float NoH1 = max(0.0, dot(n, h1));
     float NoH2 = max(0.0, dot(n, h2));
     
+	float NoL0 = max(0.0, dot(n, light0.L));
+	float NoL1 = max(0.0, dot(n, light1.L));
+	float NoL2 = max(0.0, dot(n, light2.L));
+	
     float specularWeight = 1 - ior;
     
     float m = 1 / (glossiness * glossiness);
     
+	vec3 diffuseContribution = diffuse * (NoL0 + NoL1 + NoL2);
+	
 	vec3 specularContribution  = vec3(0);
     
     specularContribution += specular * (m + 8) * pow(NoH0, m) * light0.iL;

@@ -90,9 +90,6 @@ vec3 sRGBToLinear(vec3 sRGB)
 
 void main()
 {
-    vec3 diffuseContribution = vec3(texture(diffuseMap, inUVs).bgr);
-    float gloss = length(texture(specMap, inUVs));
-    
     lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 64, pos);
     lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 64, pos);
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
@@ -110,9 +107,15 @@ void main()
     float NoH1 = max(0.0, dot(n, h1));
     float NoH2 = max(0.0, dot(n, h2));
     
+	float NoL0 = max(0.0, dot(n, light0.L));
+	float NoL1 = max(0.0, dot(n, light1.L));
+	float NoL2 = max(0.0, dot(n, light2.L));
+	
     float specularWeight = 1 - ior;
     
     float m = texture(specMap, inUVs).r * 255;
+    
+	vec3 diffuseContribution = vec3(texture(diffuseMap, inUVs).bgr) * (NoL0 + NoL1 + NoL2);
     
 	vec3 specularContribution  = vec3(0);
     

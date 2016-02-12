@@ -194,23 +194,24 @@ namespace PBRDemo
 
         void initLights()
         {
+			float r = 10.0f;
             lightMeshMaterial = new ShaderMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs");
             lightMeshMaterial->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[0]->setMaterial(lightMeshMaterial);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
-            lights[0]->Translate(-sqrt(3.0f)*2.5f, 3.0f, 2.5f);
+			lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[1]->setMaterial(lightMeshMaterial);
             lights[1]->Scale(0.05f, 0.05f, 0.05f);
-            lights[1]->Translate(sqrt(3.0f)*2.5f, 3.0f, 2.5f);
+			lights[1]->Translate(sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
             lights[2]->setMaterial(lightMeshMaterial);
             lights[2]->Scale(0.05f, 0.05f, 0.05f);
-            lights[2]->Translate(0, 3.0f, -5.0f);
+			lights[2]->Translate(0, 3.0f, -r);
 
             scene.add(lights[0]);
             scene.add(lights[1]);
