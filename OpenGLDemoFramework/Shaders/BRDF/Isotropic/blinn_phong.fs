@@ -106,8 +106,6 @@ void main()
 	float NoL0 = max(0.0, dot(n, light0.L));
 	float NoL1 = max(0.0, dot(n, light1.L));
 	float NoL2 = max(0.0, dot(n, light2.L));
-	
-    float specularWeight = 1 - ior;
     
     float m = 1 / (glossiness * glossiness);
     

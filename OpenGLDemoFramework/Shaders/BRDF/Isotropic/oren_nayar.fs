@@ -9,9 +9,7 @@ const float EPSILON = 0.001;
 // Settings constants
 const float ENVIRONMENT_IOR = 1.0;
 
-uniform sampler2D diffuseMap;
-uniform sampler2D normalMap;
-uniform sampler2D specMap;
+uniform sampler2D colorMap;
 uniform sampler2D sampler;
 uniform samplerCube envMap;
 
@@ -95,33 +93,36 @@ void main()
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 texNormal = 2.0 * texture(normalMap, inUVs).bgr - 1;
-    mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
-    vec3 n = vec3(tr * texNormal);
-    vec3 r = normalize(reflect(-v, n));
-    vec3 h0 = normalize(light0.L + v);
-    vec3 h1 = normalize(light1.L + v);
-    vec3 h2 = normalize(light2.L + v);
+    vec3 n = normalize(inNormal);
     
-    float NoH0 = max(0.0, dot(n, h0));
-    float NoH1 = max(0.0, dot(n, h1));
-    float NoH2 = max(0.0, dot(n, h2));
-    
+    float NoV = max(0.0, dot(n, v));
+ 
 	float NoL0 = max(0.0, dot(n, light0.L));
 	float NoL1 = max(0.0, dot(n, light1.L));
 	float NoL2 = max(0.0, dot(n, light2.L));
     
-    float m = texture(specMap, inUVs).r * 255;
-    
-	vec3 diffuseContribution = vec3(texture(diffuseMap, inUVs).bgr) * (NoL0 + NoL1 + NoL2);
-    
+	vec3 vProj = v - n * dot(n, v);
+	
+	vec3 l0Proj = normalize(light0.L - n * dot(n, light0.L));
+	vec3 l1Proj = normalize(light1.L - n * dot(n, light1.L));
+	vec3 l2Proj = normalize(light2.L - n * dot(n, light2.L));
+	
+	float cosPhi0 = max(0, dot(vProj, l0Proj));
+	float cosPhi1 = max(0, dot(vProj, l1Proj));
+	float cosPhi2 = max(0, dot(vProj, l2Proj));
+
+    float roughnessSq = (1 - glossiness) * (1 - glossiness);
+	
+	float A = 1 - 0.5 * roughnessSq / (roughnessSq + 0.33);
+	float B = 0.45 * roughnessSq / (roughnessSq + 0.09);
+	
 	vec3 specularContribution  = vec3(0);
     
-    specularContribution += specular * (m + 8) * pow(NoH0, m) * light0.iL;
-    specularContribution += specular * (m + 8) * pow(NoH1, m) * light1.iL;
-    specularContribution += specular * (m + 8) * pow(NoH2, m) * light2.iL;
+    specularContribution += diffuse * NoL0 * INVERSE_PI * (A + B * cosPhi0 * sin(min(acos(NoL0), acos(NoV))) * tan(max(acos(NoL0), acos(NoV))));
+    specularContribution += diffuse * NoL1 * INVERSE_PI * (A + B * cosPhi1 * sin(min(acos(NoL1), acos(NoV))) * tan(max(acos(NoL1), acos(NoV))));
+    specularContribution += diffuse * NoL2 * INVERSE_PI * (A + B * cosPhi2 * sin(min(acos(NoL2), acos(NoV))) * tan(max(acos(NoL2), acos(NoV))));
     
-    vec3 result = diffuseContribution * INVERSE_PI + specularContribution * 0.125 * INVERSE_PI;
+    vec3 result = specularContribution;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
