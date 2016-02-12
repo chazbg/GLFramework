@@ -88,7 +88,7 @@ vec3 sRGBToLinear(vec3 sRGB)
 
 float schlick(float specular, vec3 v, vec3 h)
 {
-	float VoH = max(0, dot(v, h));
+	float VoH = dot(v, h);
 	float Fc = pow(1 - VoH, 5);
 	float F = (1 - Fc) * specular + Fc;
 	return F; 
@@ -98,7 +98,7 @@ float getDiffuseContribution(float diffuse, float specular, vec3 n, vec3 l, vec3
 {
     float A = 28 * diffuse * INVERSE_PI / 23;
     float NoL = max(0, dot(n, l));
-    float NoV = max(0, dot(n, v));
+    float NoV = dot(n, v);
     
 	return A * (1 - specular) * (1 - pow(1 - NoL / 2, 5)) * (1 - pow(1 - NoV / 2, 5)) ;
 }
@@ -108,14 +108,14 @@ float getSpecularContribution(float specular, vec3 n, vec3 l, vec3 v, vec2 aniso
 	vec3 h = normalize(l + v);
 	float NoH = max(0, dot(n, h));
 	float NoL = max(0, dot(n, l));
-	float NoV = max(0, dot(n, v));
+	float NoV = dot(n, v);
 	float HoL = max(0, dot(h, l));
 	
 	vec3 lProj = normalize(l - n * (NoL));
 	vec3 hProj = normalize(h - n * (NoH));
 	
-	float cosPhi = max(0, dot(lProj, hProj));
-	float cosPhiSq =  cosPhi * cosPhi;
+	float cosPhi = dot(lProj, hProj);
+	float cosPhiSq = cosPhi * cosPhi;
 	float sinPhiSq = 1 - cosPhiSq;
 	
 	float A = sqrt((anisotropy.x + 1) * (anisotropy.y + 1)) * 0.125 * INVERSE_PI;
@@ -132,21 +132,7 @@ void main()
     
     vec3 v = normalize(cameraPos - pos);
     vec3 n = normalize(inNormal);
-    vec3 r = normalize(reflect(-v, n));
-   
-    vec3 h1 = normalize(light1.L + v);
-    vec3 h2 = normalize(light2.L + v);
-    
-    
-    float NoH1 = max(0.0, dot(n, h1));
-    float NoH2 = max(0.0, dot(n, h2));
-    
-	
-	float NoL1 = max(0.0, dot(n, light1.L));
-	float NoL2 = max(0.0, dot(n, light2.L));
-    
-    float m = 1 / (glossiness * glossiness);
-    
+
 	float diffuseContribution = 0;
     
     diffuseContribution += getDiffuseContribution(ior, 1 - ior, n, light0.L, v);
@@ -155,9 +141,11 @@ void main()
     
 	float specularContribution = 0;
     
-    specularContribution += getSpecularContribution(1 - ior, n, light0.L, v, vec2(0, 1000));
-    specularContribution += getSpecularContribution(1 - ior, n, light1.L, v, vec2(0, 1000));
-    specularContribution += getSpecularContribution(1 - ior, n, light2.L, v, vec2(0, 1000));
+    vec2 anisotropy = vec2(glossiness, 1 - glossiness) * 1000;
+    
+    specularContribution += getSpecularContribution(1 - ior, n, light0.L, v, anisotropy);
+    specularContribution += getSpecularContribution(1 - ior, n, light1.L, v, anisotropy);
+    specularContribution += getSpecularContribution(1 - ior, n, light2.L, v, anisotropy);
     
     vec3 result = diffuseContribution * diffuse + specularContribution * specular;
     
