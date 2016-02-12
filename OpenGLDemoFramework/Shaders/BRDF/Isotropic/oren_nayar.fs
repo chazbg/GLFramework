@@ -95,11 +95,11 @@ void main()
     vec3 v = normalize(cameraPos - pos);
     vec3 n = normalize(inNormal);
     
-    float NoV = max(0.0, dot(n, v));
+    float NoV = dot(n, v);
  
-	float NoL0 = max(0.0, dot(n, light0.L));
-	float NoL1 = max(0.0, dot(n, light1.L));
-	float NoL2 = max(0.0, dot(n, light2.L));
+	float NoL0 = dot(n, light0.L);
+	float NoL1 = dot(n, light1.L);
+	float NoL2 = dot(n, light2.L);
     
 	vec3 vProj = v - n * dot(n, v);
 	
@@ -118,9 +118,9 @@ void main()
 	
 	vec3 specularContribution  = vec3(0);
     
-    specularContribution += diffuse * NoL0 * INVERSE_PI * (A + B * cosPhi0 * sin(min(acos(NoL0), acos(NoV))) * tan(max(acos(NoL0), acos(NoV))));
-    specularContribution += diffuse * NoL1 * INVERSE_PI * (A + B * cosPhi1 * sin(min(acos(NoL1), acos(NoV))) * tan(max(acos(NoL1), acos(NoV))));
-    specularContribution += diffuse * NoL2 * INVERSE_PI * (A + B * cosPhi2 * sin(min(acos(NoL2), acos(NoV))) * tan(max(acos(NoL2), acos(NoV))));
+    specularContribution += diffuse * max(0, NoL0) * INVERSE_PI * (A + B * cosPhi0 * sin(max(acos(NoL0), acos(NoV))) * tan(min(acos(NoL0), acos(NoV))));
+    specularContribution += diffuse * max(0, NoL1) * INVERSE_PI * (A + B * cosPhi1 * sin(max(acos(NoL1), acos(NoV))) * tan(min(acos(NoL1), acos(NoV))));
+    specularContribution += diffuse * max(0, NoL2) * INVERSE_PI * (A + B * cosPhi2 * sin(max(acos(NoL2), acos(NoV))) * tan(min(acos(NoL2), acos(NoV))));
     
     vec3 result = specularContribution;
     
