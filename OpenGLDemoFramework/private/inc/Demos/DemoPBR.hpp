@@ -35,7 +35,7 @@ namespace PBRDemo
 				"Images/cubemap_0/Cubemap_Left.png"
 			);
 
-            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
             shaderMaterial->addTextureCubemap(envMap);
 
@@ -45,13 +45,13 @@ namespace PBRDemo
             shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
 
-            g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+            /*g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
             g->Scale(0.1f, 0.1f, 0.1f);
             g->Rotate(-3.14f / 2.0f, 0, 0);
-            g->Translate(0, -20, 0);
+            g->Translate(0, -20, 0);*/
 
-            /*g = new CustomGeometry("3DAssets/ogrehead.obj");
-            g->Scale(7.0f, 7.0f, 7.0f);*/
+            g = new CustomGeometry("3DAssets/ogrehead.obj");
+            g->Scale(7.0f, 7.0f, 7.0f);
 
             /*g = new CustomGeometry("3DAssets/buddha.3ds");
             g->Scale(0.01f, 0.01f, 0.01f);
@@ -233,7 +233,7 @@ namespace PBRDemo
 
         void initGround(TextureLoader& texLoader)
         {
-            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs");
+            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs");
             anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
             anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/normal.png"));
             anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/specular.png"));
