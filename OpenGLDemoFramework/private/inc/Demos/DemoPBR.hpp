@@ -35,7 +35,7 @@ namespace PBRDemo
 				"Images/cubemap_0/Cubemap_Left.png"
 			);
 
-            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs");
+            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs");
             shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
             shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/normal.png"));
             shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern0/specular.png"));

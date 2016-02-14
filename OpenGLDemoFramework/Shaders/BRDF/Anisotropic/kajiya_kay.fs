@@ -86,19 +86,15 @@ vec3 sRGBToLinear(vec3 sRGB)
     return linearRGB;
 }
 
-float getDiffuseContribution(vec3 n, vec3 l, vec3 t, vec3 v)
+float getDiffuseContribution(vec3 n, vec3 t, vec3 l)
 {
-    float NoL = max(0, dot(n, l));
-
-    float VoT = dot(v, t);
-    float res = sqrt(1 - VoT * VoT);
+    float LoT = dot(l, t);
+    float res = sqrt(1 - LoT * LoT);
     return res * INVERSE_PI;
 }
 
-float getSpecularContribution(vec3 n, vec3 l, vec3 v, vec3 r, vec3 t, float m)
+float getSpecularContribution(vec3 l, vec3 v, vec3 t, float m)
 {
-    float LoR = max(0, dot(l, r));
-    
     float VoT = dot(v, t);
     float LoT = dot(l, t);
     
@@ -121,15 +117,15 @@ void main()
     
     float diffuseContribution = 0;
     
-    diffuseContribution += getDiffuseContribution(n, light0.L, t, v);
-    diffuseContribution += getDiffuseContribution(n, light1.L, t, v);
-    diffuseContribution += getDiffuseContribution(n, light2.L, t, v);
+    diffuseContribution += getDiffuseContribution(n, t, light0.iL) * light0.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light1.iL) * light1.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light2.iL) * light2.iL;
     
 	float specularContribution = 0;
     
-    specularContribution += getSpecularContribution(n, light0.L, v, r, t, m) * light0.iL;    // * texture(envMap, r).bgr
-    specularContribution += getSpecularContribution(n, light1.L, v, r, t, m) * light1.iL;    // * texture(envMap, r).bgr
-    specularContribution += getSpecularContribution(n, light2.L, v, r, t, m) * light2.iL;    // * texture(envMap, r).bgr
+    specularContribution += getSpecularContribution(light0.L, v, t, m) * light0.iL;    // * texture(envMap, r).bgr
+    specularContribution += getSpecularContribution(light1.L, v, t, m) * light1.iL;    // * texture(envMap, r).bgr
+    specularContribution += getSpecularContribution(light2.L, v, t, m) * light2.iL;    // * texture(envMap, r).bgr
     
     vec3 result = mix(diffuseContribution * diffuse, specularContribution * specular, glossiness);
     

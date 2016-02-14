@@ -100,7 +100,7 @@ float getDiffuseContribution(float diffuse, float specular, vec3 n, vec3 l, vec3
     float NoL = max(0, dot(n, l));
     float NoV = dot(n, v);
     
-	return A * (1 - specular) * (1 - pow(1 - NoL / 2, 5)) * (1 - pow(1 - NoV / 2, 5)) ;
+	return A * (1 - specular) * (1 - pow(1 - NoL / 2, 5)) * (1 - pow(1 - NoV / 2, 5));
 }
 
 float getSpecularContribution(float specular, vec3 n, vec3 l, vec3 v, vec2 anisotropy)
