@@ -35,13 +35,16 @@ namespace PBRDemo
 				"Images/cubemap_0/Cubemap_Left.png"
 			);
 
-            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs");
-            shaderMaterial->addTexture(texLoader.loadTexture("Images/Football.png"));
+            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs");
+            shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
+            shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/normal.png"));
+            shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern0/specular.png"));
             shaderMaterial->addTextureCubemap(envMap);
-
-            shaderMaterial->setProperty("colorMap", 0);
-            shaderMaterial->setProperty("sampler", 1);
-            shaderMaterial->setProperty("envMap", 2);
+            shaderMaterial->setProperty("diffuseMap", 0);
+            shaderMaterial->setProperty("normalMap", 1);
+            shaderMaterial->setProperty("specMap", 2);
+            shaderMaterial->setProperty("sampler", 3);
+            shaderMaterial->setProperty("envMap", 4);
             shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
 

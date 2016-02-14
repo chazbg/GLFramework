@@ -31,7 +31,6 @@ smooth in vec3 inBitangent;
 smooth in vec4 shadowCoord;
 smooth in vec2 inUVs;
 smooth in vec3 pos;
-smooth in vec3 posV;
 
 // Ouput data
 layout(location = 0) out vec3 outColor;
@@ -86,6 +85,14 @@ vec3 sRGBToLinear(vec3 sRGB)
     return linearRGB;
 }
 
+float schlick(float specular, vec3 v, vec3 h)
+{
+	float VoH = dot(v, h);
+	float Fc = pow(1 - VoH, 5);
+	float F = (1 - Fc) * specular + Fc;
+	return F; 
+}
+
 float getDiffuseContribution(vec3 n, vec3 l)
 {
     float NoL = max(0, dot(n, l));
@@ -93,24 +100,22 @@ float getDiffuseContribution(vec3 n, vec3 l)
     return NoL * INVERSE_PI;
 }
 
-float getSpecularContribution(vec3 n, vec3 l, vec3 v, vec3 r, float m)
+float getSpecularContribution(vec3 n, vec3 v, vec3 l, float m, float ior)
 {
-    float LoR = max(0, dot(l, r));
-    return (m + 2) * pow(LoR, m) * 0.5 * INVERSE_PI;
+    vec3 h = normalize(v + l);
+    float NoH = max(0.0, dot(n, h));
+    return schlick(ior, v, h) * (m + 8) * pow(NoH, m) * 0.125 * INVERSE_PI;
 }
 
 void main()
 {
-    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 20, pos);
-    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 20, pos);
-    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 40, pos);
+    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 64, pos);
+    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 64, pos);
+    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
     vec3 n = normalize(inNormal);
-    vec3 r = normalize(reflect(-v, n));
 
-    float specularWeight = 1 - ior;
-    
     float m = 1 / (glossiness * glossiness);
     
     float diffuseContribution = 0;
@@ -121,11 +126,11 @@ void main()
     
 	float specularContribution = 0;
     
-    specularContribution += getSpecularContribution(n, light0.L, v, r, m) * light0.iL;
-    specularContribution += getSpecularContribution(n, light1.L, v, r, m) * light1.iL;
-    specularContribution += getSpecularContribution(n, light2.L, v, r, m) * light2.iL;
+    specularContribution += getSpecularContribution(n, v, light0.L, m, ior) * light0.iL;
+    specularContribution += getSpecularContribution(n, v, light1.L, m, ior) * light1.iL;
+    specularContribution += getSpecularContribution(n, v, light2.L, m, ior) * light2.iL;
     
-    vec3 result = mix(diffuseContribution * diffuse, specularContribution * specular, specularWeight);
+    vec3 result = diffuseContribution * diffuse + specularContribution * specular;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
