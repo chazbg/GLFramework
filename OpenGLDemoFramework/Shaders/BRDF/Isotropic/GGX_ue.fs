@@ -53,7 +53,7 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 	// Dot computes the 3-term attenuation in one operation
 	// k_c * 1.0 + k_l * dist + k_q * dist * dist
 	float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
-	if (dot(normalize(values.L), normalize(closestPoint)) <= dot(normalize(values.L), normalize(r)))
+	if (length(centerToRay) <= 2)
 	{
 		values.iL = pointLightIntensity / distAtten;
 	}
@@ -122,9 +122,9 @@ vec3 getLightingFromDirection(vec3 vInDirection)
 {
 	vec3 c = texture(envMap, vInDirection).bgr;
 	
-	lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 4, pos, vInDirection);
-    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 4, pos, vInDirection);
-    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 8, pos, vInDirection);
+	lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 128, pos, vInDirection);
+    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 128, pos, vInDirection);
+    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos, vInDirection);
 	
 	c = c + vec3(1,0,0) * light0.iL + 
 			vec3(0,1,0) * light1.iL + 
