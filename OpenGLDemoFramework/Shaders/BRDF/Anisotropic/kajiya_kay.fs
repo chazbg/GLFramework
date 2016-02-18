@@ -117,9 +117,9 @@ void main()
     
     float diffuseContribution = 0;
     
-    diffuseContribution += getDiffuseContribution(n, t, light0.iL) * light0.iL;
-    diffuseContribution += getDiffuseContribution(n, t, light1.iL) * light1.iL;
-    diffuseContribution += getDiffuseContribution(n, t, light2.iL) * light2.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light0.L) * light0.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light1.L) * light1.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light2.L) * light2.iL;
     
 	float specularContribution = 0;
     

@@ -22,52 +22,14 @@ namespace PBRDemo
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            TextureLoader texLoader;
-
             renderer = new Renderer(Vec2(800, 800));
 
-            envMap = texLoader.loadTextureCubemap(
-				"Images/cubemap_0/Cubemap_Back.png",
-				"Images/cubemap_0/Cubemap_Front.png",
-				"Images/cubemap_0/Cubemap_Top.png",
-				"Images/cubemap_0/Cubemap_Bottom.png",
-				"Images/cubemap_0/Cubemap_Right.png",
-				"Images/cubemap_0/Cubemap_Left.png"
-			);
-
-            shaderMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs");
-            shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
-            shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/normal.png"));
-            shaderMaterial->addTexture(texLoader.loadTexture("Images/pattern0/specular.png"));
-            shaderMaterial->addTextureCubemap(envMap);
-            shaderMaterial->setProperty("diffuseMap", 0);
-            shaderMaterial->setProperty("normalMap", 1);
-            shaderMaterial->setProperty("specMap", 2);
-            shaderMaterial->setProperty("sampler", 3);
-            shaderMaterial->setProperty("envMap", 4);
-            shaderMaterial->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
-            shaderMaterial->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
-
-            /*g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
-            g->Scale(0.1f, 0.1f, 0.1f);
-            g->Rotate(-3.14f / 2.0f, 0, 0);
-            g->Translate(0, -20, 0);*/
-
-            g = new CustomGeometry("3DAssets/ogrehead.obj");
-            g->Scale(7.0f, 7.0f, 7.0f);
-
-            /*g = new CustomGeometry("3DAssets/buddha.3ds");
-            g->Scale(0.01f, 0.01f, 0.01f);
-            g->Rotate(-3.14f / 2.0f, 0, 0);
-            g->Translate(0, 1, 0);*/
-
-            g->setMaterial(shaderMaterial);
-
+			initTextures();
+			initMaterials();
             initEnvMap();
             initLights();
-            initGround(texLoader);
-
-            scene.add(g);
+            initGround();
+			initGeometry();        
             
             time = 0;
             stopTime = false;
@@ -96,19 +58,15 @@ namespace PBRDemo
                 lights[2]->Rotate(0, 3.14f / 360.0f, 0);
             }
 
-            g->getMaterial().setProperty("cameraPos", cameraPos);
-            g->getMaterial().setProperty("ior", ior);
-            g->getMaterial().setProperty("glossiness", glossiness);
-            g->getMaterial().setProperty("light0Pos", lights[0]->getPosition());
-            g->getMaterial().setProperty("light1Pos", lights[1]->getPosition());
-            g->getMaterial().setProperty("light2Pos", lights[2]->getPosition());
-
-            ground->getMaterial().setProperty("cameraPos", cameraPos);
-            ground->getMaterial().setProperty("ior", ior);
-            ground->getMaterial().setProperty("glossiness", glossiness);
-            ground->getMaterial().setProperty("light0Pos", lights[0]->getPosition());
-            ground->getMaterial().setProperty("light1Pos", lights[1]->getPosition());
-            ground->getMaterial().setProperty("light2Pos", lights[2]->getPosition());
+			for (unsigned int i = 2; i < materials.size(); i++)
+			{
+				materials[i]->setProperty("cameraPos", cameraPos);
+				materials[i]->setProperty("ior", ior);
+				materials[i]->setProperty("glossiness", glossiness);
+				materials[i]->setProperty("light0Pos", lights[0]->getPosition());
+				materials[i]->setProperty("light1Pos", lights[1]->getPosition());
+				materials[i]->setProperty("light2Pos", lights[2]->getPosition());
+			}
 
             renderer->render(scene, camera);
         }
@@ -163,12 +121,6 @@ namespace PBRDemo
                 glossiness = min(0.99f, glossiness + 0.01f);
                 cout << "glossiness: " << glossiness << endl;
                 break;
-            case '1':
-                ground->setMaterial(anisotropicMaterial);
-                break;
-            case '2':
-                ground->setMaterial(shaderMaterial);
-                break;
             default:
                 stopTime = !stopTime;
                 break;
@@ -195,24 +147,68 @@ namespace PBRDemo
         }
     private:
 
+		void initMaterials()
+		{
+			materials.push_back(new ShaderMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
+			materials[0]->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
+
+			materials.push_back(new ShaderMaterial("Shaders/envMap.vs", "Shaders/envMap.fs"));
+			materials[1]->setProperty("envMap", 1);
+			materials[1]->addTextureCubemap(envMap);
+
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+
+			for (unsigned int i = 2; i < materials.size(); i++)
+			{
+				materials[i]->setProperty("diffuseMap", 0);
+				materials[i]->setProperty("normalMap", 1);
+				materials[i]->setProperty("specMap", 2);
+				materials[i]->setProperty("sampler", 3);
+				materials[i]->setProperty("envMap", 4);
+				materials[i]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+				materials[i]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+				for (unsigned int j = 0; j < textures.size(); j++)
+				{
+					materials[i]->addTexture(textures[j]);
+				}
+				materials[i]->addTextureCubemap(envMap);
+			}
+		}
+
+		void initTextures()
+		{
+			TextureLoader texLoader;
+
+			envMap = texLoader.loadTextureCubemap(
+				"Images/cubemap_0/Cubemap_Back.png",
+				"Images/cubemap_0/Cubemap_Front.png",
+				"Images/cubemap_0/Cubemap_Top.png",
+				"Images/cubemap_0/Cubemap_Bottom.png",
+				"Images/cubemap_0/Cubemap_Right.png",
+				"Images/cubemap_0/Cubemap_Left.png"
+				);
+
+			textures.push_back(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_124/normal.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_124/specular.png"));
+		}
+
         void initLights()
         {
 			float r = 10.0f;
-            lightMeshMaterial = new ShaderMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs");
-            lightMeshMaterial->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
-
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
-            lights[0]->setMaterial(lightMeshMaterial);
+			lights[0]->setMaterial(materials[0]);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
 			lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
-            lights[1]->setMaterial(lightMeshMaterial);
+			lights[1]->setMaterial(materials[0]);
             lights[1]->Scale(0.05f, 0.05f, 0.05f);
 			lights[1]->Translate(sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
-            lights[2]->setMaterial(lightMeshMaterial);
+			lights[2]->setMaterial(materials[0]);
             lights[2]->Scale(0.05f, 0.05f, 0.05f);
 			lights[2]->Translate(0, 3.0f, -r);
 
@@ -223,48 +219,46 @@ namespace PBRDemo
 
         void initEnvMap()
         {
-            envMapMaterial = new ShaderMaterial("Shaders/envMap.vs", "Shaders/envMap.fs");
-            envMapMaterial->setProperty("envMap", 1);
-
             environmentCube = new CustomGeometry("3DAssets/cube.3ds", true);
-            environmentCube->setMaterial(envMapMaterial);
+			environmentCube->setMaterial(materials[1]);
             environmentCube->Scale(20, 20, 20);
             scene.add(environmentCube);
-
-            envMapMaterial->addTextureCubemap(envMap);
         }
 
-        void initGround(TextureLoader& texLoader)
+        void initGround()
         {
-            anisotropicMaterial = new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs");
-            anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
-            anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/normal.png"));
-            anisotropicMaterial->addTexture(texLoader.loadTexture("Images/pattern_124/specular.png"));
-            anisotropicMaterial->setProperty("diffuseMap", 0);
-            anisotropicMaterial->setProperty("normalMap", 1);
-            anisotropicMaterial->setProperty("specMap", 2);
-            anisotropicMaterial->setProperty("sampler", 3);
-            anisotropicMaterial->setProperty("envMap", 4);
-            anisotropicMaterial->setProperty("specular", Vec3(0.7f, 0.7f, 0.7f));
-            ground = new CustomGeometry("3DAssets/cube_uv.3ds");
-            ground->setMaterial(anisotropicMaterial);
-            ground->Translate(0.0f, -5.0f, 0.0f);
-            ground->Scale(20.0f, 1.0f, 20.0f);
-            scene.add(ground);
-
-            anisotropicMaterial->addTextureCubemap(envMap);
+            ground[0] = new CustomGeometry("3DAssets/cube_uv.3ds");
+			ground[0]->setMaterial(materials[2]);
+            ground[0]->Translate(0.0f, -5.0f, 0.0f);
+            ground[0]->Scale(20.0f, 1.0f, 20.0f);
+			scene.add(ground[0]);
         }
+
+		void initGeometry()
+		{
+			/*g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+			g->Scale(0.1f, 0.1f, 0.1f);
+			g->Rotate(-3.14f / 2.0f, 0, 0);
+			g->Translate(0, -20, 0);*/
+
+			g = new CustomGeometry("3DAssets/ogrehead.obj");
+			g->Scale(7.0f, 7.0f, 7.0f);
+
+			/*g = new CustomGeometry("3DAssets/buddha.3ds");
+			g->Scale(0.01f, 0.01f, 0.01f);
+			g->Rotate(-3.14f / 2.0f, 0, 0);
+			g->Translate(0, 1, 0);*/
+
+			g->setMaterial(materials[3]);
+			scene.add(g);
+		}
 
         PerspectiveCamera camera;
         Scene scene;
         Renderer* renderer;
         CustomGeometry* g;
         CustomGeometry* environmentCube;
-        CustomGeometry* ground;
-        ShaderMaterial* shaderMaterial;
-        ShaderMaterial* lightMeshMaterial;
-        ShaderMaterial* envMapMaterial;
-        ShaderMaterial* anisotropicMaterial;
+        CustomGeometry* ground[9];
         unsigned int time;
         bool stopTime;
         Vec3 cameraPos;
@@ -276,7 +270,9 @@ namespace PBRDemo
         float ior;
         float glossiness;
         vector<CustomGeometry*> lights;
-        TextureCubemap* envMap;
+		vector<IMaterial*> materials;
+		vector<Texture*> textures;
+		TextureCubemap* envMap;
     };
 
     void main()
