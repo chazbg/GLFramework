@@ -156,8 +156,13 @@ namespace PBRDemo
 			materials[1]->setProperty("envMap", 1);
 			materials[1]->addTextureCubemap(envMap);
 
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs"));
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_schlick.fs"));
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs"));
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs"));
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs"));
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));			
 
 			for (unsigned int i = 2; i < materials.size(); i++)
 			{
@@ -221,35 +226,47 @@ namespace PBRDemo
         {
             environmentCube = new CustomGeometry("3DAssets/cube.3ds", true);
 			environmentCube->setMaterial(materials[1]);
-            environmentCube->Scale(20, 20, 20);
+            environmentCube->Scale(30, 30, 30);
             scene.add(environmentCube);
         }
 
         void initGround()
         {
-            ground[0] = new CustomGeometry("3DAssets/cube_uv.3ds");
-			ground[0]->setMaterial(materials[2]);
-            ground[0]->Translate(0.0f, -5.0f, 0.0f);
-            ground[0]->Scale(20.0f, 1.0f, 20.0f);
-			scene.add(ground[0]);
+			for (unsigned int i = 0; i < 9; i++)
+			{
+				ground[i] = new CustomGeometry("3DAssets/cube_uv.3ds");
+				ground[i]->setMaterial(materials[3 + i % 6]);
+				ground[i]->Scale(10.0f, 1.0f, 10.0f);
+				scene.add(ground[i]);
+			}
+
+			ground[0]->Translate(-20.0f, -5.0f, -20.0f);
+			ground[1]->Translate(0.0f, -5.0f, -20.0f);
+			ground[2]->Translate(20.0f, -5.0f, -20.0f);
+			ground[3]->Translate(-20.0f, -5.0f, 0.0f);
+			ground[4]->Translate(0.0f, -5.0f, 0.0f);
+			ground[5]->Translate(20.0f, -5.0f, 0.0f);
+			ground[6]->Translate(-20.0f, -5.0f, 20.0f);
+			ground[7]->Translate(0.0f, -5.0f, 20.0f);
+			ground[8]->Translate(20.0f, -5.0f, 20.0f);
         }
 
 		void initGeometry()
 		{
-			/*g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+			g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
 			g->Scale(0.1f, 0.1f, 0.1f);
 			g->Rotate(-3.14f / 2.0f, 0, 0);
-			g->Translate(0, -20, 0);*/
+			g->Translate(0, -20, 0);
 
-			g = new CustomGeometry("3DAssets/ogrehead.obj");
-			g->Scale(7.0f, 7.0f, 7.0f);
+			/*g = new CustomGeometry("3DAssets/ogrehead.obj");
+			g->Scale(7.0f, 7.0f, 7.0f);*/
 
 			/*g = new CustomGeometry("3DAssets/buddha.3ds");
 			g->Scale(0.01f, 0.01f, 0.01f);
 			g->Rotate(-3.14f / 2.0f, 0, 0);
 			g->Translate(0, 1, 0);*/
 
-			g->setMaterial(materials[3]);
+			g->setMaterial(materials[5]);
 			scene.add(g);
 		}
 
