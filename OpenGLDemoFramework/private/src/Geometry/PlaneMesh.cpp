@@ -1,143 +1,102 @@
-#include "Geometry/PlaneMesh.hpp"
-#include "Core/PlaneGenerator.hpp"
-#include "Core/Shader.hpp"
+#include <Geometry/PlaneMesh.hpp>
 
-#define BUFFER_OFFSET(i) ((void*)(i))
-
-static float* generateWireframe(const float* vbuf, int length)
+PlaneMesh::PlaneMesh(int _width, int _height) :
+    Mesh(),
+    width(_width),
+    height(_height)
 {
-	float* wireframe = new float[length * 2];
-	int j = 0;
-	for (int i = 0; i < length; i += 9)
-	{
-		wireframe[j] = vbuf[i];
-		wireframe[j+1] = vbuf[i+1];
-		wireframe[j+2] = vbuf[i+2];
+    unsigned int vertexCount = width * height * 6;
+    float* vb = generatePlaneVertices(width, height);
+    float* uvBuffer = generateUVs(width, height);
 
-		wireframe[j+3] = vbuf[i+3];
-		wireframe[j+4] = vbuf[i+4];
-		wireframe[j+5] = vbuf[i+5];
+    vertices = new VertexBufferObject(vb, vertexCount, 3);
+    uvs = new VertexBufferObject(uvBuffer, vertexCount, 2);
 
-		wireframe[j + 6] = vbuf[i + 3];
-		wireframe[j + 7] = vbuf[i + 4];
-		wireframe[j + 8] = vbuf[i + 5];
+    setVertices(*vertices);
+    setTexCoords(*uvs);
 
-		wireframe[j + 9] = vbuf[i + 6];
-		wireframe[j + 10] = vbuf[i + 7];
-		wireframe[j + 11] = vbuf[i + 8];
-
-		wireframe[j + 12] = vbuf[i + 6];
-		wireframe[j + 13] = vbuf[i + 7];
-		wireframe[j + 14] = vbuf[i + 8];
-
-		wireframe[j + 15] = vbuf[i];
-		wireframe[j + 16] = vbuf[i + 1];
-		wireframe[j + 17] = vbuf[i + 2];
-		j += 18;
-	}
-	return wireframe;
-}
-
-PlaneMesh::PlaneMesh(int _width, int _height) : 
-Mesh(),
-width(_width), 
-height(_height)
-{
-	//vertexCount = width * height * 6;
-	//vertexBuffer = generatePlaneVertices(width, height);
-	//generateNormals();
-	//wireframeVertexBuffer = generateWireframe(vertexBuffer, width * height * 18);
-
-	//programID = LoadShaders("Shaders/plane.vs", "Shaders/plane.fs");
-	//timeID = glGetUniformLocation(programID, "time");
-
-	//time = 0;
-
-	//glUniform1ui(timeID, time);
-
-	//glGenBuffers(1, &vertexBufferID);
-	//glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-
-	////glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4 * 2, wireframeVertexBuffer, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, vertexBuffer, GL_STATIC_DRAW);
-
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(
-	//	0,
-	//	3,
-	//	GL_FLOAT,
-	//	GL_FALSE,
-	//	0,
-	//	BUFFER_OFFSET(0)
-	//	);
-
-	//glGenBuffers(1, &normalsBufferID);
-	//glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-
-	//glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
-
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(
-	//	1,
-	//	3,
-	//	GL_FLOAT,
-	//	GL_FALSE,
-	//	0,
-	//	BUFFER_OFFSET(0)
-	//	);
-
-	//glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
+    delete[] vb;
+    delete[] uvBuffer;
 }
 
 PlaneMesh::~PlaneMesh()
 {
+    delete[] vertices;
+    delete[] uvs;
 }
 
-void PlaneMesh::SetTime(GLuint time)
+float* PlaneMesh::generatePlaneVertices(int width, int height)
 {
-	this->time = time;
-	glUniform1ui(timeID, time);
+    float* verts = new float[width * height * 6 * 3];
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width * 18; j += 18)
+        {
+            //1
+            verts[i * width * 18 + j] = j / 18.0f;
+            verts[i * width * 18 + j + 1] = (float) i;
+            verts[i * width * 18 + j + 2] = 0.0f;
+
+            //2
+            verts[i * width * 18 + j + 3] = j / 18.0f + 1.0f;
+            verts[i * width * 18 + j + 4] = (float) i;
+            verts[i * width * 18 + j + 5] = 0.0f;
+
+            //3
+            verts[i * width * 18 + j + 6] = j / 18.0f;
+            verts[i * width * 18 + j + 7] = (float) i + 1.0f;
+            verts[i * width * 18 + j + 8] = 0.0f;
+
+            //4
+            verts[i * width * 18 + j + 9] = j / 18.0f + 1.0f;
+            verts[i * width * 18 + j + 10] = (float) i;
+            verts[i * width * 18 + j + 11] = 0.0f;
+
+            //5
+            verts[i * width * 18 + j + 12] = j / 18.0f + 1.0f;
+            verts[i * width * 18 + j + 13] = (float) i + 1.0f;
+            verts[i * width * 18 + j + 14] = 0.0f;
+
+            //6
+            verts[i * width * 18 + j + 15] = j / 18.0f;
+            verts[i * width * 18 + j + 16] = (float) i + 1.0f;
+            verts[i * width * 18 + j + 17] = 0.0f;
+        }
+    }
+    return verts;
 }
 
-GLuint PlaneMesh::GetTime()
+float * PlaneMesh::generateUVs(int width, int height)
 {
-	return time;
-}
+    float* uvs = new float[width * height * 6 * 2];
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0, k = 0; j < width * 18; j += 18, k += 12)
+        {
+            //1
+            uvs[i * width * 12 + k] = (k / 12) / (float) width;
+            uvs[i * width * 12 + k + 1] = i / (float) height;
 
-void PlaneMesh::UseProgram()
-{
-	glUseProgram(programID);
-}
+            //2
+            uvs[i * width * 12 + k + 2] = ((k / 12) + 1) / (float) width;
+            uvs[i * width * 12 + k + 3] = i / (float) height;
 
-void PlaneMesh::Render()
-{
-	UseProgram();
-	SetTime(time + 1);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-		);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(
-		1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-		);
-	//glDrawArrays(GL_LINES, 0, vertexCount * 2);
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+            //3
+            uvs[i * width * 12 + k + 4] = (k / 12) / (float) width;
+            uvs[i * width * 12 + k + 5] = (i + 1) / (float) height;
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+            //4
+            uvs[i * width * 12 + k + 6] = ((k / 12) + 1) / (float) width;
+            uvs[i * width * 12 + k + 7] = i / (float) height;
+
+            //5
+            uvs[i * width * 12 + k + 8] = ((k / 12) + 1) / (float) width;
+            uvs[i * width * 12 + k + 9] = (i + 1) / (float) height;
+
+            //6
+            uvs[i * width * 12 + k + 10] = (k / 12) / (float) width;
+            uvs[i * width * 12 + k + 11] = (i + 1) / (float) height;
+        }
+    }
+    return uvs;
 }

@@ -2,6 +2,8 @@
 
 #include "Vector.hpp"
 #include <iostream>
+#include <math.h>
+
 using namespace std;
 
 class Matrix4 {
@@ -86,8 +88,16 @@ public:
 		return this->operator std::string();
 	}
 
-	const float* raw() const
+	const float* raw()
 	{
+        for (int i = 0; i < 4; i++)
+        {
+            rawData[i * 4] = m[0].raw()[i];
+            rawData[i * 4 + 1] = m[1].raw()[i];
+            rawData[i * 4 + 2] = m[2].raw()[i];
+            rawData[i * 4 + 3] = m[3].raw()[i];
+        }
+
 		return rawData;
 	}
 
@@ -96,8 +106,20 @@ public:
 		m[0].w = translation.x;
 		m[1].w = translation.y;
 		m[2].w = translation.z;
-		cout << toString() << endl;
 	}
+
+    void setRotation(const float thetaX, const float thetaY, const float thetaZ)
+    {
+        float sa = sin(thetaX);
+        float ca = cos(thetaX);
+        float sb = sin(thetaY);
+        float cb = cos(thetaY);
+        float sc = sin(thetaZ);
+        float cc = cos(thetaZ);
+        m[0] = Vec4(cb * cc, cc * sa * sb - ca * sc, ca * cc * sb + sa * sc, m[0].w);
+        m[1] = Vec4(cb * sc, ca * cc + sa * sb * sc, -cc * sa + ca * sb * sc, m[1].w);
+        m[2] = Vec4(-sb, cb * sa, ca * cb, m[2].w);
+    }
 private:
 	Vec4 m[4];
 	float rawData[16];

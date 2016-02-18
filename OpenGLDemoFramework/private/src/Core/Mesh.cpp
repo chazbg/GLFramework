@@ -3,225 +3,134 @@
 #include "Core/Shader.hpp"
 #include <algorithm>
 #include <cstdio>
+#include <Core/VertexBufferObject.hpp>
+#include <Math/GeometryAlgorithm.hpp>
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
 Mesh::Mesh() : 
-vertexCount(0),
-vertexBuffer(0),
-normalsBuffer(0),
+material(0),
+ibo(0),
 wireframeVertexBuffer(0),
 showWireframe(false),
 castsShadow(false),
 receivesShadow(false)
 {
-
+	for (int i = 0; i < 5; i++)
+	{
+		vbos.push_back(new VertexBufferObject());
+	}
 }
 
 Mesh::~Mesh()
 {
-	delete[] vertexBuffer;	
-	delete[] texCoordsBuffer;
 	delete[] wireframeVertexBuffer;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        delete children[i];
+    }
 }
 
-void Mesh::Render()
+IIndexBufferObject * Mesh::getIBO()
 {
-	glUseProgram(programID);
-
-	SetUniformValue("mvp", projection * view * model);
-
-	if (showWireframe)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, wireframeVertexBufferID);
-	}
-	else
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	}
-	
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(
-		0,
-		vertexSize,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		BUFFER_OFFSET(0)
-		);
-
-	activateNormalsBuffer();
-	activateTexCoordsBuffer();
-
-	if (showWireframe)
-	{
-		glDrawArrays(GL_LINES, 0, vertexCount * 2);
-	}
-	else
-	{
-		glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-	}
-	
-	glDisableVertexAttribArray(0);
-
-	deactivateNormalsBuffer();
-	deactivateTexCoordsBuffer();
+    return ibo;
 }
 
-void Mesh::RenderToTexture(const unsigned int fbo, const unsigned int texId)
+std::vector<IVertexBufferObject*>& Mesh::getVBOs()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
-	glBindTexture(GL_TEXTURE_2D, texId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 800, 800, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texId, 0);
-
-	glDrawBuffer(GL_NONE); // No color buffer is drawn to.
-
-	// Always check that our framebuffer is ok
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		printf("INVALID\n");
-
-	Render();
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return vbos;
 }
 
-void Mesh::SetProjectionMatrix(const Matrix4& projection)
-{
-	this->projection = projection;
-}
-
-void Mesh::SetViewMatrix(const Matrix4& view)
-{
-	this->view = view;
-}
-
-void Mesh::SetModelMatrix(const Matrix4& model)
+void Mesh::setModelMatrix(const Matrix4 & model)
 {
 	this->model = model;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->setModelMatrix(model);
+    }
 }
 
-Matrix4 Mesh::GetProjectionMatrix()
+Matrix4 Mesh::getModelMatrix() const
 {
-	return projection;
+	//return translation * rotation * scale;
+    return model;
 }
 
-Matrix4 Mesh::GetViewMatrix()
-{
-	return view;
-}
-
-Matrix4 Mesh::GetModelMatrix()
-{
-	return model;
-}
-
-void Mesh::SetShaders(const string vertexShaderPath, const string fragmentShaderPath)
-{
-	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
-	BindUniform("mvp");
-	SetUniformValue("mvp", projection * view * model);
-}
-
-void Mesh::SetWireframeMode(const bool showWireframe)
+void Mesh::setWireframeMode(const bool showWireframe)
 {
 	this->showWireframe = showWireframe;
 }
 
-void Mesh::SetVertexBuffer(const float* vertexBuffer, const unsigned int length, const unsigned char vertexSize)
+void Mesh::setIndices(const IIndexBufferObject & indices)
 {
-	if (this->vertexBuffer)
-	{
-		delete[] this->vertexBuffer;
-	}
-
-	this->vertexBuffer = new float[length * vertexSize];
-	memcpy(this->vertexBuffer, vertexBuffer, length * vertexSize * sizeof(float));
-	vertexCount = length;
-	this->vertexSize = vertexSize;
-
-	if (vertexSize == 3)
-	{
-		generateNormals();
-		generateWireframe();
-	}
-	
-	
-	glGenBuffers(1, &vertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize * sizeof(float), vertexBuffer, GL_STATIC_DRAW);
-
-	if (vertexSize == 3)
-	{
-		glGenBuffers(1, &normalsBufferID);
-		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-		glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
-
-		glGenBuffers(1, &wireframeVertexBufferID);
-		glBindBuffer(GL_ARRAY_BUFFER, wireframeVertexBufferID);
-		glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize * sizeof(float) * 2, wireframeVertexBuffer, GL_STATIC_DRAW);
-	}
+    ibo = &const_cast<IIndexBufferObject&>(indices);
 }
 
-void Mesh::SetNormalsBuffer(const float* normalsBuffer)
+void Mesh::setVertices(const IVertexBufferObject & vertices)
 {
-	if (this->normalsBuffer)
-	{
-		delete[] this->normalsBuffer;
-	}
-
-	this->normalsBuffer = new float[vertexCount];
-	memcpy(this->normalsBuffer, normalsBuffer, vertexCount * sizeof(float));
-
-	glGenBuffers(1, &normalsBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * 4, normalsBuffer, GL_STATIC_DRAW);
+	vbos[0] = &const_cast<IVertexBufferObject&>(vertices);
 }
 
-void Mesh::SetTexCoordsBuffer(const float* texCoordsBuffer)
+void Mesh::setNormals(const IVertexBufferObject & normals)
 {
-	if (this->texCoordsBuffer)
-	{
-		delete[] this->texCoordsBuffer;
-	}
-
-	this->texCoordsBuffer = new float[vertexCount * 2];
-	memcpy(this->texCoordsBuffer, texCoordsBuffer, vertexCount * 2 * sizeof(float));
-
-	glGenBuffers(1, &texCoordsBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordsBufferID);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * 2 * 4, texCoordsBuffer, GL_STATIC_DRAW);
+	vbos[1] = &const_cast<IVertexBufferObject&>(normals);
 }
 
-void Mesh::BindUniform(string uniform)
+void Mesh::setTexCoords(const IVertexBufferObject & texCoords)
 {
-	uniforms[uniform] = glGetUniformLocation(programID, uniform.c_str());
+	vbos[2] = &const_cast<IVertexBufferObject&>(texCoords);
+}
+
+void Mesh::setTangents(const IVertexBufferObject& tangents)
+{
+    vbos[3] = &const_cast<IVertexBufferObject&>(tangents);
+}
+
+void Mesh::setBitangents(const IVertexBufferObject& bitangents)
+{
+    vbos[4] = &const_cast<IVertexBufferObject&>(bitangents);
+}
+
+void Mesh::setMaterial(IMaterial * material)
+{
+	this->material = material;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->setMaterial(material);
+    }
+}
+
+IMaterial & Mesh::getMaterial() const
+{
+	return *material;
+}
+
+void Mesh::addChild(IMesh* child)
+{
+    children.push_back(child);
+}
+
+std::vector<IMesh*>& Mesh::getChildren() 
+{
+    return children;
 }
 
 void Mesh::SetUniformValue(string uniform, const int v)
 {
-	glUseProgram(programID);
-	glUniform1i(uniforms[uniform], v);
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetUniformValue(string uniform, const unsigned int v)
 {
-	glUseProgram(programID);
-	glUniform1ui(uniforms[uniform], v);
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetUniformValue(string uniform, const Vec3& v)
 {
-	//TODO
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetUniformValue(string uniform, const Vec4& v)
@@ -231,8 +140,7 @@ void Mesh::SetUniformValue(string uniform, const Vec4& v)
 
 void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 {
-	glUseProgram(programID);
-	glUniformMatrix4fv(uniforms[uniform], 1, false, v.raw());
+    material->setProperty(uniform, v);
 }
 
 void Mesh::SetCastsShadow(const bool castsShadow)
@@ -245,20 +153,50 @@ void Mesh::SetReceivesShadow(const bool receivesShadow)
 	this->receivesShadow = receivesShadow;
 }
 
-void Mesh::SetTexture(const Texture& tex)
+Vec3 Mesh::getPosition()
 {
-	//TODO
+    Vec4 base(0.0f, 0.0f, 0.0f, 1.0f);
+    base = model * base;
+    return Vec3(base.x, base.y, base.z);
 }
 
-void Mesh::SetPosition(const Vec3& position)
+void Mesh::Scale(const float scaleX, const float scaleY, const float scaleZ)
 {
-	model.setTranslation(position);
-	SetUniformValue("mvp", projection * view * model);
+    Matrix4 m = GeometryAlgorithm::CreateSRTMatrix(Vec3(scaleX, scaleY, scaleZ), Vec3(0, 0, 0), Vec3(0, 0, 0));
+    model = m * model;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->Scale(scaleX, scaleY, scaleZ);
+    }
 }
 
-void Mesh::generateNormals()
+void Mesh::Rotate(const float thetaX, const float thetaY, const float thetaZ)
 {
-	normalsBuffer = new float[vertexCount * 3];
+    Matrix4 m;
+    m.setRotation(thetaX, thetaY, thetaZ);
+    model = m * model;
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->Rotate(thetaX, thetaY, thetaZ);
+    }
+}
+
+void Mesh::Translate(const float transX, const float transY, const float transZ)
+{
+    Matrix4 m;
+    m.setTranslation(Vec3(transX, transY, transZ));
+    model = m * model;
+
+    for (unsigned int i = 0; i < children.size(); i++)
+    {
+        children[i]->Translate(transX, transY, transZ);
+    }
+}
+
+float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int vertexCount)
+{
+	float* normalsBuffer = new float[vertexCount * 3];
 
 	for (unsigned int i = 0; i < vertexCount * 3; i += 9)
 	{
@@ -281,88 +219,55 @@ void Mesh::generateNormals()
 		normalsBuffer[i + 7] = res.y;
 		normalsBuffer[i + 8] = res.z;
 	}
+
+    return normalsBuffer;
+}
+
+float* Mesh::generateUVs(const float* vertexBuffer, const unsigned int vertexCount)
+{
+    float* uvBuffer = new float[vertexCount * 2];
+
+    unsigned int j = 0;
+    for (unsigned int i = 0; i < vertexCount * 3; i += 3, j += 2)
+    {
+        Vec3 v(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
+        v = -v.normalize();
+        uvBuffer[j] = atan2f(v.z, v.x) / (2.0f * 3.14f) + 0.5f;
+        uvBuffer[j + 1] = 0.5f - asinf(v.y) / 3.14f;
+    }
+
+    return uvBuffer;
 }
 
 void Mesh::generateWireframe()
 {
-	wireframeVertexBuffer = new float[vertexCount * 3 * 2];
-	unsigned int j = 0;
-	for (unsigned int i = 0; i < vertexCount; i += 9)
-	{
-		wireframeVertexBuffer[j] = vertexBuffer[i];
-		wireframeVertexBuffer[j + 1] = vertexBuffer[i + 1];
-		wireframeVertexBuffer[j + 2] = vertexBuffer[i + 2];
+	//wireframeVertexBuffer = new float[vertexCount * 3 * 2];
+	//unsigned int j = 0;
+	//for (unsigned int i = 0; i < vertexCount; i += 9)
+	//{
+	//	wireframeVertexBuffer[j] = vertexBuffer[i];
+	//	wireframeVertexBuffer[j + 1] = vertexBuffer[i + 1];
+	//	wireframeVertexBuffer[j + 2] = vertexBuffer[i + 2];
 
-		wireframeVertexBuffer[j + 3] = vertexBuffer[i + 3];
-		wireframeVertexBuffer[j + 4] = vertexBuffer[i + 4];
-		wireframeVertexBuffer[j + 5] = vertexBuffer[i + 5];
+	//	wireframeVertexBuffer[j + 3] = vertexBuffer[i + 3];
+	//	wireframeVertexBuffer[j + 4] = vertexBuffer[i + 4];
+	//	wireframeVertexBuffer[j + 5] = vertexBuffer[i + 5];
 
-		wireframeVertexBuffer[j + 6] = vertexBuffer[i + 3];
-		wireframeVertexBuffer[j + 7] = vertexBuffer[i + 4];
-		wireframeVertexBuffer[j + 8] = vertexBuffer[i + 5];
+	//	wireframeVertexBuffer[j + 6] = vertexBuffer[i + 3];
+	//	wireframeVertexBuffer[j + 7] = vertexBuffer[i + 4];
+	//	wireframeVertexBuffer[j + 8] = vertexBuffer[i + 5];
 
-		wireframeVertexBuffer[j + 9] = vertexBuffer[i + 6];
-		wireframeVertexBuffer[j + 10] = vertexBuffer[i + 7];
-		wireframeVertexBuffer[j + 11] = vertexBuffer[i + 8];
+	//	wireframeVertexBuffer[j + 9] = vertexBuffer[i + 6];
+	//	wireframeVertexBuffer[j + 10] = vertexBuffer[i + 7];
+	//	wireframeVertexBuffer[j + 11] = vertexBuffer[i + 8];
 
-		wireframeVertexBuffer[j + 12] = vertexBuffer[i + 6];
-		wireframeVertexBuffer[j + 13] = vertexBuffer[i + 7];
-		wireframeVertexBuffer[j + 14] = vertexBuffer[i + 8];
+	//	wireframeVertexBuffer[j + 12] = vertexBuffer[i + 6];
+	//	wireframeVertexBuffer[j + 13] = vertexBuffer[i + 7];
+	//	wireframeVertexBuffer[j + 14] = vertexBuffer[i + 8];
 
-		wireframeVertexBuffer[j + 15] = vertexBuffer[i];
-		wireframeVertexBuffer[j + 16] = vertexBuffer[i + 1];
-		wireframeVertexBuffer[j + 17] = vertexBuffer[i + 2];
-		j += 18;
-	}
-}
-
-void Mesh::activateNormalsBuffer()
-{
-	if (normalsBuffer)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, normalsBufferID);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(
-			1,
-			3,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			BUFFER_OFFSET(0)
-			);
-	}
-}
-
-void Mesh::activateTexCoordsBuffer()
-{
-
-	if (texCoordsBuffer)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, texCoordsBufferID);
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(
-			2,
-			2,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			BUFFER_OFFSET(0)
-			);
-	}
-}
-
-void Mesh::deactivateNormalsBuffer()
-{
-	if (normalsBuffer)
-	{
-		glDisableVertexAttribArray(1);
-	}
-}
-
-void Mesh::deactivateTexCoordsBuffer()
-{
-	if (texCoordsBuffer)
-	{
-		glDisableVertexAttribArray(2);
-	}
+	//	wireframeVertexBuffer[j + 15] = vertexBuffer[i];
+	//	wireframeVertexBuffer[j + 16] = vertexBuffer[i + 1];
+	//	wireframeVertexBuffer[j + 17] = vertexBuffer[i + 2];
+	//	j += 18;
+	//}
 }

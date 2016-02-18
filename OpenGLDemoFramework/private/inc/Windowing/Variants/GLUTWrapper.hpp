@@ -9,4 +9,4 @@ int window;
 void onRender();
 void onMouseEvent(int, int, int, int);
 void onKeyboardEvent(unsigned char, int, int);
-void onMouseMove(int x, int y) ;
+void onMouseMove(int x, int y);

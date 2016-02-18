@@ -1,7 +1,8 @@
 #include "Core/Texture.hpp"
 #include <cstring>
 
-Texture::Texture(const unsigned int width, const unsigned int height, const unsigned int bpp, const unsigned char* data) :
+Texture::Texture(const unsigned int id, const unsigned int width, const unsigned int height, const unsigned int bpp, const unsigned char* data) :
+id(id),
 width(width),
 height(height),
 bpp(bpp),
@@ -20,6 +21,11 @@ Texture::~Texture()
 	{
 		delete[] data;
 	}
+}
+
+unsigned int Texture::getId() const
+{
+	return id;
 }
 
 unsigned int Texture::getWidth() const

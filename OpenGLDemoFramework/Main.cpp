@@ -1,7 +1,8 @@
-#include "Demos/DemoFragmentShaderSandbox.hpp"
+#include "Demos/DemoPBR.hpp"
 
 int main(int argc, char* argv[])
 {
-	FragmentShaderSandboxDemo::main();
-	return 0;
+	PBRDemo::main();
+
+    return 0;
 }

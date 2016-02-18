@@ -2,29 +2,34 @@
 #include <GL/glew.h>
 #include "Math/Matrix.hpp"
 #include "Core/Texture.hpp"
+#include "Core/IMesh.hpp"
 #include <map>
 
 using namespace std;
 
-class Mesh
+class Mesh : public IMesh
 {
 public:
 	Mesh();
-	virtual void Render();
-	virtual void RenderToTexture(const unsigned int fbo, const unsigned int texId);
 	~Mesh();
-	void SetProjectionMatrix(const Matrix4& projection);
-	void SetViewMatrix(const Matrix4& view);
-	void SetModelMatrix(const Matrix4& model);
-	Matrix4 GetProjectionMatrix();
-	Matrix4 GetViewMatrix();
-	Matrix4 GetModelMatrix();
-	virtual void SetShaders(const string vertexShaderPath, const string fragmentShaderPath);
-	void SetWireframeMode(const bool showWireframe);
-	void SetVertexBuffer(const float* vertexBuffer, const unsigned int length, const unsigned char vertexSize = 3);
-	void SetNormalsBuffer(const float* normalsBuffer);
-	void SetTexCoordsBuffer(const float* texCoordsBuffer);
-	void BindUniform(string uniform);
+    virtual IIndexBufferObject* getIBO();
+	virtual std::vector<IVertexBufferObject*>& getVBOs();
+	virtual void setModelMatrix(const Matrix4& model);
+	virtual Matrix4 getModelMatrix() const;
+	virtual void setWireframeMode(const bool showWireframe);
+    virtual void setIndices(const IIndexBufferObject& indices);
+	virtual void setVertices(const IVertexBufferObject& vertices);
+	virtual void setNormals(const IVertexBufferObject& normals);
+	virtual void setTangents(const IVertexBufferObject& tangents);
+	virtual void setBitangents(const IVertexBufferObject& bitangents);
+	virtual void setTexCoords(const IVertexBufferObject& texCoords);
+	virtual void setMaterial(IMaterial* material);
+	virtual IMaterial& getMaterial() const;
+    virtual void addChild(IMesh* child);
+    virtual std::vector<IMesh*>& getChildren();
+    virtual void Scale(const float scaleX, const float scaleY, const float scaleZ);//TODO: Use Vec3
+    virtual void Rotate(const float thetaX, const float thetaY, const float thetaZ);//TODO: Use Vec3
+    virtual void Translate(const float transX, const float transY, const float transZ);//TODO: Use Vec3
 	void SetUniformValue(string uniform, const int v);
 	void SetUniformValue(string uniform, const unsigned int v);
 	void SetUniformValue(string uniform, const Vec3& v);
@@ -32,31 +37,19 @@ public:
 	void SetUniformValue(string uniform, const Matrix4& v);
 	void SetCastsShadow(const bool castsShadow);
 	void SetReceivesShadow(const bool receivesShadow);
-	void SetTexture(const Texture& tex);
-	void SetPosition(const Vec3& position);
+    Vec3 getPosition();
 protected:
-	void generateNormals();
+    float* generateNormals(const float* vertexBuffer, const unsigned int vertexCount);
+    float* generateUVs(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();
-	void activateNormalsBuffer();
-	void activateTexCoordsBuffer();
-	void deactivateNormalsBuffer();
-	void deactivateTexCoordsBuffer();
-	unsigned int vertexCount;
-	unsigned char vertexSize;
-	float* vertexBuffer;
-	float* normalsBuffer;
-	float* texCoordsBuffer;
+	IMaterial* material;
+    IIndexBufferObject* ibo;
+	std::vector<IVertexBufferObject*> vbos;
+    std::vector<IMesh*> children;
 	float* wireframeVertexBuffer;
-	GLuint vertexBufferID;
-	GLuint normalsBufferID;
-	GLuint texCoordsBufferID;
 	GLuint wireframeVertexBufferID;
-	GLuint programID;
-	Matrix4 projection;
-	Matrix4 view;
-	Matrix4 model;
+    Matrix4 model;
 	bool showWireframe;
-	map<string, GLuint> uniforms;
 	bool castsShadow;
 	bool receivesShadow;
 };

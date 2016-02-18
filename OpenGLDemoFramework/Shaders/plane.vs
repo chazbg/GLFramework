@@ -1,10 +1,12 @@
 #version 330 core
 // Input vertex data, different for all executions of this shader.
-in vec3 vertexPosition_modelspace;
-in vec3 normal;
+layout(location = 0) in vec3 vertexPosition_modelspace;
+layout(location = 2) in vec2 texCoords;
 uniform uint time;
 
 smooth out vec4 inColor;
+smooth out vec2 inTexCoords;
+
 vec3 toWave(vec3 p, float amplitude, float waveLength, float speed, vec2 direction)
 {
     float frequency = 2 * 3.14 / waveLength;
@@ -166,5 +168,7 @@ void main(){
     
     inColor.xyz = ambComp + diffComp + specComp;
     inColor.w = diffuseColor.w;
+    
+    inTexCoords = texCoords;
 }
 

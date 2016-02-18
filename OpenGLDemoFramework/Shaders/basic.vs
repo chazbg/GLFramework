@@ -1,11 +1,10 @@
 #version 330 core
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition_modelspace;
-in vec3 normal;
+layout(location = 1) in vec3 normal;
 
 uniform uint time;
-uniform float startAngle;
-uniform float offsetAngle;
+uniform mat4 mvp;
 
 // uniform vec3 materialDiffuseColor;
 // uniform vec3 materialAmbientColor;
@@ -100,13 +99,13 @@ void main(){
     rot[2] = vec4(-sin(angle), 0, cos(angle), 0);
     rot[3] = vec4(0, 0, 0, 1);
 	
-	lightSampleValues light = computePointLightValues(vec3(0.5, 0.5, 1), vec3(0,0,1), 1, vec4(vertexPosition_modelspace, 1));
+	lightSampleValues light = computePointLightValues(vec3(3, 3, 5), vec3(0,0,1), 1, vec4(vertexPosition_modelspace, 1));
     gl_Position.xyz = vertexPosition_modelspace.xyz;
     gl_Position.w = 1.0;
-	gl_Position = transpose(rot) * gl_Position;
 	vec3 ambComp = computeAmbientComponent(light, ambColor, lightAmbDiffSpec, lightColor);
 	vec3 diffComp = computeDiffuseComponent(normal, light, diffuseColor.xyz, lightAmbDiffSpec, lightColor);
 	vec3 specComp = computeSpecularComponent(normal, gl_Position, light, specularColor, specExp, lightAmbDiffSpec, lightColor);
+    gl_Position = mvp * gl_Position;
     inColor.xyz = ambComp + diffComp;
 }
 

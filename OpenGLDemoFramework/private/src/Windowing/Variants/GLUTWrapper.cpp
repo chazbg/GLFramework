@@ -29,8 +29,8 @@ void Window::keyboardEvent(unsigned char c, int x, int y)
 
 void Window::mouseMove(int x, int y)
 {
-	int i = glutGetWindow();
-	windows[i]->onMouseMove(x, y);
+    int i = glutGetWindow();
+    windows[i]->onMouseMove(x, y);
 }
 
 Window::Window(const WindowParameters& params, IApplication& app) : params(params), app(app)
@@ -53,7 +53,7 @@ Window::Window(const WindowParameters& params, IApplication& app) : params(param
 	glutMouseFunc(Window::mouseEvent);
 	glutKeyboardFunc(Window::keyboardEvent);
 	glutDisplayFunc(Window::render);
-	glutPassiveMotionFunc(Window::mouseMove);
+    glutPassiveMotionFunc(Window::mouseMove);
 }
 
 Window::~Window()
@@ -89,5 +89,5 @@ void Window::onKeyboardEvent(unsigned char c, int x, int y)
 
 void Window::onMouseMove(int x, int y)
 {
-	app.onMouseMove(x, y);
+    app.onMouseMove(x, y);
 }

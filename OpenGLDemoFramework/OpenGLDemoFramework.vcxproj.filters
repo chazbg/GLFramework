@@ -61,9 +61,6 @@
     <Filter Include="Source Files\Rendering\Variants">
       <UniqueIdentifier>{be63ae54-01de-465f-9a6d-58ea525985c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Core\Text">
-      <UniqueIdentifier>{1cb5a558-37f0-4123-8982-70ee0aebccad}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -88,9 +85,6 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Core\Mesh.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Core\PlaneGenerator.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Core\Shader.cpp">
@@ -132,6 +126,36 @@
     <ClCompile Include="private\src\Rendering\Variants\GLWrapper.cpp">
       <Filter>Source Files\Rendering\Variants</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Core\VertexBufferObject.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\ShaderMaterial.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\Scene.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\DefaultCamera.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\PerspectiveCamera.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\TextureFactory.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Geometry\CustomGeometry.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\IndexBufferObject.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\TextureCubemap.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\TextureLoader.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -162,9 +186,6 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\Mesh.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Core\PlaneGenerator.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\Shader.hpp">
@@ -263,14 +284,71 @@
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Core\Text\glyphs.hpp">
-      <Filter>Header Files\Core\Text</Filter>
+    <ClInclude Include="private\inc\Core\IScene.hpp">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Core\Text\TextRenderer.hpp">
-      <Filter>Header Files\Core\Text</Filter>
+    <ClInclude Include="private\inc\Core\IMesh.hpp">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Core\Text\Gl_utils.hpp">
-      <Filter>Header Files\Core\Text</Filter>
+    <ClInclude Include="private\inc\Core\ICamera.hpp">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Core\IVertexBufferObject.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\IMaterial.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\ShaderMaterial.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Scene.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\VertexBufferObject.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\DefaultCamera.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureFactory.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\PerspectiveCamera.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoWave.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Geometry\CustomGeometry.hpp">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\IIndexBufferObject.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\IndexBufferObject.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\IImageLoader.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoTextureLoader.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoPBR.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureCubemap.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\TextureLoader.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
