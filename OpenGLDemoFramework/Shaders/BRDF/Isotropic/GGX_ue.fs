@@ -53,6 +53,7 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 	// Dot computes the 3-term attenuation in one operation
 	// k_c * 1.0 + k_l * dist + k_q * dist * dist
 	float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
+
 	if (length(centerToRay) <= 2)
 	{
 		values.iL = pointLightIntensity / distAtten;
@@ -150,22 +151,30 @@ vec3 ImportanceSampleGGX(vec2 Xi, float Roughness, vec3 N)
 {
     float a = Roughness * Roughness;
     float Phi = 2 * PI * Xi.x;
-    float CosTheta = sqrt( (1 - Xi.y) / ( 1 + (a*a - 1) * Xi.y ) );
-    float SinTheta = sqrt( 1 - CosTheta * CosTheta );
+    float CosTheta = sqrt((1 - Xi.y) / (1 + (a*a - 1) * Xi.y));
+    float SinTheta = sqrt(1 - CosTheta * CosTheta);
     vec3 H;
     H.x = SinTheta * cos(Phi);
     H.y = SinTheta * sin(Phi);
     H.z = CosTheta;
     
     vec3 UpVector = abs(N.z) < 0.999 ? vec3(0,0,1) : vec3(1,0,0);
-    vec3 TangentX = normalize(cross( UpVector , N ));
+    vec3 TangentX = normalize(cross(UpVector , N));
     vec3 TangentY = cross(N, TangentX);
     
     // Tangent to world space
     return TangentX * H.x + TangentY * H.y + N * H.z;
 }
 
-vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float dotNL)
+float schlick(float specular, vec3 v, vec3 h)
+{
+	float VoH = dot(v, h);
+	float Fc = pow(1 - VoH, 5);
+	float F = (1 - Fc) * specular + Fc;
+	return F; 
+}
+
+vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float dotNL, float ior)
 {
 	vec3 specLighting = vec3(0);
 	dotNL = 0;
@@ -174,7 +183,7 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 	{
 		vec2 xi = Hammersley(i, nSamples);
 		
-        vec3 h = ImportanceSampleGGX(xi, roughness, n);
+        vec3 h = normalize(ImportanceSampleGGX(xi, roughness, n));
 		vec3 l = 2 * dot(v, h) * h - v;
 		
 		float NoV = clamp(dot(n, v), 0, 1);
@@ -186,8 +195,7 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 		{
 			vec3 sampleColor = getLightingFromDirection(l);
 			
-			float Fc = pow(1 - VoH, 5);
-            vec3 F = (1 - Fc) * specularColor + Fc;
+            float F = schlick(1 - ior, v, h);
 			float G = G_Smith(v, h, l, roughness);
 
 			specLighting += sampleColor * F * G * VoH / (NoH * NoV);
@@ -222,7 +230,7 @@ void main()
     //specularContribution *= specular;
 	
     float NoL;
-	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL);
+	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL, ior);
     diffuseContribution *= diffuse * INVERSE_PI * NoL;
     
     // Energy preservation
