@@ -201,7 +201,7 @@ namespace PBRDemo
 
         void initLights()
         {
-			float r = 10.0f;
+			float r = 20.0f;
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
 			lights[0]->setMaterial(materials[0]);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
@@ -234,8 +234,9 @@ namespace PBRDemo
         {
 			for (unsigned int i = 0; i < 9; i++)
 			{
-				ground[i] = new CustomGeometry("3DAssets/cube_uv.3ds");
+				ground[i] = new CustomGeometry("3DAssets/rectangle.3ds");
 				ground[i]->setMaterial(materials[3 + i % 6]);
+				ground[i]->Rotate(-3.14f / 2.0f, 0.0f, 0.0f);
 				ground[i]->Scale(10.0f, 1.0f, 10.0f);
 				scene.add(ground[i]);
 			}
