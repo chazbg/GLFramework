@@ -149,19 +149,28 @@ namespace PBRDemo
 
 		void initMaterials()
 		{
+            //0
 			materials.push_back(new ShaderMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
 			materials[0]->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
 
+            //1
 			materials.push_back(new ShaderMaterial("Shaders/envMap.vs", "Shaders/envMap.fs"));
 			materials[1]->setProperty("envMap", 1);
 			materials[1]->addTextureCubemap(envMap);
 
+            //2
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+            //3
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs"));
+            //4
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_schlick.fs"));
+            //5
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs"));
+            //6
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs"));
+            //7
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs"));
+            //8
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));			
 
 			for (unsigned int i = 2; i < materials.size(); i++)
@@ -194,9 +203,9 @@ namespace PBRDemo
 				"Images/cubemap_0/Cubemap_Left.png"
 				);
 
-			textures.push_back(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern5/diffuse.jpg"));
 			textures.push_back(texLoader.loadTexture("Images/pattern_124/normal.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_124/specular.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern5/specular.jpg"));
 		}
 
         void initLights()
@@ -205,7 +214,7 @@ namespace PBRDemo
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
 			lights[0]->setMaterial(materials[0]);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
-			lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
+			lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 6.0f, (r / 2.0f));
 
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
 			lights[1]->setMaterial(materials[0]);
@@ -215,7 +224,7 @@ namespace PBRDemo
             lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
 			lights[2]->setMaterial(materials[0]);
             lights[2]->Scale(0.05f, 0.05f, 0.05f);
-			lights[2]->Translate(0, 3.0f, -r);
+			lights[2]->Translate(0, 0.0f, -r);
 
             scene.add(lights[0]);
             scene.add(lights[1]);
@@ -254,10 +263,10 @@ namespace PBRDemo
 
 		void initGeometry()
 		{
-			g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
-			g->Scale(0.1f, 0.1f, 0.1f);
-			g->Rotate(-3.14f / 2.0f, 0, 0);
-			g->Translate(0, -20, 0);
+			g1 = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+			g1->Scale(0.1f, 0.1f, 0.1f);
+			g1->Rotate(-3.14f / 2.0f, 0, 0);
+			g1->Translate(0, -20, 0);
 
 			/*g = new CustomGeometry("3DAssets/ogrehead.obj");
 			g->Scale(7.0f, 7.0f, 7.0f);*/
@@ -267,7 +276,15 @@ namespace PBRDemo
 			g->Rotate(-3.14f / 2.0f, 0, 0);
 			g->Translate(0, 1, 0);*/
 
-			g->setMaterial(materials[5]);
+            g = new CustomGeometry("3DAssets/hair3_triangulated.obj");
+            g->Scale(17.0f, 16.0f, 15.0f);
+            //g->Rotate(-3.14f / 2.0f, 0, 0);
+            g->Translate(0.5, -14, 0.0);
+
+            g1->setMaterial(materials[3]);
+            scene.add(g1);
+
+			g->setMaterial(materials[8]);
 			scene.add(g);
 		}
 
@@ -275,6 +292,7 @@ namespace PBRDemo
         Scene scene;
         Renderer* renderer;
         CustomGeometry* g;
+        CustomGeometry* g1;
         CustomGeometry* environmentCube;
         CustomGeometry* ground[9];
         unsigned int time;

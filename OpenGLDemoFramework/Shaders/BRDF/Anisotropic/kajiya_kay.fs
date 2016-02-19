@@ -9,7 +9,9 @@ const float EPSILON = 0.001;
 // Settings constants
 const float ENVIRONMENT_IOR = 1.0;
 
-uniform sampler2D colorMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
+uniform sampler2D specMap;
 uniform sampler2D sampler;
 uniform samplerCube envMap;
 
@@ -113,7 +115,8 @@ void main()
     vec3 t = mix(normalize(inTangent), normalize(inBitangent), ior);
     vec3 r = normalize(reflect(-v, n));
     
-    float m = 1 / (glossiness * glossiness);
+    float gloss = 1 / (glossiness * glossiness);
+    float m = 1 / pow((1 - texture(specMap, inUVs).b), gloss);
     
     float diffuseContribution = 0;
     
@@ -127,7 +130,7 @@ void main()
     specularContribution += getSpecularContribution(light1.L, v, t, m) * light1.iL;    // * texture(envMap, r).bgr
     specularContribution += getSpecularContribution(light2.L, v, t, m) * light2.iL;    // * texture(envMap, r).bgr
     
-    vec3 result = mix(diffuseContribution * diffuse, specularContribution * specular, glossiness);
+    vec3 result = mix(diffuseContribution * texture(diffuseMap, inUVs).bgr, specularContribution * specular, m);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
