@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Windowing/Window.hpp"
+#include <Windowing/WindowFactory.hpp>
 #include <iostream>
 using namespace std;
 
@@ -18,6 +18,7 @@ namespace WindowDemo
 		virtual void onEvent(const unsigned int event) { cout << "onEvent: " << event << endl; }
 		virtual void onMouseEvent(int button, int state, int x, int y) { cout << button << " " << state << " " << x << " " << y << endl; }
 		virtual void onKeyboardEvent(unsigned char c, int x, int y) { cout << c << " " << x << " " << y << endl; }
+        virtual void onMouseMove(int x, int y) {}
 	};
 
 	void main()
@@ -29,13 +30,9 @@ namespace WindowDemo
 		params.posY = 100;
 		params.name = "TestWindow";
 		TestWindowApp app;
-		Window window(params, app);
-		params.posX += 50;
-		Window window1(params, app);
-		params.posX += 50;
-		Window window2(params, app);
-		params.posX += 50;
-		Window window3(params, app);
-		window.startRenderLoop();
+        WindowFactory windowFactory;
+        IWindow* window = windowFactory.createWindow(params, app);
+
+		window->startRenderLoop();
 	}
 }

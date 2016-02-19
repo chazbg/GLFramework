@@ -1,8 +1,8 @@
-#include "Demos/DemoPBR.hpp"
+#include "Demos/DemoWindow.hpp"
 
 int main(int argc, char* argv[])
 {
-	PBRDemo::main();
+	WindowDemo::main();
 
     return 0;
 }

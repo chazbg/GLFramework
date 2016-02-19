@@ -81,55 +81,7 @@
     <ClCompile Include="private\src\Math\Vector.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Core\FrameBuffer.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Core\Mesh.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Core\Shader.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\Texture.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\Bar.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\BlockMesh.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\Cube.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\LineListMesh.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\PlaneMesh.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\PointListMesh.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\Rectangle.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Geometry\Triangle.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Windowing\Variants\GLUTWrapper.cpp">
-      <Filter>Source Files\Windowing\Variants</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Windowing\Window.cpp">
-      <Filter>Source Files\Windowing</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Rendering\Variants\GLWrapper.cpp">
-      <Filter>Source Files\Rendering\Variants</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Core\VertexBufferObject.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Core\ShaderMaterial.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Core\Scene.cpp">
@@ -144,17 +96,17 @@
     <ClCompile Include="private\src\Core\TextureFactory.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Geometry\CustomGeometry.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Core\IndexBufferObject.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\TextureCubemap.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Core\TextureLoader.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Windowing\Variants\VulkanWindow.cpp">
+      <Filter>Source Files\Windowing\Variants</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Windowing\WindowFactory.cpp">
+      <Filter>Source Files\Windowing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -257,26 +209,11 @@
     <ClInclude Include="private\inc\Tests\TestVector.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Windowing\Variants\WindowDX.hpp">
-      <Filter>Header Files\Windowing\Variants</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Windowing\Window.hpp">
-      <Filter>Header Files\Windowing</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Windowing\Variants\GLUTWrapper.hpp">
-      <Filter>Header Files\Windowing\Variants</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Tests\TestWindow.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoWindow.hpp">
       <Filter>Header Files\Demos</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Rendering\Renderer.hpp">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Rendering\Variants\GLWrapper.hpp">
-      <Filter>Header Files\Rendering\Variants</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp">
       <Filter>Header Files\Demos</Filter>
@@ -346,6 +283,21 @@
     </ClInclude>
     <ClInclude Include="private\inc\Core\TextureLoader.hpp">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\IWindow.hpp">
+      <Filter>Header Files\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\WindowFactory.hpp">
+      <Filter>Header Files\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\Variants\VulkanWindow.hpp">
+      <Filter>Header Files\Windowing\Variants</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\WindowParameters.hpp">
+      <Filter>Header Files\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Windowing\IApplication.hpp">
+      <Filter>Header Files\Windowing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
