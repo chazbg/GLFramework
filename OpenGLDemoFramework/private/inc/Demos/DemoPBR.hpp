@@ -276,16 +276,16 @@ namespace PBRDemo
 			g->Rotate(-3.14f / 2.0f, 0, 0);
 			g->Translate(0, 1, 0);*/
 
-            g = new CustomGeometry("3DAssets/hair3_triangulated.obj");
-            g->Scale(17.0f, 16.0f, 15.0f);
-            //g->Rotate(-3.14f / 2.0f, 0, 0);
-            g->Translate(0.5, -14, 0.0);
+            //g = new CustomGeometry("3DAssets/hair3_triangulated.obj");
+            //g->Scale(17.0f, 16.0f, 15.0f);
+            ////g->Rotate(-3.14f / 2.0f, 0, 0);
+            //g->Translate(0.5, -14, 0.0);
 
             g1->setMaterial(materials[3]);
             scene.add(g1);
 
-			g->setMaterial(materials[8]);
-			scene.add(g);
+			/*g->setMaterial(materials[8]);
+			scene.add(g);*/
 		}
 
         PerspectiveCamera camera;
