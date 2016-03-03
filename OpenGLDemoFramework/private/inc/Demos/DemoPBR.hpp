@@ -18,11 +18,11 @@ namespace PBRDemo
     class TestWindowApp : public IApplication
     {
     public:
-        TestWindowApp() : renderer(0) {}
+        TestWindowApp() : camera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), renderer(0) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            renderer = new Renderer(Vec2(800, 800));
+            renderer = new Renderer(Vec2(1920, 1080));
 
 			initTextures();
 			initMaterials();
@@ -314,11 +314,11 @@ namespace PBRDemo
     void main()
     {
         WindowParameters params;
-        params.width = 800;
-        params.height = 800;
-        params.posX = 100;
-        params.posY = 100;
-        params.name = "TestWindow";
+        params.width = 1920;
+        params.height = 1080;
+        params.posX = 0;
+        params.posY = 0;
+        params.name = "PhysicallyBasedShading";
         TestWindowApp app;
         Window window(params, app);
         window.startRenderLoop();

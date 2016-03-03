@@ -5,7 +5,7 @@
 class PerspectiveCamera : public ICamera
 {
 public:
-    PerspectiveCamera(); //TODO: perspective params
+    PerspectiveCamera(float fov, float aspectRatio, float near, float far);
     virtual void setPosition(const Vec3& position);
     virtual Vec3 getPosition() const;
     virtual void setLookDirection(const Vec3& position);

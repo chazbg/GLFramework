@@ -7,7 +7,7 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-Renderer::Renderer(const Vec2& resolution) : resolution(resolution)
+Renderer::Renderer(const Vec2& resolution) : lightCamera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), resolution(resolution)
 {
     if (glewInit() != GLEW_OK) {
         fprintf(stderr, "Failed to initialize GLEW\n");
