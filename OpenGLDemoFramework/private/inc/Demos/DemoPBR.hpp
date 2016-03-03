@@ -40,8 +40,8 @@ namespace PBRDemo
             radius = 30;
             float t = radius * cos(theta);
             cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
-            ior = 0.0f;
-            glossiness = 0.0f;
+            ior = 0.01f;
+            glossiness = 0.01f;
         }
         virtual void onUpdate(const unsigned int deltaTime) {}
         virtual void onRender(const unsigned int deltaTime)
@@ -73,7 +73,32 @@ namespace PBRDemo
 
         virtual void onDestroy() { delete g; }
         virtual void onEvent(const unsigned int event) { cout << "onEvent: " << event << endl; }
-        virtual void onMouseEvent(int button, int state, int x, int y) { cout << button << " " << state << " " << x << " " << y << endl; }
+        virtual void onMouseEvent(int button, int state, int x, int y) 
+        {
+            cout << "onMouseEvent: " << button << " " << state << endl;
+            if (0 == button)
+            {
+                cameraRotating = (0 == state ? true : false);
+            }
+
+            if (2 == button)
+            {
+                cameraPanning = (0 == state ? true : false);
+            }
+
+            if (3 == button)
+            {
+                radius -= 1.0f;
+                updateCamera();
+            }
+
+            if (4 == button)
+            {
+                radius += 1.0f;
+                updateCamera();
+            }
+        }
+
         virtual void onKeyboardEvent(unsigned char c, int x, int y)
         {
             cout << c << " " << x << " " << y << endl;
@@ -125,25 +150,36 @@ namespace PBRDemo
                 stopTime = !stopTime;
                 break;
             }
-            float t = radius * cos(theta);
-            cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
+            
+            updateCamera();
         }
 
         virtual void onMouseMove(int x, int y)
         {
-            /*float nx = x / 800.0f;
-            float ny = y / 800.0f;
-            Vec2 delta = Vec2(nx, ny) - prevMousePos;
+            Vec2 delta = Vec2(x, y) - prevMousePos;
+            delta.x /= 1920.0f;
+            delta.y /= 1080.0f;
+            if (cameraRotating)
+            {
+                phi += 3.14f * delta.x;
+                theta += 3.14f * delta.y;
+                updateCamera();
+            }
 
-            Vec3 zAxis = (-cameraPos).normalize();
-            Vec3 up(0, 1, 0);
-            Vec3 xAxis = (zAxis * up).normalize();
-            Vec3 yAxis = xAxis * zAxis;
+            if (cameraPanning)
+            {
 
-            cameraPos -= xAxis * delta.x * 50;
-            cameraPos += yAxis * delta.y * 50;
+                Vec3 center = camera.getLookDirection();
+                Vec3 z = center - cameraPos;
+                Vec3 y = camera.getUpVector();
+                Vec3 dx = (z * y).normalize() * 30.0f;
+                Vec3 dy = (dx * z).normalize() * 30.0f;
+                
+                cameraPos += dx * delta.x + dy * delta.y;
+                camera.setLookDirection(center + dx * delta.x + dy * delta.y);
+            }
 
-            prevMousePos = Vec2(nx, ny);*/
+            prevMousePos = Vec2(x, y);
         }
     private:
 
@@ -288,6 +324,12 @@ namespace PBRDemo
 			scene.add(g);*/
 		}
 
+        void updateCamera()
+        {
+            float t = radius * cos(theta);
+            cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
+        }
+
         PerspectiveCamera camera;
         Scene scene;
         Renderer* renderer;
@@ -309,6 +351,8 @@ namespace PBRDemo
 		vector<IMaterial*> materials;
 		vector<Texture*> textures;
 		TextureCubemap* envMap;
+        bool cameraRotating;
+        bool cameraPanning;
     };
 
     void main()

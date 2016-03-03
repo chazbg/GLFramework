@@ -53,6 +53,7 @@ Window::Window(const WindowParameters& params, IApplication& app) : params(param
 	glutMouseFunc(Window::mouseEvent);
 	glutKeyboardFunc(Window::keyboardEvent);
 	glutDisplayFunc(Window::render);
+    glutMotionFunc(Window::mouseMove);
     glutPassiveMotionFunc(Window::mouseMove);
 }
 
