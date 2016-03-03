@@ -110,13 +110,15 @@ void main()
     
     vec3 v = normalize(cameraPos - pos);
     vec3 n = normalize(inNormal);
+    vec3 r = normalize(reflect(-v, n));
     
     float NoV = dot(n, v);
     
 	vec3 vProj = v - n * dot(n, v);
 	
     float roughnessSq = (1 - glossiness) * (1 - glossiness);
-	
+	vec3 env = textureLod(envMap, r, roughnessSq * 8).bgr;
+    
 	float A = 1 - 0.5 * roughnessSq / (roughnessSq + 0.33);
 	float B = 0.45 * roughnessSq / (roughnessSq + 0.09);
 
@@ -126,7 +128,7 @@ void main()
     diffuseContribution += getDiffuseContribution(n, light1.L, NoV, vProj, A, B) * light1.iL;
     diffuseContribution += getDiffuseContribution(n, light2.L, NoV, vProj, A, B) * light2.iL;
     
-    vec3 result = diffuseContribution * diffuse;
+    vec3 result = diffuseContribution * (diffuse + env);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

@@ -126,7 +126,7 @@ void main()
     specularContribution += getSpecularContribution(n, light2.L, v, r, m) * light2.iL;
     
 	float mipmapLevel = m;
-	vec3 spec = textureLod(envMap, r, glossiness * 10).bgr;
+	vec3 spec = textureLod(envMap, r, glossiness * 8).bgr;
     vec3 result = mix(diffuseContribution * diffuse, specularContribution * specular + spec, specularWeight);
     
 	// Convert to sRGB    

@@ -107,7 +107,8 @@ void main()
     
     vec3 v = normalize(cameraPos - pos);
     vec3 n = normalize(inNormal);
-
+    vec3 r = normalize(reflect(-v, n));
+    
     float m = 1 / (glossiness * glossiness);
     
     float diffuseContribution = 0;
@@ -122,7 +123,8 @@ void main()
     specularContribution += getSpecularContribution(n, v, light1.L, m) * light1.iL;
     specularContribution += getSpecularContribution(n, v, light2.L, m) * light2.iL;
     
-    vec3 result = diffuseContribution * diffuse + specularContribution * specular;
+    vec3 env = textureLod(envMap, r, glossiness * 8).bgr;
+    vec3 result = diffuseContribution * diffuse + specularContribution * (specular + env);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

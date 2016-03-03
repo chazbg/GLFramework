@@ -111,15 +111,16 @@ void main()
 	float NoL1 = max(0.0, dot(n, light1.L));
 	float NoL2 = max(0.0, dot(n, light2.L));
     
-    float m = texture(specMap, inUVs).r * 255;
+    float m = texture(specMap, inUVs).r * 64;
+    vec3 env = textureLod(envMap, r, (m / 64) * 8).bgr;
     
 	vec3 diffuseContribution = vec3(texture(diffuseMap, inUVs).bgr) * (NoL0 + NoL1 + NoL2);
     
 	vec3 specularContribution  = vec3(0);
     
-    specularContribution += specular * (m + 8) * pow(NoH0, m) * light0.iL;
-    specularContribution += specular * (m + 8) * pow(NoH1, m) * light1.iL;
-    specularContribution += specular * (m + 8) * pow(NoH2, m) * light2.iL;
+    specularContribution += (specular + env) * (m + 8) * pow(NoH0, m) * light0.iL;
+    specularContribution += (specular + env) * (m + 8) * pow(NoH1, m) * light1.iL;
+    specularContribution += (specular + env) * (m + 8) * pow(NoH2, m) * light2.iL;
     
     vec3 result = diffuseContribution * INVERSE_PI + specularContribution * 0.125 * INVERSE_PI;
     

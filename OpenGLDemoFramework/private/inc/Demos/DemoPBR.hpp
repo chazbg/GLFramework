@@ -195,20 +195,24 @@ namespace PBRDemo
 			materials[1]->addTextureCubemap(envMap);
 
             //2
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs"));
             //3
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs"));
             //4
 			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_schlick.fs"));
             //5
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs"));
             //6
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));
             //7
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs"));
             //8
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));			
-
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+            //9
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_schlick.fs"));
+            //10
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_fresnel.fs"));
+           
 			for (unsigned int i = 2; i < materials.size(); i++)
 			{
 				materials[i]->setProperty("diffuseMap", 0);
@@ -224,6 +228,9 @@ namespace PBRDemo
 				}
 				materials[i]->addTextureCubemap(envMap);
 			}
+
+            //11
+            //materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));
 		}
 
 		void initTextures()
@@ -231,17 +238,17 @@ namespace PBRDemo
 			TextureLoader texLoader;
 
 			envMap = texLoader.loadTextureCubemap(
-				"Images/cubemap_0/Cubemap_Back.png",
-				"Images/cubemap_0/Cubemap_Front.png",
-				"Images/cubemap_0/Cubemap_Top.png",
-				"Images/cubemap_0/Cubemap_Bottom.png",
-				"Images/cubemap_0/Cubemap_Right.png",
-				"Images/cubemap_0/Cubemap_Left.png"
+				"Images/cubemap_1/posz.png",
+				"Images/cubemap_1/negz.png",
+				"Images/cubemap_1/posy.png",
+				"Images/cubemap_1/negy.png",
+				"Images/cubemap_1/posx.png",
+				"Images/cubemap_1/negx.png"
 				);
 
-			textures.push_back(texLoader.loadTexture("Images/pattern5/diffuse.jpg"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
 			textures.push_back(texLoader.loadTexture("Images/pattern_124/normal.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern5/specular.jpg"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_124/specular.png"));
 		}
 
         void initLights()
@@ -271,7 +278,7 @@ namespace PBRDemo
         {
             environmentCube = new CustomGeometry("3DAssets/cube.3ds", true);
 			environmentCube->setMaterial(materials[1]);
-            environmentCube->Scale(30, 30, 30);
+            environmentCube->Scale(60, 60, 60);
             scene.add(environmentCube);
         }
 
@@ -280,7 +287,7 @@ namespace PBRDemo
 			for (unsigned int i = 0; i < 9; i++)
 			{
 				ground[i] = new CustomGeometry("3DAssets/rectangle.3ds");
-				ground[i]->setMaterial(materials[3 + i % 6]);
+				ground[i]->setMaterial(materials[2 + i]);
 				ground[i]->Rotate(-3.14f / 2.0f, 0.0f, 0.0f);
 				ground[i]->Scale(10.0f, 1.0f, 10.0f);
 				scene.add(ground[i]);
