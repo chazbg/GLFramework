@@ -108,7 +108,7 @@ void main()
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 texNormal = 2.0 * texture(normalMap, inUVs).bgr - 1;
+    vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
     mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
     vec3 n = vec3(tr * texNormal);
     vec3 r = normalize(reflect(-v, n));
@@ -117,7 +117,7 @@ void main()
 	float NoL1 = max(0.0, dot(n, light1.L));
 	float NoL2 = max(0.0, dot(n, light2.L));
     
-    float m = texture(specMap, inUVs).b * 1024;
+    float m = texture(specMap, inUVs).b * 256;
     
 	float diffuseContribution = 0;
 	

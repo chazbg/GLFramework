@@ -204,28 +204,13 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 
 void main()
 {
-    vec3 diffuseContribution = getIncidentLighting();
-
-    // lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 4, pos);
-    // lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 4, pos);
-    // lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 8, pos);
-    
 	// Calculate the specular reflection weight
     vec3 vOutDirection = normalize(cameraPos - pos);
     float specularWeight = 1 - ior;
-    
-	// Calculate the specular contribution
-    //vec3 specularContribution = getSpecularContribution(vOutDirection, normalize(inNormal), ior, 1.0 - glossiness);
-    
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light0.L, ior, 1.0 - glossiness);
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light1.L, ior, 1.0 - glossiness);
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light2.L, ior, 1.0 - glossiness);
-    
-    //specularContribution *= specular;
 	
     float NoL;
 	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL, ior);
-    diffuseContribution *= diffuse * INVERSE_PI * NoL;
+    vec3 diffuseContribution = diffuse * INVERSE_PI * NoL;
     
     // Energy preservation
     vec3 result = mix(diffuseContribution, specularContribution, specularWeight);

@@ -9,7 +9,9 @@ const float EPSILON = 0.001;
 // Settings constants
 const float ENVIRONMENT_IOR = 1.0;
 
-uniform sampler2D colorMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
+uniform sampler2D specMap;
 uniform sampler2D sampler;
 uniform samplerCube envMap;
 
@@ -131,7 +133,9 @@ void main()
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 n = normalize(inNormal);
+    vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
+    mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
+    vec3 n = vec3(tr * texNormal);
 
 	float diffuseContribution = 0;
     
@@ -141,13 +145,14 @@ void main()
     
 	float specularContribution = 0;
     
-    vec2 anisotropy = vec2(glossiness, 1 - glossiness) * 1000;
+    float m = texture(specMap, inUVs).b;
+    vec2 anisotropy = vec2(m, 1 - m) * 1000;
     
     specularContribution += getSpecularContribution(1 - ior, n, light0.L, v, anisotropy);
     specularContribution += getSpecularContribution(1 - ior, n, light1.L, v, anisotropy);
     specularContribution += getSpecularContribution(1 - ior, n, light2.L, v, anisotropy);
     
-    vec3 result = diffuseContribution * diffuse + specularContribution * specular;
+    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution + specularContribution * specular);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
