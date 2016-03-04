@@ -151,7 +151,7 @@ namespace PBRDemo
                 break;
             }
             
-            updateCamera();
+            //updateCamera();
         }
 
         virtual void onMouseMove(int x, int y)
@@ -173,7 +173,7 @@ namespace PBRDemo
                 Vec3 z = center - cameraPos;
                 Vec3 y = camera.getUpVector();
                 Vec3 dx = (z * y).normalize() * 30.0f;
-                Vec3 dy = (dx * z).normalize() * 30.0f;
+                Vec3 dy = (z * dx).normalize() * 30.0f;
                 
                 cameraPos += dx * delta.x + dy * delta.y;
                 camera.setLookDirection(center + dx * delta.x + dy * delta.y);
@@ -246,9 +246,9 @@ namespace PBRDemo
 				"Images/cubemap_1/negx.png"
 				);
 
-			textures.push_back(texLoader.loadTexture("Images/pattern_124/diffuse.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_124/normal.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_124/specular.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_09/diffuse.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_09/normal.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_09/specular.png"));
 		}
 
         void initLights()
