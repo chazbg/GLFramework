@@ -112,24 +112,6 @@ namespace PBRDemo
             case 'l':
                 time += 5;
                 break;
-            case 'a':
-                phi -= 0.1f;
-                break;
-            case 's':
-                theta -= 0.1f;
-                break;
-            case 'd':
-                phi += 0.1f;
-                break;
-            case 'w':
-                theta += 0.1f;
-                break;
-            case 'q':
-                radius += 0.5f;
-                break;
-            case 'e':
-                radius -= 0.5f;
-                break;
             case '[':
                 ior = max(0.000001f, ior - 0.01f);
                 cout << "ior: " << ior << endl;
@@ -150,8 +132,6 @@ namespace PBRDemo
                 stopTime = !stopTime;
                 break;
             }
-            
-            //updateCamera();
         }
 
         virtual void onMouseMove(int x, int y)
@@ -213,7 +193,7 @@ namespace PBRDemo
             //10
             materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_fresnel.fs"));
            
-			for (unsigned int i = 2; i < materials.size(); i++)
+			for (unsigned int i = 2; i < 11; i++)
 			{
 				materials[i]->setProperty("diffuseMap", 0);
 				materials[i]->setProperty("normalMap", 1);
@@ -222,7 +202,7 @@ namespace PBRDemo
 				materials[i]->setProperty("envMap", 4);
 				materials[i]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
 				materials[i]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
-				for (unsigned int j = 0; j < textures.size(); j++)
+				for (unsigned int j = 0; j < 3; j++)
 				{
 					materials[i]->addTexture(textures[j]);
 				}
@@ -230,7 +210,29 @@ namespace PBRDemo
 			}
 
             //11
-            //materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay_body.fs"));
+            materials[11]->setProperty("diffuseMap", 0);
+            materials[11]->setProperty("normalMap", 1);
+            materials[11]->setProperty("specMap", 2);
+            materials[11]->setProperty("sampler", 3);
+            materials[11]->setProperty("envMap", 4);
+            materials[11]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+            materials[11]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+            materials[11]->addTexture(textures[3]);
+            materials[11]->addTexture(textures[4]);
+            materials[11]->addTexture(textures[4]);
+            materials[11]->addTextureCubemap(envMap);
+
+            //12
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+            materials[12]->setProperty("diffuseMap", 0);
+            materials[12]->setProperty("normalMap", 1);
+            materials[12]->setProperty("specMap", 2);
+            materials[12]->setProperty("sampler", 3);
+            materials[12]->setProperty("envMap", 4);
+            materials[12]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+            materials[12]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+            materials[12]->addTextureCubemap(envMap);
 		}
 
 		void initTextures()
@@ -249,6 +251,8 @@ namespace PBRDemo
 			textures.push_back(texLoader.loadTexture("Images/pattern_10/diffuse.png"));
 			textures.push_back(texLoader.loadTexture("Images/pattern_10/normal.png"));
 			textures.push_back(texLoader.loadTexture("Images/pattern_10/specular.png"));
+            textures.push_back(texLoader.loadTexture("Images/pattern6/diffuse2.jpg"));
+            textures.push_back(texLoader.loadTexture("Images/pattern6/specular.jpg"));
 		}
 
         void initLights()
@@ -319,16 +323,17 @@ namespace PBRDemo
 			g->Rotate(-3.14f / 2.0f, 0, 0);
 			g->Translate(0, 1, 0);*/
 
-            //g = new CustomGeometry("3DAssets/hair3_triangulated.obj");
+            g = new CustomGeometry("3DAssets/hair5.obj");
             //g->Scale(17.0f, 16.0f, 15.0f);
-            ////g->Rotate(-3.14f / 2.0f, 0, 0);
-            //g->Translate(0.5, -14, 0.0);
+            g->Scale(87, 85, 77);
+            //g->Rotate(-3.14f / 2.0f, 0, 0);
+            g->Translate(20, -53, -20);
 
-            g1->setMaterial(materials[3]);
+            g1->setMaterial(materials[12]);
             scene.add(g1);
 
-			/*g->setMaterial(materials[8]);
-			scene.add(g);*/
+		    g->setMaterial(materials[11]);
+			scene.add(g);
 		}
 
         void updateCamera()
