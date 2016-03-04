@@ -45,23 +45,16 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 {
 	lightSampleValues values;
 	values.L = pointLightPosition - surfacePosition;
-	
 	vec3 centerToRay = dot(values.L, r) * r - values.L;
-	vec3 closestPoint = values.L + centerToRay * clamp(2 / length(centerToRay), 0, 1);
+    float centerToRayLength = length(centerToRay);
+	vec3 closestPoint = values.L + centerToRay * clamp(1 / centerToRayLength, 0, 1);
 	float dist = length(closestPoint);
 	
 	// Dot computes the 3-term attenuation in one operation
 	// k_c * 1.0 + k_l * dist + k_q * dist * dist
 	float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
 
-	if (length(centerToRay) <= 2)
-	{
-		values.iL = pointLightIntensity / distAtten;
-	}
-	else
-	{
-		values.iL = 0;
-	}
+    values.iL = (pointLightIntensity / distAtten) * max(0, 1 - centerToRayLength);
 	
 	return values;
 }
@@ -121,8 +114,9 @@ vec3 getIncidentLighting()
 
 vec3 getLightingFromDirection(vec3 vInDirection) 
 {
-	vec3 c = texture(envMap, vInDirection).bgr;
-	
+	vec3 c = textureLod(envMap, vInDirection, (1 - glossiness * glossiness) * 8).bgr;
+	//vec3 c = texture(envMap, vInDirection).bgr;
+    
 	lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 128, pos, vInDirection);
     lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 128, pos, vInDirection);
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos, vInDirection);
@@ -178,7 +172,7 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 {
 	vec3 specLighting = vec3(0);
 	dotNL = 0;
-	const uint nSamples = 256u;
+	const uint nSamples = 64u;
 	for (uint i = 0u; i < nSamples; i++)
 	{
 		vec2 xi = Hammersley(i, nSamples);

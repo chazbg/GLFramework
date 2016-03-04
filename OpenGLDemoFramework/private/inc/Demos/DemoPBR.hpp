@@ -246,9 +246,9 @@ namespace PBRDemo
 				"Images/cubemap_1/negx.png"
 				);
 
-			textures.push_back(texLoader.loadTexture("Images/pattern_09/diffuse.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_09/normal.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_09/specular.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_10/diffuse.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_10/normal.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_10/specular.png"));
 		}
 
         void initLights()

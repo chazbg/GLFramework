@@ -117,7 +117,7 @@ void main()
 	float NoL1 = max(0.0, dot(n, light1.L));
 	float NoL2 = max(0.0, dot(n, light2.L));
     
-    float m = texture(specMap, inUVs).b * 255;
+    float m = texture(specMap, inUVs).b * 1024;
     
 	float diffuseContribution = 0;
 	
