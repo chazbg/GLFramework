@@ -111,9 +111,6 @@ void main()
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    // vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
-    // mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
-    // vec3 n = vec3(tr * texNormal);
     vec3 n = normalize(inNormal);
     vec3 t = mix(normalize(inTangent), normalize(inBitangent), ior);
     vec3 r = normalize(reflect(-v, n));

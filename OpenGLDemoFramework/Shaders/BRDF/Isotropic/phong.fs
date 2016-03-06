@@ -117,7 +117,8 @@ void main()
 	float NoL1 = max(0.0, dot(n, light1.L));
 	float NoL2 = max(0.0, dot(n, light2.L));
     
-    float m = texture(specMap, inUVs).b * 256;
+    float m = glossiness * 64;
+    vec3 spec = texture(specMap, inUVs).bgr;
     
 	float diffuseContribution = 0;
 	
@@ -131,7 +132,7 @@ void main()
     specularContribution += getSpecularContribution(n, light1.L, v, r, m) * NoL1 * light1.iL;
     specularContribution += getSpecularContribution(n, light2.L, v, r, m) * NoL2 * light2.iL;
     
-    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution * INVERSE_PI + specularContribution * specular * 0.5 * INVERSE_PI);
+    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution * INVERSE_PI + specularContribution * spec * 0.5 * INVERSE_PI);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
