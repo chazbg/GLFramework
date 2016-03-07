@@ -42,6 +42,8 @@ namespace PBRDemo
             cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
             ior = 0.01f;
             glossiness = 0.01f;
+			materialIndex = 0;
+			meshIndex = 0;
         }
         virtual void onUpdate(const unsigned int deltaTime) {}
         virtual void onRender(const unsigned int deltaTime)
@@ -71,7 +73,7 @@ namespace PBRDemo
             renderer->render(scene, camera);
         }
 
-        virtual void onDestroy() { delete g; }
+        virtual void onDestroy() {}
         virtual void onEvent(const unsigned int event) { cout << "onEvent: " << event << endl; }
         virtual void onMouseEvent(int button, int state, int x, int y) 
         {
@@ -105,7 +107,18 @@ namespace PBRDemo
 
             switch (c)
             {
-
+			case 'q':
+				showPreviousMesh();
+				break;
+			case 'e':
+				showNextMesh();
+				break;
+			case 'a':
+				showPreviousMaterial();
+				break;
+			case 'd':
+				showNextMaterial();
+				break;
             case 'j':
                 time -= 5;
                 break;
@@ -326,34 +339,27 @@ namespace PBRDemo
 
 		void initGeometry()
 		{
-			//g1 = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
-			//g1->Scale(0.1f, 0.1f, 0.1f);
-			//g1->Rotate(-3.14f / 2.0f, 0, 0);
-			//g1->Translate(0, -20, 0);
+			meshes.push_back(new CustomGeometry("3DAssets/female_elf-3ds.3DS"));
+			meshes[0]->Scale(0.1f, 0.1f, 0.1f);
+			meshes[0]->Rotate(-3.14f / 2.0f, 0, 0);
+			meshes[0]->Translate(0, -20, 0);
 
-			g2 = new CustomGeometry("3DAssets/ogrehead.obj");
-			g2->Scale(7.0f, 7.0f, 7.0f);
-			//g2->Translate(-20, 0, 0);
+			meshes.push_back(new CustomGeometry("3DAssets/ogrehead.obj"));
+			meshes[1]->Scale(7.0f, 7.0f, 7.0f);
 
 			/*g = new CustomGeometry("3DAssets/buddha.3ds");
 			g->Scale(0.01f, 0.01f, 0.01f);
 			g->Rotate(-3.14f / 2.0f, 0, 0);
 			g->Translate(0, 1, 0);*/
 
-            //g = new CustomGeometry("3DAssets/hair5.obj");
-            //g->Scale(17.0f, 16.0f, 15.0f);
-            //g->Scale(87, 85, 77);
-            //g->Rotate(-3.14f / 2.0f, 0, 0);
-            //g->Translate(20, -53, -20);
+			meshes.push_back(new CustomGeometry("3DAssets/hair5.obj"));
+            meshes[2]->Scale(87, 85, 77);
+            //meshes[2]->Rotate(-3.14f / 2.0f, 0, 0);
+            meshes[2]->Translate(0, -55, 0);
 
-            //g1->setMaterial(materials[12]);
-            //scene.add(g1);
-
-		    //g->setMaterial(materials[11]);
-			//scene.add(g);
-
-			g2->setMaterial(materials[13]);
-			scene.add(g2);
+			currentMesh = meshes[0];
+			currentMesh->setMaterial(materials[11]);
+			scene.add(currentMesh);
 		}
 
         void updateCamera()
@@ -362,12 +368,40 @@ namespace PBRDemo
             cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
         }
 
+		void showNextMesh()
+		{
+			meshIndex = (meshIndex + 1) % 3;
+			scene.remove(currentMesh);
+			currentMesh = meshes[meshIndex];
+			currentMesh->setMaterial(materials[materialIndex]);
+			scene.add(currentMesh);
+		}
+
+		void showPreviousMesh()
+		{
+			meshIndex = (0 == meshIndex ? 2 : (meshIndex - 1) % 3);
+			scene.remove(currentMesh);
+			currentMesh = meshes[meshIndex];
+			currentMesh->setMaterial(materials[materialIndex]);
+			scene.add(currentMesh);
+		}
+
+		void showNextMaterial()
+		{
+			materialIndex = (materialIndex + 1) % 3;
+			currentMesh->setMaterial(materials[11 + materialIndex]);
+		}
+
+		void showPreviousMaterial()
+		{
+			materialIndex = (0 == materialIndex ? 2 : (materialIndex - 1) % 3);
+			currentMesh->setMaterial(materials[11 + materialIndex]);
+		}
+
         PerspectiveCamera camera;
         Scene scene;
         Renderer* renderer;
-        CustomGeometry* g;
-        CustomGeometry* g1;
-		CustomGeometry* g2;
+        CustomGeometry* currentMesh;
         CustomGeometry* environmentCube;
         CustomGeometry* ground[9];
         unsigned int time;
@@ -381,11 +415,14 @@ namespace PBRDemo
         float ior;
         float glossiness;
         vector<CustomGeometry*> lights;
+		vector<CustomGeometry*> meshes;
 		vector<IMaterial*> materials;
 		vector<Texture*> textures;
 		TextureCubemap* envMap;
         bool cameraRotating;
         bool cameraPanning;
+		int materialIndex;
+		int meshIndex;
     };
 
     void main()
