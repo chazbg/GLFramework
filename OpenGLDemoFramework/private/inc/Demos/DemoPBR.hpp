@@ -204,7 +204,7 @@ namespace PBRDemo
             //9
             materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_schlick.fs"));
             //10
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_fresnel.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/lambert.fs"));
            
 			for (unsigned int i = 2; i < 11; i++)
 			{
@@ -237,7 +237,7 @@ namespace PBRDemo
             materials[11]->addTextureCubemap(envMap);
 
             //12
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue_normal_map.fs"));
             materials[12]->setProperty("diffuseMap", 0);
             materials[12]->setProperty("normalMap", 1);
             materials[12]->setProperty("specMap", 2);
@@ -245,6 +245,9 @@ namespace PBRDemo
             materials[12]->setProperty("envMap", 4);
             materials[12]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             materials[12]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+            materials[12]->addTexture(textures[5]);
+            materials[12]->addTexture(textures[6]);
+            materials[12]->addTexture(textures[6]);
             materials[12]->addTextureCubemap(envMap);
 
 			//13

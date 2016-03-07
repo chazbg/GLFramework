@@ -135,7 +135,7 @@ void main()
     specularContribution += getSpecularContribution(light1.L, v, t, m) * NoL1 * light1.iL;
     specularContribution += getSpecularContribution(light2.L, v, t, m) * NoL2 * light2.iL;
     
-    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution * INVERSE_PI + specularContribution * specular);
+    vec3 result = diffuse * diffuseContribution * INVERSE_PI + specularContribution * specular;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

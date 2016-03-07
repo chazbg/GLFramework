@@ -88,45 +88,25 @@ vec3 sRGBToLinear(vec3 sRGB)
     return linearRGB;
 }
 
-float getDiffuseContribution(vec3 n, vec3 l, float NoV, vec3 vProj, float A, float B)
-{
-    float NoL = max(0, dot(n, l));
-    float aCosNoL = acos(NoL);
-    float aCosNoV = acos(NoV);
-    
-    vec3 lProj = normalize(l- n * dot(n, l));
-    float cosPhi = max(0, dot(vProj, lProj));
-    
-    return max(0, NoL) * INVERSE_PI * (A + B * cosPhi * 
-                                        sin(max(aCosNoL, aCosNoV)) * 
-                                        tan(min(aCosNoL, aCosNoV)));
-}
-
 void main()
 {
     lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 64, pos);
     lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 64, pos);
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
-    vec3 v = normalize(cameraPos - pos);
     vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
     mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
     vec3 n = vec3(tr * texNormal);
     
-    float NoV = dot(n, v);
-    
-	vec3 vProj = v - n * dot(n, v);
-	
-    float roughnessSq = (1 - glossiness) * (1 - glossiness);
-    
-	float A = 1 - 0.5 * roughnessSq / (roughnessSq + 0.33);
-	float B = 0.45 * roughnessSq / (roughnessSq + 0.09);
+    float NoL0 = max(0, dot(n, light0.L));
+    float NoL1 = max(0, dot(n, light1.L));
+    float NoL2 = max(0, dot(n, light2.L));
 
     float diffuseContribution = 0;
         
-    diffuseContribution += getDiffuseContribution(n, light0.L, NoV, vProj, A, B) * light0.iL;
-    diffuseContribution += getDiffuseContribution(n, light1.L, NoV, vProj, A, B) * light1.iL;
-    diffuseContribution += getDiffuseContribution(n, light2.L, NoV, vProj, A, B) * light2.iL;
+    diffuseContribution += NoL0 * light0.iL;
+    diffuseContribution += NoL1 * light1.iL;
+    diffuseContribution += NoL2 * light2.iL;
     
     vec3 result = diffuseContribution * texture(diffuseMap, inUVs).bgr;
     
