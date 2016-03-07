@@ -233,6 +233,20 @@ namespace PBRDemo
             materials[12]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             materials[12]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
             materials[12]->addTextureCubemap(envMap);
+
+			//13
+			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay_ogre.fs"));
+			materials[13]->setProperty("diffuseMap", 0);
+			materials[13]->setProperty("normalMap", 1);
+			materials[13]->setProperty("specMap", 2);
+			materials[13]->setProperty("sampler", 3);
+			materials[13]->setProperty("envMap", 4);
+			materials[13]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+			materials[13]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+			materials[13]->addTexture(textures[5]);
+			materials[13]->addTexture(textures[6]);
+			materials[13]->addTexture(textures[6]);
+			materials[13]->addTextureCubemap(envMap);
 		}
 
 		void initTextures()
@@ -253,6 +267,8 @@ namespace PBRDemo
 			textures.push_back(texLoader.loadTexture("Images/pattern_10/specular.png"));
             textures.push_back(texLoader.loadTexture("Images/pattern6/diffuse2.jpg"));
             textures.push_back(texLoader.loadTexture("Images/pattern6/specular.jpg"));
+			textures.push_back(texLoader.loadTexture("Images/ogrehead_diffuse.png"));
+			textures.push_back(texLoader.loadTexture("Images/ogre_normalmap.png"));
 		}
 
         void initLights()
@@ -310,30 +326,34 @@ namespace PBRDemo
 
 		void initGeometry()
 		{
-			g1 = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
-			g1->Scale(0.1f, 0.1f, 0.1f);
-			g1->Rotate(-3.14f / 2.0f, 0, 0);
-			g1->Translate(0, -20, 0);
+			//g1 = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
+			//g1->Scale(0.1f, 0.1f, 0.1f);
+			//g1->Rotate(-3.14f / 2.0f, 0, 0);
+			//g1->Translate(0, -20, 0);
 
-			/*g = new CustomGeometry("3DAssets/ogrehead.obj");
-			g->Scale(7.0f, 7.0f, 7.0f);*/
+			g2 = new CustomGeometry("3DAssets/ogrehead.obj");
+			g2->Scale(7.0f, 7.0f, 7.0f);
+			//g2->Translate(-20, 0, 0);
 
 			/*g = new CustomGeometry("3DAssets/buddha.3ds");
 			g->Scale(0.01f, 0.01f, 0.01f);
 			g->Rotate(-3.14f / 2.0f, 0, 0);
 			g->Translate(0, 1, 0);*/
 
-            g = new CustomGeometry("3DAssets/hair5.obj");
+            //g = new CustomGeometry("3DAssets/hair5.obj");
             //g->Scale(17.0f, 16.0f, 15.0f);
-            g->Scale(87, 85, 77);
+            //g->Scale(87, 85, 77);
             //g->Rotate(-3.14f / 2.0f, 0, 0);
-            g->Translate(20, -53, -20);
+            //g->Translate(20, -53, -20);
 
-            g1->setMaterial(materials[12]);
-            scene.add(g1);
+            //g1->setMaterial(materials[12]);
+            //scene.add(g1);
 
-		    g->setMaterial(materials[11]);
-			scene.add(g);
+		    //g->setMaterial(materials[11]);
+			//scene.add(g);
+
+			g2->setMaterial(materials[13]);
+			scene.add(g2);
 		}
 
         void updateCamera()
@@ -347,6 +367,7 @@ namespace PBRDemo
         Renderer* renderer;
         CustomGeometry* g;
         CustomGeometry* g1;
+		CustomGeometry* g2;
         CustomGeometry* environmentCube;
         CustomGeometry* ground[9];
         unsigned int time;

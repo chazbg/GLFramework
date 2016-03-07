@@ -111,12 +111,13 @@ void main()
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 n = normalize(inNormal);
+    vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
+    mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
+    vec3 n = vec3(tr * texNormal);
     vec3 t = mix(normalize(inTangent), normalize(inBitangent), ior);
     vec3 r = normalize(reflect(-v, n));
     
     float m = glossiness * 256;
-    vec3 spec = texture(specMap, inUVs).bgr;
 	
     float NoL0 = max(0.0, dot(n, light0.L));
 	float NoL1 = max(0.0, dot(n, light1.L));
@@ -134,7 +135,7 @@ void main()
     specularContribution += getSpecularContribution(light1.L, v, t, m) * NoL1 * light1.iL;
     specularContribution += getSpecularContribution(light2.L, v, t, m) * NoL2 * light2.iL;
     
-    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution * INVERSE_PI + specularContribution * spec);
+    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution * INVERSE_PI + specularContribution * specular);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
