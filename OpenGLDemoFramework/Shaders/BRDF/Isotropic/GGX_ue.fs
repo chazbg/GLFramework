@@ -45,17 +45,22 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 {
 	lightSampleValues values;
 	values.L = pointLightPosition - surfacePosition;
-	vec3 centerToRay = dot(values.L, r) * r - values.L;
-    float centerToRayLength = length(centerToRay);
-	vec3 closestPoint = values.L + centerToRay * clamp(2 / centerToRayLength, 0, 1);
-	float dist = length(closestPoint);
-	
-	// Dot computes the 3-term attenuation in one operation
-	// k_c * 1.0 + k_l * dist + k_q * dist * dist
-	float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
+    float LoR = dot(values.L, r);
+    
+    if (LoR > 0)
+    {
+        vec3 centerToRay = LoR * r - values.L;
+        float centerToRayLength = length(centerToRay);
+        vec3 closestPoint = values.L + centerToRay * clamp(2 / centerToRayLength, 0, 1);
+        float dist = length(closestPoint);
+        
+        // Dot computes the 3-term attenuation in one operation
+        // k_c * 1.0 + k_l * dist + k_q * dist * dist
+        float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
 
-    values.iL = (pointLightIntensity / distAtten) * max(0, 2 - centerToRayLength);
-	
+        values.iL = (pointLightIntensity / distAtten) * max(0, 2 - centerToRayLength);
+	}
+    
 	return values;
 }
 

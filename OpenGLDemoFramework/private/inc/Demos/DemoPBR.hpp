@@ -275,9 +275,9 @@ namespace PBRDemo
 				"Images/cubemap_1/negx.png"
 				);
 
-			textures.push_back(texLoader.loadTexture("Images/pattern_10/diffuse.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_10/normal.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_10/specular.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_09/diffuse.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_09/normal.png"));
+			textures.push_back(texLoader.loadTexture("Images/pattern_09/specular.png"));
             textures.push_back(texLoader.loadTexture("Images/pattern6/diffuse2.jpg"));
             textures.push_back(texLoader.loadTexture("Images/pattern6/specular.jpg"));
 			textures.push_back(texLoader.loadTexture("Images/ogrehead_diffuse.png"));
@@ -354,7 +354,6 @@ namespace PBRDemo
 
 			meshes.push_back(new CustomGeometry("3DAssets/hair5.obj"));
             meshes[2]->Scale(87, 85, 77);
-            //meshes[2]->Rotate(-3.14f / 2.0f, 0, 0);
             meshes[2]->Translate(0, -55, 0);
 
 			currentMesh = meshes[0];
@@ -373,7 +372,7 @@ namespace PBRDemo
 			meshIndex = (meshIndex + 1) % 3;
 			scene.remove(currentMesh);
 			currentMesh = meshes[meshIndex];
-			currentMesh->setMaterial(materials[materialIndex]);
+			currentMesh->setMaterial(materials[11 + materialIndex]);
 			scene.add(currentMesh);
 		}
 
@@ -382,7 +381,7 @@ namespace PBRDemo
 			meshIndex = (0 == meshIndex ? 2 : (meshIndex - 1) % 3);
 			scene.remove(currentMesh);
 			currentMesh = meshes[meshIndex];
-			currentMesh->setMaterial(materials[materialIndex]);
+			currentMesh->setMaterial(materials[11 + materialIndex]);
 			scene.add(currentMesh);
 		}
 
