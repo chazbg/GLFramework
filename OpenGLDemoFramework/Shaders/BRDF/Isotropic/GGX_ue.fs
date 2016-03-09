@@ -214,7 +214,7 @@ void main()
     float specularWeight = 1 - ior;
 	
     float NoL;
-	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL, ior);
+	vec3 specularContribution = specular * specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL, ior);
     vec3 diffuseContribution = diffuse * INVERSE_PI * NoL;
     
     // Energy preservation
