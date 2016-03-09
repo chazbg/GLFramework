@@ -263,6 +263,17 @@ namespace PBRDemo
 			materials[13]->addTexture(textures[6]);
 			materials[13]->addTexture(textures[6]);
 			materials[13]->addTextureCubemap(envMap);
+
+            //14
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin_body.fs"));
+            materials[14]->setProperty("diffuseMap", 0);
+            materials[14]->setProperty("normalMap", 1);
+            materials[14]->setProperty("specMap", 2);
+            materials[14]->setProperty("sampler", 3);
+            materials[14]->setProperty("envMap", 4);
+            materials[14]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+            materials[14]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+            materials[14]->addTextureCubemap(envMap);
 		}
 
 		void initTextures()
@@ -359,6 +370,9 @@ namespace PBRDemo
             meshes[2]->Scale(87, 85, 77);
             meshes[2]->Translate(0, -55, 0);
 
+            meshes.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            meshes[3]->Scale(0.5, 0.5, 0.5);
+
 			currentMesh = meshes[0];
 			currentMesh->setMaterial(materials[11]);
 			scene.add(currentMesh);
@@ -372,7 +386,7 @@ namespace PBRDemo
 
 		void showNextMesh()
 		{
-			meshIndex = (meshIndex + 1) % 3;
+			meshIndex = (meshIndex + 1) % 4;
 			scene.remove(currentMesh);
 			currentMesh = meshes[meshIndex];
 			currentMesh->setMaterial(materials[11 + materialIndex]);
@@ -381,7 +395,7 @@ namespace PBRDemo
 
 		void showPreviousMesh()
 		{
-			meshIndex = (0 == meshIndex ? 2 : (meshIndex - 1) % 3);
+			meshIndex = (0 == meshIndex ? 3 : (meshIndex - 1) % 4);
 			scene.remove(currentMesh);
 			currentMesh = meshes[meshIndex];
 			currentMesh->setMaterial(materials[11 + materialIndex]);
@@ -390,13 +404,13 @@ namespace PBRDemo
 
 		void showNextMaterial()
 		{
-			materialIndex = (materialIndex + 1) % 3;
+			materialIndex = (materialIndex + 1) % 4;
 			currentMesh->setMaterial(materials[11 + materialIndex]);
 		}
 
 		void showPreviousMaterial()
 		{
-			materialIndex = (0 == materialIndex ? 2 : (materialIndex - 1) % 3);
+			materialIndex = (0 == materialIndex ? 3 : (materialIndex - 1) % 4);
 			currentMesh->setMaterial(materials[11 + materialIndex]);
 		}
 

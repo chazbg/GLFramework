@@ -215,10 +215,10 @@ void main()
 	
     float NoL;
 	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, n, vOutDirection, NoL, ior) * texture(specMap, inUVs).bgr;
-    vec3 diffuseContribution = diffuse * INVERSE_PI * NoL;
+    vec3 diffuseContribution = texture(diffuseMap, inUVs).bgr * INVERSE_PI * NoL;
     
     // Energy preservation
-    vec3 result = texture(diffuseMap, inUVs).bgr * mix(diffuseContribution, specularContribution, specularWeight);
+    vec3 result = diffuseContribution + specularContribution;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

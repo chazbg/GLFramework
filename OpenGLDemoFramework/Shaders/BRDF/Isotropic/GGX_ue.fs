@@ -218,7 +218,7 @@ void main()
     vec3 diffuseContribution = diffuse * INVERSE_PI * NoL;
     
     // Energy preservation
-    vec3 result = mix(diffuseContribution, specularContribution, specularWeight);
+    vec3 result = diffuseContribution + specularContribution;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
