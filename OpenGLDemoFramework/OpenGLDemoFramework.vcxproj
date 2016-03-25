@@ -206,6 +206,7 @@
     <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp" />
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp" />
     <ClInclude Include="private\inc\Demos\DemoGrahamScan.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoHoughTransform.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingLineSegments.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingPolygons.hpp" />
     <ClInclude Include="private\inc\Demos\DemoPBR.hpp" />

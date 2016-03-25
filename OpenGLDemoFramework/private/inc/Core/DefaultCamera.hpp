@@ -14,4 +14,6 @@ public:
     virtual Vec3 getLookDirection() const;
     virtual Matrix4 getViewMatrix() const;
     virtual Matrix4 getViewProjectionMatrix() const;
+    virtual Vec3 getUpVector() const;
+    virtual void setUpVector(const Vec3& upVector);
 };

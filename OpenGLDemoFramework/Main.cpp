@@ -1,8 +1,8 @@
-#include "Demos/DemoPBR.hpp"
+#include "Demos/DemoHoughTransform.hpp"
 
 int main(int argc, char* argv[])
 {
-	PBRDemo::main();
+    HoughTransformDemo::main();
 
     return 0;
 }
