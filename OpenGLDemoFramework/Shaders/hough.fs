@@ -10,7 +10,7 @@ uniform sampler2D sampler;
 
 void main()
 {
-    float delta = 1 / 200.0f;
+    float delta = 1 / 50.0f;
     vec2 rTheta = texCoords;
     rTheta.x *= 3.14;
     
@@ -35,7 +35,7 @@ void main()
     {
         for (float j = 0; j < 1; j += delta)
         {
-            vec2 p = vec2(i, j);
+            vec2 p = vec2(j, i);
             if (abs(r - (i*cosTheta + j*sinTheta)) < 0.003)
             {
                 color += vec3(texture(sampler, p).b);
