@@ -165,11 +165,11 @@ namespace PBRDemo
                 Vec3 center = camera.getLookDirection();
                 Vec3 z = center - cameraPos;
                 Vec3 y = camera.getUpVector();
-                Vec3 dx = (z * y).normalize() * 30.0f;
-                Vec3 dy = (z * dx).normalize() * 30.0f;
+                Vec3 dx = (z * y).normalize();
+                Vec3 dy = (z * dx).normalize();
                 
-                cameraPos += dx * delta.x + dy * delta.y;
-                camera.setLookDirection(center + dx * delta.x + dy * delta.y);
+				cameraPos += (dx * delta.x + dy * delta.y) * 30.0f;
+				camera.setLookDirection(center + (dx * delta.x + dy * delta.y) * 30.0f);
             }
 
             prevMousePos = Vec2(x, y);
@@ -381,7 +381,7 @@ namespace PBRDemo
         void updateCamera()
         {
             float t = radius * cos(theta);
-            cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
+            cameraPos = camera.getLookDirection() + Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
         }
 
 		void showNextMesh()
