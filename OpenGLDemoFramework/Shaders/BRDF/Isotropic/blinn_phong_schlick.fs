@@ -112,9 +112,9 @@ float getSpecularContribution(vec3 n, vec3 v, vec3 l, float m, float ior)
 vec3 getEnvMapContribution(vec3 n, vec3 v, vec3 r, float m, float ior)
 {
     float NoR = max(0.0, dot(n, r));
-    vec3 envCol = textureLod(envMap, r, (1 - glossiness * glossiness) * 8).bgr;
+    vec3 envCol = sRGBToLinear(textureLod(envMap, r, (1 - glossiness * glossiness) * 8).bgr);
     float iL = (envCol.r + envCol.g + envCol.b) / 3.0; //TODO: Gamma corrected    
-    return getSpecularContribution(n, v, r, m, ior) * NoR * iL * envCol;
+    return getSpecularContribution(n, v, r, m, ior) * NoR * envCol;
 }
 
 void main()
@@ -134,7 +134,7 @@ void main()
 	float NoL2 = max(0.0, dot(n, light2.L));
 	
     float m = glossiness * 256;
-    vec3 spec = texture(specMap, inUVs).bgr;
+    vec3 spec = sRGBToLinear(texture(specMap, inUVs).bgr);
     
 	float diffuseContribution = 0;
 	
@@ -149,7 +149,7 @@ void main()
     specularContribution += getSpecularContribution(n, v, light2.L, m, ior) * NoL2 * light2.iL * vec3(0, 0, 1);
     specularContribution += getEnvMapContribution(n, v, r, m, ior);   
 
-    vec3 result = (texture(diffuseMap, inUVs).bgr * diffuseContribution + specularContribution * 0.125) * INVERSE_PI;
+    vec3 result = (sRGBToLinear(texture(diffuseMap, inUVs).bgr) * diffuseContribution + specularContribution * 0.125) * INVERSE_PI;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
