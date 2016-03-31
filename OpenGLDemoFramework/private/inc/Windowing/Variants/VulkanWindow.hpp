@@ -10,6 +10,6 @@ public:
     VulkanWindow(const WindowParameters& params, IApplication& app);
     virtual void startRenderLoop();
 private:
-    const WindowParameters& params;
+    const WindowParameters params;
     IApplication& app;
 };
