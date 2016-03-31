@@ -9,7 +9,9 @@ const float EPSILON = 0.001;
 // Settings constants
 const float ENVIRONMENT_IOR = 1.0;
 
-uniform sampler2D colorMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
+uniform sampler2D specMap;
 uniform sampler2D sampler;
 uniform samplerCube envMap;
 
@@ -83,16 +85,12 @@ vec2 Hammersley(uint i, uint N)
 {
     return vec2(float(i)/float(N), radicalInverse_VdC(i));
 }
- 
-vec3 getIncidentLighting() 
-{
-	return vec3(texture(colorMap, inUVs));
-}
 
 // IBL. Use HDR for best results.
 vec3 getLightingFromDirection(vec3 vInDirection) 
 {
-	return vec3(texture(envMap, vInDirection)).bgr;
+	//return vec3(texture(envMap, vInDirection)).bgr;
+    return textureLod(envMap, vInDirection, (1 - glossiness * glossiness) * 8).bgr;
 }
 
 vec3 getGGXMicroNormal(float xi1, float xi2, float glossiness) {
@@ -136,20 +134,42 @@ float GGXMicronormalDistribution(vec3 vNormal, vec3 vMicroNormal, float glossine
 	return num / (sqrtDen * sqrtDen);
 }
  
-vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float NoL)
+vec3 importanceSampleGGX(vec2 xi, float roughness, vec3 n)
+{
+	float a = roughness * roughness;
+	
+	float phi = DOUBLE_PI * xi.x;
+	float cosTheta = sqrt((1-xi.y)/(1 + (a*a - 1) * xi.y));
+	float sinTheta = sqrt(1 - cosTheta * cosTheta);
+	
+	vec3 h = vec3(
+		sinTheta * cos(phi),
+		sinTheta * sin(phi),
+		cosTheta
+	);
+	
+	vec3 up = abs(n.z) < 0.999 ? vec3(0,0,1) : vec3(1,0,0);
+	vec3 tx = normalize(cross(up, n));
+	vec3 ty = cross(n, tx);
+	
+	return tx * h.x + ty * h.y + n * h.z;
+}
+
+vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float dotNL)
 {
 	vec3 specLighting = vec3(0);
-	
-	const uint nSamples = 16u;
+	dotNL = 0;
+	const uint nSamples = 64u;
 	for (uint i = 0u; i < nSamples; i++)
 	{
 		vec2 xi = Hammersley(i, nSamples);
 		
-		vec3 h = getGGXMicroNormal(xi.x, xi.y, roughness);
+		//vec3 h = getGGXMicroNormal(xi.x, xi.y, roughness);
+        vec3 h = importanceSampleGGX(xi, roughness, n);
 		vec3 l = 2 * dot(v, h) * h - v;
 		
 		float NoV = clamp(dot(n, v), 0, 1);
-              NoL = clamp(dot(n, l), 0, 1);
+        float NoL = clamp(dot(n, l), 0, 1);
 		float NoH = clamp(dot(n, h), 0, 1);
 		float VoH = clamp(dot(v, h), 0, 1);
 		
@@ -157,62 +177,34 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 		{
 			vec3 sampleColor = getLightingFromDirection(l);
 			
-			float Fc = pow( 1 - VoH, 5);
-            vec3 F = (1 - Fc) * specularColor + Fc;
+			float Fc = pow(1 - VoH, 5);
+            float F = (1 - Fc) * ior + Fc;
 			float G = GGXShadowingMasking(v, h, l, roughness);
 			float D = GGXMicronormalDistribution(n, h, roughness);
 			
 			specLighting += sampleColor * F * G * VoH / (NoH * NoV);
+            dotNL += NoL;
 		}
 	}
 	
+    dotNL /= nSamples;
 	return specLighting / nSamples;
-}
-
-struct lightSampleValues {
-	vec3 L;
-	float iL;
-};
-
-lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLightAttenuation, float pointLightIntensity, vec3 surfacePosition)
-{
-	lightSampleValues values;
-	values.L = pointLightPosition - surfacePosition;
-	float dist = length(values.L);
-	values.L = values.L / dist; // normalize
-	// Dot computes the 3-term attenuation in one operation
-	// k_c * 1.0 + k_l * dist + k_q * dist * dist
-	float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
-	values.iL = pointLightIntensity / distAtten;
-	return values;
 }
 
 void main()
 {
-    vec3 diffuseContribution = getIncidentLighting();
-    diffuseContribution *= diffuse * INVERSE_PI;
-	
-    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 4, pos);
-    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 4, pos);
-    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 8, pos);
-    
+    float diffuseContribution = INVERSE_PI;
+
 	// Calculate the specular reflection weight
     vec3 vOutDirection = normalize(cameraPos - pos);
-    float specularWeight = ior;
     
-	// Calculate the specular contribution
-    //vec3 specularContribution = getSpecularContribution(vOutDirection, normalize(inNormal), ior, 1.0 - glossiness);
-    
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light0.L, ior, 1.0 - glossiness);
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light1.L, ior, 1.0 - glossiness);
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light2.L, ior, 1.0 - glossiness);
-    
-    //specularContribution *= specular;
-	
+    float specularWeight = 1 - ior;
+
     float NoL;
 	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL);
+    
     // Energy preservation
-    vec3 result = mix(diffuseContribution, specularContribution, specularWeight);
+    vec3 result = mix(diffuseContribution * diffuse * NoL, specularContribution, specularWeight);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

@@ -45,24 +45,22 @@ lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLig
 {
 	lightSampleValues values;
 	values.L = pointLightPosition - surfacePosition;
-	
-	vec3 centerToRay = dot(values.L, r) * r - values.L;
-	vec3 closestPoint = values.L + centerToRay * clamp(2 / length(centerToRay), 0, 1);
-	float dist = length(closestPoint);
-	
-	// Dot computes the 3-term attenuation in one operation
-	// k_c * 1.0 + k_l * dist + k_q * dist * dist
-	float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
+    float LoR = dot(values.L, r);
+    
+    if (LoR > 0)
+    {
+        vec3 centerToRay = LoR * r - values.L;
+        float centerToRayLength = length(centerToRay);
+        vec3 closestPoint = values.L + centerToRay * clamp(2 / centerToRayLength, 0, 1);
+        float dist = length(closestPoint);
+        
+        // Dot computes the 3-term attenuation in one operation
+        // k_c * 1.0 + k_l * dist + k_q * dist * dist
+        float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
 
-	if (length(centerToRay) <= 2)
-	{
-		values.iL = pointLightIntensity / distAtten;
+        values.iL = (pointLightIntensity / distAtten) * max(0, 2 - centerToRayLength);
 	}
-	else
-	{
-		values.iL = 0;
-	}
-	
+    
 	return values;
 }
 
@@ -121,8 +119,9 @@ vec3 getIncidentLighting()
 
 vec3 getLightingFromDirection(vec3 vInDirection) 
 {
-	vec3 c = texture(envMap, vInDirection).bgr;
-	
+	vec3 c = textureLod(envMap, vInDirection, (1 - glossiness * glossiness) * 8).bgr;
+	//vec3 c = texture(envMap, vInDirection).bgr;
+    
 	lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 128, pos, vInDirection);
     lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 128, pos, vInDirection);
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos, vInDirection);
@@ -178,7 +177,7 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 {
 	vec3 specLighting = vec3(0);
 	dotNL = 0;
-	const uint nSamples = 256u;
+	const uint nSamples = 64u;
 	for (uint i = 0u; i < nSamples; i++)
 	{
 		vec2 xi = Hammersley(i, nSamples);
@@ -210,31 +209,16 @@ vec3 specularIBL(vec3 specularColor, float roughness, vec3 n, vec3 v, out float 
 
 void main()
 {
-    vec3 diffuseContribution = getIncidentLighting();
-
-    // lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 4, pos);
-    // lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 4, pos);
-    // lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 8, pos);
-    
 	// Calculate the specular reflection weight
     vec3 vOutDirection = normalize(cameraPos - pos);
     float specularWeight = 1 - ior;
-    
-	// Calculate the specular contribution
-    //vec3 specularContribution = getSpecularContribution(vOutDirection, normalize(inNormal), ior, 1.0 - glossiness);
-    
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light0.L, ior, 1.0 - glossiness);
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light1.L, ior, 1.0 - glossiness);
-    // specularContribution += getSpecularContribution2(vOutDirection, normalize(inNormal), light2.L, ior, 1.0 - glossiness);
-    
-    //specularContribution *= specular;
 	
     float NoL;
-	vec3 specularContribution = specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL, ior);
-    diffuseContribution *= diffuse * INVERSE_PI * NoL;
+	vec3 specularContribution = specular * specularIBL(specular, 1.0 - glossiness, normalize(inNormal), vOutDirection, NoL, ior);
+    vec3 diffuseContribution = diffuse * INVERSE_PI * NoL;
     
     // Energy preservation
-    vec3 result = mix(diffuseContribution, specularContribution, specularWeight);
+    vec3 result = diffuseContribution + specularContribution;
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

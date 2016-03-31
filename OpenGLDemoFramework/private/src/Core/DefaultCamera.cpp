@@ -37,3 +37,12 @@ Matrix4 DefaultCamera::getViewProjectionMatrix() const
 {
     return Matrix4();
 }
+
+Vec3 DefaultCamera::getUpVector() const
+{
+    return Vec3();
+}
+
+void DefaultCamera::setUpVector(const Vec3 & upVector)
+{
+}

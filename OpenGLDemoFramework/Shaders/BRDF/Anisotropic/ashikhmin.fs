@@ -9,7 +9,9 @@ const float EPSILON = 0.001;
 // Settings constants
 const float ENVIRONMENT_IOR = 1.0;
 
-uniform sampler2D colorMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
+uniform sampler2D specMap;
 uniform sampler2D sampler;
 uniform samplerCube envMap;
 
@@ -131,23 +133,32 @@ void main()
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 n = normalize(inNormal);
+    vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
+    mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
+    vec3 n = vec3(tr * texNormal);
 
+    float NoL0 = max(0.0, dot(n, light0.L));
+	float NoL1 = max(0.0, dot(n, light1.L));
+	float NoL2 = max(0.0, dot(n, light2.L));
+    
 	float diffuseContribution = 0;
     
-    diffuseContribution += getDiffuseContribution(ior, 1 - ior, n, light0.L, v);
-	diffuseContribution += getDiffuseContribution(ior, 1 - ior, n, light1.L, v);
-    diffuseContribution += getDiffuseContribution(ior, 1 - ior, n, light2.L, v);
+    diffuseContribution += getDiffuseContribution(ior, 1 - ior, n, light0.L, v) * NoL0 * light0.iL;
+	diffuseContribution += getDiffuseContribution(ior, 1 - ior, n, light1.L, v) * NoL1 * light1.iL;
+    diffuseContribution += getDiffuseContribution(ior, 1 - ior, n, light2.L, v) * NoL2 * light2.iL;
     
 	float specularContribution = 0;
     
-    vec2 anisotropy = vec2(glossiness, 1 - glossiness) * 1000;
+    float m = glossiness;
+    vec3 spec = texture(specMap, inUVs).bgr;
     
-    specularContribution += getSpecularContribution(1 - ior, n, light0.L, v, anisotropy);
-    specularContribution += getSpecularContribution(1 - ior, n, light1.L, v, anisotropy);
-    specularContribution += getSpecularContribution(1 - ior, n, light2.L, v, anisotropy);
+    vec2 anisotropy = vec2(m, 1 - m) * 1000;
     
-    vec3 result = diffuseContribution * diffuse + specularContribution * specular;
+    specularContribution += getSpecularContribution(1 - ior, n, light0.L, v, anisotropy) * NoL0 * light0.iL;
+    specularContribution += getSpecularContribution(1 - ior, n, light1.L, v, anisotropy) * NoL1 * light1.iL;
+    specularContribution += getSpecularContribution(1 - ior, n, light2.L, v, anisotropy) * NoL2 * light2.iL;
+    
+    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution + specularContribution * spec);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

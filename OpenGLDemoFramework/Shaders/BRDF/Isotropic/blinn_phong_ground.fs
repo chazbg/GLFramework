@@ -95,7 +95,7 @@ void main()
     lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 texNormal = 2.0 * texture(normalMap, inUVs).bgr - 1;
+    vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
     mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
     vec3 n = vec3(tr * texNormal);
     vec3 r = normalize(reflect(-v, n));
@@ -111,17 +111,22 @@ void main()
 	float NoL1 = max(0.0, dot(n, light1.L));
 	float NoL2 = max(0.0, dot(n, light2.L));
     
-    float m = texture(specMap, inUVs).r * 255;
+    float m = glossiness * 256;
+    vec3 spec = texture(specMap, inUVs).bgr;
     
-	vec3 diffuseContribution = vec3(texture(diffuseMap, inUVs).bgr) * (NoL0 + NoL1 + NoL2);
+	float diffuseContribution = 0;
+	
+	diffuseContribution += NoL0 * light0.iL;
+	diffuseContribution += NoL1 * light1.iL;
+	diffuseContribution += NoL2 * light2.iL;
     
-	vec3 specularContribution  = vec3(0);
+	float specularContribution  = 0;
     
-    specularContribution += specular * (m + 8) * pow(NoH0, m) * light0.iL;
-    specularContribution += specular * (m + 8) * pow(NoH1, m) * light1.iL;
-    specularContribution += specular * (m + 8) * pow(NoH2, m) * light2.iL;
+    specularContribution += (m + 8) * pow(NoH0, m) * NoL0 * light0.iL;
+    specularContribution += (m + 8) * pow(NoH1, m) * NoL1 * light1.iL;
+    specularContribution += (m + 8) * pow(NoH2, m) * NoL2 * light2.iL;
     
-    vec3 result = diffuseContribution * INVERSE_PI + specularContribution * 0.125 * INVERSE_PI;
+    vec3 result = texture(diffuseMap, inUVs).bgr * ((diffuseContribution + specularContribution * spec * 0.125) * INVERSE_PI);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);

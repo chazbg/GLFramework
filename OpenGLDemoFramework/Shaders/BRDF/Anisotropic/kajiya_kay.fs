@@ -9,7 +9,9 @@ const float EPSILON = 0.001;
 // Settings constants
 const float ENVIRONMENT_IOR = 1.0;
 
-uniform sampler2D colorMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
+uniform sampler2D specMap;
 uniform sampler2D sampler;
 uniform samplerCube envMap;
 
@@ -104,30 +106,37 @@ float getSpecularContribution(vec3 l, vec3 v, vec3 t, float m)
 
 void main()
 {
-    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 10, pos);
-    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 10, pos);
-    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 20, pos);
+    lightSampleValues light0 = computePointLightValues(light0Pos, vec3(0,0,1), 64, pos);
+    lightSampleValues light1 = computePointLightValues(light1Pos, vec3(0,0,1), 64, pos);
+    lightSampleValues light2 = computePointLightValues(light2Pos, vec3(0,0,1), 128, pos);
     
     vec3 v = normalize(cameraPos - pos);
-    vec3 n = normalize(inNormal);
+    vec3 texNormal = normalize(2.0 * texture(normalMap, inUVs).bgr - 1);
+    mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
+    vec3 n = vec3(tr * texNormal);
     vec3 t = mix(normalize(inTangent), normalize(inBitangent), ior);
     vec3 r = normalize(reflect(-v, n));
     
-    float m = 1 / (glossiness * glossiness);
+    float m = glossiness * 256;
+    vec3 spec = texture(specMap, inUVs).bgr;
+    
+    float NoL0 = max(0.0, dot(n, light0.L));
+	float NoL1 = max(0.0, dot(n, light1.L));
+	float NoL2 = max(0.0, dot(n, light2.L));
     
     float diffuseContribution = 0;
     
-    diffuseContribution += getDiffuseContribution(n, t, light0.L) * light0.iL;
-    diffuseContribution += getDiffuseContribution(n, t, light1.L) * light1.iL;
-    diffuseContribution += getDiffuseContribution(n, t, light2.L) * light2.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light0.L) * NoL0 * light0.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light1.L) * NoL1 * light1.iL;
+    diffuseContribution += getDiffuseContribution(n, t, light2.L) * NoL2 * light2.iL;
     
 	float specularContribution = 0;
     
-    specularContribution += getSpecularContribution(light0.L, v, t, m) * light0.iL;    // * texture(envMap, r).bgr
-    specularContribution += getSpecularContribution(light1.L, v, t, m) * light1.iL;    // * texture(envMap, r).bgr
-    specularContribution += getSpecularContribution(light2.L, v, t, m) * light2.iL;    // * texture(envMap, r).bgr
+    specularContribution += getSpecularContribution(light0.L, v, t, m) * NoL0 * light0.iL;
+    specularContribution += getSpecularContribution(light1.L, v, t, m) * NoL1 * light1.iL;
+    specularContribution += getSpecularContribution(light2.L, v, t, m) * NoL2 * light2.iL;
     
-    vec3 result = mix(diffuseContribution * diffuse, specularContribution * specular, glossiness);
+    vec3 result = texture(diffuseMap, inUVs).bgr * (diffuseContribution * INVERSE_PI + specularContribution * spec);
     
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
