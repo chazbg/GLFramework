@@ -20,7 +20,7 @@ namespace FragmentShaderSandboxDemo
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            renderer = new Renderer();
+            renderer = new Renderer(Vec2(1200, 600));
             TextureGenerator gen;
             TextureFactory texFactory;
             shaderMaterial = new ShaderMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/raymarching0.fs");

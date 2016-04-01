@@ -1,5 +1,5 @@
 #version 330 core
-uniform uint time;
+uniform float time;
 in vec2 interpolatedCoords;
 in vec2 texCoords;
 
