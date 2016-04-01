@@ -157,7 +157,7 @@
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VulkanDebug|Win32'">
-    <IncludePath>$(VULKAN_SDK)\Include;./include;./private/inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(VULKAN_SDK)/Include;./include;./private/inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
