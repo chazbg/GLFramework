@@ -299,9 +299,11 @@
     <ClInclude Include="private\inc\Windowing\IApplication.hpp">
       <Filter>Header Files\Windowing</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoHoughTransform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

@@ -441,7 +441,6 @@ $(VULKAN_SDK)\glslang\build\SPIRV\Release\SPIRV.lib
     <ClInclude Include="private\inc\Windowing\WindowParameters.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
