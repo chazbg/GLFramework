@@ -5,12 +5,12 @@
 #include <Core/VertexBufferObject.hpp>
 #include <string>
 
-class Rectangle : public Mesh
+class RectangleGeometry : public Mesh
 {
 public:
-	Rectangle();
-	Rectangle(Vec2 topLeft, Vec2 bottomRight);
-	~Rectangle();
+	RectangleGeometry();
+	RectangleGeometry(Vec2 topLeft, Vec2 bottomRight);
+	~RectangleGeometry();
 private:
 	Vec2 topLeft;
 	Vec2 bottomRight;

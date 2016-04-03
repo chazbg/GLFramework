@@ -28,7 +28,7 @@ namespace HoughTransformDemo
             initTextures();
             initMaterials();
 
-            rect = new Rectangle();
+            rect = new RectangleGeometry();
             rect->setMaterial(materials[0]);
 
             scene.add(rect);            
@@ -75,7 +75,7 @@ namespace HoughTransformDemo
         DefaultCamera camera;
         Scene scene;
         Renderer* renderer;
-        Rectangle* rect;
+        RectangleGeometry* rect;
         vector<IMaterial*> materials;
         vector<Texture*> textures;
     };

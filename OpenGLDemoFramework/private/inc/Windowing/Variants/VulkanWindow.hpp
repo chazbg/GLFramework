@@ -73,6 +73,15 @@ private:
     void destroyFrameBuffers();
     void createVertexBuffer(const IVertexBufferObject& vbo);
     void destroyVertexBuffer(const IVertexBufferObject& vbo);
+    void allocDescriptorSets();
+    void freeDescriptorSets();
+    void initPipeline();
+    void destroyPipeline();
+    void draw(const IVertexBufferObject& vbo);
+    void init_viewports();
+    void init_scissors();
+    void createFence();
+    void destroyFence();
 
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     const WindowParameters params;
@@ -136,5 +145,8 @@ private:
     VkPhysicalDeviceProperties gpu_props;
     VkFramebuffer *framebuffers;
     std::map<unsigned int, VertexBuffer> vertexBuffers;
-    int current_buffer;
+    uint32_t current_buffer;
+    VkViewport viewport;
+    VkRect2D scissor;
+    VkFence drawFence;
 };

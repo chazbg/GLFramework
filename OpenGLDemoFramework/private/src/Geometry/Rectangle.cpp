@@ -3,23 +3,23 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-Rectangle::Rectangle() : topLeft(-1, 1), bottomRight(1, -1), vertices(0), texCoords(0)
+RectangleGeometry::RectangleGeometry() : topLeft(-1, 1), bottomRight(1, -1), vertices(0), texCoords(0)
 {
 	init();
 }
 
-Rectangle::Rectangle(Vec2 topLeft, Vec2 bottomRight) : topLeft(topLeft), bottomRight(bottomRight)
+RectangleGeometry::RectangleGeometry(Vec2 topLeft, Vec2 bottomRight) : topLeft(topLeft), bottomRight(bottomRight)
 {
 	init();
 }
 
-Rectangle::~Rectangle() 
+RectangleGeometry::~RectangleGeometry() 
 {
 	delete vertices;
 	delete texCoords;
 }
 
-void Rectangle::init()
+void RectangleGeometry::init()
 {
 	unsigned int vertexCount = 6;
 	time = 0;
@@ -37,7 +37,7 @@ void Rectangle::init()
 	delete[] uvs;
 }
 
-float* Rectangle::genVertices()
+float* RectangleGeometry::genVertices()
 {
 	float* verts = new float[12];
 
@@ -67,7 +67,7 @@ float* Rectangle::genVertices()
 	return verts;
 }
 
-float* Rectangle::genTexCoords()
+float* RectangleGeometry::genTexCoords()
 {
 	float* tc = new float[12];
 

@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include "Math/Matrix.hpp"
 #include "Geometry/CustomGeometry.hpp"
+#include "Geometry/Rectangle.hpp"
 
 #if defined(NDEBUG) && defined(__GNUC__)
 #define U_ASSERT_ONLY __attribute__((unused))
@@ -38,6 +39,10 @@ void VulkanWindow::startRenderLoop()
     createInstance();
     enumerateGPUs();
     createDevice();
+    createUniformBuffer();
+    createDescriptorSetLayouts();
+    createPipelineLayout();
+    allocDescriptorSets();
     initWindow();
     initSwapChain();
     createCommandBuffer();
@@ -46,19 +51,27 @@ void VulkanWindow::startRenderLoop()
     createDepthBuffer();
     initRenderPass();
     initFrameBuffers();
-    CustomGeometry g("3DAssets/Sphere.3ds");
-    createVertexBuffer(*g.getChildren()[0]->getVBOs()[0]);
-    execute_end_command_buffer();
-    execute_queue_command_buffer();
+    RectangleGeometry r;
+    IVertexBufferObject& vbo = *r.getVBOs()[0];
+    createVertexBuffer(vbo);
     initShaders();
+    initPipeline();
+    draw(vbo);
+    execute_queue_command_buffer();
+    
+    destroyPipeline();
     destroyShaders();
-    destroyVertexBuffer(*g.getChildren()[0]->getVBOs()[0]);
+    destroyVertexBuffer(vbo);
     destroyFrameBuffers();
     destroyRenderPass();
     destroyDepthBuffer();
     destroyCommandBuffer();
     destroySwapChain();
     destroyWindow();
+    freeDescriptorSets();
+    destroyPipelineLayout();
+    destroyDescriptorSetLayouts();
+    destroyUniformBuffer();
     destroyDevice();
     destroyInstance();
 }
@@ -578,12 +591,6 @@ void VulkanWindow::execute_queue_command_buffer()
 
     /* Queue the command buffer for execution */
     const VkCommandBuffer cmd_bufs[] = { cmd };
-    VkFenceCreateInfo fenceInfo;
-    VkFence drawFence;
-    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    fenceInfo.pNext = NULL;
-    fenceInfo.flags = 0;
-    vkCreateFence(device, &fenceInfo, NULL, &drawFence);
 
     VkPipelineStageFlags pipe_stage_flags = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
     VkSubmitInfo submit_info[1] = {};
@@ -604,8 +611,6 @@ void VulkanWindow::execute_queue_command_buffer()
         res = vkWaitForFences(device, 1, &drawFence, VK_TRUE, FENCE_TIMEOUT);
     } while (res == VK_TIMEOUT);
     assert(res == VK_SUCCESS);
-
-    vkDestroyFence(device, drawFence, NULL);
 }
 
 void VulkanWindow::createDepthBuffer()
@@ -830,8 +835,7 @@ void VulkanWindow::createDescriptorSetLayouts()
     descriptor_layout.pBindings = &layout_binding;
 
     desc_layout.resize(NUM_DESCRIPTOR_SETS);
-    res = vkCreateDescriptorSetLayout(device, &descriptor_layout, NULL,
-        desc_layout.data());
+    res = vkCreateDescriptorSetLayout(device, &descriptor_layout, NULL, desc_layout.data());
     assert(res == VK_SUCCESS);
 }
 
@@ -940,12 +944,11 @@ void VulkanWindow::initShaders()
         "layout (location = 0) in vec4 color;\n"
         "layout (location = 0) out vec4 outColor;\n"
         "void main() {\n"
-        "   outColor = color;\n"
+        "   outColor = vec4(0.5, 0, 0, 1);\n"
         "}\n";
 
     std::vector<unsigned int> vtx_spv;
-    shaderStages[0].sType =
-       VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     shaderStages[0].pNext = NULL;
     shaderStages[0].pSpecializationInfo = NULL;
     shaderStages[0].flags = 0;
@@ -1279,10 +1282,10 @@ void VulkanWindow::createVertexBuffer(const IVertexBufferObject & vbo)
 
     /* We cannot bind the vertex buffer until we begin a renderpass */
     VkClearValue clear_values[2];
-    clear_values[0].color.float32[0] = 0.2f;
-    clear_values[0].color.float32[1] = 0.2f;
-    clear_values[0].color.float32[2] = 0.2f;
-    clear_values[0].color.float32[3] = 0.2f;
+    clear_values[0].color.float32[0] = 0.5f;
+    clear_values[0].color.float32[1] = 0.5f;
+    clear_values[0].color.float32[2] = 0.5f;
+    clear_values[0].color.float32[3] = 1.0f;
     clear_values[1].depthStencil.depth = 1.0f;
     clear_values[1].depthStencil.stencil = 0;
 
@@ -1318,4 +1321,334 @@ void VulkanWindow::destroyVertexBuffer(const IVertexBufferObject & vbo)
         vkFreeMemory(device, it->second.mem, NULL);
     }
     
+}
+
+void VulkanWindow::allocDescriptorSets()
+{
+    VkResult U_ASSERT_ONLY res;
+    VkDescriptorPoolSize type_count[1];
+    type_count[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    type_count[0].descriptorCount = 1;
+
+    VkDescriptorPoolCreateInfo descriptor_pool = {};
+    descriptor_pool.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptor_pool.pNext = NULL;
+    descriptor_pool.maxSets = 1;
+    descriptor_pool.poolSizeCount = 1;
+    descriptor_pool.pPoolSizes = type_count;
+
+    res = vkCreateDescriptorPool(device, &descriptor_pool, NULL, &desc_pool);
+    assert(res == VK_SUCCESS);
+
+    VkDescriptorSetAllocateInfo alloc_info[1];
+    alloc_info[0].sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    alloc_info[0].pNext = NULL;
+    alloc_info[0].descriptorPool = desc_pool;
+    alloc_info[0].descriptorSetCount = NUM_DESCRIPTOR_SETS;
+    alloc_info[0].pSetLayouts = desc_layout.data();
+
+    desc_set.resize(NUM_DESCRIPTOR_SETS);
+    res = vkAllocateDescriptorSets(device, alloc_info, desc_set.data());
+    assert(res == VK_SUCCESS);
+
+    VkWriteDescriptorSet writes[1];
+
+    writes[0] = {};
+    writes[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    writes[0].pNext = NULL;
+    writes[0].dstSet = desc_set[0];
+    writes[0].descriptorCount = 1;
+    writes[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    writes[0].pBufferInfo = &uniform_data.buffer_info;
+    writes[0].dstArrayElement = 0;
+    writes[0].dstBinding = 0;
+
+    vkUpdateDescriptorSets(device, 1, writes, 0, NULL);
+}
+
+void VulkanWindow::freeDescriptorSets()
+{
+    vkFreeDescriptorSets(device, desc_pool, 1, desc_set.data());
+    vkDestroyDescriptorPool(device, desc_pool, NULL);
+}
+
+void VulkanWindow::initPipeline()
+{
+    VkResult U_ASSERT_ONLY res;
+    VkPipelineCacheCreateInfo pipelineCache;
+    pipelineCache.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+    pipelineCache.pNext = NULL;
+    pipelineCache.initialDataSize = 0;
+    pipelineCache.pInitialData = NULL;
+    pipelineCache.flags = 0;
+
+    res = vkCreatePipelineCache(device, &pipelineCache, NULL, &this->pipelineCache);
+    assert(res == VK_SUCCESS);
+
+    VkDynamicState dynamicStateEnables[VK_DYNAMIC_STATE_RANGE_SIZE];
+    VkPipelineDynamicStateCreateInfo dynamicState = {};
+    memset(dynamicStateEnables, 0, sizeof dynamicStateEnables);
+    dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicState.pNext = NULL;
+    dynamicState.pDynamicStates = dynamicStateEnables;
+    dynamicState.dynamicStateCount = 0;
+
+    VkPipelineVertexInputStateCreateInfo vi;
+    vi.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vi.pNext = NULL;
+    vi.flags = 0;
+    vi.vertexBindingDescriptionCount = 1;
+    vi.pVertexBindingDescriptions = &vi_binding;
+    vi.vertexAttributeDescriptionCount = 1;
+    vi.pVertexAttributeDescriptions = vi_attribs;
+
+    VkPipelineInputAssemblyStateCreateInfo ia;
+    ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    ia.pNext = NULL;
+    ia.flags = 0;
+    ia.primitiveRestartEnable = VK_FALSE;
+    ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+
+    VkPipelineRasterizationStateCreateInfo rs;
+    rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rs.pNext = NULL;
+    rs.flags = 0;
+    rs.polygonMode = VK_POLYGON_MODE_FILL;
+    rs.cullMode = VK_CULL_MODE_BACK_BIT;
+    rs.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rs.depthClampEnable = VK_TRUE;
+    rs.rasterizerDiscardEnable = VK_FALSE;
+    rs.depthBiasEnable = VK_FALSE;
+    rs.depthBiasConstantFactor = 0;
+    rs.depthBiasClamp = 0;
+    rs.depthBiasSlopeFactor = 0;
+    rs.lineWidth = 0;
+
+    VkPipelineColorBlendStateCreateInfo cb;
+    cb.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    cb.pNext = NULL;
+    cb.flags = 0;
+    VkPipelineColorBlendAttachmentState att_state[1];
+    att_state[0].colorWriteMask = 0xf;
+    att_state[0].blendEnable = VK_FALSE;
+    att_state[0].alphaBlendOp = VK_BLEND_OP_ADD;
+    att_state[0].colorBlendOp = VK_BLEND_OP_ADD;
+    att_state[0].srcColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+    att_state[0].dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+    att_state[0].srcAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    att_state[0].dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    cb.attachmentCount = 1;
+    cb.pAttachments = att_state;
+    cb.logicOpEnable = VK_FALSE;
+    cb.logicOp = VK_LOGIC_OP_NO_OP;
+    cb.blendConstants[0] = 1.0f;
+    cb.blendConstants[1] = 1.0f;
+    cb.blendConstants[2] = 1.0f;
+    cb.blendConstants[3] = 1.0f;
+
+    VkPipelineViewportStateCreateInfo vp = {};
+    vp.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    vp.pNext = NULL;
+    vp.flags = 0;
+    vp.viewportCount = NUM_VIEWPORTS;
+    dynamicStateEnables[dynamicState.dynamicStateCount++] = VK_DYNAMIC_STATE_VIEWPORT;
+    vp.scissorCount = NUM_SCISSORS;
+    dynamicStateEnables[dynamicState.dynamicStateCount++] = VK_DYNAMIC_STATE_SCISSOR;
+    vp.pScissors = NULL;
+    vp.pViewports = NULL;
+
+    VkPipelineDepthStencilStateCreateInfo ds;
+    ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    ds.pNext = NULL;
+    ds.flags = 0;
+    ds.depthTestEnable = VK_TRUE;
+    ds.depthWriteEnable = VK_TRUE;
+    ds.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+    ds.depthBoundsTestEnable = VK_FALSE;
+    ds.minDepthBounds = 0;
+    ds.maxDepthBounds = 0;
+    ds.stencilTestEnable = VK_FALSE;
+    ds.back.failOp = VK_STENCIL_OP_KEEP;
+    ds.back.passOp = VK_STENCIL_OP_KEEP;
+    ds.back.compareOp = VK_COMPARE_OP_ALWAYS;
+    ds.back.compareMask = 0;
+    ds.back.reference = 0;
+    ds.back.depthFailOp = VK_STENCIL_OP_KEEP;
+    ds.back.writeMask = 0;
+    ds.front = ds.back;
+
+    VkPipelineMultisampleStateCreateInfo ms;
+    ms.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    ms.pNext = NULL;
+    ms.flags = 0;
+    ms.pSampleMask = NULL;
+    ms.rasterizationSamples = NUM_SAMPLES;
+    ms.sampleShadingEnable = VK_FALSE;
+    ms.alphaToCoverageEnable = VK_FALSE;
+    ms.alphaToOneEnable = VK_FALSE;
+    ms.minSampleShading = 0.0;
+
+    VkGraphicsPipelineCreateInfo pipelineInfo;
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.pNext = NULL;
+    pipelineInfo.layout = pipeline_layout;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+    pipelineInfo.basePipelineIndex = 0;
+    pipelineInfo.flags = 0;
+    pipelineInfo.pVertexInputState = &vi;
+    pipelineInfo.pInputAssemblyState = &ia;
+    pipelineInfo.pRasterizationState = &rs;
+    pipelineInfo.pColorBlendState = &cb;
+    pipelineInfo.pTessellationState = NULL;
+    pipelineInfo.pMultisampleState = &ms;
+    pipelineInfo.pDynamicState = &dynamicState;
+    pipelineInfo.pViewportState = &vp;
+    pipelineInfo.pDepthStencilState = &ds;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.renderPass = render_pass;
+    pipelineInfo.subpass = 0;
+
+    res = vkCreateGraphicsPipelines(device, this->pipelineCache, 1, &pipelineInfo, NULL, &pipeline);
+    assert(res == VK_SUCCESS);
+}
+
+void VulkanWindow::destroyPipeline()
+{
+    vkDestroyPipeline(device, pipeline, NULL);
+    vkDestroyPipelineCache(device, pipelineCache, NULL);
+}
+
+void VulkanWindow::draw(const IVertexBufferObject& vbo)
+{
+    VkResult U_ASSERT_ONLY res;
+    VkClearValue clear_values[2];
+    clear_values[0].color.float32[0] = 0.5f;
+    clear_values[0].color.float32[1] = 0.5f;
+    clear_values[0].color.float32[2] = 0.5f;
+    clear_values[0].color.float32[3] = 1.0f;
+    clear_values[1].depthStencil.depth = 1.0f;
+    clear_values[1].depthStencil.stencil = 0;
+
+    VkSemaphore presentCompleteSemaphore;
+    VkSemaphoreCreateInfo presentCompleteSemaphoreCreateInfo;
+    presentCompleteSemaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    presentCompleteSemaphoreCreateInfo.pNext = NULL;
+    presentCompleteSemaphoreCreateInfo.flags = 0;
+
+    res = vkCreateSemaphore(device, &presentCompleteSemaphoreCreateInfo,
+        NULL, &presentCompleteSemaphore);
+    assert(res == VK_SUCCESS);
+
+    // Get the index of the next available swapchain image:
+    res = vkAcquireNextImageKHR(device, swap_chain, UINT64_MAX, presentCompleteSemaphore, NULL, &current_buffer);
+    // TODO: Deal with the VK_SUBOPTIMAL_KHR and VK_ERROR_OUT_OF_DATE_KHR
+    // return codes
+    assert(res == VK_SUCCESS);
+
+    VkRenderPassBeginInfo rp_begin;
+    rp_begin.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    rp_begin.pNext = NULL;
+    rp_begin.renderPass = render_pass;
+    rp_begin.framebuffer = framebuffers[current_buffer];
+    rp_begin.renderArea.offset.x = 0;
+    rp_begin.renderArea.offset.y = 0;
+    rp_begin.renderArea.extent.width = params.width;
+    rp_begin.renderArea.extent.height = params.height;
+    rp_begin.clearValueCount = 2;
+    rp_begin.pClearValues = clear_values;
+
+    vkCmdBeginRenderPass(cmd, &rp_begin, VK_SUBPASS_CONTENTS_INLINE);
+
+    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+    vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pipeline_layout, 0, NUM_DESCRIPTOR_SETS,
+        desc_set.data(), 0, NULL);
+
+    const VkDeviceSize offsets[1] = { 0 };
+    vkCmdBindVertexBuffers(cmd, 0, 1, &vertexBuffers[vbo.getId()].buf, offsets);
+
+    init_viewports();
+    init_scissors();
+
+    vkCmdDraw(cmd, vbo.getVertexCount(), 1, 0, 0);
+    vkCmdEndRenderPass(cmd);
+
+    VkImageMemoryBarrier prePresentBarrier = {};
+    prePresentBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    prePresentBarrier.pNext = NULL;
+    prePresentBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    prePresentBarrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+    prePresentBarrier.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    prePresentBarrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    prePresentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    prePresentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    prePresentBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    prePresentBarrier.subresourceRange.baseMipLevel = 0;
+    prePresentBarrier.subresourceRange.levelCount = 1;
+    prePresentBarrier.subresourceRange.baseArrayLayer = 0;
+    prePresentBarrier.subresourceRange.layerCount = 1;
+    prePresentBarrier.image = buffers[current_buffer].image;
+    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, NULL, 0,
+        NULL, 1, &prePresentBarrier);
+
+    execute_end_command_buffer();
+    createFence();
+    execute_queue_command_buffer();
+
+    /* Now present the image in the window */
+
+    VkPresentInfoKHR present;
+    present.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    present.pNext = NULL;
+    present.swapchainCount = 1;
+    present.pSwapchains = &swap_chain;
+    present.pImageIndices = &current_buffer;
+    present.pWaitSemaphores = NULL;
+    present.waitSemaphoreCount = 0;
+
+    present.pResults = NULL;
+    assert(res == VK_SUCCESS);
+    res = vkQueuePresentKHR(queue, &present);
+    assert(res == VK_SUCCESS);
+
+    Sleep(5000);
+
+    vkDestroySemaphore(device, presentCompleteSemaphore, NULL);
+    destroyFence();
+}
+
+void VulkanWindow::init_viewports()
+{
+    viewport.height = (float)params.height;
+    viewport.width = (float)params.width;
+    viewport.minDepth = (float)0.0f;
+    viewport.maxDepth = (float)1.0f;
+    viewport.x = 0;
+    viewport.y = 0;
+    vkCmdSetViewport(cmd, 0, NUM_VIEWPORTS, &viewport);
+}
+
+void VulkanWindow::init_scissors()
+{
+    scissor.extent.width = params.width;
+    scissor.extent.height = params.height;
+    scissor.offset.x = 0;
+    scissor.offset.y = 0;
+    vkCmdSetScissor(cmd, 0, NUM_SCISSORS, &scissor);
+}
+
+void VulkanWindow::createFence()
+{
+    VkFenceCreateInfo fenceInfo;
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.pNext = NULL;
+    fenceInfo.flags = 0;
+    vkCreateFence(device, &fenceInfo, NULL, &drawFence);
+}
+
+void VulkanWindow::destroyFence()
+{
+    vkDestroyFence(device, drawFence, NULL);
 }

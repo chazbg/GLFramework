@@ -30,7 +30,7 @@ namespace FragmentShaderSandboxDemo
             shaderMaterial->addTexture(texFactory.createTexture(256, 1, 4, (unsigned char*)gen.generateGradient()));
             shaderMaterial->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(0.5)));
             shaderMaterial->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(1)));
-            rectangle = new Rectangle();
+            rectangle = new RectangleGeometry();
             rectangle->setMaterial(shaderMaterial);
             scene.add(rectangle);
             time = 0;
@@ -118,7 +118,7 @@ namespace FragmentShaderSandboxDemo
         DefaultCamera camera;
         Scene scene;
         Renderer* renderer;
-        Rectangle* rectangle;
+        RectangleGeometry* rectangle;
         ShaderMaterial* shaderMaterial;
         unsigned int time;
         bool stopTime;

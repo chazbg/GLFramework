@@ -371,6 +371,7 @@ $(VULKAN_SDK)\glslang\build\SPIRV\Debug\SPIRV.lib
     <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
     <ClCompile Include="private\src\Geometry\Cube.cpp" />
     <ClCompile Include="private\src\Geometry\CustomGeometry.cpp" />
+    <ClCompile Include="private\src\Geometry\Rectangle.cpp" />
     <ClCompile Include="private\src\Math\GeometryAlgorithm.cpp" />
     <ClCompile Include="private\src\Math\Line.cpp" />
     <ClCompile Include="private\src\Math\LineSegment.cpp" />
@@ -425,7 +426,7 @@ $(VULKAN_SDK)\glslang\build\SPIRV\Debug\SPIRV.lib
     <ClInclude Include="private\inc\Geometry\LineListMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\PlaneMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\PointListMesh.hpp" />
-    <ClInclude Include="private\inc\Geometry\rectangle.hpp" />
+    <ClInclude Include="private\inc\Geometry\Rectangle.hpp" />
     <ClInclude Include="private\inc\Geometry\Triangle.hpp" />
     <ClInclude Include="private\inc\Math\GeometryAlgorithm.hpp" />
     <ClInclude Include="private\inc\Math\Line.hpp" />
