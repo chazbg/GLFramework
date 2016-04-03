@@ -27,66 +27,94 @@ struct texture_object {
     int32_t tex_width, tex_height;
 };
 
+/*
+* A layer can expose extensions, keep track of those
+* extensions here.
+*/
+typedef struct {
+    VkLayerProperties properties;
+    std::vector<VkExtensionProperties> extensions;
+} layer_properties;
+
 class VulkanWindow : public IWindow
 {
 public:
     VulkanWindow(const WindowParameters& params, IApplication& app);
     virtual void startRenderLoop();
 private:
-    void createInstance();
-    void destroyInstance();
-    void enumerateGPUs();
-    void createDevice();
-    void destroyDevice();
-    void initWindow();
-    void destroyWindow();
-    void initSwapChain();
-    void destroySwapChain();
-    void initDeviceQueue();
-    void createCommandBuffer();
-    void destroyCommandBuffer();
+    void init_instance();
+    void destroy_instance();
+    void init_enumerate_device();
+    void init_device();
+    void destroy_device();
+    void init_window();
+    void destroy_window();
+    void init_swapchain_extension();
+    void init_device_queue();
+    void init_command_buffer();
+    void destroy_command_buffer();
     void set_image_layout(VkImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout, VkImageLayout new_image_layout);
     void execute_begin_command_buffer();
     void execute_end_command_buffer();
     void createImageViews();
     void destroyImageViews();
     void execute_queue_command_buffer();
-    void createDepthBuffer();
-    void destroyDepthBuffer();
+    void init_depth_buffer();
+    void destroy_depth_buffer();
     bool memory_type_from_properties(uint32_t typeBits, VkFlags requirements_mask, uint32_t *typeIndex);
-    void createUniformBuffer();
-    void destroyUniformBuffer();
-    void createPipelineLayout();
-    void destroyPipelineLayout();
-    void createDescriptorSetLayouts();
-    void destroyDescriptorSetLayouts();
-    void initRenderPass();
-    void destroyRenderPass();
-    void initShaders();
-    void destroyShaders();
-    void initGlslang();
+    void init_uniform_buffer();
+    void destroy_uniform_buffer();
+    void init_descriptor_and_pipeline_layouts();
+    void destroy_descriptor_and_pipeline_layouts();
+    void init_renderpass();
+    void destroy_renderpass();
+    void init_shaders();
+    void destroy_shaders();
+    void init_glslang();
     void finalizeGlslang();
     bool GLSLtoSPV(const VkShaderStageFlagBits shader_type, const char *pshader, std::vector<unsigned int> &spirv);
     void initResources(TBuiltInResource &Resources);
     EShLanguage findLanguage(const VkShaderStageFlagBits shader_type);
-    void initFrameBuffers();
-    void destroyFrameBuffers();
-    void createVertexBuffer(const IVertexBufferObject& vbo);
-    void destroyVertexBuffer(const IVertexBufferObject& vbo);
-    void allocDescriptorSets();
-    void freeDescriptorSets();
-    void initPipeline();
-    void destroyPipeline();
+    void init_framebuffers();
+    void destroy_framebuffers();
+    void init_vertex_buffer(const IVertexBufferObject& vbo);
+    void destroy_vertex_buffer(const IVertexBufferObject& vbo);
+    void init_descriptor_pool();
+    void destroy_descriptor_pool();
+    void init_pipeline_cache();
+    void destroy_pipeline_cache();
+    void init_pipeline();
+    void destroy_pipeline();
     void draw(const IVertexBufferObject& vbo);
     void init_viewports();
     void init_scissors();
     void createFence();
     void destroyFence();
+    VkResult init_global_layer_properties();
+    void init_instance_extension_names();
+    void init_device_extension_names();
+    VkResult init_global_extension_properties(layer_properties &layer_props);
+    void init_command_pool();
+    void destroy_command_pool();
+    void init_swap_chain();
+    void destroy_swap_chain();
+    void init_descriptor_set();
+    void destroy_descriptor_set();
 
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     const WindowParameters params;
     IApplication& app;
+
+    std::vector<const char *> instance_layer_names;
+    std::vector<const char *> instance_extension_names;
+    std::vector<layer_properties> instance_layer_properties;
+    std::vector<VkExtensionProperties> instance_extension_properties;
     VkInstance inst;
+
+    std::vector<const char *> device_layer_names;
+    std::vector<const char *> device_extension_names;
+    std::vector<layer_properties> device_layer_properties;
+    std::vector<VkExtensionProperties> device_extension_properties;
     std::vector<VkPhysicalDevice> gpus;
     VkDevice device;
     VkQueue queue;
@@ -149,4 +177,6 @@ private:
     VkViewport viewport;
     VkRect2D scissor;
     VkFence drawFence;
+    VkSemaphore presentCompleteSemaphore;
+
 };

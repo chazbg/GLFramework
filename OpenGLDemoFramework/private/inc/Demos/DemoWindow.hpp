@@ -26,8 +26,8 @@ namespace WindowDemo
 		WindowParameters params;
 		params.width = 800;
 		params.height = 800;
-		params.posX = 100;
-		params.posY = 100;
+		params.posX = 0;
+		params.posY = 0;
 		params.name = "TestWindow";
 		TestWindowApp app;
         WindowFactory windowFactory;
