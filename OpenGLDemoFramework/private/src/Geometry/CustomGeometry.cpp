@@ -31,8 +31,6 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
         printf("Assimp Scene Import Error: %s \n", importer.GetErrorString());
     }
 
-    
-   
 	nodes.push(scene->mRootNode);
 
 	while (!nodes.empty())

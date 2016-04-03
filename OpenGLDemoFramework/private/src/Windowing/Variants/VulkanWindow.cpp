@@ -2,12 +2,30 @@
 #include <iostream>
 #include <cassert>
 #include <cstdlib>
+#include "Math/Matrix.hpp"
+#include "Geometry/CustomGeometry.hpp"
+
 #if defined(NDEBUG) && defined(__GNUC__)
 #define U_ASSERT_ONLY __attribute__((unused))
 #else
 #define U_ASSERT_ONLY
 #endif
 
+/* Number of descriptor sets needs to be the same at alloc,       */
+/* pipeline layout creation, and descriptor set layout creation   */
+#define NUM_DESCRIPTOR_SETS 1
+
+/* Number of samples needs to be the same at image creation,      */
+/* renderpass creation and pipeline creation.                     */
+#define NUM_SAMPLES VK_SAMPLE_COUNT_1_BIT
+
+/* Number of viewports and number of scissors have to be the same */
+/* at pipeline creation and in any call to set them dynamically   */
+/* They also have to be the same as each other                    */
+#define NUM_VIEWPORTS 1
+#define NUM_SCISSORS NUM_VIEWPORTS
+
+/* Amount of time, in nanoseconds, to wait for a command buffer to complete */
 #define FENCE_TIMEOUT 100000000
 
 VulkanWindow::VulkanWindow(const WindowParameters & params, IApplication & app) : params(params), app(app)
@@ -24,10 +42,20 @@ void VulkanWindow::startRenderLoop()
     initSwapChain();
     createCommandBuffer();
     execute_begin_command_buffer();
-    createImageViews();
+    initDeviceQueue();
+    createDepthBuffer();
+    initRenderPass();
+    initFrameBuffers();
+    CustomGeometry g("3DAssets/Sphere.3ds");
+    createVertexBuffer(*g.getChildren()[0]->getVBOs()[0]);
     execute_end_command_buffer();
     execute_queue_command_buffer();
-    destroyImageViews();
+    initShaders();
+    destroyShaders();
+    destroyVertexBuffer(*g.getChildren()[0]->getVBOs()[0]);
+    destroyFrameBuffers();
+    destroyRenderPass();
+    destroyDepthBuffer();
     destroyCommandBuffer();
     destroySwapChain();
     destroyWindow();
@@ -86,6 +114,9 @@ void VulkanWindow::enumerateGPUs()
     gpus.resize(gpu_count);
     res = vkEnumeratePhysicalDevices(inst, &gpu_count, gpus.data());
     assert(!res && gpu_count >= 1);
+
+    vkGetPhysicalDeviceMemoryProperties(gpus[0], &memory_properties);
+    vkGetPhysicalDeviceProperties(gpus[0], &gpu_props);
 }
 
 void VulkanWindow::createDevice()
@@ -381,6 +412,11 @@ void VulkanWindow::destroySwapChain()
     vkDestroySwapchainKHR(device, swap_chain, NULL);
 }
 
+void VulkanWindow::initDeviceQueue()
+{
+    vkGetDeviceQueue(device, graphics_queue_family_index, 0, &queue);
+}
+
 void VulkanWindow::createCommandBuffer()
 {
     VkResult U_ASSERT_ONLY res;
@@ -502,8 +538,6 @@ void VulkanWindow::createImageViews()
 {
     VkResult U_ASSERT_ONLY res;
 
-    vkGetDeviceQueue(device, graphics_queue_family_index, 0, &queue);
-
     for (uint32_t i = 0; i < swapchainImageCount; i++) {
         VkImageViewCreateInfo color_image_view = {};
         color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -572,4 +606,716 @@ void VulkanWindow::execute_queue_command_buffer()
     assert(res == VK_SUCCESS);
 
     vkDestroyFence(device, drawFence, NULL);
+}
+
+void VulkanWindow::createDepthBuffer()
+{
+    VkResult U_ASSERT_ONLY res;
+    bool U_ASSERT_ONLY pass;
+    VkImageCreateInfo image_info = {};
+    const VkFormat depth_format = VK_FORMAT_D16_UNORM;
+    VkFormatProperties props;
+    vkGetPhysicalDeviceFormatProperties(gpus[0], depth_format, &props);
+    if (props.linearTilingFeatures &
+        VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+        image_info.tiling = VK_IMAGE_TILING_LINEAR;
+    }
+    else if (props.optimalTilingFeatures &
+        VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+        image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
+    }
+    else {
+        /* Try other depth formats? */
+        std::cout << "VK_FORMAT_D16_UNORM Unsupported.\n";
+        exit(-1);
+    }
+
+    image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    image_info.pNext = NULL;
+    image_info.imageType = VK_IMAGE_TYPE_2D;
+    image_info.format = depth_format;
+    image_info.extent.width = params.width;
+    image_info.extent.height = params.height;
+    image_info.extent.depth = 1;
+    image_info.mipLevels = 1;
+    image_info.arrayLayers = 1;
+    image_info.samples = NUM_SAMPLES;
+    image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    image_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+    image_info.queueFamilyIndexCount = 0;
+    image_info.pQueueFamilyIndices = NULL;
+    image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    image_info.flags = 0;
+
+    VkMemoryAllocateInfo mem_alloc = {};
+    mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    mem_alloc.pNext = NULL;
+    mem_alloc.allocationSize = 0;
+    mem_alloc.memoryTypeIndex = 0;
+
+    VkImageViewCreateInfo view_info = {};
+    view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    view_info.pNext = NULL;
+    view_info.image = VK_NULL_HANDLE;
+    view_info.format = depth_format;
+    view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+    view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+    view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+    view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+    view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+    view_info.subresourceRange.baseMipLevel = 0;
+    view_info.subresourceRange.levelCount = 1;
+    view_info.subresourceRange.baseArrayLayer = 0;
+    view_info.subresourceRange.layerCount = 1;
+    view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    view_info.flags = 0;
+
+    VkMemoryRequirements mem_reqs;
+
+    depth.format = depth_format;
+
+    /* Create image */
+    res = vkCreateImage(device, &image_info, NULL, &depth.image);
+    assert(res == VK_SUCCESS);
+
+    vkGetImageMemoryRequirements(device, depth.image, &mem_reqs);
+
+    mem_alloc.allocationSize = mem_reqs.size;
+    /* Use the memory properties to determine the type of memory required */
+    pass = memory_type_from_properties(mem_reqs.memoryTypeBits, 0, &mem_alloc.memoryTypeIndex);
+    assert(pass);
+
+    /* Allocate memory */
+    res = vkAllocateMemory(device, &mem_alloc, NULL, &depth.mem);
+    assert(res == VK_SUCCESS);
+
+    /* Bind memory */
+    res = vkBindImageMemory(device, depth.image, depth.mem, 0);
+    assert(res == VK_SUCCESS);
+
+    /* Set the image layout to depth stencil optimal */
+    set_image_layout(depth.image, VK_IMAGE_ASPECT_DEPTH_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+
+    /* Create image view */
+    view_info.image = depth.image;
+    res = vkCreateImageView(device, &view_info, NULL, &depth.view);
+    assert(res == VK_SUCCESS);
+}
+
+void VulkanWindow::destroyDepthBuffer()
+{
+    vkDestroyImageView(device, depth.view, NULL);
+    vkDestroyImage(device, depth.image, NULL);
+    vkFreeMemory(device, depth.mem, NULL);
+}
+
+bool VulkanWindow::memory_type_from_properties(uint32_t typeBits, VkFlags requirements_mask, uint32_t * typeIndex)
+{
+    // Search memtypes to find first index with those properties
+    for (uint32_t i = 0; i < 32; i++) {
+        if ((typeBits & 1) == 1) {
+            // Type is available, does it match user properties?
+            if ((memory_properties.memoryTypes[i].propertyFlags &
+                requirements_mask) == requirements_mask) {
+                *typeIndex = i;
+                return true;
+            }
+        }
+        typeBits >>= 1;
+    }
+    // No memory types matched, return failure
+    return false;
+}
+
+void VulkanWindow::createUniformBuffer()
+{
+    VkResult U_ASSERT_ONLY res;
+    bool U_ASSERT_ONLY pass;
+    Matrix4 mvp;
+    uint32_t mvpSize = 16 * sizeof(float);
+    VkBufferCreateInfo buf_info = {};
+    buf_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buf_info.pNext = NULL;
+    buf_info.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+    buf_info.size = mvpSize;
+    buf_info.queueFamilyIndexCount = 0;
+    buf_info.pQueueFamilyIndices = NULL;
+    buf_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    buf_info.flags = 0;
+    res = vkCreateBuffer(device, &buf_info, NULL, &uniform_data.buf);
+    assert(res == VK_SUCCESS);
+
+    VkMemoryRequirements mem_reqs;
+    vkGetBufferMemoryRequirements(device, uniform_data.buf, &mem_reqs);
+
+    VkMemoryAllocateInfo alloc_info = {};
+    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    alloc_info.pNext = NULL;
+    alloc_info.memoryTypeIndex = 0;
+
+    alloc_info.allocationSize = mem_reqs.size;
+    pass = memory_type_from_properties(mem_reqs.memoryTypeBits,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+        &alloc_info.memoryTypeIndex);
+    assert(pass);
+
+    res = vkAllocateMemory(device, &alloc_info, NULL,
+        &(uniform_data.mem));
+    assert(res == VK_SUCCESS);
+
+    uint8_t *pData;
+    res = vkMapMemory(device, uniform_data.mem, 0, mem_reqs.size, 0,
+        (void **)&pData);
+    assert(res == VK_SUCCESS);
+
+    memcpy(pData, mvp.raw(), mvpSize);
+
+    vkUnmapMemory(device, uniform_data.mem);
+
+    res = vkBindBufferMemory(device, uniform_data.buf,
+        uniform_data.mem, 0);
+    assert(res == VK_SUCCESS);
+
+    uniform_data.buffer_info.buffer = uniform_data.buf;
+    uniform_data.buffer_info.offset = 0;
+    uniform_data.buffer_info.range = mvpSize;
+}
+
+void VulkanWindow::destroyUniformBuffer()
+{
+    vkDestroyBuffer(device, uniform_data.buf, NULL);
+    vkFreeMemory(device, uniform_data.mem, NULL);
+}
+
+void VulkanWindow::createPipelineLayout()
+{
+    VkResult U_ASSERT_ONLY res;
+    /* Now use the descriptor layout to create a pipeline layout */
+    VkPipelineLayoutCreateInfo pPipelineLayoutCreateInfo = {};
+    pPipelineLayoutCreateInfo.sType =
+        VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pPipelineLayoutCreateInfo.pNext = NULL;
+    pPipelineLayoutCreateInfo.pushConstantRangeCount = 0;
+    pPipelineLayoutCreateInfo.pPushConstantRanges = NULL;
+    pPipelineLayoutCreateInfo.setLayoutCount = NUM_DESCRIPTOR_SETS;
+    pPipelineLayoutCreateInfo.pSetLayouts = desc_layout.data();
+
+    res = vkCreatePipelineLayout(device, &pPipelineLayoutCreateInfo, NULL,
+        &pipeline_layout);
+    assert(res == VK_SUCCESS);
+}
+
+void VulkanWindow::destroyPipelineLayout()
+{
+    vkDestroyPipelineLayout(device, pipeline_layout, NULL);
+}
+
+void VulkanWindow::createDescriptorSetLayouts()
+{
+    VkResult U_ASSERT_ONLY res;
+    VkDescriptorSetLayoutBinding layout_binding = {};
+    layout_binding.binding = 0;
+    layout_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    layout_binding.descriptorCount = 1;
+    layout_binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    layout_binding.pImmutableSamplers = NULL;
+
+    /* Next take layout bindings and use them to create a descriptor set layout
+    */
+    VkDescriptorSetLayoutCreateInfo descriptor_layout = {};
+    descriptor_layout.sType =
+        VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descriptor_layout.pNext = NULL;
+    descriptor_layout.bindingCount = 1;
+    descriptor_layout.pBindings = &layout_binding;
+
+    desc_layout.resize(NUM_DESCRIPTOR_SETS);
+    res = vkCreateDescriptorSetLayout(device, &descriptor_layout, NULL,
+        desc_layout.data());
+    assert(res == VK_SUCCESS);
+}
+
+void VulkanWindow::destroyDescriptorSetLayouts()
+{
+    for (int i = 0; i < NUM_DESCRIPTOR_SETS; i++)
+        vkDestroyDescriptorSetLayout(device, desc_layout[i], NULL);
+}
+
+void VulkanWindow::initRenderPass()
+{
+    VkResult U_ASSERT_ONLY res;
+    /* Need attachments for render target and depth buffer */
+    VkAttachmentDescription attachments[2];
+    attachments[0].format = format;
+    attachments[0].samples = NUM_SAMPLES;
+    attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    attachments[0].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    attachments[0].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    attachments[0].flags = 0;
+
+    attachments[1].format = depth.format;
+    attachments[1].samples = NUM_SAMPLES;
+    attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    attachments[1].initialLayout =
+        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    attachments[1].finalLayout =
+        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    attachments[1].flags = 0;
+
+    VkAttachmentReference color_reference = {};
+    color_reference.attachment = 0;
+    color_reference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkAttachmentReference depth_reference = {};
+    depth_reference.attachment = 1;
+    depth_reference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+    VkSubpassDescription subpass = {};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.flags = 0;
+    subpass.inputAttachmentCount = 0;
+    subpass.pInputAttachments = NULL;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &color_reference;
+    subpass.pResolveAttachments = NULL;
+    subpass.pDepthStencilAttachment = &depth_reference;
+    subpass.preserveAttachmentCount = 0;
+    subpass.pPreserveAttachments = NULL;
+
+    VkRenderPassCreateInfo rp_info = {};
+    rp_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    rp_info.pNext = NULL;
+    rp_info.attachmentCount = 2;
+    rp_info.pAttachments = attachments;
+    rp_info.subpassCount = 1;
+    rp_info.pSubpasses = &subpass;
+    rp_info.dependencyCount = 0;
+    rp_info.pDependencies = NULL;
+
+    res = vkCreateRenderPass(device, &rp_info, NULL, &render_pass);
+    assert(res == VK_SUCCESS);
+}
+
+void VulkanWindow::destroyRenderPass()
+{
+    vkDestroyRenderPass(device, render_pass, NULL);
+}
+
+void VulkanWindow::initShaders()
+{
+    VkResult U_ASSERT_ONLY res;
+    bool U_ASSERT_ONLY retVal;
+    static const char *vertShaderText =
+        "#version 400\n"
+        "#extension GL_ARB_separate_shader_objects : enable\n"
+        "#extension GL_ARB_shading_language_420pack : enable\n"
+        "layout (std140, binding = 0) uniform bufferVals {\n"
+        "    mat4 mvp;\n"
+        "} myBufferVals;\n"
+        "layout (location = 0) in vec4 pos;\n"
+        "layout (location = 1) in vec4 inColor;\n"
+        "layout (location = 0) out vec4 outColor;\n"
+        "out gl_PerVertex { \n"
+        "    vec4 gl_Position;\n"
+        "};\n"
+        "void main() {\n"
+        "   outColor = inColor;\n"
+        "   gl_Position = myBufferVals.mvp * pos;\n"
+        "\n"
+        "   // GL->VK conventions\n"
+        "   gl_Position.y = -gl_Position.y;\n"
+        "   gl_Position.z = (gl_Position.z + gl_Position.w) / 2.0;\n"
+        "}\n";
+
+    static const char *fragShaderText =
+        "#version 400\n"
+        "#extension GL_ARB_separate_shader_objects : enable\n"
+        "#extension GL_ARB_shading_language_420pack : enable\n"
+        "layout (location = 0) in vec4 color;\n"
+        "layout (location = 0) out vec4 outColor;\n"
+        "void main() {\n"
+        "   outColor = color;\n"
+        "}\n";
+
+    std::vector<unsigned int> vtx_spv;
+    shaderStages[0].sType =
+       VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    shaderStages[0].pNext = NULL;
+    shaderStages[0].pSpecializationInfo = NULL;
+    shaderStages[0].flags = 0;
+    shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+    shaderStages[0].pName = "main";
+
+    initGlslang();
+    retVal = GLSLtoSPV(VK_SHADER_STAGE_VERTEX_BIT, vertShaderText, vtx_spv);
+    assert(retVal);
+
+    VkShaderModuleCreateInfo moduleCreateInfo;
+    moduleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    moduleCreateInfo.pNext = NULL;
+    moduleCreateInfo.flags = 0;
+    moduleCreateInfo.codeSize = vtx_spv.size() * sizeof(unsigned int);
+    moduleCreateInfo.pCode = vtx_spv.data();
+    res = vkCreateShaderModule(device, &moduleCreateInfo, NULL,
+        &shaderStages[0].module);
+    assert(res == VK_SUCCESS);
+
+    std::vector<unsigned int> frag_spv;
+    shaderStages[1].sType =
+        VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    shaderStages[1].pNext = NULL;
+    shaderStages[1].pSpecializationInfo = NULL;
+    shaderStages[1].flags = 0;
+    shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    shaderStages[1].pName = "main";
+
+    retVal = GLSLtoSPV(VK_SHADER_STAGE_FRAGMENT_BIT, fragShaderText, frag_spv);
+    assert(retVal);
+
+    moduleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    moduleCreateInfo.pNext = NULL;
+    moduleCreateInfo.flags = 0;
+    moduleCreateInfo.codeSize = frag_spv.size() * sizeof(unsigned int);
+    moduleCreateInfo.pCode = frag_spv.data();
+    res = vkCreateShaderModule(device, &moduleCreateInfo, NULL,
+        &shaderStages[1].module);
+    assert(res == VK_SUCCESS);
+
+    finalizeGlslang();
+}
+
+void VulkanWindow::destroyShaders()
+{
+    vkDestroyShaderModule(device, shaderStages[0].module, NULL);
+    vkDestroyShaderModule(device, shaderStages[1].module, NULL);
+}
+
+void VulkanWindow::initGlslang()
+{
+    glslang::InitializeProcess();
+}
+
+void VulkanWindow::finalizeGlslang()
+{
+    glslang::FinalizeProcess();
+}
+
+bool VulkanWindow::GLSLtoSPV(const VkShaderStageFlagBits shader_type, const char * pshader, std::vector<unsigned int>& spirv)
+{
+    glslang::TProgram &program = *new glslang::TProgram;
+    const char *shaderStrings[1];
+    TBuiltInResource Resources;
+    initResources(Resources);
+
+    // Enable SPIR-V and Vulkan rules when parsing GLSL
+    EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules);
+
+    EShLanguage stage = findLanguage(shader_type);
+    glslang::TShader *shader = new glslang::TShader(stage);
+
+    shaderStrings[0] = pshader;
+    shader->setStrings(shaderStrings, 1);
+
+    if (!shader->parse(&Resources, 100, false, messages)) {
+        puts(shader->getInfoLog());
+        puts(shader->getInfoDebugLog());
+        return false; // something didn't work
+    }
+
+    program.addShader(shader);
+
+    //
+    // Program-level processing...
+    //
+
+    if (!program.link(messages)) {
+        puts(shader->getInfoLog());
+        puts(shader->getInfoDebugLog());
+        return false;
+    }
+
+    glslang::GlslangToSpv(*program.getIntermediate(stage), spirv);
+
+    return true;
+}
+
+void VulkanWindow::initResources(TBuiltInResource &Resources)
+{
+    Resources.maxLights = 32;
+    Resources.maxClipPlanes = 6;
+    Resources.maxTextureUnits = 32;
+    Resources.maxTextureCoords = 32;
+    Resources.maxVertexAttribs = 64;
+    Resources.maxVertexUniformComponents = 4096;
+    Resources.maxVaryingFloats = 64;
+    Resources.maxVertexTextureImageUnits = 32;
+    Resources.maxCombinedTextureImageUnits = 80;
+    Resources.maxTextureImageUnits = 32;
+    Resources.maxFragmentUniformComponents = 4096;
+    Resources.maxDrawBuffers = 32;
+    Resources.maxVertexUniformVectors = 128;
+    Resources.maxVaryingVectors = 8;
+    Resources.maxFragmentUniformVectors = 16;
+    Resources.maxVertexOutputVectors = 16;
+    Resources.maxFragmentInputVectors = 15;
+    Resources.minProgramTexelOffset = -8;
+    Resources.maxProgramTexelOffset = 7;
+    Resources.maxClipDistances = 8;
+    Resources.maxComputeWorkGroupCountX = 65535;
+    Resources.maxComputeWorkGroupCountY = 65535;
+    Resources.maxComputeWorkGroupCountZ = 65535;
+    Resources.maxComputeWorkGroupSizeX = 1024;
+    Resources.maxComputeWorkGroupSizeY = 1024;
+    Resources.maxComputeWorkGroupSizeZ = 64;
+    Resources.maxComputeUniformComponents = 1024;
+    Resources.maxComputeTextureImageUnits = 16;
+    Resources.maxComputeImageUniforms = 8;
+    Resources.maxComputeAtomicCounters = 8;
+    Resources.maxComputeAtomicCounterBuffers = 1;
+    Resources.maxVaryingComponents = 60;
+    Resources.maxVertexOutputComponents = 64;
+    Resources.maxGeometryInputComponents = 64;
+    Resources.maxGeometryOutputComponents = 128;
+    Resources.maxFragmentInputComponents = 128;
+    Resources.maxImageUnits = 8;
+    Resources.maxCombinedImageUnitsAndFragmentOutputs = 8;
+    Resources.maxCombinedShaderOutputResources = 8;
+    Resources.maxImageSamples = 0;
+    Resources.maxVertexImageUniforms = 0;
+    Resources.maxTessControlImageUniforms = 0;
+    Resources.maxTessEvaluationImageUniforms = 0;
+    Resources.maxGeometryImageUniforms = 0;
+    Resources.maxFragmentImageUniforms = 8;
+    Resources.maxCombinedImageUniforms = 8;
+    Resources.maxGeometryTextureImageUnits = 16;
+    Resources.maxGeometryOutputVertices = 256;
+    Resources.maxGeometryTotalOutputComponents = 1024;
+    Resources.maxGeometryUniformComponents = 1024;
+    Resources.maxGeometryVaryingComponents = 64;
+    Resources.maxTessControlInputComponents = 128;
+    Resources.maxTessControlOutputComponents = 128;
+    Resources.maxTessControlTextureImageUnits = 16;
+    Resources.maxTessControlUniformComponents = 1024;
+    Resources.maxTessControlTotalOutputComponents = 4096;
+    Resources.maxTessEvaluationInputComponents = 128;
+    Resources.maxTessEvaluationOutputComponents = 128;
+    Resources.maxTessEvaluationTextureImageUnits = 16;
+    Resources.maxTessEvaluationUniformComponents = 1024;
+    Resources.maxTessPatchComponents = 120;
+    Resources.maxPatchVertices = 32;
+    Resources.maxTessGenLevel = 64;
+    Resources.maxViewports = 16;
+    Resources.maxVertexAtomicCounters = 0;
+    Resources.maxTessControlAtomicCounters = 0;
+    Resources.maxTessEvaluationAtomicCounters = 0;
+    Resources.maxGeometryAtomicCounters = 0;
+    Resources.maxFragmentAtomicCounters = 8;
+    Resources.maxCombinedAtomicCounters = 8;
+    Resources.maxAtomicCounterBindings = 1;
+    Resources.maxVertexAtomicCounterBuffers = 0;
+    Resources.maxTessControlAtomicCounterBuffers = 0;
+    Resources.maxTessEvaluationAtomicCounterBuffers = 0;
+    Resources.maxGeometryAtomicCounterBuffers = 0;
+    Resources.maxFragmentAtomicCounterBuffers = 1;
+    Resources.maxCombinedAtomicCounterBuffers = 1;
+    Resources.maxAtomicCounterBufferSize = 16384;
+    Resources.maxTransformFeedbackBuffers = 4;
+    Resources.maxTransformFeedbackInterleavedComponents = 64;
+    Resources.maxCullDistances = 8;
+    Resources.maxCombinedClipAndCullDistances = 8;
+    Resources.maxSamples = 4;
+    Resources.limits.nonInductiveForLoops = 1;
+    Resources.limits.whileLoops = 1;
+    Resources.limits.doWhileLoops = 1;
+    Resources.limits.generalUniformIndexing = 1;
+    Resources.limits.generalAttributeMatrixVectorIndexing = 1;
+    Resources.limits.generalVaryingIndexing = 1;
+    Resources.limits.generalSamplerIndexing = 1;
+    Resources.limits.generalVariableIndexing = 1;
+    Resources.limits.generalConstantMatrixVectorIndexing = 1;
+}
+
+EShLanguage VulkanWindow::findLanguage(const VkShaderStageFlagBits shader_type)
+{
+    switch (shader_type) {
+    case VK_SHADER_STAGE_VERTEX_BIT:
+        return EShLangVertex;
+
+    case VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT:
+        return EShLangTessControl;
+
+    case VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT:
+        return EShLangTessEvaluation;
+
+    case VK_SHADER_STAGE_GEOMETRY_BIT:
+        return EShLangGeometry;
+
+    case VK_SHADER_STAGE_FRAGMENT_BIT:
+        return EShLangFragment;
+
+    case VK_SHADER_STAGE_COMPUTE_BIT:
+        return EShLangCompute;
+
+    default:
+        return EShLangVertex;
+    }
+}
+
+void VulkanWindow::initFrameBuffers()
+{
+    VkResult U_ASSERT_ONLY res;
+    const bool depthPresent = true;
+    VkImageView attachments[2];
+    attachments[1] = depth.view;
+
+    VkFramebufferCreateInfo fb_info = {};
+    fb_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+    fb_info.pNext = NULL;
+    fb_info.renderPass = render_pass;
+    fb_info.attachmentCount = 2;
+    fb_info.pAttachments = attachments;
+    fb_info.width = params.width;
+    fb_info.height = params.height;
+    fb_info.layers = 1;
+
+    uint32_t i;
+    framebuffers = new VkFramebuffer[swapchainImageCount];
+    assert(framebuffers);
+
+    for (i = 0; i < swapchainImageCount; i++) {
+        attachments[0] = buffers[i].view;
+        res = vkCreateFramebuffer(device, &fb_info, NULL, &framebuffers[i]);
+        assert(res == VK_SUCCESS);
+    }
+
+    current_buffer = 0;
+}
+
+void VulkanWindow::destroyFrameBuffers()
+{
+    for (uint32_t i = 0; i < swapchainImageCount; i++) {
+        vkDestroyFramebuffer(device, framebuffers[i], NULL);
+    }
+    delete[] framebuffers;
+}
+
+void VulkanWindow::createVertexBuffer(const IVertexBufferObject & vbo)
+{
+    VkResult U_ASSERT_ONLY res;
+    bool U_ASSERT_ONLY pass;
+
+    /*
+    * Set up a vertex buffer:
+    * - Create a buffer
+    * - Map it and write the vertex data into it
+    * - Bind it using vkCmdBindVertexBuffers
+    * - Later, at pipeline creation,
+    * -      fill in vertex input part of the pipeline with relevent data
+    */
+
+    VertexBuffer& vertex_buffer = vertexBuffers[vbo.getId()];
+    VkBufferCreateInfo buf_info = {};
+    buf_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buf_info.pNext = NULL;
+    buf_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    buf_info.size = vbo.getVertexCount() * vbo.getAttributeSize();
+    buf_info.queueFamilyIndexCount = 0;
+    buf_info.pQueueFamilyIndices = NULL;
+    buf_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    buf_info.flags = 0;
+    res = vkCreateBuffer(device, &buf_info, NULL, &vertex_buffer.buf);
+    assert(res == VK_SUCCESS);
+
+    VkMemoryRequirements mem_reqs;
+    vkGetBufferMemoryRequirements(device, vertex_buffer.buf, &mem_reqs);
+
+    VkMemoryAllocateInfo alloc_info = {};
+    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    alloc_info.pNext = NULL;
+    alloc_info.memoryTypeIndex = 0;
+
+    alloc_info.allocationSize = mem_reqs.size;
+    pass = memory_type_from_properties(mem_reqs.memoryTypeBits,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+        &alloc_info.memoryTypeIndex);
+    assert(pass);
+
+    res = vkAllocateMemory(device, &alloc_info, NULL, &(vertex_buffer.mem));
+    assert(res == VK_SUCCESS);
+
+    uint8_t *pData;
+    res = vkMapMemory(device, vertex_buffer.mem, 0, mem_reqs.size, 0, (void **)&pData);
+    assert(res == VK_SUCCESS);
+
+    memcpy(pData, vbo.getData(), vbo.getVertexCount() * vbo.getAttributeSize() * sizeof(float));
+
+    vkUnmapMemory(device, vertex_buffer.mem);
+
+    res = vkBindBufferMemory(device, vertex_buffer.buf, vertex_buffer.mem, 0);
+    assert(res == VK_SUCCESS);
+
+    /* We won't use these here, but we will need this info when creating the
+    * pipeline */
+    vi_binding.binding = 0;
+    vi_binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    vi_binding.stride = 0; //TODO: Add stride support
+
+    vi_attribs[0].binding = 0;
+    vi_attribs[0].location = 0;
+    vi_attribs[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    vi_attribs[0].offset = 0;
+    //vi_attribs[1].binding = 0;
+    //vi_attribs[1].location = 1;
+    //vi_attribs[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    //vi_attribs[1].offset = 16;
+
+    const VkDeviceSize offsets[1] = { 0 };
+
+    /* We cannot bind the vertex buffer until we begin a renderpass */
+    VkClearValue clear_values[2];
+    clear_values[0].color.float32[0] = 0.2f;
+    clear_values[0].color.float32[1] = 0.2f;
+    clear_values[0].color.float32[2] = 0.2f;
+    clear_values[0].color.float32[3] = 0.2f;
+    clear_values[1].depthStencil.depth = 1.0f;
+    clear_values[1].depthStencil.stencil = 0;
+
+    VkRenderPassBeginInfo rp_begin = {};
+    rp_begin.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    rp_begin.pNext = NULL;
+    rp_begin.renderPass = render_pass;
+    rp_begin.framebuffer = framebuffers[current_buffer];
+    rp_begin.renderArea.offset.x = 0;
+    rp_begin.renderArea.offset.y = 0;
+    rp_begin.renderArea.extent.width = params.width;
+    rp_begin.renderArea.extent.height = params.height;
+    rp_begin.clearValueCount = 2;
+    rp_begin.pClearValues = clear_values;
+
+    vkCmdBeginRenderPass(cmd, &rp_begin, VK_SUBPASS_CONTENTS_INLINE);
+
+    vkCmdBindVertexBuffers(cmd, 0,             /* Start Binding */
+        1,                       /* Binding Count */
+        &vertex_buffer.buf, /* pBuffers */
+        offsets);                /* pOffsets */
+
+    vkCmdEndRenderPass(cmd);
+}
+
+void VulkanWindow::destroyVertexBuffer(const IVertexBufferObject & vbo)
+{
+    auto it = vertexBuffers.find(vbo.getId());
+
+    if (it != vertexBuffers.end())
+    {
+        vkDestroyBuffer(device, it->second.buf, NULL);
+        vkFreeMemory(device, it->second.mem, NULL);
+    }
+    
 }

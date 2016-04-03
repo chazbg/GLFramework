@@ -63,7 +63,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VulkanDebug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VulkanDebug|x64'" Label="Configuration">
@@ -157,7 +157,7 @@
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VulkanDebug|Win32'">
-    <IncludePath>$(VULKAN_SDK)/Include;./include;./private/inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(VULKAN_SDK)\source\spirv-tools\external\include;$(VULKAN_SDK)\source\spirv-tools\include;$(VULKAN_SDK)\spirv-tools\external\include;$(VULKAN_SDK)\spirv-tools\include;$(VULKAN_SDK)/glslang;$(VULKAN_SDK)/Include;./include;./private/inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
@@ -234,12 +234,12 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FreeImage.lib;glew32.lib;freeglut.lib;$(VULKAN_SDK)\glslang\build\glslang\Release\glslang.lib;
-$(VULKAN_SDK)\glslang\build\OGLCompilersDLL\Release\OGLCompiler.lib;
-$(VULKAN_SDK)\glslang\build\glslang\OSDependent\Windows\Release\OSDependent.lib;
-$(VULKAN_SDK)\glslang\build\SPIRV\Release\SPIRV.lib
+      <AdditionalDependencies>FreeImage.lib;glew32.lib;freeglut.lib;$(VULKAN_SDK)\glslang\build\glslang\Debug\glslang.lib;
+$(VULKAN_SDK)\glslang\build\OGLCompilersDLL\Debug\OGLCompiler.lib;
+$(VULKAN_SDK)\glslang\build\glslang\OSDependent\Windows\Debug\OSDependent.lib;
+$(VULKAN_SDK)\glslang\build\SPIRV\Debug\SPIRV.lib
 ;$(VULKAN_SDK)\Bin32\vulkan-1.lib
-;$(VULKAN_SDK)\spirv-tools\build\Release\SPIRV-Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+;$(VULKAN_SDK)\spirv-tools\build\Debug\SPIRV-Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -360,12 +360,17 @@ $(VULKAN_SDK)\glslang\build\SPIRV\Release\SPIRV.lib
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
+    <ClCompile Include="private\src\Core\IndexBufferObject.cpp" />
+    <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
     <ClCompile Include="private\src\Core\Scene.cpp" />
     <ClCompile Include="private\src\Core\Texture.cpp" />
     <ClCompile Include="private\src\Core\TextureCubemap.cpp" />
     <ClCompile Include="private\src\Core\TextureFactory.cpp" />
     <ClCompile Include="private\src\Core\TextureLoader.cpp" />
+    <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
+    <ClCompile Include="private\src\Geometry\Cube.cpp" />
+    <ClCompile Include="private\src\Geometry\CustomGeometry.cpp" />
     <ClCompile Include="private\src\Math\GeometryAlgorithm.cpp" />
     <ClCompile Include="private\src\Math\Line.cpp" />
     <ClCompile Include="private\src\Math\LineSegment.cpp" />

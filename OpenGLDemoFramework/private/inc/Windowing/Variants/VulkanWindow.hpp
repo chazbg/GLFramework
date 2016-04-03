@@ -7,11 +7,25 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vk_sdk_platform.h>
 #include <vector>
+#include <map>
+#include "SPIRV/GlslangToSpv.h"
+#include "Core/IVertexBufferObject.hpp"
 
 typedef struct _swap_chain_buffers {
     VkImage image;
     VkImageView view;
 } swap_chain_buffer;
+
+struct texture_object {
+    VkSampler sampler;
+
+    VkImage image;
+    VkImageLayout imageLayout;
+
+    VkDeviceMemory mem;
+    VkImageView view;
+    int32_t tex_width, tex_height;
+};
 
 class VulkanWindow : public IWindow
 {
@@ -28,6 +42,7 @@ private:
     void destroyWindow();
     void initSwapChain();
     void destroySwapChain();
+    void initDeviceQueue();
     void createCommandBuffer();
     void destroyCommandBuffer();
     void set_image_layout(VkImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout, VkImageLayout new_image_layout);
@@ -36,6 +51,28 @@ private:
     void createImageViews();
     void destroyImageViews();
     void execute_queue_command_buffer();
+    void createDepthBuffer();
+    void destroyDepthBuffer();
+    bool memory_type_from_properties(uint32_t typeBits, VkFlags requirements_mask, uint32_t *typeIndex);
+    void createUniformBuffer();
+    void destroyUniformBuffer();
+    void createPipelineLayout();
+    void destroyPipelineLayout();
+    void createDescriptorSetLayouts();
+    void destroyDescriptorSetLayouts();
+    void initRenderPass();
+    void destroyRenderPass();
+    void initShaders();
+    void destroyShaders();
+    void initGlslang();
+    void finalizeGlslang();
+    bool GLSLtoSPV(const VkShaderStageFlagBits shader_type, const char *pshader, std::vector<unsigned int> &spirv);
+    void initResources(TBuiltInResource &Resources);
+    EShLanguage findLanguage(const VkShaderStageFlagBits shader_type);
+    void initFrameBuffers();
+    void destroyFrameBuffers();
+    void createVertexBuffer(const IVertexBufferObject& vbo);
+    void destroyVertexBuffer(const IVertexBufferObject& vbo);
 
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     const WindowParameters params;
@@ -64,4 +101,40 @@ private:
     VkPipelineShaderStageCreateInfo shaderStages[2];
     VkDescriptorPool desc_pool;
     std::vector<VkDescriptorSet> desc_set;
+
+    struct {
+        VkFormat format;
+
+        VkImage image;
+        VkDeviceMemory mem;
+        VkImageView view;
+    } depth;
+
+    std::vector<texture_object> textures;
+
+    struct {
+        VkBuffer buf;
+        VkDeviceMemory mem;
+        VkDescriptorBufferInfo buffer_info;
+    } uniform_data;
+
+    struct {
+        VkDescriptorImageInfo image_info;
+    } texture_data;
+    VkDeviceMemory stagingMemory;
+    VkImage stagingImage;
+
+    struct VertexBuffer {
+        VkBuffer buf;
+        VkDeviceMemory mem;
+        VkDescriptorBufferInfo buffer_info;
+    };
+
+    VkVertexInputBindingDescription vi_binding;
+    VkVertexInputAttributeDescription vi_attribs[2];
+    VkPhysicalDeviceMemoryProperties memory_properties;
+    VkPhysicalDeviceProperties gpu_props;
+    VkFramebuffer *framebuffers;
+    std::map<unsigned int, VertexBuffer> vertexBuffers;
+    int current_buffer;
 };

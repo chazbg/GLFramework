@@ -108,6 +108,21 @@
     <ClCompile Include="private\src\Windowing\WindowFactory.cpp">
       <Filter>Source Files\Windowing</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Core\VertexBufferObject.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Geometry\Cube.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Geometry\CustomGeometry.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\Mesh.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\IndexBufferObject.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">

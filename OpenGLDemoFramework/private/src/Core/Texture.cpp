@@ -17,10 +17,7 @@ data(0)
 
 Texture::~Texture()
 {
-	if (0 != data)
-	{
-		delete[] data;
-	}
+	delete[] data;
 }
 
 unsigned int Texture::getId() const
