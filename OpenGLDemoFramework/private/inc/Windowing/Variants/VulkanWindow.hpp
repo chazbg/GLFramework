@@ -56,8 +56,6 @@ private:
     void set_image_layout(VkImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout, VkImageLayout new_image_layout);
     void execute_begin_command_buffer();
     void execute_end_command_buffer();
-    void createImageViews();
-    void destroyImageViews();
     void execute_queue_command_buffer();
     void init_depth_buffer();
     void destroy_depth_buffer();
@@ -77,7 +75,7 @@ private:
     EShLanguage findLanguage(const VkShaderStageFlagBits shader_type);
     void init_framebuffers();
     void destroy_framebuffers();
-    void init_vertex_buffer(const IVertexBufferObject& vbo);
+    void init_vertex_buffer(const void *vertexData, uint32_t dataSize, uint32_t dataStride, bool use_texture);
     void destroy_vertex_buffer(const IVertexBufferObject& vbo);
     void init_descriptor_pool();
     void destroy_descriptor_pool();
@@ -138,7 +136,9 @@ private:
     VkPipelineShaderStageCreateInfo shaderStages[2];
     VkDescriptorPool desc_pool;
     std::vector<VkDescriptorSet> desc_set;
-
+    PFN_vkCreateDebugReportCallbackEXT dbgCreateDebugReportCallback;
+    PFN_vkDestroyDebugReportCallbackEXT dbgDestroyDebugReportCallback;
+    VkDebugReportCallbackEXT debug_report_callback;
     struct {
         VkFormat format;
 
@@ -166,6 +166,12 @@ private:
         VkDeviceMemory mem;
         VkDescriptorBufferInfo buffer_info;
     };
+
+    struct {
+        VkBuffer buf;
+        VkDeviceMemory mem;
+        VkDescriptorBufferInfo buffer_info;
+    } vertex_buffer;
 
     VkVertexInputBindingDescription vi_binding;
     VkVertexInputAttributeDescription vi_attribs[2];

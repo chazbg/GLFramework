@@ -5,6 +5,8 @@
 #include "Math/Matrix.hpp"
 #include "Geometry/CustomGeometry.hpp"
 #include "Geometry/Rectangle.hpp"
+#include "Math/GeometryAlgorithm.hpp"
+#include <sstream>
 
 #if defined(NDEBUG) && defined(__GNUC__)
 #define U_ASSERT_ONLY __attribute__((unused))
@@ -28,6 +30,97 @@
 
 /* Amount of time, in nanoseconds, to wait for a command buffer to complete */
 #define FENCE_TIMEOUT 100000000
+
+struct Vertex {
+    float posX, posY, posZ, posW; // Position data
+    float r, g, b, a;             // Color
+};
+
+#define XYZ1(_x_, _y_, _z_) (_x_), (_y_), (_z_), 1.f
+#define UV(_u_, _v_) (_u_), (_v_)
+
+static const Vertex g_vb_solid_face_colors_Data[] = {
+    { XYZ1(-1, -1, -1), XYZ1(1.f, 0.f, 0.f) },
+    { XYZ1(1, -1, -1), XYZ1(1.f, 0.f, 0.f) },
+    { XYZ1(-1, 1, -1), XYZ1(1.f, 0.f, 0.f) },
+    { XYZ1(-1, 1, -1), XYZ1(1.f, 0.f, 0.f) },
+    { XYZ1(1, -1, -1), XYZ1(1.f, 0.f, 0.f) },
+    { XYZ1(1, 1, -1), XYZ1(1.f, 0.f, 0.f) },
+
+    { XYZ1(-1, -1, 1), XYZ1(0.f, 1.f, 0.f) },
+    { XYZ1(-1, 1, 1), XYZ1(0.f, 1.f, 0.f) },
+    { XYZ1(1, -1, 1), XYZ1(0.f, 1.f, 0.f) },
+    { XYZ1(1, -1, 1), XYZ1(0.f, 1.f, 0.f) },
+    { XYZ1(-1, 1, 1), XYZ1(0.f, 1.f, 0.f) },
+    { XYZ1(1, 1, 1), XYZ1(0.f, 1.f, 0.f) },
+
+    { XYZ1(1, 1, 1), XYZ1(0.f, 0.f, 1.f) },
+    { XYZ1(1, 1, -1), XYZ1(0.f, 0.f, 1.f) },
+    { XYZ1(1, -1, 1), XYZ1(0.f, 0.f, 1.f) },
+    { XYZ1(1, -1, 1), XYZ1(0.f, 0.f, 1.f) },
+    { XYZ1(1, 1, -1), XYZ1(0.f, 0.f, 1.f) },
+    { XYZ1(1, -1, -1), XYZ1(0.f, 0.f, 1.f) },
+
+    { XYZ1(-1, 1, 1), XYZ1(1.f, 1.f, 0.f) },
+    { XYZ1(-1, -1, 1), XYZ1(1.f, 1.f, 0.f) },
+    { XYZ1(-1, 1, -1), XYZ1(1.f, 1.f, 0.f) },
+    { XYZ1(-1, 1, -1), XYZ1(1.f, 1.f, 0.f) },
+    { XYZ1(-1, -1, 1), XYZ1(1.f, 1.f, 0.f) },
+    { XYZ1(-1, -1, -1), XYZ1(1.f, 1.f, 0.f) },
+
+    { XYZ1(1, 1, 1), XYZ1(1.f, 0.f, 1.f) },
+    { XYZ1(-1, 1, 1), XYZ1(1.f, 0.f, 1.f) },
+    { XYZ1(1, 1, -1), XYZ1(1.f, 0.f, 1.f) },
+    { XYZ1(1, 1, -1), XYZ1(1.f, 0.f, 1.f) },
+    { XYZ1(-1, 1, 1), XYZ1(1.f, 0.f, 1.f) },
+    { XYZ1(-1, 1, -1), XYZ1(1.f, 0.f, 1.f) },
+
+    { XYZ1(1, -1, 1), XYZ1(0.f, 1.f, 1.f) },
+    { XYZ1(1, -1, -1), XYZ1(0.f, 1.f, 1.f) },
+    { XYZ1(-1, -1, 1), XYZ1(0.f, 1.f, 1.f) },
+    { XYZ1(-1, -1, 1), XYZ1(0.f, 1.f, 1.f) },
+    { XYZ1(1, -1, -1), XYZ1(0.f, 1.f, 1.f) },
+    { XYZ1(-1, -1, -1), XYZ1(0.f, 1.f, 1.f) },
+};
+
+VKAPI_ATTR VkBool32 VKAPI_CALL
+dbgFunc(VkDebugReportFlagsEXT msgFlags, VkDebugReportObjectTypeEXT objType,
+    uint64_t srcObject, size_t location, int32_t msgCode,
+    const char *pLayerPrefix, const char *pMsg, void *pUserData) {
+    std::ostringstream message;
+
+    if (msgFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT) {
+        message << "ERROR: ";
+    }
+    else if (msgFlags & VK_DEBUG_REPORT_WARNING_BIT_EXT) {
+        message << "WARNING: ";
+    }
+    else if (msgFlags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT) {
+        message << "PERFORMANCE WARNING: ";
+    }
+    else if (msgFlags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT) {
+        message << "INFO: ";
+    }
+    else if (msgFlags & VK_DEBUG_REPORT_DEBUG_BIT_EXT) {
+        message << "DEBUG: ";
+    }
+    message << "[" << pLayerPrefix << "] Code " << msgCode << " : " << pMsg;
+
+#ifdef _WIN32
+    MessageBox(NULL, message.str().c_str(), "Alert", MB_OK);
+#else
+    std::cout << message.str() << std::endl;
+#endif
+
+    /*
+    * false indicates that layer should not bail-out of an
+    * API call that had validation failures. This may mean that the
+    * app dies inside the driver due to invalid parameter(s).
+    * That's what would happen without validation layers, so we'll
+    * keep that behavior here.
+    */
+    return false;
+}
 
 VulkanWindow::VulkanWindow(const WindowParameters & params, IApplication & app) : params(params), app(app)
 {
@@ -57,7 +150,9 @@ void VulkanWindow::startRenderLoop()
     init_framebuffers();
     RectangleGeometry r;
     IVertexBufferObject& vbo = *r.getVBOs()[0];
-    init_vertex_buffer(vbo);
+    init_vertex_buffer(g_vb_solid_face_colors_Data,
+        sizeof(g_vb_solid_face_colors_Data),
+        sizeof(g_vb_solid_face_colors_Data[0]), false);
     init_descriptor_pool();
     init_descriptor_set();
     init_pipeline_cache();
@@ -86,6 +181,18 @@ void VulkanWindow::startRenderLoop()
 
 void VulkanWindow::init_instance()
 {
+    instance_layer_names.push_back("VK_LAYER_GOOGLE_threading");
+    instance_layer_names.push_back("VK_LAYER_LUNARG_device_limits");
+    instance_layer_names.push_back("VK_LAYER_LUNARG_draw_state");
+    instance_layer_names.push_back("VK_LAYER_LUNARG_image");
+    instance_layer_names.push_back("VK_LAYER_LUNARG_mem_tracker");
+    instance_layer_names.push_back("VK_LAYER_LUNARG_object_tracker");
+    instance_layer_names.push_back("VK_LAYER_LUNARG_param_checker");
+    instance_layer_names.push_back("VK_LAYER_LUNARG_swapchain");
+    instance_layer_names.push_back("VK_LAYER_GOOGLE_unique_objects");
+
+    instance_extension_names.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+
     // initialize the VkApplicationInfo structure
     VkApplicationInfo app_info = {};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -153,6 +260,17 @@ void VulkanWindow::init_enumerate_device()
 
 void VulkanWindow::init_device()
 {
+    device_layer_names.push_back("VK_LAYER_GOOGLE_threading");
+    device_layer_names.push_back("VK_LAYER_LUNARG_device_limits");
+    device_layer_names.push_back("VK_LAYER_LUNARG_draw_state");
+    device_layer_names.push_back("VK_LAYER_LUNARG_image");
+    device_layer_names.push_back("VK_LAYER_LUNARG_mem_tracker");
+    device_layer_names.push_back("VK_LAYER_LUNARG_object_tracker");
+    device_layer_names.push_back("VK_LAYER_LUNARG_param_checker");
+    device_layer_names.push_back("VK_LAYER_LUNARG_swapchain");
+    device_layer_names.push_back("VK_LAYER_GOOGLE_unique_objects");
+
+
     VkResult res;
     VkDeviceQueueCreateInfo queue_info = {};
 
@@ -177,11 +295,50 @@ void VulkanWindow::init_device()
 
     res = vkCreateDevice(gpus[0], &device_info, NULL, &device);
     assert(res == VK_SUCCESS);
+
+    VkDebugReportCallbackEXT debug_report_callback;
+
+    dbgCreateDebugReportCallback = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(inst, "vkCreateDebugReportCallbackEXT");
+    if (!dbgCreateDebugReportCallback) {
+        std::cout << "GetInstanceProcAddr: Unable to find vkCreateDebugReportCallbackEXT function." << std::endl;
+        exit(1);
+    }
+
+    dbgDestroyDebugReportCallback = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(inst, "vkDestroyDebugReportCallbackEXT");
+    if (!dbgDestroyDebugReportCallback) {
+        std::cout << "GetInstanceProcAddr: Unable to find vkDestroyDebugReportCallbackEXT function." << std::endl;
+        exit(1);
+    }
+
+    VkDebugReportCallbackCreateInfoEXT create_info = {};
+    create_info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+    create_info.pNext = NULL;
+    create_info.flags =
+        VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+    create_info.pfnCallback = dbgFunc;
+    create_info.pUserData = NULL;
+    res = dbgCreateDebugReportCallback(inst, &create_info, NULL, &debug_report_callback);
+    switch (res) {
+    case VK_SUCCESS:
+        break;
+    case VK_ERROR_OUT_OF_HOST_MEMORY:
+        std::cout << "dbgCreateDebugReportCallback: out of host memory\n" << std::endl;
+        exit(1);
+        break;
+    default:
+        std::cout << "dbgCreateDebugReportCallback: unknown failure\n" << std::endl;
+        exit(1);
+        break;
+    }
+
 }
 
 void VulkanWindow::destroy_device()
 {
     vkDestroyDevice(device, NULL);
+    /* Clean up callback */
+    dbgDestroyDebugReportCallback(inst, debug_report_callback, NULL);
+
 }
 
 // MS-Windows event handling function:
@@ -432,44 +589,6 @@ void VulkanWindow::execute_end_command_buffer()
     assert(res == VK_SUCCESS);
 }
 
-void VulkanWindow::createImageViews()
-{
-    VkResult U_ASSERT_ONLY res;
-
-    for (uint32_t i = 0; i < swapchainImageCount; i++) {
-        VkImageViewCreateInfo color_image_view = {};
-        color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        color_image_view.pNext = NULL;
-        color_image_view.format = format;
-        color_image_view.components.r = VK_COMPONENT_SWIZZLE_R;
-        color_image_view.components.g = VK_COMPONENT_SWIZZLE_G;
-        color_image_view.components.b = VK_COMPONENT_SWIZZLE_B;
-        color_image_view.components.a = VK_COMPONENT_SWIZZLE_A;
-        color_image_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        color_image_view.subresourceRange.baseMipLevel = 0;
-        color_image_view.subresourceRange.levelCount = 1;
-        color_image_view.subresourceRange.baseArrayLayer = 0;
-        color_image_view.subresourceRange.layerCount = 1;
-        color_image_view.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        color_image_view.flags = 0;
-
-        set_image_layout(buffers[i].image, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-
-        color_image_view.image = buffers[i].image;
-
-        res = vkCreateImageView(device, &color_image_view, NULL, &buffers[i].view);
-        assert(res == VK_SUCCESS);
-    }
-}
-
-void VulkanWindow::destroyImageViews()
-{
-    for (uint32_t i = 0; i < swapchainImageCount; i++)
-    {
-        vkDestroyImageView(device, buffers[i].view, NULL);
-    }
-}
-
 void VulkanWindow::execute_queue_command_buffer()
 {
     VkResult U_ASSERT_ONLY res;
@@ -636,7 +755,10 @@ void VulkanWindow::init_uniform_buffer()
 {
     VkResult U_ASSERT_ONLY res;
     bool U_ASSERT_ONLY pass;
-    Matrix4 mvp;
+    
+    Matrix4 view = GeometryAlgorithm::CreateLookAtMatrix(Vec3(5, 3, 10), Vec3(0, 0, 0), Vec3(0, -1, 0));
+    Matrix4 projection = GeometryAlgorithm::CreatePerspectiveMatrix(3.14 / 4, 1, 0.1, 100);
+    Matrix4 mvp = projection * view;
     uint32_t mvpSize = 16 * sizeof(float);
     VkBufferCreateInfo buf_info = {};
     buf_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -826,12 +948,15 @@ void VulkanWindow::init_shaders()
         "layout (std140, binding = 0) uniform bufferVals {\n"
         "    mat4 mvp;\n"
         "} myBufferVals;\n"
-        "layout (location = 0) in vec2 pos;\n"
+        "layout (location = 0) in vec4 pos;\n"
+        "layout (location = 1) in vec4 inColor;\n"
+        "layout (location = 0) out vec4 outColor;\n"
         "out gl_PerVertex { \n"
         "    vec4 gl_Position;\n"
         "};\n"
         "void main() {\n"
-        "   gl_Position = vec4(pos, 0, 1);\n"
+        "   outColor = inColor;\n"
+        "   gl_Position = myBufferVals.mvp * pos;\n"
         "\n"
         "   // GL->VK conventions\n"
         "   gl_Position.y = -gl_Position.y;\n"
@@ -842,9 +967,10 @@ void VulkanWindow::init_shaders()
         "#version 400\n"
         "#extension GL_ARB_separate_shader_objects : enable\n"
         "#extension GL_ARB_shading_language_420pack : enable\n"
+        "layout (location = 0) in vec4 color;\n"
         "layout (location = 0) out vec4 outColor;\n"
         "void main() {\n"
-        "   outColor = vec4(0.5, 0, 0, 1);\n"
+        "   outColor = color;\n"
         "}\n";
 
     init_glslang();
@@ -1106,17 +1232,18 @@ void VulkanWindow::destroy_framebuffers()
     delete[] framebuffers;
 }
 
-void VulkanWindow::init_vertex_buffer(const IVertexBufferObject & vbo)
+void VulkanWindow::init_vertex_buffer(const void *vertexData,
+                                      uint32_t dataSize, uint32_t dataStride,
+                                      bool use_texture)
 {
     VkResult U_ASSERT_ONLY res;
     bool U_ASSERT_ONLY pass;
 
-    VertexBuffer& vertex_buffer = vertexBuffers[vbo.getId()];
     VkBufferCreateInfo buf_info = {};
     buf_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     buf_info.pNext = NULL;
     buf_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    buf_info.size = vbo.getVertexCount() * vbo.getAttributeSize() * sizeof(float);
+    buf_info.size = dataSize;
     buf_info.queueFamilyIndexCount = 0;
     buf_info.pQueueFamilyIndices = NULL;
     buf_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -1145,7 +1272,7 @@ void VulkanWindow::init_vertex_buffer(const IVertexBufferObject & vbo)
     res = vkMapMemory(device, vertex_buffer.mem, 0, mem_reqs.size, 0, (void **)&pData);
     assert(res == VK_SUCCESS);
 
-    memcpy(pData, vbo.getData(), vbo.getVertexCount() * vbo.getAttributeSize() * sizeof(float));
+    memcpy(pData, vertexData, dataSize);
 
     vkUnmapMemory(device, vertex_buffer.mem);
 
@@ -1154,16 +1281,16 @@ void VulkanWindow::init_vertex_buffer(const IVertexBufferObject & vbo)
 
     vi_binding.binding = 0;
     vi_binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-    vi_binding.stride = 0; //TODO: Add stride support
+    vi_binding.stride = dataStride; //TODO: Add stride support
 
     vi_attribs[0].binding = 0;
     vi_attribs[0].location = 0;
     vi_attribs[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
     vi_attribs[0].offset = 0;
-    //vi_attribs[1].binding = 0;
-    //vi_attribs[1].location = 1;
-    //vi_attribs[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    //vi_attribs[1].offset = 16;
+    vi_attribs[1].binding = 0;
+    vi_attribs[1].location = 1;
+    vi_attribs[1].format = use_texture ? VK_FORMAT_R32G32_SFLOAT : VK_FORMAT_R32G32B32A32_SFLOAT;
+    vi_attribs[1].offset = 16;
 }
 
 void VulkanWindow::destroy_vertex_buffer(const IVertexBufferObject & vbo)
@@ -1412,12 +1539,12 @@ void VulkanWindow::draw(const IVertexBufferObject& vbo)
         desc_set.data(), 0, NULL);
 
     const VkDeviceSize offsets[1] = { 0 };
-    vkCmdBindVertexBuffers(cmd, 0, 1, &vertexBuffers[vbo.getId()].buf, offsets);
+    vkCmdBindVertexBuffers(cmd, 0, 1, &vertex_buffer.buf, offsets);
 
     init_viewports();
     init_scissors();
 
-    vkCmdDraw(cmd, vbo.getVertexCount(), 1, 0, 0);
+    vkCmdDraw(cmd, 12 * 3, 1, 0, 0);
     vkCmdEndRenderPass(cmd);
 
     VkImageMemoryBarrier prePresentBarrier = {};
