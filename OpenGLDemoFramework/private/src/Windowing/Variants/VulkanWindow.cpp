@@ -104,10 +104,14 @@ dbgFunc(VkDebugReportFlagsEXT msgFlags, VkDebugReportObjectTypeEXT objType,
     else if (msgFlags & VK_DEBUG_REPORT_DEBUG_BIT_EXT) {
         message << "DEBUG: ";
     }
-    message << "[" << pLayerPrefix << "] Code " << msgCode << " : " << pMsg;
+    message << "[" << pLayerPrefix << "] Code " << msgCode << " | ObjType " 
+        << objType << " | SrcObject " 
+        << srcObject << " | Location " 
+        << location << " : " << pMsg;
 
 #ifdef _WIN32
-    MessageBox(NULL, message.str().c_str(), "Alert", MB_OK);
+    //MessageBox(NULL, message.str().c_str(), "Alert", MB_OK);
+    std::cout << message.str() << std::endl;
 #else
     std::cout << message.str() << std::endl;
 #endif
@@ -162,7 +166,6 @@ void VulkanWindow::startRenderLoop()
 
     destroy_pipeline();
     destroy_pipeline_cache();
-    destroy_descriptor_set();
     destroy_descriptor_pool();
     destroy_vertex_buffer(vbo);
     destroy_framebuffers();
@@ -270,7 +273,6 @@ void VulkanWindow::init_device()
     device_layer_names.push_back("VK_LAYER_LUNARG_swapchain");
     device_layer_names.push_back("VK_LAYER_GOOGLE_unique_objects");
 
-
     VkResult res;
     VkDeviceQueueCreateInfo queue_info = {};
 
@@ -296,8 +298,6 @@ void VulkanWindow::init_device()
     res = vkCreateDevice(gpus[0], &device_info, NULL, &device);
     assert(res == VK_SUCCESS);
 
-    VkDebugReportCallbackEXT debug_report_callback;
-
     dbgCreateDebugReportCallback = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(inst, "vkCreateDebugReportCallbackEXT");
     if (!dbgCreateDebugReportCallback) {
         std::cout << "GetInstanceProcAddr: Unable to find vkCreateDebugReportCallbackEXT function." << std::endl;
@@ -313,8 +313,10 @@ void VulkanWindow::init_device()
     VkDebugReportCallbackCreateInfoEXT create_info = {};
     create_info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
     create_info.pNext = NULL;
-    create_info.flags =
-        VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+    create_info.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | 
+        VK_DEBUG_REPORT_WARNING_BIT_EXT | 
+        VK_DEBUG_REPORT_DEBUG_BIT_EXT |
+        VK_DEBUG_REPORT_INFORMATION_BIT_EXT;
     create_info.pfnCallback = dbgFunc;
     create_info.pUserData = NULL;
     res = dbgCreateDebugReportCallback(inst, &create_info, NULL, &debug_report_callback);
@@ -1261,7 +1263,8 @@ void VulkanWindow::init_vertex_buffer(const void *vertexData,
 
     alloc_info.allocationSize = mem_reqs.size;
     pass = memory_type_from_properties(mem_reqs.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &alloc_info.memoryTypeIndex);
     assert(pass);
 
@@ -1302,6 +1305,9 @@ void VulkanWindow::destroy_vertex_buffer(const IVertexBufferObject & vbo)
         vkDestroyBuffer(device, it->second.buf, NULL);
         vkFreeMemory(device, it->second.mem, NULL);
     }
+
+    vkDestroyBuffer(device, vertex_buffer.buf, NULL);
+    vkFreeMemory(device, vertex_buffer.mem, NULL);
     
 }
 
@@ -1566,9 +1572,31 @@ void VulkanWindow::draw(const IVertexBufferObject& vbo)
         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, NULL, 0,
         NULL, 1, &prePresentBarrier);
 
-    execute_end_command_buffer();
-    createFence();
-    execute_queue_command_buffer();
+    res = vkEndCommandBuffer(cmd);
+    const VkCommandBuffer cmd_bufs[] = { cmd };
+    VkFenceCreateInfo fenceInfo;
+    VkFence drawFence;
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.pNext = NULL;
+    fenceInfo.flags = 0;
+    vkCreateFence(device, &fenceInfo, NULL, &drawFence);
+
+    VkPipelineStageFlags pipe_stage_flags =
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    VkSubmitInfo submit_info[1] = {};
+    submit_info[0].pNext = NULL;
+    submit_info[0].sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submit_info[0].waitSemaphoreCount = 1;
+    submit_info[0].pWaitSemaphores = &presentCompleteSemaphore;
+    submit_info[0].pWaitDstStageMask = &pipe_stage_flags;
+    submit_info[0].commandBufferCount = 1;
+    submit_info[0].pCommandBuffers = cmd_bufs;
+    submit_info[0].signalSemaphoreCount = 0;
+    submit_info[0].pSignalSemaphores = NULL;
+
+    /* Queue the command buffer for execution */
+    res = vkQueueSubmit(queue, 1, submit_info, drawFence);
+    assert(res == VK_SUCCESS);
 
     /* Now present the image in the window */
 
@@ -1580,8 +1608,14 @@ void VulkanWindow::draw(const IVertexBufferObject& vbo)
     present.pImageIndices = &current_buffer;
     present.pWaitSemaphores = NULL;
     present.waitSemaphoreCount = 0;
-
     present.pResults = NULL;
+
+    /* Make sure command buffer is finished before presenting */
+    do {
+        res =
+            vkWaitForFences(device, 1, &drawFence, VK_TRUE, FENCE_TIMEOUT);
+    } while (res == VK_TIMEOUT);
+
     assert(res == VK_SUCCESS);
     res = vkQueuePresentKHR(queue, &present);
     assert(res == VK_SUCCESS);
@@ -1589,7 +1623,7 @@ void VulkanWindow::draw(const IVertexBufferObject& vbo)
     Sleep(1000);
 
     vkDestroySemaphore(device, presentCompleteSemaphore, NULL);
-    destroyFence();
+    vkDestroyFence(device, drawFence, NULL);
 }
 
 void VulkanWindow::init_viewports()
@@ -1820,14 +1854,12 @@ void VulkanWindow::init_swap_chain()
     swap_chain_info.oldSwapchain = VK_NULL_HANDLE;
     swap_chain_info.clipped = true;
     swap_chain_info.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-    swap_chain_info.imageUsage =
-        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+    swap_chain_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     swap_chain_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     swap_chain_info.queueFamilyIndexCount = 0;
     swap_chain_info.pQueueFamilyIndices = NULL;
 
-    res =
-        vkCreateSwapchainKHR(device, &swap_chain_info, NULL, &swap_chain);
+    res = vkCreateSwapchainKHR(device, &swap_chain_info, NULL, &swap_chain);
     assert(res == VK_SUCCESS);
 
     res = vkGetSwapchainImagesKHR(device, swap_chain, &swapchainImageCount, NULL);
@@ -1880,7 +1912,8 @@ void VulkanWindow::init_swap_chain()
 void VulkanWindow::destroy_swap_chain()
 {
     for (uint32_t i = 0; i < swapchainImageCount; i++) {
-        vkDestroyImageView(device, buffers[i].view, NULL);
+       vkDestroyImageView(device, buffers[i].view, NULL);
+
     }
     vkDestroySwapchainKHR(device, swap_chain, NULL);
 }

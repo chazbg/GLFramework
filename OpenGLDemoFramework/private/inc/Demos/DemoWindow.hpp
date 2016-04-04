@@ -24,8 +24,8 @@ namespace WindowDemo
 	void main()
 	{
 		WindowParameters params;
-		params.width = 800;
-		params.height = 800;
+		params.width = 500;
+		params.height = 500;
 		params.posX = 0;
 		params.posY = 0;
 		params.name = "TestWindow";
