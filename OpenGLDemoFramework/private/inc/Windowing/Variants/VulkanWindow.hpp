@@ -76,14 +76,14 @@ private:
     void init_framebuffers();
     void destroy_framebuffers();
     void init_vertex_buffer(const void *vertexData, uint32_t dataSize, uint32_t dataStride, bool use_texture);
-    void destroy_vertex_buffer(const IVertexBufferObject& vbo);
+    void destroy_vertex_buffer();
     void init_descriptor_pool();
     void destroy_descriptor_pool();
     void init_pipeline_cache();
     void destroy_pipeline_cache();
     void init_pipeline();
     void destroy_pipeline();
-    void draw(const IVertexBufferObject& vbo);
+    void draw();
     void init_viewports();
     void init_scissors();
     void createFence();

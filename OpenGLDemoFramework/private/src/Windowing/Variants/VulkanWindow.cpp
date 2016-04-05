@@ -110,7 +110,11 @@ dbgFunc(VkDebugReportFlagsEXT msgFlags, VkDebugReportObjectTypeEXT objType,
         << location << " : " << pMsg;
 
 #ifdef _WIN32
-    //MessageBox(NULL, message.str().c_str(), "Alert", MB_OK);
+	if (msgFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT || msgFlags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+	{
+		MessageBox(NULL, message.str().c_str(), "Alert", MB_OK);
+	}
+
     std::cout << message.str() << std::endl;
 #else
     std::cout << message.str() << std::endl;
@@ -152,22 +156,28 @@ void VulkanWindow::startRenderLoop()
     init_renderpass();
     init_shaders();
     init_framebuffers();
-    RectangleGeometry r;
-    IVertexBufferObject& vbo = *r.getVBOs()[0];
     init_vertex_buffer(g_vb_solid_face_colors_Data,
         sizeof(g_vb_solid_face_colors_Data),
         sizeof(g_vb_solid_face_colors_Data[0]), false);
     init_descriptor_pool();
     init_descriptor_set();
     init_pipeline_cache();
-    init_pipeline();
+	init_pipeline();
 
-    draw(vbo);
+	MSG message;
+
+	while (GetMessage(&message, NULL, 0, 0)) {
+		TranslateMessage(&message);
+		DispatchMessage(&message);
+	}
+
+	//draw();
+	
 
     destroy_pipeline();
     destroy_pipeline_cache();
     destroy_descriptor_pool();
-    destroy_vertex_buffer(vbo);
+    destroy_vertex_buffer();
     destroy_framebuffers();
     destroy_shaders();
     destroy_renderpass();
@@ -347,15 +357,15 @@ void VulkanWindow::destroy_device()
 LRESULT CALLBACK VulkanWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     VulkanWindow* window = reinterpret_cast<VulkanWindow*>(
         GetWindowLongPtr(hWnd, GWLP_USERDATA));
-
+	std::cout << "Paint" << std::endl;
     switch (uMsg) {
     case WM_CLOSE:
         PostQuitMessage(0);
         break;
     case WM_PAINT:
-        //std::cout << "Paint" << std::endl;
         window->app.onUpdate(0);
         window->app.onRender(0);
+		window->draw();
         return 0;
     default:
         break;
@@ -958,7 +968,7 @@ void VulkanWindow::init_shaders()
         "};\n"
         "void main() {\n"
         "   outColor = inColor;\n"
-        "   gl_Position = myBufferVals.mvp * pos;\n"
+		"   gl_Position = myBufferVals.mvp * pos;\n"
         "\n"
         "   // GL->VK conventions\n"
         "   gl_Position.y = -gl_Position.y;\n"
@@ -1296,16 +1306,8 @@ void VulkanWindow::init_vertex_buffer(const void *vertexData,
     vi_attribs[1].offset = 16;
 }
 
-void VulkanWindow::destroy_vertex_buffer(const IVertexBufferObject & vbo)
+void VulkanWindow::destroy_vertex_buffer()
 {
-    auto it = vertexBuffers.find(vbo.getId());
-
-    if (it != vertexBuffers.end())
-    {
-        vkDestroyBuffer(device, it->second.buf, NULL);
-        vkFreeMemory(device, it->second.mem, NULL);
-    }
-
     vkDestroyBuffer(device, vertex_buffer.buf, NULL);
     vkFreeMemory(device, vertex_buffer.mem, NULL);
     
@@ -1499,14 +1501,14 @@ void VulkanWindow::destroy_pipeline()
     vkDestroyPipeline(device, pipeline, NULL);
 }
 
-void VulkanWindow::draw(const IVertexBufferObject& vbo)
+void VulkanWindow::draw()
 {
     VkResult U_ASSERT_ONLY res;
     VkClearValue clear_values[2];
     clear_values[0].color.float32[0] = 0.5f;
     clear_values[0].color.float32[1] = 0.5f;
     clear_values[0].color.float32[2] = 0.5f;
-    clear_values[0].color.float32[3] = 1.0f;
+	clear_values[0].color.float32[3] = 0.5f;
     clear_values[1].depthStencil.depth = 1.0f;
     clear_values[1].depthStencil.stencil = 0;
 
@@ -1619,8 +1621,6 @@ void VulkanWindow::draw(const IVertexBufferObject& vbo)
     assert(res == VK_SUCCESS);
     res = vkQueuePresentKHR(queue, &present);
     assert(res == VK_SUCCESS);
-
-    Sleep(1000);
 
     vkDestroySemaphore(device, presentCompleteSemaphore, NULL);
     vkDestroyFence(device, drawFence, NULL);
