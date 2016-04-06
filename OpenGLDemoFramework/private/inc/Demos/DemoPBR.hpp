@@ -223,7 +223,7 @@ namespace PBRDemo
 			}
 
             //11
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay_body.fs"));
+            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/ue.fs"));
             materials[11]->setProperty("diffuseMap", 0);
             materials[11]->setProperty("normalMap", 1);
             materials[11]->setProperty("specMap", 2);
