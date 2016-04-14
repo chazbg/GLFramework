@@ -17,12 +17,12 @@ int ShaderMaterial::getId() const
 	return id;
 }
 
-std::vector<const Texture*> ShaderMaterial::getTextures() const
+const std::vector<const Texture*>& ShaderMaterial::getTextures() const
 {
 	return textures;
 }
 
-std::vector<const TextureCubemap*> ShaderMaterial::getTextureCubemaps() const
+const std::vector<const TextureCubemap*>& ShaderMaterial::getTextureCubemaps() const
 {
 	return textureCubemaps;
 }
@@ -55,27 +55,27 @@ void ShaderMaterial::removeTextureCubemap(const TextureCubemap* tex)
 	}
 }
 
-map<string, int> ShaderMaterial::getIntProperties() const
+const map<string, int>& ShaderMaterial::getIntProperties() const
 {
     return iUniforms;
 }
 
-map<string, unsigned int> ShaderMaterial::getUintProperties() const
+const map<string, unsigned int>& ShaderMaterial::getUintProperties() const
 {
     return uiUniforms;
 }
 
-map<string, float> ShaderMaterial::getFloatProperties() const
+const map<string, float>& ShaderMaterial::getFloatProperties() const
 {
     return fUniforms;
 }
 
-map<string, Vec3> ShaderMaterial::getVec3Properties() const
+const map<string, Vec3>& ShaderMaterial::getVec3Properties() const
 {
     return vUniforms;
 }
 
-map<string, Matrix4> ShaderMaterial::getMatrix4Properties() const
+const map<string, Matrix4>& ShaderMaterial::getMatrix4Properties() const
 {
     return mUniforms;
 }

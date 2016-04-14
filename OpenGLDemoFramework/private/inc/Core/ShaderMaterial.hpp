@@ -8,32 +8,32 @@
 class ShaderMaterial : public IMaterial
 {
 public:
-	ShaderMaterial(const std::string vShaderPath, const std::string fShaderPath);
-	~ShaderMaterial();
-	virtual int getId() const;
-	virtual vector<const Texture*> getTextures() const;
-	virtual vector<const TextureCubemap*> getTextureCubemaps() const;
+    ShaderMaterial(const std::string vShaderPath, const std::string fShaderPath);
+    ~ShaderMaterial();
+    virtual int getId() const;
+    virtual const std::vector<const Texture*>& getTextures() const;
+    virtual const std::vector<const TextureCubemap*>& getTextureCubemaps() const;
     virtual void addTexture(const Texture* tex);
-	virtual void addTextureCubemap(const TextureCubemap* tex);
+    virtual void addTextureCubemap(const TextureCubemap* tex);
     virtual void removeTexture(const Texture* tex);
-	virtual void removeTextureCubemap(const TextureCubemap* tex);
-    virtual map<string, int>          getIntProperties() const;
-    virtual map<string, unsigned int> getUintProperties() const;
-    virtual map<string, float>        getFloatProperties() const;
-    virtual map<string, Vec3>         getVec3Properties() const;
-    virtual map<string, Matrix4>      getMatrix4Properties() const;
-    virtual void setProperty(const string name, const int v);
-    virtual void setProperty(const string name, const unsigned int v);
-    virtual void setProperty(const string name, const float v);
-    virtual void setProperty(const string name, const Vec3& v);
-    virtual void setProperty(const string name, const Matrix4& v);
+    virtual void removeTextureCubemap(const TextureCubemap* tex);
+    virtual const std::map<std::string, int>&          getIntProperties() const;
+    virtual const std::map<std::string, unsigned int>& getUintProperties() const;
+    virtual const std::map<std::string, float>&        getFloatProperties() const;
+    virtual const std::map<std::string, Vec3>&         getVec3Properties() const;
+    virtual const std::map<std::string, Matrix4>&      getMatrix4Properties() const;
+    virtual void setProperty(const std::string name, const int v);
+    virtual void setProperty(const std::string name, const unsigned int v);
+    virtual void setProperty(const std::string name, const float v);
+    virtual void setProperty(const std::string name, const Vec3& v);
+    virtual void setProperty(const std::string name, const Matrix4& v);
 private:
-	int id;
-	vector<const Texture*> textures;
-	vector<const TextureCubemap*> textureCubemaps;
-    map<string, int> iUniforms;
-    map<string, unsigned int> uiUniforms;
-    map<string, float> fUniforms;
-    map<string, Vec3> vUniforms;
-    map<string, Matrix4> mUniforms;
+    int id;
+    vector<const Texture*> textures;
+    vector<const TextureCubemap*> textureCubemaps;
+    map<std::string, int> iUniforms;
+    map<std::string, unsigned int> uiUniforms;
+    map<std::string, float> fUniforms;
+    map<std::string, Vec3> vUniforms;
+    map<std::string, Matrix4> mUniforms;
 };

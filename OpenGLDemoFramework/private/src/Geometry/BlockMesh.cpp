@@ -1,5 +1,6 @@
 #include "Geometry/BlockMesh.hpp"
 #include "Math/GeometryAlgorithm.hpp"
+#include <iostream>
 
 BlockMesh::BlockMesh(const float width, const float height, const float length) :
     width(width),
@@ -38,7 +39,19 @@ void BlockMesh::setTime(const unsigned int time)
 
 unsigned int BlockMesh::getTime()
 {
-    return material->getUintProperties()["time"];
+    auto properties = material->getUintProperties();
+    auto iterator = properties.find("time");
+    unsigned int time = 0;
+    if (iterator != properties.end())
+    {
+        time = iterator->second;
+    }
+    else
+    {
+        cout << "Warning: No property type time" << endl;
+    }
+
+    return time;
 }
 
 float* BlockMesh::genVerts()

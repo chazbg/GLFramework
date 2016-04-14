@@ -149,7 +149,7 @@ namespace PBRDemo
 
         virtual void onMouseMove(int x, int y)
         {
-            Vec2 delta = Vec2(x, y) - prevMousePos;
+            Vec2 delta = Vec2(static_cast<float>(x), static_cast<float>(y)) - prevMousePos;
             delta.x /= 1920.0f;
             delta.y /= 1080.0f;
             if (cameraRotating)
@@ -172,7 +172,7 @@ namespace PBRDemo
 				camera.setLookDirection(center + (dx * delta.x + dy * delta.y) * 30.0f);
             }
 
-            prevMousePos = Vec2(x, y);
+            prevMousePos = Vec2(static_cast<float>(x), static_cast<float>(y));
         }
     private:
 
