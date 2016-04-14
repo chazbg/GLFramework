@@ -3,7 +3,7 @@
 #include "Core/Shader.hpp"
 #include <algorithm>
 #include <cstdio>
-#include <Core/VertexBufferObject.hpp>
+#include <Core/VertexBuffer.hpp>
 #include <Math/GeometryAlgorithm.hpp>
 
 #define BUFFER_OFFSET(i) ((void*)(i))
@@ -18,7 +18,7 @@ receivesShadow(false)
 {
 	for (int i = 0; i < 5; i++)
 	{
-		vbos.push_back(new VertexBufferObject());
+		vbos.push_back(new VertexBuffer());
 	}
 }
 
@@ -32,12 +32,12 @@ Mesh::~Mesh()
     }
 }
 
-IIndexBufferObject * Mesh::getIBO()
+IIndexBuffer * Mesh::getIBO()
 {
     return ibo;
 }
 
-std::vector<IVertexBufferObject*>& Mesh::getVBOs()
+std::vector<IVertexBuffer*>& Mesh::getVBOs()
 {
 	return vbos;
 }
@@ -63,34 +63,34 @@ void Mesh::setWireframeMode(const bool showWireframe)
 	this->showWireframe = showWireframe;
 }
 
-void Mesh::setIndices(const IIndexBufferObject & indices)
+void Mesh::setIndices(const IIndexBuffer & indices)
 {
-    ibo = &const_cast<IIndexBufferObject&>(indices);
+    ibo = &const_cast<IIndexBuffer&>(indices);
 }
 
-void Mesh::setVertices(const IVertexBufferObject & vertices)
+void Mesh::setVertices(const IVertexBuffer & vertices)
 {
-	vbos[0] = &const_cast<IVertexBufferObject&>(vertices);
+	vbos[0] = &const_cast<IVertexBuffer&>(vertices);
 }
 
-void Mesh::setNormals(const IVertexBufferObject & normals)
+void Mesh::setNormals(const IVertexBuffer & normals)
 {
-	vbos[1] = &const_cast<IVertexBufferObject&>(normals);
+	vbos[1] = &const_cast<IVertexBuffer&>(normals);
 }
 
-void Mesh::setTexCoords(const IVertexBufferObject & texCoords)
+void Mesh::setTexCoords(const IVertexBuffer & texCoords)
 {
-	vbos[2] = &const_cast<IVertexBufferObject&>(texCoords);
+	vbos[2] = &const_cast<IVertexBuffer&>(texCoords);
 }
 
-void Mesh::setTangents(const IVertexBufferObject& tangents)
+void Mesh::setTangents(const IVertexBuffer& tangents)
 {
-    vbos[3] = &const_cast<IVertexBufferObject&>(tangents);
+    vbos[3] = &const_cast<IVertexBuffer&>(tangents);
 }
 
-void Mesh::setBitangents(const IVertexBufferObject& bitangents)
+void Mesh::setBitangents(const IVertexBuffer& bitangents)
 {
-    vbos[4] = &const_cast<IVertexBufferObject&>(bitangents);
+    vbos[4] = &const_cast<IVertexBuffer&>(bitangents);
 }
 
 void Mesh::setMaterial(IMaterial * material)

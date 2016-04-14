@@ -27,7 +27,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OpenGLDebug|Win32'" Label="Configuration">
@@ -150,7 +150,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
     <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
-    <ClCompile Include="private\src\Core\IndexBufferObject.cpp" />
+    <ClCompile Include="private\src\Core\IndexBuffer.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
     <ClCompile Include="private\src\Core\Scene.cpp" />
@@ -184,12 +184,13 @@
     <ClInclude Include="private\inc\Core\FrameBuffer.hpp" />
     <ClInclude Include="private\inc\Core\ICamera.hpp" />
     <ClInclude Include="private\inc\Core\IImageLoader.hpp" />
-    <ClInclude Include="private\inc\Core\IIndexBufferObject.hpp" />
+    <ClInclude Include="private\inc\Core\IIndexBuffer.hpp" />
     <ClInclude Include="private\inc\Core\IMaterial.hpp" />
     <ClInclude Include="private\inc\Core\IMesh.hpp" />
-    <ClInclude Include="private\inc\Core\IndexBufferObject.hpp" />
+    <ClInclude Include="private\inc\Core\IndexBuffer.hpp" />
+    <ClInclude Include="private\inc\Core\IResourceManager.hpp" />
     <ClInclude Include="private\inc\Core\IScene.hpp" />
-    <ClInclude Include="private\inc\Core\IVertexBufferObject.hpp" />
+    <ClInclude Include="private\inc\Core\IVertexBuffer.hpp" />
     <ClInclude Include="private\inc\Core\Mesh.hpp" />
     <ClInclude Include="private\inc\Core\PerspectiveCamera.hpp" />
     <ClInclude Include="private\inc\Core\Scene.hpp" />
@@ -200,7 +201,7 @@
     <ClInclude Include="private\inc\Core\TextureFactory.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
     <ClInclude Include="private\inc\Core\TextureLoader.hpp" />
-    <ClInclude Include="private\inc\Core\VertexBufferObject.hpp" />
+    <ClInclude Include="private\inc\Core\VertexBuffer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp" />

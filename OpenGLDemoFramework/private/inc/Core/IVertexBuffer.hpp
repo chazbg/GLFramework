@@ -1,9 +1,9 @@
 #pragma once
 
-class IVertexBufferObject
+class IVertexBuffer
 {
 public:
-	virtual ~IVertexBufferObject() {}
+	virtual ~IVertexBuffer() {}
 	virtual int getId() const = 0;
 	virtual int getVertexCount() const = 0;
 	virtual int getAttributeSize() const = 0;

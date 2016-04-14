@@ -9,8 +9,8 @@ PlaneMesh::PlaneMesh(int _width, int _height) :
     float* vb = generatePlaneVertices(width, height);
     float* uvBuffer = generateUVs(width, height);
 
-    vertices = new VertexBufferObject(vb, vertexCount, 3);
-    uvs = new VertexBufferObject(uvBuffer, vertexCount, 2);
+    vertices = new VertexBuffer(vb, vertexCount, 3);
+    uvs = new VertexBuffer(uvBuffer, vertexCount, 2);
 
     setVertices(*vertices);
     setTexCoords(*uvs);

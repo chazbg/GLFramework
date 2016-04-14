@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Mesh.hpp"
-#include <Core/VertexBufferObject.hpp>
+#include <Core/VertexBuffer.hpp>
 
 class BlockMesh : public Mesh
 {
@@ -17,7 +17,7 @@ private:
     float height;
     float length;
     unsigned int time;
-    VertexBufferObject* vertices;
-    VertexBufferObject* normals;
-    VertexBufferObject* uvs;
+    VertexBuffer* vertices;
+    VertexBuffer* normals;
+    VertexBuffer* uvs;
 };

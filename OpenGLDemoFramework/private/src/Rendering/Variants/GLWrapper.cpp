@@ -226,7 +226,7 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
             glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
         }
 
-        std::vector<IVertexBufferObject*> vbos = mesh->getVBOs();
+        std::vector<IVertexBuffer*> vbos = mesh->getVBOs();
         for (unsigned int i = 0; i < vbos.size(); i++)
         {
             if (vbos[i]->getId() != -1)
@@ -238,7 +238,7 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
         }
 
         //TODO: Strategy pattern
-        IIndexBufferObject* ibo = mesh->getIBO();
+        IIndexBuffer* ibo = mesh->getIBO();
         if (ibo)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo->getId());

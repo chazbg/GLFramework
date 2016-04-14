@@ -66,7 +66,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					vertexBuffer[k + 2] = pos.z;
 				}
 
-				VertexBufferObject* vertices = new VertexBufferObject(vertexBuffer, mesh->mNumVertices, 3);
+				VertexBuffer* vertices = new VertexBuffer(vertexBuffer, mesh->mNumVertices, 3);
 				delete[] vertexBuffer;
 				bufferGeometry->setVertices(*vertices);
 			}
@@ -84,7 +84,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					normalsBuffer[k + 2] = normal.z;
 				}
 
-				VertexBufferObject* normals = new VertexBufferObject(normalsBuffer, mesh->mNumVertices, 3);
+				VertexBuffer* normals = new VertexBuffer(normalsBuffer, mesh->mNumVertices, 3);
 				delete[] normalsBuffer;
 				bufferGeometry->setNormals(*normals);
 			}
@@ -107,8 +107,8 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					bitangentsBuffer[k + 2] = bitangent.z;
 				}
 
-				VertexBufferObject* tangents = new VertexBufferObject(tangentsBuffer, mesh->mNumVertices, 3);
-				VertexBufferObject* bitangents = new VertexBufferObject(bitangentsBuffer, mesh->mNumVertices, 3);
+				VertexBuffer* tangents = new VertexBuffer(tangentsBuffer, mesh->mNumVertices, 3);
+				VertexBuffer* bitangents = new VertexBuffer(bitangentsBuffer, mesh->mNumVertices, 3);
 				delete[] tangentsBuffer;
 				delete[] bitangentsBuffer;
 
@@ -128,7 +128,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					texCoordsBuffer[k + 1] = uv.y;
 				}
 
-				VertexBufferObject* uvs = new VertexBufferObject(texCoordsBuffer, mesh->mNumVertices, 2);
+				VertexBuffer* uvs = new VertexBuffer(texCoordsBuffer, mesh->mNumVertices, 2);
 				delete[] texCoordsBuffer;
 				bufferGeometry->setTexCoords(*uvs);
 			}
@@ -146,7 +146,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					indexBuffer[k + 2] = face.mIndices[2];
 				}
 
-				IndexBufferObject* indices = new IndexBufferObject(indexBuffer, 3 * mesh->mNumFaces);
+				IndexBuffer* indices = new IndexBuffer(indexBuffer, 3 * mesh->mNumFaces);
 				delete[] indexBuffer;
 				bufferGeometry->setIndices(*indices);
 			}

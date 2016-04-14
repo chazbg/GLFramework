@@ -1,9 +1,9 @@
 #pragma once
 
-class IIndexBufferObject
+class IIndexBuffer
 {
 public:
-    virtual ~IIndexBufferObject() {}
+    virtual ~IIndexBuffer() {}
     virtual int getId() const = 0;
     virtual int getIndexCount() const = 0;
 };

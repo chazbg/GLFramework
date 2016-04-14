@@ -2,7 +2,7 @@
 #include "Core/Mesh.hpp"
 #include "Math/Vector.hpp"
 #include "Core/Texture.hpp"
-#include <Core/VertexBufferObject.hpp>
+#include <Core/VertexBuffer.hpp>
 #include <string>
 
 class Rectangle : public Mesh
@@ -18,6 +18,6 @@ private:
 	float* genTexCoords();
 	void init();
 	unsigned int time;
-	VertexBufferObject* vertices;
-	VertexBufferObject* texCoords;
+	VertexBuffer* vertices;
+	VertexBuffer* texCoords;
 };

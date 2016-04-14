@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Core/Mesh.hpp>
-#include <Core/VertexBufferObject.hpp>
-#include <Core/IndexBufferObject.hpp>
+#include <Core/VertexBuffer.hpp>
+#include <Core/IndexBuffer.hpp>
 #include <string>
 #include <vector>
 

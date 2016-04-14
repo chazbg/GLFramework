@@ -12,17 +12,17 @@ class Mesh : public IMesh
 public:
 	Mesh();
 	~Mesh();
-    virtual IIndexBufferObject* getIBO();
-	virtual std::vector<IVertexBufferObject*>& getVBOs();
+    virtual IIndexBuffer* getIBO();
+	virtual std::vector<IVertexBuffer*>& getVBOs();
 	virtual void setModelMatrix(const Matrix4& model);
 	virtual Matrix4 getModelMatrix() const;
 	virtual void setWireframeMode(const bool showWireframe);
-    virtual void setIndices(const IIndexBufferObject& indices);
-	virtual void setVertices(const IVertexBufferObject& vertices);
-	virtual void setNormals(const IVertexBufferObject& normals);
-	virtual void setTangents(const IVertexBufferObject& tangents);
-	virtual void setBitangents(const IVertexBufferObject& bitangents);
-	virtual void setTexCoords(const IVertexBufferObject& texCoords);
+    virtual void setIndices(const IIndexBuffer& indices);
+	virtual void setVertices(const IVertexBuffer& vertices);
+	virtual void setNormals(const IVertexBuffer& normals);
+	virtual void setTangents(const IVertexBuffer& tangents);
+	virtual void setBitangents(const IVertexBuffer& bitangents);
+	virtual void setTexCoords(const IVertexBuffer& texCoords);
 	virtual void setMaterial(IMaterial* material);
 	virtual IMaterial& getMaterial() const;
     virtual void addChild(IMesh* child);
@@ -43,8 +43,8 @@ protected:
     float* generateUVs(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();
 	IMaterial* material;
-    IIndexBufferObject* ibo;
-	std::vector<IVertexBufferObject*> vbos;
+    IIndexBuffer* ibo;
+	std::vector<IVertexBuffer*> vbos;
     std::vector<IMesh*> children;
 	float* wireframeVertexBuffer;
 	GLuint wireframeVertexBufferID;

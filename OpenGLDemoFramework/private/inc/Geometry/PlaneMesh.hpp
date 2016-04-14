@@ -1,6 +1,6 @@
 #pragma once
 #include <Core/Mesh.hpp>
-#include <Core/VertexBufferObject.hpp>
+#include <Core/VertexBuffer.hpp>
 
 class PlaneMesh : public Mesh
 {
@@ -13,7 +13,7 @@ private:
     float* generateUVs(int width, int height);
     int width;
     int height;
-    VertexBufferObject* vertices;
-    VertexBufferObject* uvs;
+    VertexBuffer* vertices;
+    VertexBuffer* uvs;
 };
 

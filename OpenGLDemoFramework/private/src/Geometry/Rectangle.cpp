@@ -27,8 +27,8 @@ void Rectangle::init()
 	float* vertexBuffer = genVertices();
 	float* uvs = genTexCoords();
 
-	vertices = new VertexBufferObject(vertexBuffer, vertexCount, 2);
-	texCoords = new VertexBufferObject(uvs, vertexCount, 2);
+	vertices = new VertexBuffer(vertexBuffer, vertexCount, 2);
+	texCoords = new VertexBuffer(uvs, vertexCount, 2);
 
 	setVertices(*vertices);
 	setTexCoords(*texCoords);

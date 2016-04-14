@@ -1,7 +1,5 @@
-#include <Core/ShaderMaterial.hpp>
-#include <Core/Shader.hpp>
-
-using namespace std;
+#include "Core/ShaderMaterial.hpp"
+#include "Core/Shader.hpp"
 
 ShaderMaterial::ShaderMaterial(const std::string vShaderPath, const std::string fShaderPath) : id(-1)
 {
