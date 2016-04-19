@@ -37,9 +37,9 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->setProperty("normalMap", 1);
     deferredShadingRectMat[3]->setProperty("depthMap", 2);
 
-    deferredShadingTex[0] = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, 0);
-    deferredShadingTex[1] = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, 0);
-    deferredShadingTex[2] = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, 0);
+    deferredShadingTex[0] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3);
+    deferredShadingTex[1] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3);
+    deferredShadingTex[2] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3);
 
     deferredShadingRectMat[0]->addTexture(deferredShadingTex[0]);
     deferredShadingRectMat[1]->addTexture(deferredShadingTex[1]);
@@ -64,38 +64,20 @@ void Renderer::initDeferredShading()
 
     unsigned int fbo = deferredShadingFbo->getFbo();
     unsigned int texId[3];
-    texId[0] = getTexId(deferredShadingTex[0]);
-    texId[1] = getTexId(deferredShadingTex[1]);
-    texId[2] = getTexId(deferredShadingTex[2]);
+    texId[0] = reinterpret_cast<OpenGLTexture*>(deferredShadingTex[0])->getId();
+    texId[1] = reinterpret_cast<OpenGLTexture*>(deferredShadingTex[1])->getId();
+    texId[2] = reinterpret_cast<OpenGLTexture*>(deferredShadingTex[2])->getId();
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    glBindTexture(GL_TEXTURE_2D, texId[0]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId[0], 0);
-
-    glBindTexture(GL_TEXTURE_2D, texId[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, texId[1], 0);
 
-    glBindTexture(GL_TEXTURE_2D, texId[2]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //glBindTexture(GL_TEXTURE_2D, texId[2]);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texId[2], 0);
 
@@ -109,7 +91,7 @@ void Renderer::initPostProcessing()
     postProcessMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
     postProcessMat->addTexture(postProcessTex);
 
-    postProcessTex = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, 0);
+    postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4);
 
     postProcessRect = new Rectangle();
     postProcessRect->setMaterial(postProcessMat);
@@ -117,16 +99,9 @@ void Renderer::initPostProcessing()
     postProcessFbo = new FrameBuffer();
 
     unsigned int fbo = postProcessFbo->getFbo();
-    unsigned int texId = getTexId(postProcessTex);
+    unsigned int texId = reinterpret_cast<OpenGLTexture*>(postProcessTex)->getId();
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
     glGenRenderbuffers(1, &depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
@@ -145,7 +120,7 @@ void Renderer::initShadowMapping()
 
     depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 
-    shadowMap = texFactory.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, 0);
+    shadowMap = resourceManager.createTexture((unsigned int)resolution.x, (unsigned int)resolution.y, 4);
 
     rectMat->addTexture(shadowMap);
 
@@ -183,6 +158,11 @@ void Renderer::setDepthTest(const bool enabled)
     }
 }
 
+IResourceManager& Renderer::getResourceManager()
+{
+    return resourceManager;
+}
+
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
     renderToTexture(scene.getChildren(), camera);
@@ -209,21 +189,21 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
         mesh->getMaterial().setProperty("modelView", camera.getViewMatrix() * mesh->getModelMatrix());
 
         updateUniforms(mesh->getMaterial());
-        std::vector<const Texture*> textures = mesh->getMaterial().getTextures();
-        std::vector<const TextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
+        std::vector<const ITexture*> textures = mesh->getMaterial().getTextures();
+        std::vector<const ITextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
 
         for (unsigned int i = 0; i < textures.size(); i++)
         {
-            unsigned int texId = getTexId(textures[i]);
+            const OpenGLTexture* tex = reinterpret_cast<const OpenGLTexture*>(textures[i]);
             glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, texId);
+            glBindTexture(GL_TEXTURE_2D, tex->getId());
         }
 
         for (unsigned int i = textures.size(); i < textures.size() + textureCubemaps.size(); i++)
         {
-            unsigned int texId = getTexId(textureCubemaps[i - textures.size()]);
+            const OpenGLTextureCubemap* tex = reinterpret_cast<const OpenGLTextureCubemap*>(textureCubemaps[i - textures.size()]);
             glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, tex->getId());
         }
 
         std::vector<IVertexBuffer*> vbos = mesh->getVBOs();
@@ -269,54 +249,6 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
 void Renderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     render(postProcessRect, camera);
-}
-
-unsigned int Renderer::getTexId(const Texture* tex)
-{
-    if (textures.find(tex->getId()) == textures.end())
-    {
-        textures[tex->getId()] = 0;
-        glGenTextures(1, &textures[tex->getId()]);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[tex->getId()]);
-        glTexImage2D(GL_TEXTURE_2D, 0, getTexFormat(tex->getBpp()), tex->getWidth(), tex->getHeight(), 0, getTexFormat(tex->getBpp()), GL_UNSIGNED_BYTE, tex->getData());
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    }
-
-    return textures[tex->getId()];
-}
-
-unsigned int Renderer::getTexId(const TextureCubemap * tex)
-{
-	if (textures.find(tex->getId()) == textures.end())
-	{
-		textures[tex->getId()] = 0;
-		glGenTextures(1, &textures[tex->getId()]);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, textures[tex->getId()]);
-
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, getTexFormat(tex->getTexLeft()->getBpp()),   tex->getTexLeft()->getWidth(), tex->getTexLeft()->getHeight(), 0,     getTexFormat(tex->getTexLeft()->getBpp()),   GL_UNSIGNED_BYTE, tex->getTexLeft()->getData());
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, getTexFormat(tex->getTexRight()->getBpp()),  tex->getTexRight()->getWidth(), tex->getTexRight()->getHeight(), 0,   getTexFormat(tex->getTexRight()->getBpp()),  GL_UNSIGNED_BYTE, tex->getTexRight()->getData());
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, getTexFormat(tex->getTexTop()->getBpp()),    tex->getTexTop()->getWidth(), tex->getTexTop()->getHeight(), 0,       getTexFormat(tex->getTexTop()->getBpp()),    GL_UNSIGNED_BYTE, tex->getTexTop()->getData());
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, getTexFormat(tex->getTexBottom()->getBpp()), tex->getTexBottom()->getWidth(), tex->getTexBottom()->getHeight(), 0, getTexFormat(tex->getTexBottom()->getBpp()), GL_UNSIGNED_BYTE, tex->getTexBottom()->getData());
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, getTexFormat(tex->getTexFront()->getBpp()),  tex->getTexFront()->getWidth(), tex->getTexFront()->getHeight(), 0,   getTexFormat(tex->getTexFront()->getBpp()),  GL_UNSIGNED_BYTE, tex->getTexFront()->getData());
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, getTexFormat(tex->getTexBack()->getBpp()),   tex->getTexBack()->getWidth(), tex->getTexBack()->getHeight(), 0,     getTexFormat(tex->getTexBack()->getBpp()),   GL_UNSIGNED_BYTE, tex->getTexBack()->getData());
-	     
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-    }
-
-	return textures[tex->getId()];
 }
 
 void Renderer::updateUniforms(const IMaterial& material)
@@ -369,7 +301,7 @@ void Renderer::updateUniforms(const IMaterial& material)
 void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec4& viewport)
 {
     unsigned int fbo = fb->getFbo();
-    unsigned int texId = getTexId(shadowMap);
+    unsigned int texId = reinterpret_cast<OpenGLTexture*>(shadowMap)->getId();
 
     std::vector<IMaterial*> originalMaterials;
     for (unsigned int i = 0; i < meshes.size(); i++)
@@ -404,8 +336,8 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
 
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        vector<const Texture*> textures = originalMaterials[i]->getTextures();
-        vector<const Texture*>::iterator it = find(textures.begin(), textures.end(), shadowMap);
+        vector<const ITexture*> textures = originalMaterials[i]->getTextures();
+        vector<const ITexture*>::iterator it = find(textures.begin(), textures.end(), shadowMap);
         if (textures.end() == it)
         {
             originalMaterials[i]->addTexture(shadowMap);
@@ -476,31 +408,4 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
 
     glViewport(0, 0, 512, 512);
     render(deferredShadingRect[3], camera);
-}
-
-unsigned int Renderer::getTexFormat(unsigned int bpp)
-{
-    unsigned int format = 0;
-    switch (bpp)
-    {
-    case 1:
-    {
-        format = GL_LUMINANCE;
-        break;
-    }
-    case 3:
-    {
-        format = GL_RGB;
-        break;
-    }
-    case 4:
-    {
-        format = GL_RGBA;
-        break;
-    }
-    default:
-        break;
-    }
-
-    return format;
 }

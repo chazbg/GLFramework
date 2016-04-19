@@ -77,7 +77,7 @@ namespace HoughTransformDemo
         Renderer* renderer;
         Rectangle* rect;
         vector<IMaterial*> materials;
-        vector<Texture*> textures;
+        vector<OpenGLTexture*> textures;
     };
 
     void main()

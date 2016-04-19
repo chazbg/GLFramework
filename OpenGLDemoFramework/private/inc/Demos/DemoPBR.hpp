@@ -5,7 +5,6 @@
 #include <Core/PerspectiveCamera.hpp>
 #include <Core/Scene.hpp>
 #include <Core/ShaderMaterial.hpp>
-#include <Core/TextureLoader.hpp>
 #include <Geometry/CustomGeometry.hpp>
 #include <Math/GeometryAlgorithm.hpp>
 #include <iostream>
@@ -278,9 +277,8 @@ namespace PBRDemo
 
 		void initTextures()
 		{
-			TextureLoader texLoader;
-
-			envMap = texLoader.loadTextureCubemap(
+            IResourceManager& rm = renderer->getResourceManager();
+			envMap = rm.createTextureCubemap(
 				"Images/cubemap_1/posz.png",
 				"Images/cubemap_1/negz.png",
 				"Images/cubemap_1/posy.png",
@@ -289,13 +287,13 @@ namespace PBRDemo
 				"Images/cubemap_1/negx.png"
 				);
 
-			textures.push_back(texLoader.loadTexture("Images/pattern_09/diffuse.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_09/normal.png"));
-			textures.push_back(texLoader.loadTexture("Images/pattern_09/specular.png"));
-            textures.push_back(texLoader.loadTexture("Images/pattern6/diffuse2.jpg"));
-            textures.push_back(texLoader.loadTexture("Images/pattern6/specular.jpg"));
-			textures.push_back(texLoader.loadTexture("Images/ogrehead_diffuse.png"));
-			textures.push_back(texLoader.loadTexture("Images/ogre_normalmap.png"));
+			textures.push_back(rm.createTexture("Images/pattern_09/diffuse.png"));
+			textures.push_back(rm.createTexture("Images/pattern_09/normal.png"));
+			textures.push_back(rm.createTexture("Images/pattern_09/specular.png"));
+            textures.push_back(rm.createTexture("Images/pattern6/diffuse2.jpg"));
+            textures.push_back(rm.createTexture("Images/pattern6/specular.jpg"));
+			textures.push_back(rm.createTexture("Images/ogrehead_diffuse.png"));
+			textures.push_back(rm.createTexture("Images/ogre_normalmap.png"));
 		}
 
         void initLights()
@@ -433,8 +431,8 @@ namespace PBRDemo
         vector<CustomGeometry*> lights;
 		vector<CustomGeometry*> meshes;
 		vector<IMaterial*> materials;
-		vector<Texture*> textures;
-		TextureCubemap* envMap;
+		vector<ITexture*> textures;
+		ITextureCubemap* envMap;
         bool cameraRotating;
         bool cameraPanning;
 		int materialIndex;

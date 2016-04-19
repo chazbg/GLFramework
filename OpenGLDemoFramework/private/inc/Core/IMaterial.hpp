@@ -2,8 +2,8 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "Core/Texture.hpp"
-#include "Core/TextureCubemap.hpp"
+#include "Core/ITexture.hpp"
+#include "Core/ITextureCubemap.hpp"
 #include "Math/Vector.hpp"
 #include "Math/Matrix.hpp"
 
@@ -12,12 +12,12 @@ class IMaterial
 public:
     virtual ~IMaterial() {}
     virtual int getId() const = 0;
-    virtual const std::vector<const Texture*>&        getTextures() const = 0;
-    virtual const std::vector<const TextureCubemap*>& getTextureCubemaps() const = 0;
-    virtual void addTexture(const Texture* tex) = 0;
-    virtual void addTextureCubemap(const TextureCubemap* tex) = 0;
-    virtual void removeTexture(const Texture* tex) = 0;
-    virtual void removeTextureCubemap(const TextureCubemap* tex) = 0;
+    virtual const std::vector<const ITexture*>&        getTextures() const = 0;
+    virtual const std::vector<const ITextureCubemap*>& getTextureCubemaps() const = 0;
+    virtual void addTexture(const ITexture* tex) = 0;
+    virtual void addTextureCubemap(const ITextureCubemap* tex) = 0;
+    virtual void removeTexture(const ITexture* tex) = 0;
+    virtual void removeTextureCubemap(const ITextureCubemap* tex) = 0;
     virtual const std::map<std::string, int>&          getIntProperties() const = 0; //Refactor the many similar calls.
     virtual const std::map<std::string, unsigned int>& getUintProperties() const = 0; //Refactor the many similar calls.
     virtual const std::map<std::string, float>&        getFloatProperties() const = 0;//Refactor the many similar calls.

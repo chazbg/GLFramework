@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/Mesh.hpp"
 #include "Math/Vector.hpp"
-#include "Core/Texture.hpp"
 #include <Core/VertexBuffer.hpp>
 #include <string>
 

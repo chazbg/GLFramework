@@ -1,8 +1,6 @@
-//#include "Demos/DemoPBR.hpp"
-#include "Tests/TestVector.hpp"
+#include "Demos/DemoPBR.hpp"
 int main(int argc, char* argv[])
 {
-    //PBRDemo::main();
-	TestVec3();
+    PBRDemo::main();
     return 0;
 }

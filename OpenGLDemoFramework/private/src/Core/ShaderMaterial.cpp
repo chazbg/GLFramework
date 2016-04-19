@@ -15,38 +15,38 @@ int ShaderMaterial::getId() const
 	return id;
 }
 
-const std::vector<const Texture*>& ShaderMaterial::getTextures() const
+const std::vector<const ITexture*>& ShaderMaterial::getTextures() const
 {
 	return textures;
 }
 
-const std::vector<const TextureCubemap*>& ShaderMaterial::getTextureCubemaps() const
+const std::vector<const ITextureCubemap*>& ShaderMaterial::getTextureCubemaps() const
 {
 	return textureCubemaps;
 }
 
-void ShaderMaterial::addTexture(const Texture* tex)
+void ShaderMaterial::addTexture(const ITexture* tex)
 {
 	textures.push_back(tex);
 }
 
-void ShaderMaterial::addTextureCubemap(const TextureCubemap* tex)
+void ShaderMaterial::addTextureCubemap(const ITextureCubemap* tex)
 {
 	textureCubemaps.push_back(tex);
 }
 
-void ShaderMaterial::removeTexture(const Texture* tex)
+void ShaderMaterial::removeTexture(const ITexture* tex)
 {
-	vector<const Texture*>::iterator it = find(textures.begin(), textures.end(), tex);
+	vector<const ITexture*>::iterator it = find(textures.begin(), textures.end(), tex);
 	if (textures.end() != it)
 	{
 		textures.erase(it);
 	}
 }
 
-void ShaderMaterial::removeTextureCubemap(const TextureCubemap* tex)
+void ShaderMaterial::removeTextureCubemap(const ITextureCubemap* tex)
 {
-	vector<const TextureCubemap*>::iterator it = find(textureCubemaps.begin(), textureCubemaps.end(), tex);
+	vector<const ITextureCubemap*>::iterator it = find(textureCubemaps.begin(), textureCubemaps.end(), tex);
 	if (textureCubemaps.end() != it)
 	{
 		textureCubemaps.erase(it);

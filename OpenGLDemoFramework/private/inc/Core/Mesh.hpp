@@ -1,7 +1,6 @@
 #pragma once
 #include <GL/glew.h>
 #include "Math/Matrix.hpp"
-#include "Core/Texture.hpp"
 #include "Core/IMesh.hpp"
 #include <map>
 

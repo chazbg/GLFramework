@@ -1,16 +1,17 @@
 #pragma once
 
-#include <Math/Vector.hpp>
-#include <Core/IScene.hpp>
-#include <Core/ICamera.hpp>
-#include <Core/Texture.hpp>
 #include <vector>
 #include <map>
-#include <Core/ShaderMaterial.hpp>
-#include <Geometry/Rectangle.hpp>
-#include <Core/FrameBuffer.hpp>
-#include <Core/TextureFactory.hpp>
-#include <Core/PerspectiveCamera.hpp>
+#include "Math/Vector.hpp"
+#include "Core/IScene.hpp"
+#include "Core/ICamera.hpp"
+#include "Core/ITexture.hpp"
+#include "Core/ShaderMaterial.hpp"
+#include "Geometry/Rectangle.hpp"
+#include "Core/FrameBuffer.hpp"
+#include "Core/IResourceManager.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLResourceManager.hpp"
+#include "Core/PerspectiveCamera.hpp"
 
 class Renderer
 {
@@ -19,11 +20,12 @@ public:
 	~Renderer();
 	void clear(const Vec4& color);
 	void setDepthTest(const bool enabled);
-	void render(IScene& scene, ICamera& camera);
+    IResourceManager& getResourceManager();
+	void render(IScene& scene, ICamera& camera);    
 private:
 	#ifdef USE_DX12
 	#include "../private/inc/Rendering/Variants/RendererDX.hpp"
 	#else
-	#include "../private/inc/Rendering/Variants/GLWrapper.hpp"
+	#include "../private/inc/Rendering/Variants/OpenGL/OpenGLRenderer.hpp"
 	#endif
 };
