@@ -12,7 +12,7 @@ public:
 	virtual ~IResourceManager(){}
 
     virtual ITexture* createTexture(const std::string path) = 0;
-    virtual ITexture* createTexture(const unsigned int width, const unsigned int height, const unsigned int bpp) = 0;
+    virtual ITexture* createTexture(const unsigned int width, const unsigned int height, const unsigned int bpp, const bool isDepthComponent) = 0;
     virtual ITexture* createTexture(const unsigned int width, const unsigned int height, const unsigned int bpp, const unsigned char* data) = 0;
     virtual void destroyTexture(ITexture* tex) = 0;
     virtual ITextureCubemap* createTextureCubemap(

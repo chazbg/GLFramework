@@ -19,28 +19,35 @@ unsigned int OpenGLTexture::getId() const
 	return id;
 }
 
-unsigned int OpenGLTexture::getFormat(const unsigned int bpp)
+unsigned int OpenGLTexture::getFormat(const unsigned int bpp, const bool isDepthComponent)
 {
     unsigned int format = 0;
-    switch (bpp)
+    if (isDepthComponent)
     {
-    case 1:
-    {
-        format = GL_LUMINANCE;
-        break;
+        format = GL_DEPTH_COMPONENT;
     }
-    case 3:
+    else
     {
-        format = GL_RGB;
-        break;
-    }
-    case 4:
-    {
-        format = GL_RGBA;
-        break;
-    }
-    default:
-        break;
+        switch (bpp)
+        {
+        case 1:
+        {
+            format = GL_LUMINANCE;
+            break;
+        }
+        case 3:
+        {
+            format = GL_RGB;
+            break;
+        }
+        case 4:
+        {
+            format = GL_RGBA;
+            break;
+        }
+        default:
+            break;
+        }
     }
 
     return format;

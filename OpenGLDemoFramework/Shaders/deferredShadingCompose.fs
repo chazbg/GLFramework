@@ -12,8 +12,8 @@ uniform sampler2D depthMap;
 
 void main()
 {
-    vec3 light = normalize(vec3(0, 0.15, 0.25));
+    vec3 light = normalize(vec3(1.0));
     vec3 n = texture2D(normalMap, texCoords).rgb;
     vec3 c = texture2D(colorMap, texCoords).rgb;
-	color = dot(n.xyz, light) * c;
+	color = max(0.0, dot(n.xyz, light)) * c;
 }

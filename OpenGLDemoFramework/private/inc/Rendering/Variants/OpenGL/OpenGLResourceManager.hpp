@@ -54,7 +54,7 @@ public:
             glGenTextures(1, &id);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, id);
-            glTexImage2D(GL_TEXTURE_2D, 0, OpenGLTexture::getFormat(bpp), width, height, 0, OpenGLTexture::getFormat(bpp), GL_UNSIGNED_BYTE, bits);
+            glTexImage2D(GL_TEXTURE_2D, 0, OpenGLTexture::getFormat(bpp, false), width, height, 0, OpenGLTexture::getFormat(bpp, false), GL_UNSIGNED_BYTE, bits);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -79,7 +79,7 @@ public:
         glGenTextures(1, &id);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, id);
-        glTexImage2D(GL_TEXTURE_2D, 0, OpenGLTexture::getFormat(bpp), width, height, 0, OpenGLTexture::getFormat(bpp), GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, OpenGLTexture::getFormat(bpp, false), width, height, 0, OpenGLTexture::getFormat(bpp, false), GL_UNSIGNED_BYTE, data);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -92,11 +92,11 @@ public:
         return tex;
     }
 
-    virtual ITexture* createTexture(const unsigned int width, const unsigned int height, const unsigned int bpp)
+    virtual ITexture* createTexture(const unsigned int width, const unsigned int height, const unsigned int bpp, const bool isDepthComponent)
     {
         OpenGLTexture* tex = 0;
         unsigned int id;
-        unsigned int format = OpenGLTexture::getFormat(bpp);
+        unsigned int format = OpenGLTexture::getFormat(bpp, isDepthComponent);
         glGenTextures(1, &id);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, id);
@@ -169,7 +169,7 @@ public:
             else
             {
                 unsigned int id;
-                unsigned int format = OpenGLTexture::getFormat(bpp);
+                unsigned int format = OpenGLTexture::getFormat(bpp, false);
                 glGenTextures(1, &id);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, id);

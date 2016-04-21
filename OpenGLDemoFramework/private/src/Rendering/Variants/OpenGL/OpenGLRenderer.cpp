@@ -37,9 +37,9 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->setProperty("normalMap", 1);
     deferredShadingRectMat[3]->setProperty("depthMap", 2);
 
-    deferredShadingTex[0] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3);
-    deferredShadingTex[1] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3);
-    deferredShadingTex[2] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3);
+    deferredShadingTex[0] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, false);
+    deferredShadingTex[1] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, false);
+    deferredShadingTex[2] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, true);
 
     deferredShadingRectMat[0]->addTexture(deferredShadingTex[0]);
     deferredShadingRectMat[1]->addTexture(deferredShadingTex[1]);
@@ -71,14 +71,6 @@ void Renderer::initDeferredShading()
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId[0], 0);
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, texId[1], 0);
-
-    //glBindTexture(GL_TEXTURE_2D, texId[2]);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texId[2], 0);
 
     GLenum drawBuffs[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -91,7 +83,7 @@ void Renderer::initPostProcessing()
     postProcessMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
     postProcessMat->addTexture(postProcessTex);
 
-    postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4);
+    postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, false);
 
     postProcessRect = new Rectangle();
     postProcessRect->setMaterial(postProcessMat);
@@ -120,7 +112,7 @@ void Renderer::initShadowMapping()
 
     depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 
-    shadowMap = resourceManager.createTexture((unsigned int)resolution.x, (unsigned int)resolution.y, 4);
+    shadowMap = resourceManager.createTexture((unsigned int)resolution.x, (unsigned int)resolution.y, 4, true);
 
     rectMat->addTexture(shadowMap);
 
@@ -166,7 +158,8 @@ IResourceManager& Renderer::getResourceManager()
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
     renderToTexture(scene.getChildren(), camera);
-    render(scene.getChildren(), camera);
+    //render(scene.getChildren(), camera);
+    renderDeferred(scene.getChildren(), camera);
 }
 
 void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -314,14 +307,6 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
-    glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, (unsigned int) resolution.x, (unsigned int) resolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texId, 0);
 
     glDrawBuffer(GL_NONE); // No color buffer is drawn to.
@@ -345,7 +330,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
-    //render(r, camera);
+    render(r, camera);
 }
 
 void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -369,7 +354,8 @@ void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camer
 
 void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
 {
-    glViewport(0, 0, 512, 512);
+    Vec2 quarterRes = resolution / 2.0f;
+    glViewport(0, 0, resolution.x, resolution.y);
 
     unsigned int fbo = deferredShadingFbo->getFbo();
 
@@ -397,15 +383,17 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
-    glViewport(512, 0, 512, 512);
+    glViewport(quarterRes.x, 0, quarterRes.x, quarterRes.y);
     render(deferredShadingRect[0], camera);
 
-    glViewport(0, 512, 512, 512);
+    glViewport(0, quarterRes.y, quarterRes.x, quarterRes.y);
     render(deferredShadingRect[1], camera);
 
-    glViewport(512, 512, 512, 512);
+    glViewport(quarterRes.x, quarterRes.y, quarterRes.x, quarterRes.y);
     render(deferredShadingRect[2], camera);
 
-    glViewport(0, 0, 512, 512);
+    glViewport(0, 0, quarterRes.x, quarterRes.y);
     render(deferredShadingRect[3], camera);
+
+    glViewport(0, 0, resolution.x, resolution.y);
 }

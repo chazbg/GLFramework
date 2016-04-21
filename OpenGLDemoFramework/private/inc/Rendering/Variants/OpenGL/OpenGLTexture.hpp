@@ -11,7 +11,7 @@ public:
     virtual unsigned int getHeight() const;
     virtual unsigned int getBpp() const;
     unsigned int getId() const;
-    static unsigned int getFormat(const unsigned int bpp);
+    static unsigned int getFormat(const unsigned int bpp, const bool isDepthComponent);
 private:
     OpenGLTexture(const unsigned int width, const unsigned int height, const unsigned int bpp);
     ~OpenGLTexture();
