@@ -158,8 +158,8 @@ IResourceManager& Renderer::getResourceManager()
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
     renderToTexture(scene.getChildren(), camera);
-    //render(scene.getChildren(), camera);
-    renderDeferred(scene.getChildren(), camera);
+    render(scene.getChildren(), camera);
+    //renderDeferred(scene.getChildren(), camera);
 }
 
 void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -330,7 +330,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
-    render(r, camera);
+    //render(r, camera);
 }
 
 void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)

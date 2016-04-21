@@ -172,6 +172,7 @@
     <ClCompile Include="private\src\Math\Plane.cpp" />
     <ClCompile Include="private\src\Math\Vector.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderer.cpp" />
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLResourceManager.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTextureCubemap.cpp" />
     <ClCompile Include="private\src\Windowing\Variants\GLUTWrapper.cpp" />

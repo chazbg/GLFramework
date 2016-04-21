@@ -156,6 +156,9 @@
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTextureCubemap.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLResourceManager.cpp">
+      <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
