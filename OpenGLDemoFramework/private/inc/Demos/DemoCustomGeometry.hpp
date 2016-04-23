@@ -23,7 +23,7 @@ namespace CustomGeometryDemo
             renderer = new Renderer();
             TextureGenerator gen;
             TextureFactory texFactory;
-            shaderMaterial = new ShaderMaterial("Shaders/basic.vs", "Shaders/basic.fs");
+            shaderMaterial = new OpenGLMaterial("Shaders/basic.vs", "Shaders/basic.fs");
             g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
             g->setMaterial(shaderMaterial);
 			
@@ -115,7 +115,7 @@ namespace CustomGeometryDemo
         Scene scene;
         Renderer* renderer;
         CustomGeometry* g;
-        ShaderMaterial* shaderMaterial;
+        OpenGLMaterial* shaderMaterial;
         unsigned int time;
         bool stopTime;
         Vec3 cameraPos;

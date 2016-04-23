@@ -26,7 +26,7 @@ namespace TextureLoaderDemo
 			time = 0;
 			stopTime = false;
 			cameraPos = Vec3(0, 15, 25);
-			cubeTexturedMat = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+			cubeTexturedMat = new OpenGLMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
 			cubeTexturedMat->addTexture(texLoader.loadTexture("Images/DefaultTexture.png"));
 			cubeTexturedMat->setProperty("colorMap", 0);
 			cubeTexturedMat->setProperty("sampler", 1);
@@ -139,7 +139,7 @@ namespace TextureLoaderDemo
 		Vec3 cameraPos;
 		Scene scene;
 		PerspectiveCamera camera;
-		ShaderMaterial* cubeTexturedMat;
+		OpenGLMaterial* cubeTexturedMat;
 		Vec2 prevMousePos;
 	};
 

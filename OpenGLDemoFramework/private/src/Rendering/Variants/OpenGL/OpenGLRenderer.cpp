@@ -28,11 +28,11 @@ Renderer::Renderer(const Vec2& resolution) : lightCamera(3.0f / 4.0f, 16.0f / 9.
 
 void Renderer::initDeferredShading()
 {
-    deferredShadingMat = new ShaderMaterial("Shaders/deferredShading.vs", "Shaders/deferredShading.fs");
-    deferredShadingRectMat[0] = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
-    deferredShadingRectMat[1] = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
-    deferredShadingRectMat[2] = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
-    deferredShadingRectMat[3] = new ShaderMaterial("Shaders/tex.vs", "Shaders/deferredShadingCompose.fs");
+    deferredShadingMat = resourceManager.createMaterial("Shaders/deferredShading.vs", "Shaders/deferredShading.fs");
+    deferredShadingRectMat[0] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
+    deferredShadingRectMat[1] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
+    deferredShadingRectMat[2] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
+    deferredShadingRectMat[3] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/deferredShadingCompose.fs");
     deferredShadingRectMat[3]->setProperty("colorMap", 0);
     deferredShadingRectMat[3]->setProperty("normalMap", 1);
     deferredShadingRectMat[3]->setProperty("depthMap", 2);
@@ -80,7 +80,7 @@ void Renderer::initDeferredShading()
 
 void Renderer::initPostProcessing()
 {
-    postProcessMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
+    postProcessMat = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
     postProcessMat->addTexture(postProcessTex);
 
     postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, false);
@@ -108,9 +108,9 @@ void Renderer::initPostProcessing()
 
 void Renderer::initShadowMapping()
 {
-    rectMat = new ShaderMaterial("Shaders/tex.vs", "Shaders/tex.fs");
+    rectMat = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
 
-    depthMat = new ShaderMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
+    depthMat = resourceManager.createMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
 
     shadowMap = resourceManager.createTexture((unsigned int)resolution.x, (unsigned int)resolution.y, 4, true);
 
@@ -246,7 +246,7 @@ void Renderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
 
 void Renderer::updateUniforms(const IMaterial& material)
 {
-    unsigned int programId = material.getId();
+    unsigned int programId = reinterpret_cast<const OpenGLMaterial&>(material).getId();
     map<string, float> fUniforms = material.getFloatProperties();
     map<string, float>::iterator fIt;
     map<string, int> iUniforms = material.getIntProperties();

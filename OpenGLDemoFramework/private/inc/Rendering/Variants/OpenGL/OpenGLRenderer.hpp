@@ -1,10 +1,10 @@
 #pragma once
 std::map<unsigned int, unsigned int> textures;
-ShaderMaterial*              depthMat;
-ShaderMaterial*              rectMat;
-ShaderMaterial*              postProcessMat;
-ShaderMaterial*              deferredShadingMat;
-ShaderMaterial*              deferredShadingRectMat[4];
+IMaterial*              depthMat;
+IMaterial*              rectMat;
+IMaterial*              postProcessMat;
+IMaterial*              deferredShadingMat;
+IMaterial*              deferredShadingRectMat[4];
 Rectangle*                   r;
 Rectangle*                   postProcessRect;
 Rectangle*                   deferredShadingRect[4];

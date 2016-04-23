@@ -1,4 +1,6 @@
 #include "Rendering/Variants/OpenGL/OpenGLResourceManager.hpp"
+#include "Core/Shader.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLMaterial.hpp"
 
 OpenGLResourceManager::OpenGLResourceManager()
 {
@@ -106,7 +108,7 @@ ITexture* OpenGLResourceManager::createTexture(const unsigned int width, const u
 
 void OpenGLResourceManager::destroyTexture(ITexture* tex)
 {
-    std::vector<ITexture*>::iterator it = std::find(textures.begin(), textures.end(), tex);
+    auto it = std::find(textures.begin(), textures.end(), tex);
     if (it != textures.end())
     {
         textures.erase(it);
@@ -187,7 +189,7 @@ ITextureCubemap* OpenGLResourceManager::createTextureCubemap(
 
 void OpenGLResourceManager::destroyTextureCubemap(ITextureCubemap* tex)
 {
-    std::vector<ITextureCubemap*>::iterator it = std::find(textureCubemaps.begin(), textureCubemaps.end(), tex);
+    auto it = std::find(textureCubemaps.begin(), textureCubemaps.end(), tex);
     if (it != textureCubemaps.end())
     {
         textureCubemaps.erase(it);
@@ -195,6 +197,64 @@ void OpenGLResourceManager::destroyTextureCubemap(ITextureCubemap* tex)
         unsigned int id = openglTex->getId();
         glDeleteTextures(1, &id);
         delete openglTex;
+    }
+}
+
+IMaterial * OpenGLResourceManager::createMaterial(const std::string vShaderPath, const std::string fShaderPath)
+{
+    int id = LoadShaders(vShaderPath.c_str(), fShaderPath.c_str());
+    OpenGLMaterial* material = new OpenGLMaterial(id);
+    
+    auto it = materialRefCounters.find(id);
+
+    if (it == materialRefCounters.end())
+    {
+        materialRefCounters[id] = 0;
+    }
+    else
+    {
+        materialRefCounters[id]++;
+    }
+
+    materials.push_back(material);
+
+    return material;
+}
+
+IMaterial * OpenGLResourceManager::cloneMaterial(const IMaterial * material)
+{
+    const OpenGLMaterial* glMaterial = reinterpret_cast<const OpenGLMaterial*>(material);
+    OpenGLMaterial* newMaterial = new OpenGLMaterial(*glMaterial);
+
+    materialRefCounters[glMaterial->getId()]++;
+
+    materials.push_back(newMaterial);
+
+    return newMaterial;
+}
+
+void OpenGLResourceManager::destroyMaterial(IMaterial * material)
+{
+    auto it = std::find(materials.begin(), materials.end(), material);
+    if (it != materials.end())
+    {
+        materials.erase(it);
+        OpenGLMaterial* glMaterial = reinterpret_cast<OpenGLMaterial*>(material);
+        unsigned int id = glMaterial->getId();
+
+        auto refCountersIt = materialRefCounters.find(id);
+
+        if (refCountersIt->second <= 1)
+        {
+            materialRefCounters.erase(refCountersIt);
+            glDeleteProgram(id);
+        }
+        else
+        {
+            materialRefCounters[id]--;
+        }
+        
+        delete glMaterial;
     }
 }
 

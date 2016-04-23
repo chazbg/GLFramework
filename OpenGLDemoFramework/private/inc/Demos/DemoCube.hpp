@@ -18,7 +18,7 @@ namespace CubeDemo
         {
             renderer = new Renderer();
             cube = new BlockMesh();
-            material = new ShaderMaterial("Shaders/cube.vs", "Shaders/cube.fs");
+            material = new OpenGLMaterial("Shaders/cube.vs", "Shaders/cube.fs");
             cube->setMaterial(material);
             scene.add(cube);
             camera.setPosition(Vec3(0, 15, 15));
@@ -41,7 +41,7 @@ namespace CubeDemo
         Scene scene;
         PerspectiveCamera camera;
         BlockMesh* cube;
-        ShaderMaterial* material;
+        OpenGLMaterial* material;
 	};
 
 	void main()

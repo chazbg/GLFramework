@@ -31,7 +31,7 @@ namespace WaveDemo
             time = 0;
             stopTime = false;
             cameraPos = Vec3(0, 15, 25);
-            waveMat = new ShaderMaterial("Shaders/plane.vs", "Shaders/plane.fs");
+            waveMat = new OpenGLMaterial("Shaders/plane.vs", "Shaders/plane.fs");
             waveMat->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generateOctavePerlinNoise(1, 0, 3, 0.5)));
 
             p = new PlaneMesh(50, 50);
@@ -137,7 +137,7 @@ namespace WaveDemo
         Vec3 cameraPos;
         Scene scene;
         PerspectiveCamera camera;
-        ShaderMaterial* waveMat;
+        OpenGLMaterial* waveMat;
         Vec2 prevMousePos;
     };
 

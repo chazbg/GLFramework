@@ -61,7 +61,7 @@ namespace HoughTransformDemo
 
         void initMaterials()
         {
-            materials.push_back(new ShaderMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/hough.fs"));
+            materials.push_back(new OpenGLMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/hough.fs"));
             materials[0]->addTexture(textures[0]);
         }
 

@@ -155,7 +155,6 @@
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
     <ClCompile Include="private\src\Core\Scene.cpp" />
     <ClCompile Include="private\src\Core\Shader.cpp" />
-    <ClCompile Include="private\src\Core\ShaderMaterial.cpp" />
     <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
     <ClCompile Include="private\src\Geometry\Bar.cpp" />
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />
@@ -171,6 +170,7 @@
     <ClCompile Include="private\src\Math\LineSegment.cpp" />
     <ClCompile Include="private\src\Math\Plane.cpp" />
     <ClCompile Include="private\src\Math\Vector.cpp" />
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderer.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLResourceManager.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTexture.cpp" />
@@ -195,7 +195,6 @@
     <ClInclude Include="private\inc\Core\PerspectiveCamera.hpp" />
     <ClInclude Include="private\inc\Core\Scene.hpp" />
     <ClInclude Include="private\inc\Core\Shader.hpp" />
-    <ClInclude Include="private\inc\Core\ShaderMaterial.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
     <ClInclude Include="private\inc\Core\VertexBuffer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
@@ -231,6 +230,7 @@
     <ClInclude Include="private\inc\Math\Plane.hpp" />
     <ClInclude Include="private\inc\Math\Vector.hpp" />
     <ClInclude Include="private\inc\Rendering\Renderer.hpp" />
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterial.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLRenderer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLResourceManager.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLTexture.hpp" />

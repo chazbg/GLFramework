@@ -23,7 +23,7 @@ namespace FragmentShaderSandboxDemo
             renderer = new Renderer(Vec2(1200, 600));
             TextureGenerator gen;
             TextureFactory texFactory;
-            shaderMaterial = new ShaderMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/raymarching0.fs");
+            shaderMaterial = new OpenGLMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/raymarching0.fs");
             shaderMaterial->setProperty("sampler0", 0);
             shaderMaterial->setProperty("sampler1", 1);
             shaderMaterial->setProperty("sampler2", 2);
@@ -119,7 +119,7 @@ namespace FragmentShaderSandboxDemo
         Scene scene;
         Renderer* renderer;
         Rectangle* rectangle;
-        ShaderMaterial* shaderMaterial;
+        OpenGLMaterial* shaderMaterial;
         unsigned int time;
         bool stopTime;
         Vec3 cameraPos;

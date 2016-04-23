@@ -36,14 +36,14 @@ namespace TexDemo
             cameraPos = Vec3(0, 15, 25);
             meshPos = Vec3(-10.0, 3, 0);
             prevDir = Vec3(0.01f, 0.1f, 0);
-            cubeMat = new ShaderMaterial("Shaders/cube.vs", "Shaders/cube.fs");
-            cubeTexturedMat = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+            cubeMat = new OpenGLMaterial("Shaders/cube.vs", "Shaders/cube.fs");
+            cubeTexturedMat = new OpenGLMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
             cubeTexturedMat->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generateOctavePerlinNoise(1, 0, 3, 0.5)));
             cubeTexturedMat->setProperty("colorMap", 0);
             cubeTexturedMat->setProperty("sampler", 1);
             cubeTexturedMat->setProperty("diffuse", Vec3(0, 0, 0.8f));
 
-            cubeTexturedMat2 = new ShaderMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+            cubeTexturedMat2 = new OpenGLMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
             cubeTexturedMat2->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generateOctavePerlinNoise(1, 0, 4, 0.7)));
             cubeTexturedMat2->setProperty("colorMap", 0);
             cubeTexturedMat2->setProperty("sampler", 1);
@@ -191,9 +191,9 @@ namespace TexDemo
         Vec3 prevDir;
         Scene scene;
         PerspectiveCamera camera;
-        ShaderMaterial* cubeMat;
-        ShaderMaterial* cubeTexturedMat;
-        ShaderMaterial* cubeTexturedMat2;
+        OpenGLMaterial* cubeMat;
+        OpenGLMaterial* cubeTexturedMat;
+        OpenGLMaterial* cubeTexturedMat2;
         Vec2 prevMousePos;
     };
 

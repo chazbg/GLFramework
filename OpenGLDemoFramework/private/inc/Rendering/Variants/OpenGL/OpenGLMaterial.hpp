@@ -1,14 +1,12 @@
 #pragma once
 
-#include <Core/IMaterial.hpp>
+#include "Core/IMaterial.hpp"
 #include <string>
 
-class ShaderMaterial : public IMaterial
+class OpenGLMaterial : public IMaterial
 {
+    friend class OpenGLResourceManager;
 public:
-    ShaderMaterial(const std::string vShaderPath, const std::string fShaderPath);
-    ~ShaderMaterial();
-    virtual int getId() const;
     virtual const std::vector<const ITexture*>& getTextures() const;
     virtual const std::vector<const ITextureCubemap*>& getTextureCubemaps() const;
     virtual void addTexture(const ITexture* tex);
@@ -25,7 +23,12 @@ public:
     virtual void setProperty(const std::string name, const float v);
     virtual void setProperty(const std::string name, const Vec3& v);
     virtual void setProperty(const std::string name, const Matrix4& v);
+    
+    int getId() const;
 private:
+    OpenGLMaterial(const int id);
+    OpenGLMaterial(const OpenGLMaterial& rhs);
+    ~OpenGLMaterial();
     int id;
     vector<const ITexture*> textures;
     vector<const ITextureCubemap*> textureCubemaps;

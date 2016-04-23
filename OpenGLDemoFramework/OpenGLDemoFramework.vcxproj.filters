@@ -129,9 +129,6 @@
     <ClCompile Include="private\src\Core\VertexBufferObject.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Core\ShaderMaterial.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\Scene.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -157,6 +154,9 @@
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLResourceManager.cpp">
+      <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLMaterial.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
@@ -293,9 +293,6 @@
     <ClInclude Include="private\inc\Core\IMaterial.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Core\ShaderMaterial.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Core\Scene.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -354,6 +351,9 @@
       <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLResourceManager.hpp">
+      <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterial.hpp">
       <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,6 @@
 #include "Rendering/Renderer.hpp"
 #include <Core/PerspectiveCamera.hpp>
 #include <Core/Scene.hpp>
-#include <Core/ShaderMaterial.hpp>
 #include <Geometry/CustomGeometry.hpp>
 #include <Math/GeometryAlgorithm.hpp>
 #include <iostream>
@@ -177,33 +176,35 @@ namespace PBRDemo
 
 		void initMaterials()
 		{
+            IResourceManager& resourceManager = renderer->getResourceManager();
+
             //0
-			materials.push_back(new ShaderMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
+			materials.push_back(resourceManager.createMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
 			materials[0]->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
 
             //1
-			materials.push_back(new ShaderMaterial("Shaders/envMap.vs", "Shaders/envMap.fs"));
+			materials.push_back(resourceManager.createMaterial("Shaders/envMap.vs", "Shaders/envMap.fs"));
 			materials[1]->setProperty("envMap", 1);
 			materials[1]->addTextureCubemap(envMap);
 
             //2
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs"));
             //3
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs"));
             //4
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_schlick.fs"));
+			materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_schlick.fs"));
             //5
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs"));
             //6
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay.fs"));
             //7
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/oren_nayar.fs"));
             //8
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue_normal_map.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue_normal_map.fs"));
             //9
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_schlick.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_schlick.fs"));
             //10
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/lambert.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/lambert.fs"));
            
 			for (unsigned int i = 2; i < 11; i++)
 			{
@@ -222,7 +223,7 @@ namespace PBRDemo
 			}
 
             //11
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/ue.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/ue.fs"));
             materials[11]->setProperty("diffuseMap", 0);
             materials[11]->setProperty("normalMap", 1);
             materials[11]->setProperty("specMap", 2);
@@ -236,7 +237,7 @@ namespace PBRDemo
             materials[11]->addTextureCubemap(envMap);
 
             //12
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/GGX_ue.fs"));
             materials[12]->setProperty("diffuseMap", 0);
             materials[12]->setProperty("normalMap", 1);
             materials[12]->setProperty("specMap", 2);
@@ -250,7 +251,7 @@ namespace PBRDemo
             materials[12]->addTextureCubemap(envMap);
 
 			//13
-			materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay_ogre.fs"));
+			materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay_ogre.fs"));
 			materials[13]->setProperty("diffuseMap", 0);
 			materials[13]->setProperty("normalMap", 1);
 			materials[13]->setProperty("specMap", 2);
@@ -264,7 +265,7 @@ namespace PBRDemo
 			materials[13]->addTextureCubemap(envMap);
 
             //14
-            materials.push_back(new ShaderMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin_body.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin_body.fs"));
             materials[14]->setProperty("diffuseMap", 0);
             materials[14]->setProperty("normalMap", 1);
             materials[14]->setProperty("specMap", 2);

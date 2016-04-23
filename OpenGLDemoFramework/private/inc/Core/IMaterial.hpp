@@ -10,8 +10,6 @@
 class IMaterial
 {
 public:
-    virtual ~IMaterial() {}
-    virtual int getId() const = 0;
     virtual const std::vector<const ITexture*>&        getTextures() const = 0;
     virtual const std::vector<const ITextureCubemap*>& getTextureCubemaps() const = 0;
     virtual void addTexture(const ITexture* tex) = 0;
@@ -28,4 +26,6 @@ public:
     virtual void setProperty(const std::string name, const float v) = 0;
     virtual void setProperty(const std::string name, const Vec3& v) = 0;
     virtual void setProperty(const std::string name, const Matrix4& v) = 0;
+protected:
+    virtual ~IMaterial() {}
 };
