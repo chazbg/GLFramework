@@ -2,7 +2,8 @@
 #include "Math/GeometryAlgorithm.hpp"
 #include <iostream>
 
-BlockMesh::BlockMesh(const float width, const float height, const float length) :
+BlockMesh::BlockMesh(IResourceManager& rm, const float width, const float height, const float length) :
+    rm(rm),
     width(width),
     height(height),
     length(length)
@@ -12,9 +13,9 @@ BlockMesh::BlockMesh(const float width, const float height, const float length) 
     float* normalBuffer = generateNormals(vb, vertexCount);
     float* uvBuffer = genUVs();
 
-    vertices = new VertexBuffer(vb, vertexCount, 3);
-    normals = new VertexBuffer(normalBuffer, vertexCount, 3);
-    uvs = new VertexBuffer(uvBuffer, vertexCount, 2);
+    vertices = rm.createVertexBuffer(vertexCount, 3, 0, vb);
+    normals  = rm.createVertexBuffer(vertexCount, 3, 1, normalBuffer);
+    uvs      = rm.createVertexBuffer(vertexCount, 2, 2, uvBuffer);
 
     setVertices(*vertices);
     setNormals(*normals);
@@ -27,9 +28,9 @@ BlockMesh::BlockMesh(const float width, const float height, const float length) 
 
 BlockMesh::~BlockMesh()
 {
-    delete[] vertices;
-    delete[] normals;
-    delete[] uvs;
+    rm.destroyVertexBuffer(vertices);
+    rm.destroyVertexBuffer(normals);
+    rm.destroyVertexBuffer(uvs);
 }
 
 void BlockMesh::setTime(const unsigned int time)

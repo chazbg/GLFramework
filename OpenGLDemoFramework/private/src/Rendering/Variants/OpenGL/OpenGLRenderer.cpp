@@ -4,6 +4,10 @@
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
+#include "Rendering/Variants/OpenGL/OpenGLTexture.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLTextureCubemap.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLVertexBuffer.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLIndexBuffer.hpp"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -30,8 +34,8 @@ void Renderer::initDeferredShading()
 {
     deferredShadingMat = resourceManager.createMaterial("Shaders/deferredShading.vs", "Shaders/deferredShading.fs");
     deferredShadingRectMat[0] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
-    deferredShadingRectMat[1] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
-    deferredShadingRectMat[2] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
+    deferredShadingRectMat[1] = resourceManager.cloneMaterial(deferredShadingRectMat[0]);
+    deferredShadingRectMat[2] = resourceManager.cloneMaterial(deferredShadingRectMat[0]);
     deferredShadingRectMat[3] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/deferredShadingCompose.fs");
     deferredShadingRectMat[3]->setProperty("colorMap", 0);
     deferredShadingRectMat[3]->setProperty("normalMap", 1);
@@ -48,16 +52,16 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[1]);
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[2]);
 
-    deferredShadingRect[0] = new Rectangle();
+    deferredShadingRect[0] = new Rectangle(resourceManager);
     deferredShadingRect[0]->setMaterial(deferredShadingRectMat[0]);
 
-    deferredShadingRect[1] = new Rectangle();
+    deferredShadingRect[1] = new Rectangle(resourceManager);
     deferredShadingRect[1]->setMaterial(deferredShadingRectMat[1]);
 
-    deferredShadingRect[2] = new Rectangle();
+    deferredShadingRect[2] = new Rectangle(resourceManager);
     deferredShadingRect[2]->setMaterial(deferredShadingRectMat[2]);
 
-    deferredShadingRect[3] = new Rectangle();
+    deferredShadingRect[3] = new Rectangle(resourceManager);
     deferredShadingRect[3]->setMaterial(deferredShadingRectMat[3]);
 
     deferredShadingFbo = new FrameBuffer();
@@ -85,7 +89,7 @@ void Renderer::initPostProcessing()
 
     postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, false);
 
-    postProcessRect = new Rectangle();
+    postProcessRect = new Rectangle(resourceManager);
     postProcessRect->setMaterial(postProcessMat);
 
     postProcessFbo = new FrameBuffer();
@@ -118,7 +122,7 @@ void Renderer::initShadowMapping()
 
     depthMat->addTexture(shadowMap);
 
-    r = new Rectangle(Vec2(0.5, 1), Vec2(1, 0.5));
+    r = new Rectangle(resourceManager, Vec2(0.5, 1), Vec2(1, 0.5));
     r->setMaterial(rectMat);
 
     fb = new FrameBuffer();
@@ -158,8 +162,8 @@ IResourceManager& Renderer::getResourceManager()
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
     renderToTexture(scene.getChildren(), camera);
-    render(scene.getChildren(), camera);
-    //renderDeferred(scene.getChildren(), camera);
+    //render(scene.getChildren(), camera);
+    renderDeferred(scene.getChildren(), camera);
 }
 
 void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -199,34 +203,36 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
             glBindTexture(GL_TEXTURE_CUBE_MAP, tex->getId());
         }
 
-        std::vector<IVertexBuffer*> vbos = mesh->getVBOs();
+        std::vector<const IVertexBuffer*> vbos = mesh->getVBOs();
         for (unsigned int i = 0; i < vbos.size(); i++)
         {
-            if (vbos[i]->getId() != -1)
+            const OpenGLVertexBuffer* buf = reinterpret_cast<const OpenGLVertexBuffer*>(vbos[i]);
+            if (buf)
             {
-                glBindBuffer(GL_ARRAY_BUFFER, vbos[i]->getId());
-                glEnableVertexAttribArray(i);
-                glVertexAttribPointer(i, vbos[i]->getAttributeSize(), GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+                glBindBuffer(GL_ARRAY_BUFFER, buf->getId());
+                glEnableVertexAttribArray(buf->getLocation());
+                glVertexAttribPointer(buf->getLocation(), buf->getAttributeSize(), GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
             }
         }
 
         //TODO: Strategy pattern
-        IIndexBuffer* ibo = mesh->getIBO();
+        const IIndexBuffer* ibo = mesh->getIBO();
         if (ibo)
         {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo->getId());
-            glDrawElements(GL_TRIANGLES, (GLsizei)ibo->getIndexCount(), GL_UNSIGNED_INT, NULL);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, reinterpret_cast<const OpenGLIndexBuffer*>(ibo)->getId());
+            glDrawElements(GL_TRIANGLES, ibo->getIndexCount(), GL_UNSIGNED_INT, NULL);
         }
         else
         {
-            glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vbos[0]->getVertexCount());
+            glDrawArrays(GL_TRIANGLES, 0, vbos[0]->getVertexCount());
         }
 
         for (unsigned int i = 0; i < vbos.size(); i++)
         {
-            if (vbos[i]->getId() != -1)
+            const OpenGLVertexBuffer* buf = reinterpret_cast<const OpenGLVertexBuffer*>(vbos[i]);
+            if (buf)
             {
-                glDisableVertexAttribArray(i);
+                glDisableVertexAttribArray(buf->getLocation());
             }
         }
     }
@@ -355,7 +361,7 @@ void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camer
 void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     Vec2 quarterRes = resolution / 2.0f;
-    glViewport(0, 0, resolution.x, resolution.y);
+    glViewport(0, 0, (GLsizei) resolution.x, (GLsizei)resolution.y);
 
     unsigned int fbo = deferredShadingFbo->getFbo();
 
@@ -383,17 +389,17 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
-    glViewport(quarterRes.x, 0, quarterRes.x, quarterRes.y);
+    glViewport((GLsizei) quarterRes.x, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
     render(deferredShadingRect[0], camera);
 
-    glViewport(0, quarterRes.y, quarterRes.x, quarterRes.y);
+    glViewport(0, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
     render(deferredShadingRect[1], camera);
 
-    glViewport(quarterRes.x, quarterRes.y, quarterRes.x, quarterRes.y);
+    glViewport((GLsizei) quarterRes.x, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
     render(deferredShadingRect[2], camera);
 
-    glViewport(0, 0, quarterRes.x, quarterRes.y);
+    glViewport(0, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
     render(deferredShadingRect[3], camera);
 
-    glViewport(0, 0, resolution.x, resolution.y);
+    glViewport(0, 0, (GLsizei) resolution.x, (GLsizei) resolution.y);
 }

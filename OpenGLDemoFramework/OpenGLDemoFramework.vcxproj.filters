@@ -126,9 +126,6 @@
     <ClCompile Include="private\src\Windowing\Window.cpp">
       <Filter>Source Files\Windowing</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Core\VertexBufferObject.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\Scene.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -140,9 +137,6 @@
     </ClCompile>
     <ClCompile Include="private\src\Geometry\CustomGeometry.cpp">
       <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Core\IndexBuffer.cpp">
-      <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderer.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
@@ -157,6 +151,12 @@
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLMaterial.cpp">
+      <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLVertexBuffer.cpp">
+      <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLIndexBuffer.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
@@ -326,13 +326,7 @@
     <ClInclude Include="private\inc\Core\IVertexBuffer.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Core\IndexBuffer.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Core\IIndexBuffer.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Core\VertexBuffer.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\ITexture.hpp">
@@ -354,6 +348,12 @@
       <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterial.hpp">
+      <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLIndexBuffer.hpp">
+      <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLVertexBuffer.hpp">
       <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>

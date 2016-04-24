@@ -1,14 +1,14 @@
-#include <Geometry/CustomGeometry.hpp>
+#include "Geometry/CustomGeometry.hpp"
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 #include <stack>
 
-CustomGeometry::CustomGeometry(const std::string fileName) : CustomGeometry(fileName, false)
+CustomGeometry::CustomGeometry(IResourceManager& rm, const std::string fileName) : CustomGeometry(rm, fileName, false)
 {
 }
 
-CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
+CustomGeometry::CustomGeometry(IResourceManager& rm, const std::string fileName, const bool flipFaces)
 {
     Assimp::Importer importer;
     unsigned int flags = 
@@ -30,8 +30,6 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
     {
         printf("Assimp Scene Import Error: %s \n", importer.GetErrorString());
     }
-
-    
    
 	nodes.push(scene->mRootNode);
 
@@ -66,7 +64,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					vertexBuffer[k + 2] = pos.z;
 				}
 
-				VertexBuffer* vertices = new VertexBuffer(vertexBuffer, mesh->mNumVertices, 3);
+				IVertexBuffer* vertices = rm.createVertexBuffer(mesh->mNumVertices, 3, 0, vertexBuffer);
 				delete[] vertexBuffer;
 				bufferGeometry->setVertices(*vertices);
 			}
@@ -84,7 +82,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					normalsBuffer[k + 2] = normal.z;
 				}
 
-				VertexBuffer* normals = new VertexBuffer(normalsBuffer, mesh->mNumVertices, 3);
+                IVertexBuffer* normals = rm.createVertexBuffer(mesh->mNumVertices, 3, 1, normalsBuffer);
 				delete[] normalsBuffer;
 				bufferGeometry->setNormals(*normals);
 			}
@@ -107,8 +105,8 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					bitangentsBuffer[k + 2] = bitangent.z;
 				}
 
-				VertexBuffer* tangents = new VertexBuffer(tangentsBuffer, mesh->mNumVertices, 3);
-				VertexBuffer* bitangents = new VertexBuffer(bitangentsBuffer, mesh->mNumVertices, 3);
+                IVertexBuffer* tangents = rm.createVertexBuffer(mesh->mNumVertices, 3, 3, tangentsBuffer);
+                IVertexBuffer* bitangents = rm.createVertexBuffer(mesh->mNumVertices, 3, 4, bitangentsBuffer);
 				delete[] tangentsBuffer;
 				delete[] bitangentsBuffer;
 
@@ -128,7 +126,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					texCoordsBuffer[k + 1] = uv.y;
 				}
 
-				VertexBuffer* uvs = new VertexBuffer(texCoordsBuffer, mesh->mNumVertices, 2);
+				IVertexBuffer* uvs = rm.createVertexBuffer(mesh->mNumVertices, 2, 2, texCoordsBuffer);
 				delete[] texCoordsBuffer;
 				bufferGeometry->setTexCoords(*uvs);
 			}
@@ -146,7 +144,7 @@ CustomGeometry::CustomGeometry(const std::string fileName, const bool flipFaces)
 					indexBuffer[k + 2] = face.mIndices[2];
 				}
 
-				IndexBuffer* indices = new IndexBuffer(indexBuffer, 3 * mesh->mNumFaces);
+				IIndexBuffer* indices = rm.createIndexBuffer(3 * mesh->mNumFaces, indexBuffer);
 				delete[] indexBuffer;
 				bufferGeometry->setIndices(*indices);
 			}

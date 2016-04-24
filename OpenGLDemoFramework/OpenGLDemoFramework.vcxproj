@@ -150,12 +150,10 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
     <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
-    <ClCompile Include="private\src\Core\IndexBuffer.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
     <ClCompile Include="private\src\Core\Scene.cpp" />
     <ClCompile Include="private\src\Core\Shader.cpp" />
-    <ClCompile Include="private\src\Core\VertexBufferObject.cpp" />
     <ClCompile Include="private\src\Geometry\Bar.cpp" />
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />
     <ClCompile Include="private\src\Geometry\Cube.cpp" />
@@ -170,11 +168,13 @@
     <ClCompile Include="private\src\Math\LineSegment.cpp" />
     <ClCompile Include="private\src\Math\Plane.cpp" />
     <ClCompile Include="private\src\Math\Vector.cpp" />
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLIndexBuffer.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderer.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLResourceManager.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTextureCubemap.cpp" />
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLVertexBuffer.cpp" />
     <ClCompile Include="private\src\Windowing\Variants\GLUTWrapper.cpp" />
     <ClCompile Include="private\src\Windowing\Window.cpp" />
   </ItemGroup>
@@ -185,7 +185,6 @@
     <ClInclude Include="private\inc\Core\IIndexBuffer.hpp" />
     <ClInclude Include="private\inc\Core\IMaterial.hpp" />
     <ClInclude Include="private\inc\Core\IMesh.hpp" />
-    <ClInclude Include="private\inc\Core\IndexBuffer.hpp" />
     <ClInclude Include="private\inc\Core\IResourceManager.hpp" />
     <ClInclude Include="private\inc\Core\IScene.hpp" />
     <ClInclude Include="private\inc\Core\ITexture.hpp" />
@@ -196,7 +195,6 @@
     <ClInclude Include="private\inc\Core\Scene.hpp" />
     <ClInclude Include="private\inc\Core\Shader.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
-    <ClInclude Include="private\inc\Core\VertexBuffer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp" />
@@ -230,11 +228,13 @@
     <ClInclude Include="private\inc\Math\Plane.hpp" />
     <ClInclude Include="private\inc\Math\Vector.hpp" />
     <ClInclude Include="private\inc\Rendering\Renderer.hpp" />
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLIndexBuffer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterial.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLRenderer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLResourceManager.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLTexture.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLTextureCubemap.hpp" />
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLVertexBuffer.hpp" />
     <ClInclude Include="private\inc\Tests\TestGeometryAlgorithm.hpp" />
     <ClInclude Include="private\inc\Tests\TestLine.hpp" />
     <ClInclude Include="private\inc\Tests\TestMatrix.hpp" />

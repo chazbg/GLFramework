@@ -2,10 +2,10 @@
 
 #include "Windowing/Window.hpp"
 #include "Rendering/Renderer.hpp"
-#include <Core/PerspectiveCamera.hpp>
-#include <Core/Scene.hpp>
-#include <Geometry/CustomGeometry.hpp>
-#include <Math/GeometryAlgorithm.hpp>
+#include "Core/PerspectiveCamera.hpp"
+#include "Core/Scene.hpp"
+#include "Geometry/CustomGeometry.hpp"
+#include "Math/GeometryAlgorithm.hpp"
 #include <iostream>
 #include <algorithm>
 
@@ -159,7 +159,6 @@ namespace PBRDemo
 
             if (cameraPanning)
             {
-
                 Vec3 center = camera.getLookDirection();
                 Vec3 z = center - cameraPos;
                 Vec3 y = camera.getUpVector();
@@ -299,18 +298,19 @@ namespace PBRDemo
 
         void initLights()
         {
+            IResourceManager& rm = renderer->getResourceManager();
 			float r = 20.0f;
-            lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            lights.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
 			lights[0]->setMaterial(materials[0]);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
 			lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 6.0f, (r / 2.0f));
 
-            lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            lights.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
 			lights[1]->setMaterial(materials[0]);
             lights[1]->Scale(0.05f, 0.05f, 0.05f);
 			lights[1]->Translate(sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
 
-            lights.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            lights.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
 			lights[2]->setMaterial(materials[0]);
             lights[2]->Scale(0.05f, 0.05f, 0.05f);
 			lights[2]->Translate(0, 0.0f, -r);
@@ -322,7 +322,8 @@ namespace PBRDemo
 
         void initEnvMap()
         {
-            environmentCube = new CustomGeometry("3DAssets/cube.3ds", true);
+            IResourceManager& rm = renderer->getResourceManager();
+            environmentCube = new CustomGeometry(rm, "3DAssets/cube.3ds", true);
 			environmentCube->setMaterial(materials[1]);
             environmentCube->Scale(60, 60, 60);
             scene.add(environmentCube);
@@ -330,9 +331,10 @@ namespace PBRDemo
 
         void initGround()
         {
+            IResourceManager& rm = renderer->getResourceManager();
 			for (unsigned int i = 0; i < 9; i++)
 			{
-				ground[i] = new CustomGeometry("3DAssets/rectangle.3ds");
+				ground[i] = new CustomGeometry(rm, "3DAssets/rectangle.3ds");
 				ground[i]->setMaterial(materials[2 + i]);
 				ground[i]->Rotate(-3.14f / 2.0f, 0.0f, 0.0f);
 				ground[i]->Scale(10.0f, 1.0f, 10.0f);
@@ -352,12 +354,13 @@ namespace PBRDemo
 
 		void initGeometry()
 		{
-			meshes.push_back(new CustomGeometry("3DAssets/female_elf-3ds.3DS"));
+            IResourceManager& rm = renderer->getResourceManager();
+			meshes.push_back(new CustomGeometry(rm, "3DAssets/female_elf-3ds.3DS"));
 			meshes[0]->Scale(0.1f, 0.1f, 0.1f);
 			meshes[0]->Rotate(-3.14f / 2.0f, 0, 0);
 			meshes[0]->Translate(0, -20, 0);
 
-			meshes.push_back(new CustomGeometry("3DAssets/ogrehead.obj"));
+			meshes.push_back(new CustomGeometry(rm, "3DAssets/ogrehead.obj"));
 			meshes[1]->Scale(7.0f, 7.0f, 7.0f);
 
 			/*g = new CustomGeometry("3DAssets/buddha.3ds");
@@ -365,11 +368,11 @@ namespace PBRDemo
 			g->Rotate(-3.14f / 2.0f, 0, 0);
 			g->Translate(0, 1, 0);*/
 
-			meshes.push_back(new CustomGeometry("3DAssets/hair5.obj"));
+			meshes.push_back(new CustomGeometry(rm, "3DAssets/hair5.obj"));
             meshes[2]->Scale(87, 85, 77);
             meshes[2]->Translate(0, -55, 0);
 
-            meshes.push_back(new CustomGeometry("3DAssets/Sphere.3ds"));
+            meshes.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
             meshes[3]->Scale(0.5, 0.5, 0.5);
 
 			currentMesh = meshes[0];

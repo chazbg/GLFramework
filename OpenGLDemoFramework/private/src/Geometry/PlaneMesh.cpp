@@ -1,16 +1,17 @@
-#include <Geometry/PlaneMesh.hpp>
+#include "Geometry/PlaneMesh.hpp"
 
-PlaneMesh::PlaneMesh(int _width, int _height) :
+PlaneMesh::PlaneMesh(IResourceManager& rm, int width, int height) :
     Mesh(),
-    width(_width),
-    height(_height)
+    rm(rm),
+    width(width),
+    height(height)
 {
     unsigned int vertexCount = width * height * 6;
     float* vb = generatePlaneVertices(width, height);
     float* uvBuffer = generateUVs(width, height);
 
-    vertices = new VertexBuffer(vb, vertexCount, 3);
-    uvs = new VertexBuffer(uvBuffer, vertexCount, 2);
+    vertices = rm.createVertexBuffer(vertexCount, 3, 0, vb);
+    uvs      = rm.createVertexBuffer(vertexCount, 2, 1, uvBuffer);
 
     setVertices(*vertices);
     setTexCoords(*uvs);
@@ -21,8 +22,8 @@ PlaneMesh::PlaneMesh(int _width, int _height) :
 
 PlaneMesh::~PlaneMesh()
 {
-    delete[] vertices;
-    delete[] uvs;
+    rm.destroyVertexBuffer(vertices);
+    rm.destroyVertexBuffer(uvs);
 }
 
 float* PlaneMesh::generatePlaneVertices(int width, int height)

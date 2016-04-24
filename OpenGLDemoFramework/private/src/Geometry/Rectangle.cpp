@@ -3,20 +3,20 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-Rectangle::Rectangle() : topLeft(-1, 1), bottomRight(1, -1), vertices(0), texCoords(0)
+Rectangle::Rectangle(IResourceManager& rm) : rm(rm), topLeft(-1, 1), bottomRight(1, -1), vertices(0), texCoords(0)
 {
 	init();
 }
 
-Rectangle::Rectangle(Vec2 topLeft, Vec2 bottomRight) : topLeft(topLeft), bottomRight(bottomRight)
+Rectangle::Rectangle(IResourceManager& rm, Vec2 topLeft, Vec2 bottomRight) : rm(rm), topLeft(topLeft), bottomRight(bottomRight)
 {
 	init();
 }
 
 Rectangle::~Rectangle() 
 {
-	delete vertices;
-	delete texCoords;
+    rm.destroyVertexBuffer(vertices);
+    rm.destroyVertexBuffer(texCoords);
 }
 
 void Rectangle::init()
@@ -27,8 +27,8 @@ void Rectangle::init()
 	float* vertexBuffer = genVertices();
 	float* uvs = genTexCoords();
 
-	vertices = new VertexBuffer(vertexBuffer, vertexCount, 2);
-	texCoords = new VertexBuffer(uvs, vertexCount, 2);
+	vertices = rm.createVertexBuffer(vertexCount, 2, 0, vertexBuffer);
+	texCoords = rm.createVertexBuffer(vertexCount, 2, 2, uvs);
 
 	setVertices(*vertices);
 	setTexCoords(*texCoords);

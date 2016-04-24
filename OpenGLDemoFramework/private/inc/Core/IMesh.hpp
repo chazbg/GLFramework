@@ -1,17 +1,17 @@
 #pragma once
 
 #include <vector>
-#include <Core/IVertexBuffer.hpp>
-#include <Core/IIndexBuffer.hpp>
-#include <Core/IMaterial.hpp>
-#include <Math/Matrix.hpp>
+#include "Core/IVertexBuffer.hpp"
+#include "Core/IIndexBuffer.hpp"
+#include "Core/IMaterial.hpp"
+#include "Math/Matrix.hpp"
 
 class IMesh
 {
 public:
 	virtual ~IMesh() {}
-    virtual IIndexBuffer* getIBO() = 0;
-	virtual std::vector<IVertexBuffer*>& getVBOs() = 0;
+    virtual const IIndexBuffer* getIBO() = 0;
+	virtual std::vector<const IVertexBuffer*>& getVBOs() = 0;
 	virtual void setModelMatrix(const Matrix4& model) = 0;
 	virtual Matrix4 getModelMatrix() const = 0;
 	virtual void setWireframeMode(const bool showWireframe) = 0;

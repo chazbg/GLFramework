@@ -3,8 +3,8 @@
 class IVertexBuffer
 {
 public:
-	virtual ~IVertexBuffer() {}
-	virtual int getId() const = 0;
-	virtual int getVertexCount() const = 0;
-	virtual int getAttributeSize() const = 0;
+	virtual unsigned int getVertexCount() const = 0;
+	virtual unsigned int getAttributeSize() const = 0;
+protected:
+    virtual ~IVertexBuffer() {}
 };

@@ -3,7 +3,7 @@
 class IIndexBuffer
 {
 public:
+    virtual unsigned int getIndexCount() const = 0;
+protected:
     virtual ~IIndexBuffer() {}
-    virtual int getId() const = 0;
-    virtual int getIndexCount() const = 0;
 };

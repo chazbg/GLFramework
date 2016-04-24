@@ -1,14 +1,14 @@
 #pragma once
 #include "Core/Mesh.hpp"
 #include "Math/Vector.hpp"
-#include <Core/VertexBuffer.hpp>
+#include "Core/IResourceManager.hpp"
 #include <string>
 
 class Rectangle : public Mesh
 {
 public:
-	Rectangle();
-	Rectangle(Vec2 topLeft, Vec2 bottomRight);
+	Rectangle(IResourceManager& rm);
+	Rectangle(IResourceManager& rm, Vec2 topLeft, Vec2 bottomRight);
 	~Rectangle();
 private:
 	Vec2 topLeft;
@@ -16,7 +16,8 @@ private:
 	float* genVertices();
 	float* genTexCoords();
 	void init();
+    IResourceManager& rm;
 	unsigned int time;
-	VertexBuffer* vertices;
-	VertexBuffer* texCoords;
+	IVertexBuffer* vertices;
+	IVertexBuffer* texCoords;
 };

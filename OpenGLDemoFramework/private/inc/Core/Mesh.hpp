@@ -11,8 +11,8 @@ class Mesh : public IMesh
 public:
 	Mesh();
 	~Mesh();
-    virtual IIndexBuffer* getIBO();
-	virtual std::vector<IVertexBuffer*>& getVBOs();
+    virtual const IIndexBuffer* getIBO();
+	virtual std::vector<const IVertexBuffer*>& getVBOs();
 	virtual void setModelMatrix(const Matrix4& model);
 	virtual Matrix4 getModelMatrix() const;
 	virtual void setWireframeMode(const bool showWireframe);
@@ -42,8 +42,8 @@ protected:
     float* generateUVs(const float* vertexBuffer, const unsigned int vertexCount);
 	void generateWireframe();
 	IMaterial* material;
-    IIndexBuffer* ibo;
-	std::vector<IVertexBuffer*> vbos;
+    const IIndexBuffer* ibo;
+	std::vector<const IVertexBuffer*> vbos;
     std::vector<IMesh*> children;
 	float* wireframeVertexBuffer;
 	GLuint wireframeVertexBufferID;

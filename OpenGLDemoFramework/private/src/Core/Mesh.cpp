@@ -3,8 +3,7 @@
 #include "Core/Shader.hpp"
 #include <algorithm>
 #include <cstdio>
-#include <Core/VertexBuffer.hpp>
-#include <Math/GeometryAlgorithm.hpp>
+#include "Math/GeometryAlgorithm.hpp"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -16,10 +15,7 @@ showWireframe(false),
 castsShadow(false),
 receivesShadow(false)
 {
-	for (int i = 0; i < 5; i++)
-	{
-		vbos.push_back(new VertexBuffer());
-	}
+    vbos.resize(5);
 }
 
 Mesh::~Mesh()
@@ -32,12 +28,12 @@ Mesh::~Mesh()
     }
 }
 
-IIndexBuffer * Mesh::getIBO()
+const IIndexBuffer * Mesh::getIBO()
 {
     return ibo;
 }
 
-std::vector<IVertexBuffer*>& Mesh::getVBOs()
+std::vector<const IVertexBuffer*>& Mesh::getVBOs()
 {
 	return vbos;
 }
@@ -70,27 +66,27 @@ void Mesh::setIndices(const IIndexBuffer & indices)
 
 void Mesh::setVertices(const IVertexBuffer & vertices)
 {
-	vbos[0] = &const_cast<IVertexBuffer&>(vertices);
+	vbos[0] = &vertices;
 }
 
 void Mesh::setNormals(const IVertexBuffer & normals)
 {
-	vbos[1] = &const_cast<IVertexBuffer&>(normals);
+	vbos[1] = &normals;
 }
 
 void Mesh::setTexCoords(const IVertexBuffer & texCoords)
 {
-	vbos[2] = &const_cast<IVertexBuffer&>(texCoords);
+	vbos[2] = &texCoords;
 }
 
 void Mesh::setTangents(const IVertexBuffer& tangents)
 {
-    vbos[3] = &const_cast<IVertexBuffer&>(tangents);
+    vbos[3] = &tangents;
 }
 
 void Mesh::setBitangents(const IVertexBuffer& bitangents)
 {
-    vbos[4] = &const_cast<IVertexBuffer&>(bitangents);
+    vbos[4] = &bitangents;
 }
 
 void Mesh::setMaterial(IMaterial * material)

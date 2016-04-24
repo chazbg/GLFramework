@@ -1,6 +1,11 @@
 #include "Rendering/Variants/OpenGL/OpenGLResourceManager.hpp"
 #include "Core/Shader.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLMaterial.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLTexture.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLTextureCubemap.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLVertexBuffer.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLIndexBuffer.hpp"
+#include <GL/glew.h>
 
 OpenGLResourceManager::OpenGLResourceManager()
 {
@@ -64,7 +69,11 @@ ITexture* OpenGLResourceManager::createTexture(const std::string path)
     return tex;
 }
 
-ITexture* OpenGLResourceManager::createTexture(const unsigned int width, const unsigned int height, const unsigned int bpp, const unsigned char* data)
+ITexture* OpenGLResourceManager::createTexture(
+    const unsigned int width,
+    const unsigned int height, 
+    const unsigned int bpp, 
+    const unsigned char* data)
 {
     OpenGLTexture* tex = 0;
     unsigned int id;
@@ -85,7 +94,11 @@ ITexture* OpenGLResourceManager::createTexture(const unsigned int width, const u
     return tex;
 }
 
-ITexture* OpenGLResourceManager::createTexture(const unsigned int width, const unsigned int height, const unsigned int bpp, const bool isDepthComponent)
+ITexture* OpenGLResourceManager::createTexture(
+    const unsigned int width, 
+    const unsigned int height, 
+    const unsigned int bpp, 
+    const bool isDepthComponent)
 {
     OpenGLTexture* tex = 0;
     unsigned int id;
@@ -255,6 +268,59 @@ void OpenGLResourceManager::destroyMaterial(IMaterial * material)
         }
         
         delete glMaterial;
+    }
+}
+
+IVertexBuffer * OpenGLResourceManager::createVertexBuffer(
+    const unsigned int vertexCount, 
+    const unsigned int attributeSize,
+    const unsigned int location,
+    const float * data)
+{
+    unsigned int id;
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+    glBufferData(GL_ARRAY_BUFFER, vertexCount * attributeSize * sizeof(float), data, GL_STATIC_DRAW);
+    OpenGLVertexBuffer* vb = new OpenGLVertexBuffer(id, location, vertexCount, attributeSize);
+    vertexBuffers.push_back(vb);
+
+    return vb;
+}
+
+void OpenGLResourceManager::destroyVertexBuffer(IVertexBuffer * vb)
+{
+    auto it = std::find(vertexBuffers.begin(), vertexBuffers.end(), vb);
+    if (it != vertexBuffers.end())
+    {
+        vertexBuffers.erase(it);
+        OpenGLVertexBuffer* glVertexBuffer = reinterpret_cast<OpenGLVertexBuffer*>(vb);
+        unsigned int id = glVertexBuffer->getId();
+        glDeleteBuffers(1, &id);
+        delete glVertexBuffer;
+    }
+}
+
+IIndexBuffer * OpenGLResourceManager::createIndexBuffer(const unsigned int indexCount, const unsigned int * data)
+{
+    unsigned int id;
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(unsigned int), data, GL_STATIC_DRAW);
+    OpenGLIndexBuffer* ib = new OpenGLIndexBuffer(id, indexCount);
+    indexBuffers.push_back(ib);
+    return ib;
+}
+
+void OpenGLResourceManager::destroyIndexBuffer(IIndexBuffer * ib)
+{
+    auto it = std::find(indexBuffers.begin(), indexBuffers.end(), ib);
+    if (it != indexBuffers.end())
+    {
+        indexBuffers.erase(it);
+        OpenGLIndexBuffer* glIndexBuffer = reinterpret_cast<OpenGLIndexBuffer*>(ib);
+        unsigned int id = glIndexBuffer->getId();
+        glDeleteBuffers(1, &id);
+        delete glIndexBuffer;
     }
 }
 
