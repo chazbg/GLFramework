@@ -30,6 +30,7 @@ public:
         const std::string pathRight);
     virtual void destroyTextureCubemap(ITextureCubemap* tex);
     virtual IMaterial* createMaterial(const std::string vShaderPath, const std::string fShaderPath);
+    virtual IMaterial* createMaterial(const std::string vShaderPath, const std::string fShaderPath, const std::string gShaderPath);
     virtual IMaterial* cloneMaterial(const IMaterial* material);
     virtual void destroyMaterial(IMaterial* material);
     virtual IVertexBuffer* createVertexBuffer(

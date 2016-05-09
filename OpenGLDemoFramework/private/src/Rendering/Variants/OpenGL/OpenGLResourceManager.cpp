@@ -234,6 +234,27 @@ IMaterial * OpenGLResourceManager::createMaterial(const std::string vShaderPath,
     return material;
 }
 
+IMaterial * OpenGLResourceManager::createMaterial(const std::string vShaderPath, const std::string fShaderPath, const std::string gShaderPath)
+{
+    int id = LoadShaders(vShaderPath.c_str(), fShaderPath.c_str(), gShaderPath.c_str());
+    OpenGLMaterial* material = new OpenGLMaterial(id);
+
+    auto it = materialRefCounters.find(id);
+
+    if (it == materialRefCounters.end())
+    {
+        materialRefCounters[id] = 0;
+    }
+    else
+    {
+        materialRefCounters[id]++;
+    }
+
+    materials.push_back(material);
+
+    return material;
+}
+
 IMaterial * OpenGLResourceManager::cloneMaterial(const IMaterial * material)
 {
     const OpenGLMaterial* glMaterial = reinterpret_cast<const OpenGLMaterial*>(material);

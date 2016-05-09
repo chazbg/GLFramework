@@ -6,8 +6,10 @@ layout(location = 1) in vec3 normal;
 uniform mat4 mvp;
 uniform mat4 mv;
 
+smooth out vec3 vNormal;
+
 void main(){
-    vec4 n = normalize(mv * normalize(vec4(normal,0)));
+    vNormal = normalize(mvp * normalize(vec4(normal,0))).xyz;
     gl_Position = mvp * vec4(vertex,1.0);
 }
 

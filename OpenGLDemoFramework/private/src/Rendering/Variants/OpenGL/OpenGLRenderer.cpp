@@ -161,9 +161,9 @@ IResourceManager& Renderer::getResourceManager()
 
 void Renderer::render(IScene& scene, ICamera& camera)
 {  
-    renderToTexture(scene.getChildren(), camera);
-    //render(scene.getChildren(), camera);
-    renderDeferred(scene.getChildren(), camera);
+    //renderToTexture(scene.getChildren(), camera);
+    render(scene.getChildren(), camera);
+    //renderDeferred(scene.getChildren(), camera);
 }
 
 void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)

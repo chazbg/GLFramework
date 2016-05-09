@@ -356,6 +356,9 @@
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLVertexBuffer.hpp">
       <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoGeometryShader.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

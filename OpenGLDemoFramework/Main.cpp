@@ -1,6 +1,6 @@
-#include "Demos/DemoPBR.hpp"
+#include "Demos/DemoGeometryShader.hpp"
 int main(int argc, char* argv[])
 {
-    PBRDemo::main();
+    GeometryShaderDemo::main();
     return 0;
 }
