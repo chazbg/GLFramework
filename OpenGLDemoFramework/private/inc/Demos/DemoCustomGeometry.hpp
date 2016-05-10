@@ -26,7 +26,7 @@ namespace CustomGeometryDemo
             shaderMaterial = new OpenGLMaterial("Shaders/basic.vs", "Shaders/basic.fs");
             g = new CustomGeometry("3DAssets/female_elf-3ds.3DS");
             g->setMaterial(shaderMaterial);
-			
+            
             scene.add(g);
             time = 0;
             stopTime = false;

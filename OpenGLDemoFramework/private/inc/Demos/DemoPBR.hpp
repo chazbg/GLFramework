@@ -22,12 +22,12 @@ namespace PBRDemo
         {
             renderer = new Renderer(Vec2(1920, 1080));
 
-			initTextures();
-			initMaterials();
+            initTextures();
+            initMaterials();
             initEnvMap();
             initLights();
             initGround();
-			initGeometry();        
+            initGeometry();        
             
             time = 0;
             stopTime = false;
@@ -40,8 +40,8 @@ namespace PBRDemo
             cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
             ior = 0.01f;
             glossiness = 0.01f;
-			materialIndex = 0;
-			meshIndex = 0;
+            materialIndex = 0;
+            meshIndex = 0;
         }
         virtual void onUpdate(const unsigned int deltaTime) {}
         virtual void onRender(const unsigned int deltaTime)
@@ -58,15 +58,15 @@ namespace PBRDemo
                 lights[2]->Rotate(0, 3.14f / 360.0f, 0);
             }
 
-			for (unsigned int i = 2; i < materials.size(); i++)
-			{
-				materials[i]->setProperty("cameraPos", cameraPos);
-				materials[i]->setProperty("ior", ior);
-				materials[i]->setProperty("glossiness", glossiness);
-				materials[i]->setProperty("light0Pos", lights[0]->getPosition());
-				materials[i]->setProperty("light1Pos", lights[1]->getPosition());
-				materials[i]->setProperty("light2Pos", lights[2]->getPosition());
-			}
+            for (unsigned int i = 2; i < materials.size(); i++)
+            {
+                materials[i]->setProperty("cameraPos", cameraPos);
+                materials[i]->setProperty("ior", ior);
+                materials[i]->setProperty("glossiness", glossiness);
+                materials[i]->setProperty("light0Pos", lights[0]->getPosition());
+                materials[i]->setProperty("light1Pos", lights[1]->getPosition());
+                materials[i]->setProperty("light2Pos", lights[2]->getPosition());
+            }
 
             renderer->render(scene, camera);
         }
@@ -105,18 +105,18 @@ namespace PBRDemo
 
             switch (c)
             {
-			case 'q':
-				showPreviousMesh();
-				break;
-			case 'e':
-				showNextMesh();
-				break;
-			case 'a':
-				showPreviousMaterial();
-				break;
-			case 'd':
-				showNextMaterial();
-				break;
+            case 'q':
+                showPreviousMesh();
+                break;
+            case 'e':
+                showNextMesh();
+                break;
+            case 'a':
+                showPreviousMaterial();
+                break;
+            case 'd':
+                showNextMaterial();
+                break;
             case 'j':
                 time -= 5;
                 break;
@@ -165,33 +165,33 @@ namespace PBRDemo
                 Vec3 dx = (z * y).normalize();
                 Vec3 dy = (z * dx).normalize();
                 
-				cameraPos += (dx * delta.x + dy * delta.y) * 30.0f;
-				camera.setLookDirection(center + (dx * delta.x + dy * delta.y) * 30.0f);
+                cameraPos += (dx * delta.x + dy * delta.y) * 30.0f;
+                camera.setLookDirection(center + (dx * delta.x + dy * delta.y) * 30.0f);
             }
 
             prevMousePos = Vec2(static_cast<float>(x), static_cast<float>(y));
         }
     private:
 
-		void initMaterials()
-		{
+        void initMaterials()
+        {
             IResourceManager& resourceManager = renderer->getResourceManager();
 
             //0
-			materials.push_back(resourceManager.createMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
-			materials[0]->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
+            materials.push_back(resourceManager.createMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
+            materials[0]->setProperty("diffuse", Vec3(1.0f, 1.0f, 0.0f));
 
             //1
-			materials.push_back(resourceManager.createMaterial("Shaders/envMap.vs", "Shaders/envMap.fs"));
-			materials[1]->setProperty("envMap", 1);
-			materials[1]->addTextureCubemap(envMap);
+            materials.push_back(resourceManager.createMaterial("Shaders/envMap.vs", "Shaders/envMap.fs"));
+            materials[1]->setProperty("envMap", 1);
+            materials[1]->addTextureCubemap(envMap);
 
             //2
             materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/phong.fs"));
             //3
             materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_ground.fs"));
             //4
-			materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_schlick.fs"));
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/blinn_phong_schlick.fs"));
             //5
             materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin.fs"));
             //6
@@ -205,21 +205,21 @@ namespace PBRDemo
             //10
             materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/lambert.fs"));
            
-			for (unsigned int i = 2; i < 11; i++)
-			{
-				materials[i]->setProperty("diffuseMap", 0);
-				materials[i]->setProperty("normalMap", 1);
-				materials[i]->setProperty("specMap", 2);
-				materials[i]->setProperty("sampler", 3);
-				materials[i]->setProperty("envMap", 4);
-				materials[i]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
-				materials[i]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
-				for (unsigned int j = 0; j < 3; j++)
-				{
-					materials[i]->addTexture(textures[j]);
-				}
-				materials[i]->addTextureCubemap(envMap);
-			}
+            for (unsigned int i = 2; i < 11; i++)
+            {
+                materials[i]->setProperty("diffuseMap", 0);
+                materials[i]->setProperty("normalMap", 1);
+                materials[i]->setProperty("specMap", 2);
+                materials[i]->setProperty("sampler", 3);
+                materials[i]->setProperty("envMap", 4);
+                materials[i]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+                materials[i]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+                for (unsigned int j = 0; j < 3; j++)
+                {
+                    materials[i]->addTexture(textures[j]);
+                }
+                materials[i]->addTextureCubemap(envMap);
+            }
 
             //11
             materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Isotropic/ue.fs"));
@@ -249,19 +249,19 @@ namespace PBRDemo
             materials[12]->addTexture(textures[6]);
             materials[12]->addTextureCubemap(envMap);
 
-			//13
-			materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay_ogre.fs"));
-			materials[13]->setProperty("diffuseMap", 0);
-			materials[13]->setProperty("normalMap", 1);
-			materials[13]->setProperty("specMap", 2);
-			materials[13]->setProperty("sampler", 3);
-			materials[13]->setProperty("envMap", 4);
-			materials[13]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
-			materials[13]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
-			materials[13]->addTexture(textures[5]);
-			materials[13]->addTexture(textures[6]);
-			materials[13]->addTexture(textures[6]);
-			materials[13]->addTextureCubemap(envMap);
+            //13
+            materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/kajiya_kay_ogre.fs"));
+            materials[13]->setProperty("diffuseMap", 0);
+            materials[13]->setProperty("normalMap", 1);
+            materials[13]->setProperty("specMap", 2);
+            materials[13]->setProperty("sampler", 3);
+            materials[13]->setProperty("envMap", 4);
+            materials[13]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
+            materials[13]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
+            materials[13]->addTexture(textures[5]);
+            materials[13]->addTexture(textures[6]);
+            materials[13]->addTexture(textures[6]);
+            materials[13]->addTextureCubemap(envMap);
 
             //14
             materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin_body.fs"));
@@ -273,47 +273,47 @@ namespace PBRDemo
             materials[14]->setProperty("diffuse", Vec3(0.5f, 0.5f, 0.5f));
             materials[14]->setProperty("specular", Vec3(1.0f, 0.71f, 0.29f));
             materials[14]->addTextureCubemap(envMap);
-		}
+        }
 
-		void initTextures()
-		{
+        void initTextures()
+        {
             IResourceManager& rm = renderer->getResourceManager();
-			envMap = rm.createTextureCubemap(
-				"Images/cubemap_1/posz.png",
-				"Images/cubemap_1/negz.png",
-				"Images/cubemap_1/posy.png",
-				"Images/cubemap_1/negy.png",
-				"Images/cubemap_1/posx.png",
-				"Images/cubemap_1/negx.png"
-				);
+            envMap = rm.createTextureCubemap(
+                "Images/cubemap_1/posz.png",
+                "Images/cubemap_1/negz.png",
+                "Images/cubemap_1/posy.png",
+                "Images/cubemap_1/negy.png",
+                "Images/cubemap_1/posx.png",
+                "Images/cubemap_1/negx.png"
+                );
 
-			textures.push_back(rm.createTexture("Images/pattern_09/diffuse.png"));
-			textures.push_back(rm.createTexture("Images/pattern_09/normal.png"));
-			textures.push_back(rm.createTexture("Images/pattern_09/specular.png"));
+            textures.push_back(rm.createTexture("Images/pattern_09/diffuse.png"));
+            textures.push_back(rm.createTexture("Images/pattern_09/normal.png"));
+            textures.push_back(rm.createTexture("Images/pattern_09/specular.png"));
             textures.push_back(rm.createTexture("Images/pattern6/diffuse2.jpg"));
             textures.push_back(rm.createTexture("Images/pattern6/specular.jpg"));
-			textures.push_back(rm.createTexture("Images/ogrehead_diffuse.png"));
-			textures.push_back(rm.createTexture("Images/ogre_normalmap.png"));
-		}
+            textures.push_back(rm.createTexture("Images/ogrehead_diffuse.png"));
+            textures.push_back(rm.createTexture("Images/ogre_normalmap.png"));
+        }
 
         void initLights()
         {
             IResourceManager& rm = renderer->getResourceManager();
-			float r = 20.0f;
+            float r = 20.0f;
             lights.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
-			lights[0]->setMaterial(materials[0]);
+            lights[0]->setMaterial(materials[0]);
             lights[0]->Scale(0.05f, 0.05f, 0.05f);
-			lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 6.0f, (r / 2.0f));
+            lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 6.0f, (r / 2.0f));
 
             lights.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
-			lights[1]->setMaterial(materials[0]);
+            lights[1]->setMaterial(materials[0]);
             lights[1]->Scale(0.05f, 0.05f, 0.05f);
-			lights[1]->Translate(sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
+            lights[1]->Translate(sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
 
             lights.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
-			lights[2]->setMaterial(materials[0]);
+            lights[2]->setMaterial(materials[0]);
             lights[2]->Scale(0.05f, 0.05f, 0.05f);
-			lights[2]->Translate(0, 0.0f, -r);
+            lights[2]->Translate(0, 0.0f, -r);
 
             scene.add(lights[0]);
             scene.add(lights[1]);
@@ -324,7 +324,7 @@ namespace PBRDemo
         {
             IResourceManager& rm = renderer->getResourceManager();
             environmentCube = new CustomGeometry(rm, "3DAssets/cube.3ds", true);
-			environmentCube->setMaterial(materials[1]);
+            environmentCube->setMaterial(materials[1]);
             environmentCube->Scale(60, 60, 60);
             scene.add(environmentCube);
         }
@@ -332,53 +332,53 @@ namespace PBRDemo
         void initGround()
         {
             IResourceManager& rm = renderer->getResourceManager();
-			for (unsigned int i = 0; i < 9; i++)
-			{
-				ground[i] = new CustomGeometry(rm, "3DAssets/rectangle.3ds");
-				ground[i]->setMaterial(materials[2 + i]);
-				ground[i]->Rotate(-3.14f / 2.0f, 0.0f, 0.0f);
-				ground[i]->Scale(10.0f, 1.0f, 10.0f);
-				scene.add(ground[i]);
-			}
+            for (unsigned int i = 0; i < 9; i++)
+            {
+                ground[i] = new CustomGeometry(rm, "3DAssets/rectangle.3ds");
+                ground[i]->setMaterial(materials[2 + i]);
+                ground[i]->Rotate(-3.14f / 2.0f, 0.0f, 0.0f);
+                ground[i]->Scale(10.0f, 1.0f, 10.0f);
+                scene.add(ground[i]);
+            }
 
-			ground[0]->Translate(-20.0f, -5.0f, -20.0f);
-			ground[1]->Translate(0.0f, -5.0f, -20.0f);
-			ground[2]->Translate(20.0f, -5.0f, -20.0f);
-			ground[3]->Translate(-20.0f, -5.0f, 0.0f);
-			ground[4]->Translate(0.0f, -5.0f, 0.0f);
-			ground[5]->Translate(20.0f, -5.0f, 0.0f);
-			ground[6]->Translate(-20.0f, -5.0f, 20.0f);
-			ground[7]->Translate(0.0f, -5.0f, 20.0f);
-			ground[8]->Translate(20.0f, -5.0f, 20.0f);
+            ground[0]->Translate(-20.0f, -5.0f, -20.0f);
+            ground[1]->Translate(0.0f, -5.0f, -20.0f);
+            ground[2]->Translate(20.0f, -5.0f, -20.0f);
+            ground[3]->Translate(-20.0f, -5.0f, 0.0f);
+            ground[4]->Translate(0.0f, -5.0f, 0.0f);
+            ground[5]->Translate(20.0f, -5.0f, 0.0f);
+            ground[6]->Translate(-20.0f, -5.0f, 20.0f);
+            ground[7]->Translate(0.0f, -5.0f, 20.0f);
+            ground[8]->Translate(20.0f, -5.0f, 20.0f);
         }
 
-		void initGeometry()
-		{
+        void initGeometry()
+        {
             IResourceManager& rm = renderer->getResourceManager();
-			meshes.push_back(new CustomGeometry(rm, "3DAssets/female_elf-3ds.3DS"));
-			meshes[0]->Scale(0.1f, 0.1f, 0.1f);
-			meshes[0]->Rotate(-3.14f / 2.0f, 0, 0);
-			meshes[0]->Translate(0, -20, 0);
+            meshes.push_back(new CustomGeometry(rm, "3DAssets/female_elf-3ds.3DS"));
+            meshes[0]->Scale(0.1f, 0.1f, 0.1f);
+            meshes[0]->Rotate(-3.14f / 2.0f, 0, 0);
+            meshes[0]->Translate(0, -20, 0);
 
-			meshes.push_back(new CustomGeometry(rm, "3DAssets/ogrehead.obj"));
-			meshes[1]->Scale(7.0f, 7.0f, 7.0f);
+            meshes.push_back(new CustomGeometry(rm, "3DAssets/ogrehead.obj"));
+            meshes[1]->Scale(7.0f, 7.0f, 7.0f);
 
-			/*g = new CustomGeometry("3DAssets/buddha.3ds");
-			g->Scale(0.01f, 0.01f, 0.01f);
-			g->Rotate(-3.14f / 2.0f, 0, 0);
-			g->Translate(0, 1, 0);*/
+            /*g = new CustomGeometry("3DAssets/buddha.3ds");
+            g->Scale(0.01f, 0.01f, 0.01f);
+            g->Rotate(-3.14f / 2.0f, 0, 0);
+            g->Translate(0, 1, 0);*/
 
-			meshes.push_back(new CustomGeometry(rm, "3DAssets/hair5.obj"));
+            meshes.push_back(new CustomGeometry(rm, "3DAssets/hair5.obj"));
             meshes[2]->Scale(87, 85, 77);
             meshes[2]->Translate(0, -55, 0);
 
             meshes.push_back(new CustomGeometry(rm, "3DAssets/Sphere.3ds"));
             meshes[3]->Scale(0.5, 0.5, 0.5);
 
-			currentMesh = meshes[0];
-			currentMesh->setMaterial(materials[11]);
-			scene.add(currentMesh);
-		}
+            currentMesh = meshes[0];
+            currentMesh->setMaterial(materials[11]);
+            scene.add(currentMesh);
+        }
 
         void updateCamera()
         {
@@ -386,35 +386,35 @@ namespace PBRDemo
             cameraPos = camera.getLookDirection() + Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
         }
 
-		void showNextMesh()
-		{
-			meshIndex = (meshIndex + 1) % 4;
-			scene.remove(currentMesh);
-			currentMesh = meshes[meshIndex];
-			currentMesh->setMaterial(materials[11 + materialIndex]);
-			scene.add(currentMesh);
-		}
+        void showNextMesh()
+        {
+            meshIndex = (meshIndex + 1) % 4;
+            scene.remove(currentMesh);
+            currentMesh = meshes[meshIndex];
+            currentMesh->setMaterial(materials[11 + materialIndex]);
+            scene.add(currentMesh);
+        }
 
-		void showPreviousMesh()
-		{
-			meshIndex = (0 == meshIndex ? 3 : (meshIndex - 1) % 4);
-			scene.remove(currentMesh);
-			currentMesh = meshes[meshIndex];
-			currentMesh->setMaterial(materials[11 + materialIndex]);
-			scene.add(currentMesh);
-		}
+        void showPreviousMesh()
+        {
+            meshIndex = (0 == meshIndex ? 3 : (meshIndex - 1) % 4);
+            scene.remove(currentMesh);
+            currentMesh = meshes[meshIndex];
+            currentMesh->setMaterial(materials[11 + materialIndex]);
+            scene.add(currentMesh);
+        }
 
-		void showNextMaterial()
-		{
-			materialIndex = (materialIndex + 1) % 4;
-			currentMesh->setMaterial(materials[11 + materialIndex]);
-		}
+        void showNextMaterial()
+        {
+            materialIndex = (materialIndex + 1) % 4;
+            currentMesh->setMaterial(materials[11 + materialIndex]);
+        }
 
-		void showPreviousMaterial()
-		{
-			materialIndex = (0 == materialIndex ? 3 : (materialIndex - 1) % 4);
-			currentMesh->setMaterial(materials[11 + materialIndex]);
-		}
+        void showPreviousMaterial()
+        {
+            materialIndex = (0 == materialIndex ? 3 : (materialIndex - 1) % 4);
+            currentMesh->setMaterial(materials[11 + materialIndex]);
+        }
 
         PerspectiveCamera camera;
         Scene scene;
@@ -433,14 +433,14 @@ namespace PBRDemo
         float ior;
         float glossiness;
         vector<CustomGeometry*> lights;
-		vector<CustomGeometry*> meshes;
-		vector<IMaterial*> materials;
-		vector<ITexture*> textures;
-		ITextureCubemap* envMap;
+        vector<CustomGeometry*> meshes;
+        vector<IMaterial*> materials;
+        vector<ITexture*> textures;
+        ITextureCubemap* envMap;
         bool cameraRotating;
         bool cameraPanning;
-		int materialIndex;
-		int meshIndex;
+        int materialIndex;
+        int meshIndex;
     };
 
     void main()
