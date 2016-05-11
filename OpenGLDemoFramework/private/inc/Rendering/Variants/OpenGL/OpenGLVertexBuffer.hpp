@@ -8,8 +8,8 @@ class OpenGLVertexBuffer : public IVertexBuffer
 public:
     unsigned int getId() const;
     unsigned int getLocation() const;
-	virtual unsigned int getVertexCount() const;
-	virtual unsigned int getAttributeSize() const;
+    virtual unsigned int getVertexCount() const;
+    virtual unsigned int getAttributeSize() const;
 private:
     OpenGLVertexBuffer(const unsigned int id, const unsigned int location, const unsigned int vertexCount, const unsigned int attributeSize);
     ~OpenGLVertexBuffer();

@@ -3,38 +3,38 @@
 class Bar : public Mesh
 {
 public:
-	Bar();
-	~Bar();
+    Bar();
+    ~Bar();
 
-	void SetTime(GLuint time);
-	GLuint GetTime();
+    void SetTime(GLuint time);
+    GLuint GetTime();
 
-	void SetSegments(GLuint segments);
-	GLuint GetSegments();
+    void SetSegments(GLuint segments);
+    GLuint GetSegments();
 
-	void SetStartAngle(GLfloat startAngle);
-	GLfloat GetStartAngle();
+    void SetStartAngle(GLfloat startAngle);
+    GLfloat GetStartAngle();
 
-	void SetOffsetAngle(GLfloat offsetAngle);
-	GLfloat GetOffsetAngle();
+    void SetOffsetAngle(GLfloat offsetAngle);
+    GLfloat GetOffsetAngle();
 
-	void SetFillPercentage(GLfloat fillPercentage);
-	GLfloat GetFillPercentage();
+    void SetFillPercentage(GLfloat fillPercentage);
+    GLfloat GetFillPercentage();
 
-	void UseProgram();
-	void Render();
+    void UseProgram();
+    void Render();
 private:
-	static const GLfloat g_vertex_buffer_data[];
-	GLuint vertexBuffer;
-	GLuint programID;
-	GLuint timeID;
-	GLuint time;
-	GLuint segmentsID;
-	GLuint segments;
-	GLuint startAngleID;
-	GLfloat startAngle;
-	GLuint offsetAngleID;
-	GLfloat offsetAngle;
-	GLuint fillPercentageID;
-	GLfloat fillPercentage;
+    static const GLfloat g_vertex_buffer_data[];
+    GLuint vertexBuffer;
+    GLuint programID;
+    GLuint timeID;
+    GLuint time;
+    GLuint segmentsID;
+    GLuint segments;
+    GLuint startAngleID;
+    GLfloat startAngle;
+    GLuint offsetAngleID;
+    GLfloat offsetAngle;
+    GLuint fillPercentageID;
+    GLfloat fillPercentage;
 };

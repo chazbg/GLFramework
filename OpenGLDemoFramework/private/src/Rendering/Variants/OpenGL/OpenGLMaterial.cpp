@@ -24,45 +24,45 @@ OpenGLMaterial::~OpenGLMaterial()
 
 int OpenGLMaterial::getId() const
 {
-	return id;
+    return id;
 }
 
 const std::vector<const ITexture*>& OpenGLMaterial::getTextures() const
 {
-	return textures;
+    return textures;
 }
 
 const std::vector<const ITextureCubemap*>& OpenGLMaterial::getTextureCubemaps() const
 {
-	return textureCubemaps;
+    return textureCubemaps;
 }
 
 void OpenGLMaterial::addTexture(const ITexture* tex)
 {
-	textures.push_back(tex);
+    textures.push_back(tex);
 }
 
 void OpenGLMaterial::addTextureCubemap(const ITextureCubemap* tex)
 {
-	textureCubemaps.push_back(tex);
+    textureCubemaps.push_back(tex);
 }
 
 void OpenGLMaterial::removeTexture(const ITexture* tex)
 {
-	vector<const ITexture*>::iterator it = find(textures.begin(), textures.end(), tex);
-	if (textures.end() != it)
-	{
-		textures.erase(it);
-	}
+    vector<const ITexture*>::iterator it = find(textures.begin(), textures.end(), tex);
+    if (textures.end() != it)
+    {
+        textures.erase(it);
+    }
 }
 
 void OpenGLMaterial::removeTextureCubemap(const ITextureCubemap* tex)
 {
-	vector<const ITextureCubemap*>::iterator it = find(textureCubemaps.begin(), textureCubemaps.end(), tex);
-	if (textureCubemaps.end() != it)
-	{
-		textureCubemaps.erase(it);
-	}
+    vector<const ITextureCubemap*>::iterator it = find(textureCubemaps.begin(), textureCubemaps.end(), tex);
+    if (textureCubemaps.end() != it)
+    {
+        textureCubemaps.erase(it);
+    }
 }
 
 const map<string, int>& OpenGLMaterial::getIntProperties() const

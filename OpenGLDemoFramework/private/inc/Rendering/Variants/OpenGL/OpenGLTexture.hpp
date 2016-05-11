@@ -19,5 +19,5 @@ private:
     unsigned int width;
     unsigned int height;
     unsigned int bpp;
-	unsigned int id;
+    unsigned int id;
 };

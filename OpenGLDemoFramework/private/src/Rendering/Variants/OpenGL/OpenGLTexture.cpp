@@ -16,7 +16,7 @@ OpenGLTexture::~OpenGLTexture()
 
 unsigned int OpenGLTexture::getId() const
 {
-	return id;
+    return id;
 }
 
 unsigned int OpenGLTexture::getFormat(const unsigned int bpp, const bool isDepthComponent)
@@ -55,15 +55,15 @@ unsigned int OpenGLTexture::getFormat(const unsigned int bpp, const bool isDepth
 
 unsigned int OpenGLTexture::getWidth() const
 {
-	return width;
+    return width;
 }
 
 unsigned int OpenGLTexture::getHeight() const
 {
-	return height;
+    return height;
 }
 
 unsigned int OpenGLTexture::getBpp() const
 {
-	return bpp;
+    return bpp;
 }

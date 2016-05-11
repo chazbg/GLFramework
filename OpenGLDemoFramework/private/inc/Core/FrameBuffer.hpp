@@ -3,13 +3,13 @@
 class FrameBuffer
 {
 public:
-	FrameBuffer();
-	~FrameBuffer();
-	unsigned int getFbo();
-	unsigned int getColorTex();
-	unsigned int getDepthTex();
+    FrameBuffer();
+    ~FrameBuffer();
+    unsigned int getFbo();
+    unsigned int getColorTex();
+    unsigned int getDepthTex();
 private:
-	unsigned int fbo;
-	unsigned int colorTex;
-	unsigned int depthTex;
+    unsigned int fbo;
+    unsigned int colorTex;
+    unsigned int depthTex;
 };

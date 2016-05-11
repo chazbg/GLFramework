@@ -3,27 +3,27 @@
 
 FrameBuffer::FrameBuffer() : fbo(0), colorTex(0), depthTex(0)
 {
-	glGenFramebuffers(1, &fbo);
-	glGenTextures(1, &colorTex);
-	glGenTextures(1, &depthTex);
+    glGenFramebuffers(1, &fbo);
+    glGenTextures(1, &colorTex);
+    glGenTextures(1, &depthTex);
 }
 
 FrameBuffer::~FrameBuffer()
 {
-	//TODO: delete fbo
+    //TODO: delete fbo
 }
 
 unsigned int FrameBuffer::getFbo()
 {
-	return fbo;
+    return fbo;
 }
 
 unsigned int FrameBuffer::getColorTex()
 {
-	return colorTex;
+    return colorTex;
 }
 
 unsigned int FrameBuffer::getDepthTex()
 {
-	return depthTex;
+    return depthTex;
 }

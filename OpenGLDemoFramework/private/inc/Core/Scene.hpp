@@ -5,11 +5,11 @@
 class Scene : public IScene
 {
 public:
-	Scene();
-	~Scene();
-	virtual void add(IMesh* mesh);
-	virtual void remove(const IMesh* mesh);
-	virtual std::vector<IMesh*>& getChildren();
+    Scene();
+    ~Scene();
+    virtual void add(IMesh* mesh);
+    virtual void remove(const IMesh* mesh);
+    virtual std::vector<IMesh*>& getChildren();
 private:
-	std::vector<IMesh*> meshes;
+    std::vector<IMesh*> meshes;
 };

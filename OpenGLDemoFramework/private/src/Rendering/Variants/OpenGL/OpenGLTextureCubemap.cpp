@@ -13,5 +13,5 @@ OpenGLTextureCubemap::~OpenGLTextureCubemap()
 
 unsigned int OpenGLTextureCubemap::getId() const
 {
-	return id;
+    return id;
 }
