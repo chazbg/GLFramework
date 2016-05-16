@@ -183,7 +183,7 @@ namespace PBRDemo
 
             //1
             materials.push_back(resourceManager.createMaterial("Shaders/envMap.vs", "Shaders/envMap.fs"));
-            materials[1]->setProperty("envMap", 1);
+            materials[1]->setProperty("envMap", 0);
             materials[1]->addTextureCubemap(envMap);
 
             //2
