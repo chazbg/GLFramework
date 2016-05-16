@@ -19,7 +19,7 @@ OpenGLVertexBuffer::~OpenGLVertexBuffer()
 
 unsigned int OpenGLVertexBuffer::getId() const
 {
-	return id;
+    return id;
 }
 
 unsigned int OpenGLVertexBuffer::getLocation() const
@@ -29,10 +29,10 @@ unsigned int OpenGLVertexBuffer::getLocation() const
 
 unsigned int OpenGLVertexBuffer::getVertexCount() const
 {
-	return vertexCount;
+    return vertexCount;
 }
 
 unsigned int OpenGLVertexBuffer::getAttributeSize() const
 {
-	return attributeSize;
+    return attributeSize;
 }

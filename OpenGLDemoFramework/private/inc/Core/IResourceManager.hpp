@@ -9,7 +9,7 @@
 class IResourceManager
 {
 public:
-	virtual ~IResourceManager(){}
+    virtual ~IResourceManager(){}
 
     virtual ITexture* createTexture(const std::string path) = 0;
     virtual ITexture* createTexture(

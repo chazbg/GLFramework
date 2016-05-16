@@ -23,7 +23,7 @@ Renderer::Renderer(const Vec2& resolution) : lightCamera(3.0f / 4.0f, 16.0f / 9.
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glEnable(GL_PROGRAM_POINT_SIZE);
-	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
     initDeferredShading();
     initPostProcessing();

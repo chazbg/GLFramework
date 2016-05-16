@@ -9,7 +9,7 @@ public:
     unsigned int getId() const;
 private:
     OpenGLTextureCubemap(const unsigned int id);
-	virtual ~OpenGLTextureCubemap();
+    virtual ~OpenGLTextureCubemap();
 
-	const unsigned int id;
+    const unsigned int id;
 };

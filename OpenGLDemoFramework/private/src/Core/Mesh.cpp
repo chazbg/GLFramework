@@ -20,7 +20,7 @@ receivesShadow(false)
 
 Mesh::~Mesh()
 {
-	delete[] wireframeVertexBuffer;
+    delete[] wireframeVertexBuffer;
 
     for (unsigned int i = 0; i < children.size(); i++)
     {
@@ -35,12 +35,12 @@ const IIndexBuffer * Mesh::getIBO()
 
 std::vector<const IVertexBuffer*>& Mesh::getVBOs()
 {
-	return vbos;
+    return vbos;
 }
 
 void Mesh::setModelMatrix(const Matrix4 & model)
 {
-	this->model = model;
+    this->model = model;
 
     for (unsigned int i = 0; i < children.size(); i++)
     {
@@ -50,13 +50,13 @@ void Mesh::setModelMatrix(const Matrix4 & model)
 
 Matrix4 Mesh::getModelMatrix() const
 {
-	//return translation * rotation * scale;
+    //return translation * rotation * scale;
     return model;
 }
 
 void Mesh::setWireframeMode(const bool showWireframe)
 {
-	this->showWireframe = showWireframe;
+    this->showWireframe = showWireframe;
 }
 
 void Mesh::setIndices(const IIndexBuffer & indices)
@@ -66,17 +66,17 @@ void Mesh::setIndices(const IIndexBuffer & indices)
 
 void Mesh::setVertices(const IVertexBuffer & vertices)
 {
-	vbos[0] = &vertices;
+    vbos[0] = &vertices;
 }
 
 void Mesh::setNormals(const IVertexBuffer & normals)
 {
-	vbos[1] = &normals;
+    vbos[1] = &normals;
 }
 
 void Mesh::setTexCoords(const IVertexBuffer & texCoords)
 {
-	vbos[2] = &texCoords;
+    vbos[2] = &texCoords;
 }
 
 void Mesh::setTangents(const IVertexBuffer& tangents)
@@ -91,7 +91,7 @@ void Mesh::setBitangents(const IVertexBuffer& bitangents)
 
 void Mesh::setMaterial(IMaterial * material)
 {
-	this->material = material;
+    this->material = material;
 
     for (unsigned int i = 0; i < children.size(); i++)
     {
@@ -101,7 +101,7 @@ void Mesh::setMaterial(IMaterial * material)
 
 IMaterial & Mesh::getMaterial() const
 {
-	return *material;
+    return *material;
 }
 
 void Mesh::addChild(IMesh* child)
@@ -131,7 +131,7 @@ void Mesh::SetUniformValue(string uniform, const Vec3& v)
 
 void Mesh::SetUniformValue(string uniform, const Vec4& v)
 {
-	//TODO
+    //TODO
 }
 
 void Mesh::SetUniformValue(string uniform, const Matrix4& v)
@@ -141,12 +141,12 @@ void Mesh::SetUniformValue(string uniform, const Matrix4& v)
 
 void Mesh::SetCastsShadow(const bool castsShadow)
 {
-	this->castsShadow = castsShadow;
+    this->castsShadow = castsShadow;
 }
 
 void Mesh::SetReceivesShadow(const bool receivesShadow)
 {
-	this->receivesShadow = receivesShadow;
+    this->receivesShadow = receivesShadow;
 }
 
 Vec3 Mesh::getPosition()
@@ -192,29 +192,29 @@ void Mesh::Translate(const float transX, const float transY, const float transZ)
 
 float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int vertexCount)
 {
-	float* normalsBuffer = new float[vertexCount * 3];
+    float* normalsBuffer = new float[vertexCount * 3];
 
-	for (unsigned int i = 0; i < vertexCount * 3; i += 9)
-	{
-		Vec3 a(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
-		Vec3 b(vertexBuffer[i + 3], vertexBuffer[i + 4], vertexBuffer[i + 5]);
-		Vec3 c(vertexBuffer[i + 6], vertexBuffer[i + 7], vertexBuffer[i + 8]);
-		Vec3 cb = c - b;
-		Vec3 ab = a - b;
-		Vec3 res = (cb * ab).normalize();
+    for (unsigned int i = 0; i < vertexCount * 3; i += 9)
+    {
+        Vec3 a(vertexBuffer[i], vertexBuffer[i + 1], vertexBuffer[i + 2]);
+        Vec3 b(vertexBuffer[i + 3], vertexBuffer[i + 4], vertexBuffer[i + 5]);
+        Vec3 c(vertexBuffer[i + 6], vertexBuffer[i + 7], vertexBuffer[i + 8]);
+        Vec3 cb = c - b;
+        Vec3 ab = a - b;
+        Vec3 res = (cb * ab).normalize();
 
-		normalsBuffer[i] = res.x;
-		normalsBuffer[i + 1] = res.y;
-		normalsBuffer[i + 2] = res.z;
+        normalsBuffer[i] = res.x;
+        normalsBuffer[i + 1] = res.y;
+        normalsBuffer[i + 2] = res.z;
 
-		normalsBuffer[i + 3] = res.x;
-		normalsBuffer[i + 4] = res.y;
-		normalsBuffer[i + 5] = res.z;
+        normalsBuffer[i + 3] = res.x;
+        normalsBuffer[i + 4] = res.y;
+        normalsBuffer[i + 5] = res.z;
 
-		normalsBuffer[i + 6] = res.x;
-		normalsBuffer[i + 7] = res.y;
-		normalsBuffer[i + 8] = res.z;
-	}
+        normalsBuffer[i + 6] = res.x;
+        normalsBuffer[i + 7] = res.y;
+        normalsBuffer[i + 8] = res.z;
+    }
 
     return normalsBuffer;
 }
@@ -237,33 +237,33 @@ float* Mesh::generateUVs(const float* vertexBuffer, const unsigned int vertexCou
 
 void Mesh::generateWireframe()
 {
-	//wireframeVertexBuffer = new float[vertexCount * 3 * 2];
-	//unsigned int j = 0;
-	//for (unsigned int i = 0; i < vertexCount; i += 9)
-	//{
-	//	wireframeVertexBuffer[j] = vertexBuffer[i];
-	//	wireframeVertexBuffer[j + 1] = vertexBuffer[i + 1];
-	//	wireframeVertexBuffer[j + 2] = vertexBuffer[i + 2];
+    //wireframeVertexBuffer = new float[vertexCount * 3 * 2];
+    //unsigned int j = 0;
+    //for (unsigned int i = 0; i < vertexCount; i += 9)
+    //{
+    //    wireframeVertexBuffer[j] = vertexBuffer[i];
+    //    wireframeVertexBuffer[j + 1] = vertexBuffer[i + 1];
+    //    wireframeVertexBuffer[j + 2] = vertexBuffer[i + 2];
 
-	//	wireframeVertexBuffer[j + 3] = vertexBuffer[i + 3];
-	//	wireframeVertexBuffer[j + 4] = vertexBuffer[i + 4];
-	//	wireframeVertexBuffer[j + 5] = vertexBuffer[i + 5];
+    //    wireframeVertexBuffer[j + 3] = vertexBuffer[i + 3];
+    //    wireframeVertexBuffer[j + 4] = vertexBuffer[i + 4];
+    //    wireframeVertexBuffer[j + 5] = vertexBuffer[i + 5];
 
-	//	wireframeVertexBuffer[j + 6] = vertexBuffer[i + 3];
-	//	wireframeVertexBuffer[j + 7] = vertexBuffer[i + 4];
-	//	wireframeVertexBuffer[j + 8] = vertexBuffer[i + 5];
+    //    wireframeVertexBuffer[j + 6] = vertexBuffer[i + 3];
+    //    wireframeVertexBuffer[j + 7] = vertexBuffer[i + 4];
+    //    wireframeVertexBuffer[j + 8] = vertexBuffer[i + 5];
 
-	//	wireframeVertexBuffer[j + 9] = vertexBuffer[i + 6];
-	//	wireframeVertexBuffer[j + 10] = vertexBuffer[i + 7];
-	//	wireframeVertexBuffer[j + 11] = vertexBuffer[i + 8];
+    //    wireframeVertexBuffer[j + 9] = vertexBuffer[i + 6];
+    //    wireframeVertexBuffer[j + 10] = vertexBuffer[i + 7];
+    //    wireframeVertexBuffer[j + 11] = vertexBuffer[i + 8];
 
-	//	wireframeVertexBuffer[j + 12] = vertexBuffer[i + 6];
-	//	wireframeVertexBuffer[j + 13] = vertexBuffer[i + 7];
-	//	wireframeVertexBuffer[j + 14] = vertexBuffer[i + 8];
+    //    wireframeVertexBuffer[j + 12] = vertexBuffer[i + 6];
+    //    wireframeVertexBuffer[j + 13] = vertexBuffer[i + 7];
+    //    wireframeVertexBuffer[j + 14] = vertexBuffer[i + 8];
 
-	//	wireframeVertexBuffer[j + 15] = vertexBuffer[i];
-	//	wireframeVertexBuffer[j + 16] = vertexBuffer[i + 1];
-	//	wireframeVertexBuffer[j + 17] = vertexBuffer[i + 2];
-	//	j += 18;
-	//}
+    //    wireframeVertexBuffer[j + 15] = vertexBuffer[i];
+    //    wireframeVertexBuffer[j + 16] = vertexBuffer[i + 1];
+    //    wireframeVertexBuffer[j + 17] = vertexBuffer[i + 2];
+    //    j += 18;
+    //}
 }

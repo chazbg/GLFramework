@@ -23,140 +23,140 @@ CustomGeometry::CustomGeometry(IResourceManager& rm, const std::string fileName,
     }
 
     const aiScene* scene = importer.ReadFile(fileName, flags);
-	
-	std::stack<aiNode*> nodes;
+    
+    std::stack<aiNode*> nodes;
 
     if (!scene)
     {
         printf("Assimp Scene Import Error: %s \n", importer.GetErrorString());
     }
    
-	nodes.push(scene->mRootNode);
+    nodes.push(scene->mRootNode);
 
-	while (!nodes.empty())
-	{
-		aiNode* node = nodes.top();
-		nodes.pop();
+    while (!nodes.empty())
+    {
+        aiNode* node = nodes.top();
+        nodes.pop();
 
-		for (unsigned int i = 0; i < node->mNumMeshes; i++)
-		{
-			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			Mesh* bufferGeometry = new Mesh();
+        for (unsigned int i = 0; i < node->mNumMeshes; i++)
+        {
+            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+            Mesh* bufferGeometry = new Mesh();
 
-			Matrix4 modelMat(
-				Vec4(node->mTransformation.a1, node->mTransformation.a2, node->mTransformation.a3, node->mTransformation.a4),
-				Vec4(node->mTransformation.b1, node->mTransformation.b2, node->mTransformation.b3, node->mTransformation.b4),
-				Vec4(node->mTransformation.c1, node->mTransformation.c2, node->mTransformation.c3, node->mTransformation.c4),
-				Vec4(node->mTransformation.d1, node->mTransformation.d2, node->mTransformation.d3, node->mTransformation.d4)
-				);
+            Matrix4 modelMat(
+                Vec4(node->mTransformation.a1, node->mTransformation.a2, node->mTransformation.a3, node->mTransformation.a4),
+                Vec4(node->mTransformation.b1, node->mTransformation.b2, node->mTransformation.b3, node->mTransformation.b4),
+                Vec4(node->mTransformation.c1, node->mTransformation.c2, node->mTransformation.c3, node->mTransformation.c4),
+                Vec4(node->mTransformation.d1, node->mTransformation.d2, node->mTransformation.d3, node->mTransformation.d4)
+                );
 
-			bufferGeometry->setModelMatrix(modelMat);
-			if (mesh->HasPositions())
-			{
-				float* vertexBuffer = new float[3 * mesh->mNumVertices];
+            bufferGeometry->setModelMatrix(modelMat);
+            if (mesh->HasPositions())
+            {
+                float* vertexBuffer = new float[3 * mesh->mNumVertices];
 
-				for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
-				{
-					aiVector3D pos = mesh->mVertices[j];
-					//printf("%f, %f, %f\n", pos.x, pos.y, pos.z);
-					vertexBuffer[k] = pos.x;
-					vertexBuffer[k + 1] = pos.y;
-					vertexBuffer[k + 2] = pos.z;
-				}
+                for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+                {
+                    aiVector3D pos = mesh->mVertices[j];
+                    //printf("%f, %f, %f\n", pos.x, pos.y, pos.z);
+                    vertexBuffer[k] = pos.x;
+                    vertexBuffer[k + 1] = pos.y;
+                    vertexBuffer[k + 2] = pos.z;
+                }
 
-				IVertexBuffer* vertices = rm.createVertexBuffer(mesh->mNumVertices, 3, 0, vertexBuffer);
-				delete[] vertexBuffer;
-				bufferGeometry->setVertices(*vertices);
-			}
+                IVertexBuffer* vertices = rm.createVertexBuffer(mesh->mNumVertices, 3, 0, vertexBuffer);
+                delete[] vertexBuffer;
+                bufferGeometry->setVertices(*vertices);
+            }
 
-			if (mesh->HasNormals())
-			{
-				float* normalsBuffer = new float[3 * mesh->mNumVertices];
+            if (mesh->HasNormals())
+            {
+                float* normalsBuffer = new float[3 * mesh->mNumVertices];
 
-				for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
-				{
-					aiVector3D normal = mesh->mNormals[j];
-					//printf("normal %f, %f, %f\n", normal.x, normal.y, normal.z);
-					normalsBuffer[k] = normal.x;
-					normalsBuffer[k + 1] = normal.y;
-					normalsBuffer[k + 2] = normal.z;
-				}
+                for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+                {
+                    aiVector3D normal = mesh->mNormals[j];
+                    //printf("normal %f, %f, %f\n", normal.x, normal.y, normal.z);
+                    normalsBuffer[k] = normal.x;
+                    normalsBuffer[k + 1] = normal.y;
+                    normalsBuffer[k + 2] = normal.z;
+                }
 
                 IVertexBuffer* normals = rm.createVertexBuffer(mesh->mNumVertices, 3, 1, normalsBuffer);
-				delete[] normalsBuffer;
-				bufferGeometry->setNormals(*normals);
-			}
+                delete[] normalsBuffer;
+                bufferGeometry->setNormals(*normals);
+            }
 
-			if (mesh->HasTangentsAndBitangents())
-			{
-				float* tangentsBuffer = new float[3 * mesh->mNumVertices];
-				float* bitangentsBuffer = new float[3 * mesh->mNumVertices];
+            if (mesh->HasTangentsAndBitangents())
+            {
+                float* tangentsBuffer = new float[3 * mesh->mNumVertices];
+                float* bitangentsBuffer = new float[3 * mesh->mNumVertices];
 
-				for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
-				{
-					aiVector3D tangent = mesh->mTangents[j];
-					tangentsBuffer[k] = tangent.x;
-					tangentsBuffer[k + 1] = tangent.y;
-					tangentsBuffer[k + 2] = tangent.z;
+                for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 3)
+                {
+                    aiVector3D tangent = mesh->mTangents[j];
+                    tangentsBuffer[k] = tangent.x;
+                    tangentsBuffer[k + 1] = tangent.y;
+                    tangentsBuffer[k + 2] = tangent.z;
 
-					aiVector3D bitangent = mesh->mBitangents[j];
-					bitangentsBuffer[k] = bitangent.x;
-					bitangentsBuffer[k + 1] = bitangent.y;
-					bitangentsBuffer[k + 2] = bitangent.z;
-				}
+                    aiVector3D bitangent = mesh->mBitangents[j];
+                    bitangentsBuffer[k] = bitangent.x;
+                    bitangentsBuffer[k + 1] = bitangent.y;
+                    bitangentsBuffer[k + 2] = bitangent.z;
+                }
 
                 IVertexBuffer* tangents = rm.createVertexBuffer(mesh->mNumVertices, 3, 3, tangentsBuffer);
                 IVertexBuffer* bitangents = rm.createVertexBuffer(mesh->mNumVertices, 3, 4, bitangentsBuffer);
-				delete[] tangentsBuffer;
-				delete[] bitangentsBuffer;
+                delete[] tangentsBuffer;
+                delete[] bitangentsBuffer;
 
-				bufferGeometry->setTangents(*tangents);
-				bufferGeometry->setBitangents(*bitangents);
-			}
+                bufferGeometry->setTangents(*tangents);
+                bufferGeometry->setBitangents(*bitangents);
+            }
 
-			if (mesh->HasTextureCoords(0))
-			{
-				float* texCoordsBuffer = new float[2 * mesh->mNumVertices];
+            if (mesh->HasTextureCoords(0))
+            {
+                float* texCoordsBuffer = new float[2 * mesh->mNumVertices];
 
-				for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 2)
-				{
-					aiVector3D uv = mesh->mTextureCoords[0][j];
-					//printf("uv %f, %f\n", uv.x, uv.y);
-					texCoordsBuffer[k] = uv.x;
-					texCoordsBuffer[k + 1] = uv.y;
-				}
+                for (unsigned int j = 0, k = 0; j < mesh->mNumVertices; j++, k += 2)
+                {
+                    aiVector3D uv = mesh->mTextureCoords[0][j];
+                    //printf("uv %f, %f\n", uv.x, uv.y);
+                    texCoordsBuffer[k] = uv.x;
+                    texCoordsBuffer[k + 1] = uv.y;
+                }
 
-				IVertexBuffer* uvs = rm.createVertexBuffer(mesh->mNumVertices, 2, 2, texCoordsBuffer);
-				delete[] texCoordsBuffer;
-				bufferGeometry->setTexCoords(*uvs);
-			}
+                IVertexBuffer* uvs = rm.createVertexBuffer(mesh->mNumVertices, 2, 2, texCoordsBuffer);
+                delete[] texCoordsBuffer;
+                bufferGeometry->setTexCoords(*uvs);
+            }
 
-			if (mesh->HasFaces())
-			{
-				unsigned int* indexBuffer = new unsigned int[3 * mesh->mNumFaces];
+            if (mesh->HasFaces())
+            {
+                unsigned int* indexBuffer = new unsigned int[3 * mesh->mNumFaces];
 
-				for (unsigned int j = 0, k = 0; j < mesh->mNumFaces; j++, k += 3)
-				{
-					aiFace face = mesh->mFaces[j];
-					//printf("%d, %d, %d\n", face.mIndices[0], face.mIndices[1], face.mIndices[2]);
-					indexBuffer[k] = face.mIndices[0];
-					indexBuffer[k + 1] = face.mIndices[1];
-					indexBuffer[k + 2] = face.mIndices[2];
-				}
+                for (unsigned int j = 0, k = 0; j < mesh->mNumFaces; j++, k += 3)
+                {
+                    aiFace face = mesh->mFaces[j];
+                    //printf("%d, %d, %d\n", face.mIndices[0], face.mIndices[1], face.mIndices[2]);
+                    indexBuffer[k] = face.mIndices[0];
+                    indexBuffer[k + 1] = face.mIndices[1];
+                    indexBuffer[k + 2] = face.mIndices[2];
+                }
 
-				IIndexBuffer* indices = rm.createIndexBuffer(3 * mesh->mNumFaces, indexBuffer);
-				delete[] indexBuffer;
-				bufferGeometry->setIndices(*indices);
-			}
+                IIndexBuffer* indices = rm.createIndexBuffer(3 * mesh->mNumFaces, indexBuffer);
+                delete[] indexBuffer;
+                bufferGeometry->setIndices(*indices);
+            }
 
-			addChild(bufferGeometry);
-		}
+            addChild(bufferGeometry);
+        }
 
-		for (unsigned int i = 0; i < node->mNumChildren; i++)
-		{
-			nodes.push(node->mChildren[i]);
-		}
-	}
+        for (unsigned int i = 0; i < node->mNumChildren; i++)
+        {
+            nodes.push(node->mChildren[i]);
+        }
+    }
 }
 
 CustomGeometry::~CustomGeometry()

@@ -16,16 +16,16 @@
 class Renderer
 {
 public:
-	Renderer(const Vec2& resolution);
-	~Renderer();
-	void clear(const Vec4& color);
-	void setDepthTest(const bool enabled);
+    Renderer(const Vec2& resolution);
+    ~Renderer();
+    void clear(const Vec4& color);
+    void setDepthTest(const bool enabled);
     IResourceManager& getResourceManager();
-	void render(IScene& scene, ICamera& camera);    
+    void render(IScene& scene, ICamera& camera);    
 private:
-	#ifdef USE_DX12
-	#include "../private/inc/Rendering/Variants/RendererDX.hpp"
-	#else
-	#include "../private/inc/Rendering/Variants/OpenGL/OpenGLRenderer.hpp"
-	#endif
+    #ifdef USE_DX12
+    #include "../private/inc/Rendering/Variants/RendererDX.hpp"
+    #else
+    #include "../private/inc/Rendering/Variants/OpenGL/OpenGLRenderer.hpp"
+    #endif
 };
