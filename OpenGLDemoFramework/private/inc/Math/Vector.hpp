@@ -29,6 +29,8 @@ public:
     float perp(const Vec2& rhs) const;
     Vec2 toPolar() const;
     float polarAngle(const Vec2& rhs) const;
+	float length() const;
+	Vec2 normalize() const;
 
     //TODO: Add operations
 public:

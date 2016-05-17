@@ -67,6 +67,12 @@
     <Filter Include="Source Files\Rendering\Variants\OpenGL">
       <UniqueIdentifier>{b7803cc6-a9bf-4921-8671-c5e5228ab2bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Particles">
+      <UniqueIdentifier>{ce8a2588-0c7d-424d-b331-dd4e2c31266e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Particles">
+      <UniqueIdentifier>{4d7df560-b005-47fd-b0c3-a16724152959}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -158,6 +164,12 @@
     </ClCompile>
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLIndexBuffer.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\Particles\SimpleEmitter.cpp">
+      <Filter>Source Files\Core\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\Particles\SimpleParticle.cpp">
+      <Filter>Source Files\Core\Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +373,21 @@
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoParticles.hpp">
       <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Particles\IParticle.hpp">
+      <Filter>Header Files\Core\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Particles\SimpleParticle.hpp">
+      <Filter>Header Files\Core\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Particles\IEmitter.hpp">
+      <Filter>Header Files\Core\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Particles\SimpleEmitter.hpp">
+      <Filter>Header Files\Core\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Tests\TestParticles.hpp">
+      <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

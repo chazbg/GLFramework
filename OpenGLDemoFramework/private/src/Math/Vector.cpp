@@ -126,6 +126,17 @@ float Vec2::polarAngle(const Vec2& rhs) const
     return atan2(rhs.y - y, rhs.x - x);
 }
 
+float Vec2::length() const
+{
+	return sqrt(x * x + y * y);
+}
+
+Vec2 Vec2::normalize() const
+{
+	float len = length();
+	return Vec2(x / len, y / len);
+}
+
 //Vec3
 Vec3::Vec3(const Vec3& vec)
 {
