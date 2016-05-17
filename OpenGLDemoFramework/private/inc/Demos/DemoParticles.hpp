@@ -5,6 +5,7 @@
 #include "Core/DefaultCamera.hpp"
 #include "Core/Scene.hpp"
 #include "Geometry/Rectangle.hpp"
+#include "Core/Particles/SimpleEmitter.hpp"
 #include <iostream>
 #include <algorithm>
 
@@ -15,13 +16,14 @@ namespace ParticlesDemo
     class TestWindowApp : public IApplication
     {
     public:
-        TestWindowApp() : camera(), renderer(0) {}
+        TestWindowApp() : camera(), renderer(0), particleCount(100), emitter(particleCount, 1.0f) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
             renderer = new Renderer(Vec2(600, 600));
 
             renderer->setAlphaBlending(true);
+            renderer->setDepthTest(false);
 
             initTextures();
             initMaterials();
@@ -47,6 +49,29 @@ namespace ParticlesDemo
 				time++;
 			}
 
+            emitter.updateParticles(0.03f);
+            const std::vector<SimpleParticle*>& particles = emitter.getParticles();
+            unsigned int aliveParticles = emitter.getAliveParticlesCount();
+
+            for (unsigned int i = 0; i < aliveParticles; i++)
+            {
+                const SimpleParticle* particle = particles[i];
+
+                Matrix4 mat(
+                    Vec4(0.1, 0, 0, particle->particlePos.x),
+                    Vec4(0, 0.1, 0, particle->particlePos.y),
+                    Vec4(0, 0, 1, 0),
+                    Vec4(0, 0, 0, 1));
+
+                meshes[i]->setModelMatrix(mat);
+                meshes[i]->getMaterial().setProperty("alpha", particle->alpha);
+            }
+
+            for (unsigned int i = aliveParticles; i < particleCount - aliveParticles; i++)
+            {
+                meshes[i]->getMaterial().setProperty("alpha", 0.0f);
+            }
+            
 			//meshes[0]->Rotate(0, 0.1, 0);
 
             renderer->render(scene, camera);
@@ -88,28 +113,25 @@ namespace ParticlesDemo
         {
             IResourceManager& resourceManager = renderer->getResourceManager();
 
-            //0
-            materials.push_back(resourceManager.createMaterial(
-                "Shaders/particle.vs",
-                "Shaders/particle.fs"));
-            materials[0]->setProperty("sampler", 0);
-			materials[0]->addTexture(textures[0]);
-
-            //1
-            materials.push_back(resourceManager.createMaterial(
-                "Shaders/basicDiffuse.vs",
-                "Shaders/basicDiffuse.fs",
-                "Shaders/basicGeometry.gs"));
-            materials[1]->setProperty("diffuse", Vec3(1.0f, 0.0f, 0.0f));
+            for (unsigned int i = 0; i < particleCount; i++)
+            {
+                materials.push_back(resourceManager.createMaterial(
+                    "Shaders/particle.vs",
+                    "Shaders/particle.fs"));
+                materials[i]->setProperty("sampler", 0);
+                materials[i]->addTexture(textures[0]);
+            }            
         }
 
         void initGeometry()
         {
             IResourceManager& rm = renderer->getResourceManager();
-            meshes.push_back(new Rectangle(rm));
-            meshes[0]->Scale(0.1f, 0.1f, 0.1f);
-            meshes[0]->setMaterial(materials[0]);
-            scene.add(meshes[0]);
+            for (unsigned int i = 0; i < particleCount; i++)
+            {
+                meshes.push_back(new Rectangle(rm));
+                meshes[i]->setMaterial(materials[i]);
+                scene.add(meshes[i]);
+            }
         }
 
 
@@ -134,6 +156,8 @@ namespace ParticlesDemo
         bool cameraPanning;
         int materialIndex;
         int meshIndex;
+        unsigned int particleCount;
+        SimpleEmitter emitter;
     };
 
     void main()

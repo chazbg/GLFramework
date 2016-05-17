@@ -7,9 +7,10 @@ in vec2 texCoords;
 layout(location = 0) out vec4 color;
 
 uniform sampler2D sampler;
+uniform float alpha;
 
 void main()
 {
 	color.xyz = texture(sampler, texCoords).rgb;
-    color.a = color.x;
+    color.a = color.x * alpha;
 }
