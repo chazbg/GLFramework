@@ -154,6 +154,19 @@ void Renderer::setDepthTest(const bool enabled)
     }
 }
 
+void Renderer::setAlphaBlending(const bool enabled)
+{
+    if (enabled)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    }
+    else
+    {
+        glDisable(GL_BLEND);
+    }
+}
+
 IResourceManager& Renderer::getResourceManager()
 {
     return resourceManager;

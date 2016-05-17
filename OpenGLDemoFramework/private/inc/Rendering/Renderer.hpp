@@ -20,6 +20,7 @@ public:
     ~Renderer();
     void clear(const Vec4& color);
     void setDepthTest(const bool enabled);
+    void setAlphaBlending(const bool enabled); //TODO: modes
     IResourceManager& getResourceManager();
     void render(IScene& scene, ICamera& camera);    
 private:

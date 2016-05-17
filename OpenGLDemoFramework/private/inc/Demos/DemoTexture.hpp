@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Texture.hpp"
 #include "Windowing/Window.hpp"
 #include "Rendering/Renderer.hpp"
 #include "Geometry/Rectangle.hpp"
@@ -10,10 +9,8 @@
 #include "Geometry/Triangle.hpp"
 #include <GL/glew.h>
 #include <vector>
-#include <Core/PerspectiveCamera.hpp>
-#include <Core/Scene.hpp>
-#include <Core/ShaderMaterial.hpp>
-#include <Core/TextureFactory.hpp>
+#include "Core/PerspectiveCamera.hpp"
+#include "Core/Scene.hpp"
 
 using namespace std;
 
@@ -22,11 +19,11 @@ namespace TexDemo
     class TestWindowApp : public IApplication
     {
     public:
-        TestWindowApp() : renderer(0) {}
+        TestWindowApp() : camera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), renderer(0) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            renderer = new Renderer(Vec2(1024, 1024));
+            renderer = new Renderer(Vec2(1920, 1080));
 
             TextureFactory texFactory;
             TextureGenerator gen;

@@ -1,6 +1,6 @@
-#include "Demos/DemoGeometryShader.hpp"
+#include "Demos/DemoParticles.hpp"
 int main(int argc, char* argv[])
 {
-    GeometryShaderDemo::main();
+    ParticlesDemo::main();
     return 0;
 }

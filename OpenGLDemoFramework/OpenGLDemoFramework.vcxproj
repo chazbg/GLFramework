@@ -204,6 +204,7 @@
     <ClInclude Include="private\inc\Demos\DemoHoughTransform.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingLineSegments.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingPolygons.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoParticles.hpp" />
     <ClInclude Include="private\inc\Demos\DemoPBR.hpp" />
     <ClInclude Include="private\inc\Demos\DemoPointInPolygon.hpp" />
     <ClInclude Include="private\inc\Demos\DemoProjections.hpp" />

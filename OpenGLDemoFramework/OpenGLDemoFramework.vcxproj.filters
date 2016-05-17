@@ -359,6 +359,9 @@
     <ClInclude Include="private\inc\Demos\DemoGeometryShader.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoParticles.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
