@@ -2,7 +2,7 @@
 
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec2 vertexPosition_modelspace;
-layout(location = 1) in vec2 texCoord;
+layout(location = 2) in vec2 texCoord;
 
 out vec2 texCoords;
 out vec2 interpolatedCoords;

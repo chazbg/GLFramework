@@ -10,6 +10,6 @@ uniform sampler2D sampler;
 
 void main()
 {
-	color.xyz = texture2D(sampler, texCoords).rgb;
-    color.a = 1.0;
+	color.xyz = texture(sampler, texCoords).rgb;
+    color.a = color.x;
 }

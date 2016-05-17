@@ -41,6 +41,13 @@ namespace ParticlesDemo
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
             camera.setPosition(cameraPos);
+			
+			if (!stopTime)
+			{
+				time++;
+			}
+
+			//meshes[0]->Rotate(0, 0.1, 0);
 
             renderer->render(scene, camera);
         }
@@ -74,7 +81,7 @@ namespace ParticlesDemo
         {
             IResourceManager& rm = renderer->getResourceManager();
    
-            textures.push_back(rm.createTexture("Images/pattern6/specular.jpg"));
+            textures.push_back(rm.createTexture("Images/particletexture.jpg"));
         }
 
         void initMaterials()
@@ -86,6 +93,7 @@ namespace ParticlesDemo
                 "Shaders/particle.vs",
                 "Shaders/particle.fs"));
             materials[0]->setProperty("sampler", 0);
+			materials[0]->addTexture(textures[0]);
 
             //1
             materials.push_back(resourceManager.createMaterial(
@@ -101,7 +109,6 @@ namespace ParticlesDemo
             meshes.push_back(new Rectangle(rm));
             meshes[0]->Scale(0.1f, 0.1f, 0.1f);
             meshes[0]->setMaterial(materials[0]);
-            meshes[0]->getMaterial().addTexture(textures[0]);
             scene.add(meshes[0]);
         }
 
