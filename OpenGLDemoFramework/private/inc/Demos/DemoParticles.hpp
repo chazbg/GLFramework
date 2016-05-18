@@ -16,7 +16,7 @@ namespace ParticlesDemo
     class TestWindowApp : public IApplication
     {
     public:
-        TestWindowApp() : camera(), renderer(0), particleCount(100), emitter(particleCount, 1.0f) {}
+        TestWindowApp() : camera(), renderer(0), particleCount(100), emitter(particleCount, 0.5f) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
@@ -58,8 +58,8 @@ namespace ParticlesDemo
                 const SimpleParticle* particle = particles[i];
 
                 Matrix4 mat(
-                    Vec4(0.1, 0, 0, particle->particlePos.x),
-                    Vec4(0, 0.1, 0, particle->particlePos.y),
+					Vec4(particle->scale.x, 0, 0, particle->particlePos.x),
+					Vec4(0, particle->scale.y, 0, particle->particlePos.y),
                     Vec4(0, 0, 1, 0),
                     Vec4(0, 0, 0, 1));
 
