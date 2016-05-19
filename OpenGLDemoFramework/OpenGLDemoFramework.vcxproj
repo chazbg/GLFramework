@@ -160,6 +160,7 @@
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />
     <ClCompile Include="private\src\Geometry\Cube.cpp" />
     <ClCompile Include="private\src\Geometry\CustomGeometry.cpp" />
+    <ClCompile Include="private\src\Geometry\GeometryFactory.cpp" />
     <ClCompile Include="private\src\Geometry\LineListMesh.cpp" />
     <ClCompile Include="private\src\Geometry\PlaneMesh.cpp" />
     <ClCompile Include="private\src\Geometry\PointListMesh.cpp" />
@@ -224,6 +225,8 @@
     <ClInclude Include="private\inc\Geometry\BlockMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\Cube.hpp" />
     <ClInclude Include="private\inc\Geometry\CustomGeometry.hpp" />
+    <ClInclude Include="private\inc\Geometry\GeometryFactory.hpp" />
+    <ClInclude Include="private\inc\Geometry\IGeometryFactory.hpp" />
     <ClInclude Include="private\inc\Geometry\LineListMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\PlaneMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\PointListMesh.hpp" />

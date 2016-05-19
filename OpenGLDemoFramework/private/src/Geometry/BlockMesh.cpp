@@ -22,10 +22,6 @@ BlockMesh::BlockMesh(IResourceManager& rm, const float width, const float height
     delete[] uvBuffer;
 }
 
-BlockMesh::~BlockMesh()
-{
-}
-
 float* BlockMesh::genVerts(const float width, const float height, const float length)
 {
     float* verts = new float[6 * 6 * 3];

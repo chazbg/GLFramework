@@ -171,6 +171,9 @@
     <ClCompile Include="private\src\Core\Particles\SimpleParticle.cpp">
       <Filter>Source Files\Core\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Geometry\GeometryFactory.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -388,6 +391,12 @@
     </ClInclude>
     <ClInclude Include="private\inc\Tests\TestParticles.hpp">
       <Filter>Header Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Geometry\GeometryFactory.hpp">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Geometry\IGeometryFactory.hpp">
+      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

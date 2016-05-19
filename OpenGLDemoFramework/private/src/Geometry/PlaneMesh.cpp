@@ -16,10 +16,6 @@ PlaneMesh::PlaneMesh(IResourceManager& rm, int width, int height)
     delete[] uvBuffer;
 }
 
-PlaneMesh::~PlaneMesh()
-{
-}
-
 float* PlaneMesh::generatePlaneVertices(int width, int height)
 {
     float* verts = new float[width * height * 6 * 3];

@@ -10,10 +10,6 @@ Rectangle::Rectangle(IResourceManager& rm, Vec2 topLeft, Vec2 bottomRight) : top
     init(rm);
 }
 
-Rectangle::~Rectangle() 
-{
-}
-
 void Rectangle::init(IResourceManager& rm)
 {
     unsigned int vertexCount = 6;

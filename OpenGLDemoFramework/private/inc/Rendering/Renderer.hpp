@@ -12,6 +12,8 @@
 #include "Core/IResourceManager.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLResourceManager.hpp"
 #include "Core/PerspectiveCamera.hpp"
+#include "Geometry/GeometryFactory.hpp"
+#include <array>
 
 class Renderer
 {
@@ -22,6 +24,7 @@ public:
     void setDepthTest(const bool enabled);
     void setAlphaBlending(const bool enabled); //TODO: modes
     IResourceManager& getResourceManager();
+    IGeometryFactory& getGeometryFactory();
     void render(IScene& scene, ICamera& camera);    
 private:
     #ifdef USE_DX12

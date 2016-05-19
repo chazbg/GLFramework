@@ -11,13 +11,18 @@
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-Renderer::Renderer(const Vec2& resolution) : lightCamera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), resolution(resolution)
+Renderer::Renderer(const Vec2& resolution) : 
+    resourceManager(), 
+    geometryFactory(resourceManager),
+    r(geometryFactory.createRectangle()),
+    postProcessRect(geometryFactory.createRectangle()),
+    deferredShadingRect{ { geometryFactory.createRectangle(),
+                           geometryFactory.createRectangle(),
+                           geometryFactory.createRectangle(),
+                           geometryFactory.createRectangle() } },
+    lightCamera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), 
+    resolution(resolution)
 {
-    if (glewInit() != GLEW_OK) {
-        fprintf(stderr, "Failed to initialize GLEW\n");
-        exit(1);
-    }
-
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -52,17 +57,10 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[1]);
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[2]);
 
-    deferredShadingRect[0] = new Rectangle(resourceManager);
-    deferredShadingRect[0]->setMaterial(deferredShadingRectMat[0]);
-
-    deferredShadingRect[1] = new Rectangle(resourceManager);
-    deferredShadingRect[1]->setMaterial(deferredShadingRectMat[1]);
-
-    deferredShadingRect[2] = new Rectangle(resourceManager);
-    deferredShadingRect[2]->setMaterial(deferredShadingRectMat[2]);
-
-    deferredShadingRect[3] = new Rectangle(resourceManager);
-    deferredShadingRect[3]->setMaterial(deferredShadingRectMat[3]);
+    for (int i = 0; i < 4; i++)
+    {
+        deferredShadingRect[i].setMaterial(deferredShadingRectMat[i]);
+    }
 
     deferredShadingFbo = new FrameBuffer();
 
@@ -89,8 +87,7 @@ void Renderer::initPostProcessing()
 
     postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, false);
 
-    postProcessRect = new Rectangle(resourceManager);
-    postProcessRect->setMaterial(postProcessMat);
+    postProcessRect.setMaterial(postProcessMat);
 
     postProcessFbo = new FrameBuffer();
 
@@ -122,8 +119,9 @@ void Renderer::initShadowMapping()
 
     depthMat->addTexture(shadowMap);
 
-    r = new Rectangle(resourceManager, Vec2(0.5, 1), Vec2(1, 0.5));
-    r->setMaterial(rectMat);
+    r.Scale(0.5f, 0.5f, 0.0f);
+    r.Translate(0.5f, 0.5f, 0.0f);
+    r.setMaterial(rectMat);
 
     fb = new FrameBuffer();
 
@@ -170,6 +168,11 @@ void Renderer::setAlphaBlending(const bool enabled)
 IResourceManager& Renderer::getResourceManager()
 {
     return resourceManager;
+}
+
+IGeometryFactory& Renderer::getGeometryFactory()
+{
+    return geometryFactory;
 }
 
 void Renderer::render(IScene& scene, ICamera& camera)
@@ -260,7 +263,7 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
 
 void Renderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
 {
-    render(postProcessRect, camera);
+    render(&postProcessRect, camera);
 }
 
 void Renderer::updateUniforms(const IMaterial& material)
@@ -403,16 +406,16 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
     }
 
     glViewport((GLsizei) quarterRes.x, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[0], camera);
+    render(&deferredShadingRect[0], camera);
 
     glViewport(0, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[1], camera);
+    render(&deferredShadingRect[1], camera);
 
     glViewport((GLsizei) quarterRes.x, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[2], camera);
+    render(&deferredShadingRect[2], camera);
 
     glViewport(0, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[3], camera);
+    render(&deferredShadingRect[3], camera);
 
     glViewport(0, 0, (GLsizei) resolution.x, (GLsizei) resolution.y);
 }

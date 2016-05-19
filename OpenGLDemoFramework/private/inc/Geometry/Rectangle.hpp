@@ -9,7 +9,6 @@ class Rectangle : public Mesh
 public:
     Rectangle(IResourceManager& rm);
     Rectangle(IResourceManager& rm, Vec2 topLeft, Vec2 bottomRight);
-    ~Rectangle();
 private:
     Vec2 topLeft;
     Vec2 bottomRight;

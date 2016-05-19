@@ -158,8 +158,3 @@ CustomGeometry::CustomGeometry(IResourceManager& rm, const std::string fileName,
         }
     }
 }
-
-CustomGeometry::~CustomGeometry()
-{
-
-}

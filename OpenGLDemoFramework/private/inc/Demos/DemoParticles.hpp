@@ -63,13 +63,15 @@ namespace ParticlesDemo
                     Vec4(0, 0, 1, 0),
                     Vec4(0, 0, 0, 1));
 
-                meshes[i]->setModelMatrix(mat);
-                meshes[i]->getMaterial().setProperty("alpha", particle->alpha);
+                Rectangle* mesh = &(*(meshes.begin() + i));
+                mesh->setModelMatrix(mat);
+                mesh->getMaterial().setProperty("alpha", particle->alpha);
             }
 
             for (unsigned int i = aliveParticles; i < particleCount - aliveParticles; i++)
             {
-                meshes[i]->getMaterial().setProperty("alpha", 0.0f);
+                Rectangle* mesh = &(*(meshes.begin() + i));
+                mesh->getMaterial().setProperty("alpha", 0.0f);
             }
             
 			//meshes[0]->Rotate(0, 0.1, 0);
@@ -125,15 +127,16 @@ namespace ParticlesDemo
 
         void initGeometry()
         {
-            IResourceManager& rm = renderer->getResourceManager();
+            IGeometryFactory& geometryFactory = renderer->getGeometryFactory();
+            meshes.reserve(particleCount);
             for (unsigned int i = 0; i < particleCount; i++)
             {
-                meshes.push_back(new Rectangle(rm));
-                meshes[i]->setMaterial(materials[i]);
-                scene.add(meshes[i]);
+                meshes.push_back(geometryFactory.createRectangle());
+                Rectangle* particle = &(*(meshes.begin() + i));
+                particle->setMaterial(materials[i]);
+                scene.add(particle);
             }
         }
-
 
         DefaultCamera camera;
         Scene scene;
@@ -148,7 +151,7 @@ namespace ParticlesDemo
         float radius;
         float ior;
         float glossiness;
-        vector<IMesh*> meshes;
+        vector<Rectangle> meshes;
         vector<IMaterial*> materials;
         vector<ITexture*> textures;
         ITextureCubemap* envMap;

@@ -12,6 +12,10 @@ OpenGLResourceManager::OpenGLResourceManager()
 #ifdef FREEIMAGE_LIB
     FreeImage_Initialise();
 #endif
+    if (glewInit() != GLEW_OK) {
+        fprintf(stderr, "Failed to initialize GLEW\n");
+        exit(1);
+    }
 }
 
 OpenGLResourceManager::~OpenGLResourceManager()
