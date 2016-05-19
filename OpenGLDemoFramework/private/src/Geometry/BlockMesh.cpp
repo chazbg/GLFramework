@@ -2,20 +2,16 @@
 #include "Math/GeometryAlgorithm.hpp"
 #include <iostream>
 
-BlockMesh::BlockMesh(IResourceManager& rm, const float width, const float height, const float length) :
-    rm(rm),
-    width(width),
-    height(height),
-    length(length)
+BlockMesh::BlockMesh(IResourceManager& rm, const float width, const float height, const float length)
 {
     unsigned int vertexCount = 36; //6 sides * 2 triangles * 3 vertices
-    float* vb = genVerts();
+    float* vb = genVerts(width, height, length);
     float* normalBuffer = generateNormals(vb, vertexCount);
-    float* uvBuffer = genUVs();
+    float* uvBuffer = genUVs(width, height, length);
 
-    vertices = rm.createVertexBuffer(vertexCount, 3, 0, vb);
-    normals  = rm.createVertexBuffer(vertexCount, 3, 1, normalBuffer);
-    uvs      = rm.createVertexBuffer(vertexCount, 2, 2, uvBuffer);
+    IVertexBuffer* vertices = rm.createVertexBuffer(vertexCount, 3, 0, vb);
+    IVertexBuffer* normals  = rm.createVertexBuffer(vertexCount, 3, 1, normalBuffer);
+    IVertexBuffer* uvs      = rm.createVertexBuffer(vertexCount, 2, 2, uvBuffer);
 
     setVertices(*vertices);
     setNormals(*normals);
@@ -28,34 +24,9 @@ BlockMesh::BlockMesh(IResourceManager& rm, const float width, const float height
 
 BlockMesh::~BlockMesh()
 {
-    rm.destroyVertexBuffer(vertices);
-    rm.destroyVertexBuffer(normals);
-    rm.destroyVertexBuffer(uvs);
 }
 
-void BlockMesh::setTime(const unsigned int time)
-{
-    SetUniformValue("time", time);
-}
-
-unsigned int BlockMesh::getTime()
-{
-    auto properties = material->getUintProperties();
-    auto iterator = properties.find("time");
-    unsigned int time = 0;
-    if (iterator != properties.end())
-    {
-        time = iterator->second;
-    }
-    else
-    {
-        cout << "Warning: No property type time" << endl;
-    }
-
-    return time;
-}
-
-float* BlockMesh::genVerts()
+float* BlockMesh::genVerts(const float width, const float height, const float length)
 {
     float* verts = new float[6 * 6 * 3];
 
@@ -171,7 +142,7 @@ float* BlockMesh::genVerts()
     return verts;
 }
 
-float * BlockMesh::genUVs()
+float * BlockMesh::genUVs(const float width, const float height, const float length)
 {
     float* uvs = new float[6 * 6 * 2];
 
