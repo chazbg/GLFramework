@@ -11,10 +11,5 @@ public:
 private:
     float* generatePlaneVertices(int width, int height);
     float* generateUVs(int width, int height);
-    IResourceManager& rm;
-    int width;
-    int height;
-    IVertexBuffer* vertices;
-    IVertexBuffer* uvs;
 };
 
