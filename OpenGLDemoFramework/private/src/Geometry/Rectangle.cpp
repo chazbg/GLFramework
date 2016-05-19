@@ -1,34 +1,28 @@
 #include "Geometry/Rectangle.hpp"
-#include "Core/Shader.hpp"
 
-#define BUFFER_OFFSET(i) ((void*)(i))
-
-Rectangle::Rectangle(IResourceManager& rm) : rm(rm), topLeft(-1, 1), bottomRight(1, -1), vertices(0), texCoords(0)
+Rectangle::Rectangle(IResourceManager& rm) : topLeft(-1, 1), bottomRight(1, -1)
 {
-    init();
+    init(rm);
 }
 
-Rectangle::Rectangle(IResourceManager& rm, Vec2 topLeft, Vec2 bottomRight) : rm(rm), topLeft(topLeft), bottomRight(bottomRight)
+Rectangle::Rectangle(IResourceManager& rm, Vec2 topLeft, Vec2 bottomRight) : topLeft(topLeft), bottomRight(bottomRight)
 {
-    init();
+    init(rm);
 }
 
 Rectangle::~Rectangle() 
 {
-    rm.destroyVertexBuffer(vertices);
-    rm.destroyVertexBuffer(texCoords);
 }
 
-void Rectangle::init()
+void Rectangle::init(IResourceManager& rm)
 {
     unsigned int vertexCount = 6;
-    time = 0;
     
     float* vertexBuffer = genVertices();
     float* uvs = genTexCoords();
 
-    vertices = rm.createVertexBuffer(vertexCount, 2, 0, vertexBuffer);
-    texCoords = rm.createVertexBuffer(vertexCount, 2, 2, uvs);
+    IVertexBuffer* vertices = rm.createVertexBuffer(vertexCount, 2, 0, vertexBuffer);
+    IVertexBuffer* texCoords = rm.createVertexBuffer(vertexCount, 2, 2, uvs);
 
     setVertices(*vertices);
     setTexCoords(*texCoords);

@@ -15,9 +15,5 @@ private:
     Vec2 bottomRight;
     float* genVertices();
     float* genTexCoords();
-    void init();
-    IResourceManager& rm;
-    unsigned int time;
-    IVertexBuffer* vertices;
-    IVertexBuffer* texCoords;
+    void init(IResourceManager& rm);
 };
