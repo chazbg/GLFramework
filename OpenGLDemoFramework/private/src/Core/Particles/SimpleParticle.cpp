@@ -1,6 +1,9 @@
 #include "Core/Particles/SimpleParticle.hpp"
+#include <algorithm>
 
-SimpleParticle::SimpleParticle()
+SimpleParticle::SimpleParticle() :
+    MAX_TANGENT_VELOCITY(0.07f),
+    MAX_RADIAL_VELOCITY(0.03f)
 {
 
 }
@@ -10,8 +13,10 @@ void SimpleParticle::update(const float t)
 	remainingLife -= t;
 	Vec2 radialDir = (particlePos - emitterPos).normalize();
 	Vec2 tangentDir(radialDir.y, -radialDir.x);
-	particlePos += tangentAcceleration * tangentDir * t + radialAcceleration * radialDir * t;
-    alpha = remainingLife / duration;
+    tangentVelocity = std::min(MAX_TANGENT_VELOCITY, tangentVelocity + tangentAcceleration);
+    radialVelocity = std::min(MAX_RADIAL_VELOCITY, radialVelocity + radialAcceleration);
+    particlePos += tangentVelocity * tangentDir * t + radialVelocity * radialDir * t;
+    alpha = remainingLife / duration;    
 }
 
 void SimpleParticle::init(
@@ -30,6 +35,8 @@ void SimpleParticle::init(
 	this->scale				  = scale;
     this->remainingLife       = duration;
     this->alpha               = 1.0f;
+    this->tangentVelocity     = 0.0f;
+    this->radialVelocity      = 0.0f;
 }
 
 void SimpleParticle::deinit()
@@ -42,4 +49,6 @@ void SimpleParticle::deinit()
 	scale				= Vec2(0.0f, 0.0f);
     remainingLife       = 0.0f;
     alpha               = 0.0f;
+    tangentVelocity     = 0.0f;
+    radialVelocity      = 0.0f;
 }

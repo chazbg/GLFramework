@@ -20,6 +20,8 @@ public:
     void deinit();
 
 public:
+    const float MAX_TANGENT_VELOCITY;
+    const float MAX_RADIAL_VELOCITY;
 	Vec2 emitterPos;
 	Vec2 particlePos;
 	float tangentAcceleration;
@@ -28,4 +30,6 @@ public:
 	Vec2 scale;
 	float remainingLife;
     float alpha;	
+    float tangentVelocity;
+    float radialVelocity;
 };
