@@ -174,7 +174,7 @@ namespace MinecraftDemo
         {
             IResourceManager& rm = renderer->getResourceManager();
 
-            textures.push_back(rm.createTexture("Images/particletexture.jpg"));
+            textures.push_back(rm.createTexture("Images/pattern_133/diffuse.png"));
         }
 
         void initMaterials()
@@ -184,8 +184,8 @@ namespace MinecraftDemo
             for (unsigned int i = 0; i < 2; i++)
             {
                 materials.push_back(resourceManager.createMaterial(
-                    "Shaders/basicDiffuse.vs",
-                    "Shaders/basicDiffuse.fs"));
+                    "Shaders/minecraft.vs",
+                    "Shaders/minecraft.fs"));
                 materials[i]->setProperty("sampler", 0);
                 materials[i]->setProperty("diffuse", Vec3(1, 1 - i, 0));
                 materials[i]->setProperty("alpha", 0.5f + i * 0.5f);
