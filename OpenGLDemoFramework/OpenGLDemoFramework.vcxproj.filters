@@ -398,6 +398,9 @@
     <ClInclude Include="private\inc\Geometry\IGeometryFactory.hpp">
       <Filter>Header Files\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoMinecraft.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

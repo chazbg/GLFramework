@@ -285,31 +285,46 @@ void Renderer::updateUniforms(const IMaterial& material)
     for (fIt = fUniforms.begin(); fIt != fUniforms.end(); fIt++)
     {
         int loc = glGetUniformLocation(programId, fIt->first.c_str());
-        glUniform1f(loc, fIt->second);
+        if (loc >= 0)
+        {
+            glUniform1f(loc, fIt->second);
+        }
     }
 
     for (iIt = iUniforms.begin(); iIt != iUniforms.end(); iIt++)
     {
         int loc = glGetUniformLocation(programId, iIt->first.c_str());
-        glUniform1i(loc, iIt->second);
+        if (loc >= 0)
+        {
+            glUniform1i(loc, iIt->second);
+        }
     }
 
     for (uiIt = uiUniforms.begin(); uiIt != uiUniforms.end(); uiIt++)
     {
         int loc = glGetUniformLocation(programId, uiIt->first.c_str());
-        glUniform1ui(loc, uiIt->second);
+        if (loc >= 0)
+        {
+            glUniform1ui(loc, uiIt->second);
+        }
     }
 
     for (vIt = vUniforms.begin(); vIt != vUniforms.end(); vIt++)
     {
         int loc = glGetUniformLocation(programId, vIt->first.c_str());
-        glUniform3f(loc, vIt->second.x, vIt->second.y, vIt->second.z);
+        if (loc >= 0)
+        {
+            glUniform3f(loc, vIt->second.x, vIt->second.y, vIt->second.z);
+        }
     }
 
     for (mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
     {
         int loc = glGetUniformLocation(programId, mIt->first.c_str());
-        glUniformMatrix4fv(loc, 1, false, mIt->second.raw());
+        if (loc >= 0)
+        {
+            glUniformMatrix4fv(loc, 1, false, mIt->second.raw());
+        }
     }
 }
 
@@ -352,7 +367,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
         meshes[i]->setMaterial(originalMaterials[i]);
     }
 
-    //render(r, camera);
+    //render(&r, camera);
 }
 
 void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
