@@ -1,10 +1,6 @@
 #pragma once
-#include <GL/glew.h>
 #include "Math/Matrix.hpp"
 #include "Core/IMesh.hpp"
-#include <map>
-
-using namespace std;
 
 class Mesh : public IMesh
 {
@@ -15,7 +11,6 @@ public:
     virtual std::vector<const IVertexBuffer*>& getVBOs();
     virtual void setModelMatrix(const Matrix4& model);
     virtual Matrix4 getModelMatrix() const;
-    virtual void setWireframeMode(const bool showWireframe);
     virtual void setIndices(const IIndexBuffer& indices);
     virtual void setVertices(const IVertexBuffer& vertices);
     virtual void setNormals(const IVertexBuffer& normals);
@@ -40,15 +35,11 @@ public:
 protected:
     float* generateNormals(const float* vertexBuffer, const unsigned int vertexCount);
     float* generateUVs(const float* vertexBuffer, const unsigned int vertexCount);
-    void generateWireframe();
     IMaterial* material;
     const IIndexBuffer* ibo;
     std::vector<const IVertexBuffer*> vbos;
     std::vector<IMesh*> children;
-    float* wireframeVertexBuffer;
-    GLuint wireframeVertexBufferID;
     Matrix4 model;
-    bool showWireframe;
     bool castsShadow;
     bool receivesShadow;
 };

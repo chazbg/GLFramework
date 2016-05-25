@@ -16,10 +16,10 @@ Renderer::Renderer(const Vec2& resolution) :
     geometryFactory(resourceManager),
     r(geometryFactory.createRectangle()),
     postProcessRect(geometryFactory.createRectangle()),
-    deferredShadingRect{ { geometryFactory.createRectangle(),
-                           geometryFactory.createRectangle(),
-                           geometryFactory.createRectangle(),
-                           geometryFactory.createRectangle() } },
+    deferredShadingRect0(geometryFactory.createRectangle()),
+    deferredShadingRect1(geometryFactory.createRectangle()),
+    deferredShadingRect2(geometryFactory.createRectangle()),
+    deferredShadingRect3(geometryFactory.createRectangle()),
     lightCamera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), 
     resolution(resolution)
 {
@@ -57,10 +57,10 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[1]);
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[2]);
 
-    for (int i = 0; i < 4; i++)
-    {
-        deferredShadingRect[i].setMaterial(deferredShadingRectMat[i]);
-    }
+    deferredShadingRect0.setMaterial(deferredShadingRectMat[0]);
+    deferredShadingRect1.setMaterial(deferredShadingRectMat[1]);
+    deferredShadingRect2.setMaterial(deferredShadingRectMat[2]);
+    deferredShadingRect3.setMaterial(deferredShadingRectMat[3]);
 
     deferredShadingFbo = new FrameBuffer();
 
@@ -421,16 +421,16 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
     }
 
     glViewport((GLsizei) quarterRes.x, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect[0], camera);
+    render(&deferredShadingRect0, camera);
 
     glViewport(0, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect[1], camera);
+    render(&deferredShadingRect1, camera);
 
     glViewport((GLsizei) quarterRes.x, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect[2], camera);
+    render(&deferredShadingRect2, camera);
 
     glViewport(0, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect[3], camera);
+    render(&deferredShadingRect3, camera);
 
     glViewport(0, 0, (GLsizei) resolution.x, (GLsizei) resolution.y);
 }

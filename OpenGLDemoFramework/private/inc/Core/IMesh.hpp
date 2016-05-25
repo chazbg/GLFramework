@@ -14,7 +14,6 @@ public:
     virtual std::vector<const IVertexBuffer*>& getVBOs() = 0;
     virtual void setModelMatrix(const Matrix4& model) = 0;
     virtual Matrix4 getModelMatrix() const = 0;
-    virtual void setWireframeMode(const bool showWireframe) = 0;
     virtual void setIndices(const IIndexBuffer& indices) = 0;
     virtual void setVertices(const IVertexBuffer& vertices) = 0;
     virtual void setNormals(const IVertexBuffer& normals) = 0;
