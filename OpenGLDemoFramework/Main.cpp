@@ -1,6 +1,6 @@
-#include "Demos/DemoMinecraft.hpp"
+#include "Demos/DemoCube.hpp"
 int main(int argc, char* argv[])
 {
-    MinecraftDemo::main();
+    CubeDemo::main();
     return 0;
 }
