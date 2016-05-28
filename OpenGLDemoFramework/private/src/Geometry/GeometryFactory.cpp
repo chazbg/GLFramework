@@ -4,12 +4,12 @@ GeometryFactory::GeometryFactory(IResourceManager & rm) : rm(rm), rectangle(rm),
 {
 }
 
-CustomGeometry GeometryFactory::createCustomGeometry(const std::string fileName)
+std::shared_ptr<CustomGeometry> GeometryFactory::createCustomGeometry(const std::string fileName)
 {
     return createCustomGeometry(fileName, false);
 }
 
-CustomGeometry GeometryFactory::createCustomGeometry(const std::string fileName, const bool flipFaces)
+std::shared_ptr<CustomGeometry> GeometryFactory::createCustomGeometry(const std::string fileName, const bool flipFaces)
 {
     std::pair<std::string, bool> key(fileName, flipFaces);
     auto it = customGeometries.find(key);
@@ -19,20 +19,20 @@ CustomGeometry GeometryFactory::createCustomGeometry(const std::string fileName,
         customGeometries[key] = new CustomGeometry(rm, fileName, flipFaces);
     }
 
-    return *customGeometries[key];
+    return std::shared_ptr<CustomGeometry>(new CustomGeometry(*customGeometries[key]));
 }
 
-Rectangle GeometryFactory::createRectangle()
+std::shared_ptr<Rectangle> GeometryFactory::createRectangle()
 {
-    return rectangle;
+    return std::shared_ptr<Rectangle>(new Rectangle(rectangle));
 }
 
-BlockMesh GeometryFactory::createBlockMesh()
+std::shared_ptr<BlockMesh> GeometryFactory::createBlockMesh()
 {
-    return blockMesh;
+    return std::shared_ptr<BlockMesh>(new BlockMesh(blockMesh));
 }
 
-PlaneMesh GeometryFactory::createPlaneMesh(const unsigned int width, const unsigned int height)
+std::shared_ptr<PlaneMesh> GeometryFactory::createPlaneMesh(const unsigned int width, const unsigned int height)
 {
     std::pair<unsigned int, unsigned int> key(width, height);
     auto it = planeMeshes.find(key);
@@ -42,7 +42,7 @@ PlaneMesh GeometryFactory::createPlaneMesh(const unsigned int width, const unsig
         planeMeshes[key] = new PlaneMesh(rm, width, height);
     }
 
-    return *planeMeshes[key];
+    return std::shared_ptr<PlaneMesh>(new PlaneMesh(*planeMeshes[key]));
 }
 
 float * GeometryFactory::genRectangleVertices(const Vec2 & topLeft, const Vec2 & bottomRight)

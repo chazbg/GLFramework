@@ -13,10 +13,10 @@ using namespace std;
 
 namespace ParticlesDemo
 {
-    class TestWindowApp : public IApplication
+    class TestWindowApp : public IApplication, public IParticle2DRenderer
     {
     public:
-        TestWindowApp() : camera(), renderer(0), particleCount(100), emitter(particleCount, 0.5f) {}
+        TestWindowApp() : camera(), renderer(0), particleCount(100), emitter(*this, particleCount, 0.5f) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
@@ -33,9 +33,6 @@ namespace ParticlesDemo
             stopTime = false;
             prevDir = Vec3(0.01f, 0.1f, 0);
             prevMousePos = Vec2(0.5, 0.5);
-            
-            materialIndex = 0;
-            meshIndex = 0;
         }
         virtual void onUpdate(const unsigned int deltaTime) {}
         virtual void onRender(const unsigned int deltaTime)
@@ -50,31 +47,13 @@ namespace ParticlesDemo
 			}
 
             emitter.updateParticles(0.03f);
-            const std::vector<SimpleParticle*>& particles = emitter.getParticles();
+            const std::vector<IParticle2D*>& particles = emitter.getParticles();
             unsigned int aliveParticles = emitter.getAliveParticlesCount();
 
             for (unsigned int i = 0; i < aliveParticles; i++)
             {
-                const SimpleParticle* particle = particles[i];
-
-                Matrix4 mat(
-					Vec4(particle->scale.x, 0, 0, particle->particlePos.x),
-					Vec4(0, particle->scale.y, 0, particle->particlePos.y),
-                    Vec4(0, 0, 1, 0),
-                    Vec4(0, 0, 0, 1));
-
-                Rectangle* mesh = &(*(meshes.begin() + i));
-                mesh->setModelMatrix(mat);
-                mesh->getMaterial().setProperty("alpha", particle->alpha);
+                meshes[i]->getMaterial().setProperty("remainingLife", particles[i]->getRemainingLife());
             }
-
-            for (unsigned int i = aliveParticles; i < particleCount - aliveParticles; i++)
-            {
-                Rectangle* mesh = &(*(meshes.begin() + i));
-                mesh->getMaterial().setProperty("alpha", 0.0f);
-            }
-            
-			//meshes[0]->Rotate(0, 0.1, 0);
 
             renderer->render(scene, camera);
         }
@@ -102,6 +81,25 @@ namespace ParticlesDemo
         {
             prevMousePos = Vec2(static_cast<float>(x), static_cast<float>(y));
         }
+
+        virtual void particleSpawned(const IParticle2D& particle)
+        {
+            unsigned int index = emitter.getAliveParticlesCount() - 1;
+            scene.add(meshes[index].get());
+            meshes[index]->getMaterial().setProperty("scale", particle.getScale());
+            meshes[index]->getMaterial().setProperty("duration", particle.getDuration());
+            meshes[index]->getMaterial().setProperty("tangentAcceleration", particle.getTangentialAcceleration());
+            meshes[index]->getMaterial().setProperty("radialAcceleration", particle.getRadialAcceleration());
+        }
+
+        virtual void particleDied(const unsigned int index)
+        {
+            scene.remove(meshes[index].get());
+            unsigned int aliveParticles = emitter.getAliveParticlesCount();
+            shared_ptr<Rectangle> tmp = meshes[index];
+            meshes[index] = meshes[aliveParticles];
+            meshes[aliveParticles] = tmp;
+        }
     private:
 
         void initTextures()
@@ -115,13 +113,15 @@ namespace ParticlesDemo
         {
             IResourceManager& resourceManager = renderer->getResourceManager();
 
-            for (unsigned int i = 0; i < particleCount; i++)
+            materials.push_back(resourceManager.createMaterial(
+                "Shaders/particle.vs",
+                "Shaders/particle.fs"));
+            materials[0]->setProperty("sampler", 0);
+            materials[0]->addTexture(textures[0]);
+
+            for (unsigned int i = 1; i < particleCount; i++)
             {
-                materials.push_back(resourceManager.createMaterial(
-                    "Shaders/particle.vs",
-                    "Shaders/particle.fs"));
-                materials[i]->setProperty("sampler", 0);
-                materials[i]->addTexture(textures[0]);
+                materials.push_back(resourceManager.cloneMaterial(materials[0]));
             }            
         }
 
@@ -132,9 +132,7 @@ namespace ParticlesDemo
             for (unsigned int i = 0; i < particleCount; i++)
             {
                 meshes.push_back(geometryFactory.createRectangle());
-                Rectangle* particle = &(*(meshes.begin() + i));
-                particle->setMaterial(materials[i]);
-                scene.add(particle);
+                meshes[i]->setMaterial(materials[i]);
             }
         }
 
@@ -149,16 +147,12 @@ namespace ParticlesDemo
         float phi;
         float theta;
         float radius;
-        float ior;
-        float glossiness;
-        vector<Rectangle> meshes;
+        vector<shared_ptr<Rectangle>> meshes;
         vector<IMaterial*> materials;
         vector<ITexture*> textures;
         ITextureCubemap* envMap;
         bool cameraRotating;
         bool cameraPanning;
-        int materialIndex;
-        int meshIndex;
         unsigned int particleCount;
         SimpleEmitter emitter;
     };

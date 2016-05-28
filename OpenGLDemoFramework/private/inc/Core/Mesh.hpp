@@ -6,6 +6,7 @@ class Mesh : public IMesh
 {
 public:
     Mesh();
+    Mesh(const Mesh& rhs);
     ~Mesh();
     virtual const IIndexBuffer* getIBO();
     virtual std::vector<const IVertexBuffer*>& getVBOs();
@@ -24,11 +25,6 @@ public:
     virtual void Scale(const float scaleX, const float scaleY, const float scaleZ);//TODO: Use Vec3
     virtual void Rotate(const float thetaX, const float thetaY, const float thetaZ);//TODO: Use Vec3
     virtual void Translate(const float transX, const float transY, const float transZ);//TODO: Use Vec3
-    void SetUniformValue(string uniform, const int v);
-    void SetUniformValue(string uniform, const unsigned int v);
-    void SetUniformValue(string uniform, const Vec3& v);
-    void SetUniformValue(string uniform, const Vec4& v);
-    void SetUniformValue(string uniform, const Matrix4& v);
     void SetCastsShadow(const bool castsShadow);
     void SetReceivesShadow(const bool receivesShadow);
     Vec3 getPosition();

@@ -7,6 +7,7 @@
 class Rectangle : public Mesh
 {
 public:
+    Rectangle(const Rectangle& rhs);
     Rectangle(IResourceManager& rm);
     Rectangle(IResourceManager& rm, Vec2 topLeft, Vec2 bottomRight);
 private:

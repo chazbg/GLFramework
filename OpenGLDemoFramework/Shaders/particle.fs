@@ -1,13 +1,13 @@
 #version 330 core
-uniform uint time;
-in vec2 interpolatedCoords;
-in vec2 texCoords;
+
+smooth in vec2 texCoords;
+flat in float alpha;
 
 // Ouput data
 layout(location = 0) out vec4 color;
 
 uniform sampler2D sampler;
-uniform float alpha;
+uniform uint time;
 
 void main()
 {

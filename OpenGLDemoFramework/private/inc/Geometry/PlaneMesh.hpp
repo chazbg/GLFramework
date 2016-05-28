@@ -5,6 +5,7 @@
 class PlaneMesh : public Mesh
 {
 public:
+    PlaneMesh(const PlaneMesh& rhs);
     PlaneMesh(IResourceManager& rm, int width, int height);
 private:
     float* generatePlaneVertices(int width, int height);

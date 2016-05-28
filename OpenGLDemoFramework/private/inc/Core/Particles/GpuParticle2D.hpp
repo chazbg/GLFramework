@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Core/Particles/IParticle2D.hpp"
-#include "Math/Vector.hpp"
 
-class SimpleParticle : public IParticle2D
+class GpuParticle2D : public IParticle2D
 {
 public:
-	SimpleParticle();
-	virtual void update(const float t);
+    GpuParticle2D();
+    virtual void update(const float t);
     virtual float getRemainingLife() const;
     virtual float getDuration() const;
     virtual void  setTangentialAcceleration(const float value);
@@ -24,20 +23,15 @@ public:
         const float tangentAcceleration,
         const float radialAcceleration,
         const float duration,
-		const Vec2 & scale);
+        const Vec2 & scale);
     virtual void deinit();
 
-public:
+private:
     const float MAX_TANGENT_VELOCITY;
     const float MAX_RADIAL_VELOCITY;
-	Vec2 emitterPos;
-	Vec2 particlePos;
-	float tangentAcceleration;
-	float radialAcceleration;
-	float duration;
-	Vec2 scale;
-	float remainingLife;
-    float alpha;	
-    float tangentVelocity;
-    float radialVelocity;
+    float tangentAcceleration;
+    float radialAcceleration;
+    float duration;
+    Vec2 scale;
+    float remainingLife;
 };

@@ -27,7 +27,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OpenGLDebug|Win32'" Label="Configuration">
@@ -94,6 +94,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FreeImage.lib;glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -151,6 +152,7 @@
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
     <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
+    <ClCompile Include="private\src\Core\Particles\GpuParticle2D.cpp" />
     <ClCompile Include="private\src\Core\Particles\SimpleEmitter.cpp" />
     <ClCompile Include="private\src\Core\Particles\SimpleParticle.cpp" />
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp" />
@@ -194,8 +196,11 @@
     <ClInclude Include="private\inc\Core\ITextureCubemap.hpp" />
     <ClInclude Include="private\inc\Core\IVertexBuffer.hpp" />
     <ClInclude Include="private\inc\Core\Mesh.hpp" />
+    <ClInclude Include="private\inc\Core\Particles\GpuParticle2D.hpp" />
     <ClInclude Include="private\inc\Core\Particles\IEmitter.hpp" />
     <ClInclude Include="private\inc\Core\Particles\IParticle.hpp" />
+    <ClInclude Include="private\inc\Core\Particles\IParticle2D.hpp" />
+    <ClInclude Include="private\inc\Core\Particles\IParticle2DRenderer.hpp" />
     <ClInclude Include="private\inc\Core\Particles\SimpleEmitter.hpp" />
     <ClInclude Include="private\inc\Core\Particles\SimpleParticle.hpp" />
     <ClInclude Include="private\inc\Core\PerspectiveCamera.hpp" />

@@ -8,11 +8,11 @@ class GeometryFactory : public IGeometryFactory
 {
 public:
     GeometryFactory(IResourceManager& rm);
-    virtual CustomGeometry createCustomGeometry(const std::string fileName);
-    virtual CustomGeometry createCustomGeometry(const std::string fileName, const bool flipFaces);
-    virtual Rectangle      createRectangle();
-    virtual BlockMesh      createBlockMesh();
-    virtual PlaneMesh      createPlaneMesh(const unsigned int width, const unsigned int height);
+    virtual std::shared_ptr<CustomGeometry> createCustomGeometry(const std::string fileName);
+    virtual std::shared_ptr<CustomGeometry> createCustomGeometry(const std::string fileName, const bool flipFaces);
+    virtual std::shared_ptr<Rectangle>      createRectangle();
+    virtual std::shared_ptr<BlockMesh>      createBlockMesh();
+    virtual std::shared_ptr<PlaneMesh>      createPlaneMesh(const unsigned int width, const unsigned int height);
 private:
     typedef std::map<std::pair<std::string, bool>, CustomGeometry*> CustomGeometries;
     typedef std::map<std::pair<unsigned int, unsigned int>, PlaneMesh*> PlaneMeshes;

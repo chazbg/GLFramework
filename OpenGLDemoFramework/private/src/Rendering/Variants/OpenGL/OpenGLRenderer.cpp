@@ -16,10 +16,6 @@ Renderer::Renderer(const Vec2& resolution) :
     geometryFactory(resourceManager),
     r(geometryFactory.createRectangle()),
     postProcessRect(geometryFactory.createRectangle()),
-    deferredShadingRect0(geometryFactory.createRectangle()),
-    deferredShadingRect1(geometryFactory.createRectangle()),
-    deferredShadingRect2(geometryFactory.createRectangle()),
-    deferredShadingRect3(geometryFactory.createRectangle()),
     lightCamera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), 
     resolution(resolution)
 {
@@ -57,10 +53,11 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[1]);
     deferredShadingRectMat[3]->addTexture(deferredShadingTex[2]);
 
-    deferredShadingRect0.setMaterial(deferredShadingRectMat[0]);
-    deferredShadingRect1.setMaterial(deferredShadingRectMat[1]);
-    deferredShadingRect2.setMaterial(deferredShadingRectMat[2]);
-    deferredShadingRect3.setMaterial(deferredShadingRectMat[3]);
+    for (int i = 0; i < 4; i++)
+    {
+        deferredShadingRect[i] = geometryFactory.createRectangle();
+        deferredShadingRect[i]->setMaterial(deferredShadingRectMat[i]);
+    }
 
     deferredShadingFbo = new FrameBuffer();
 
@@ -87,7 +84,7 @@ void Renderer::initPostProcessing()
 
     postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, false);
 
-    postProcessRect.setMaterial(postProcessMat);
+    postProcessRect->setMaterial(postProcessMat);
 
     postProcessFbo = new FrameBuffer();
 
@@ -119,9 +116,9 @@ void Renderer::initShadowMapping()
 
     depthMat->addTexture(shadowMap);
 
-    r.Scale(0.5f, 0.5f, 0.0f);
-    r.Translate(0.5f, 0.5f, 0.0f);
-    r.setMaterial(rectMat);
+    r->Scale(0.5f, 0.5f, 0.0f);
+    r->Translate(0.5f, 0.5f, 0.0f);
+    r->setMaterial(rectMat);
 
     fb = new FrameBuffer();
 
@@ -263,68 +260,50 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
 
 void Renderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
 {
-    render(&postProcessRect, camera);
+    render(postProcessRect.get(), camera);
 }
 
 void Renderer::updateUniforms(const IMaterial& material)
 {
-    unsigned int programId = reinterpret_cast<const OpenGLMaterial&>(material).getId();
-    map<string, float> fUniforms = material.getFloatProperties();
-    map<string, float>::iterator fIt;
-    map<string, int> iUniforms = material.getIntProperties();
-    map<string, int>::iterator iIt;
-    map<string, unsigned int> uiUniforms = material.getUintProperties();
-    map<string, unsigned int>::iterator uiIt;
-    map<string, Vec3> vUniforms = material.getVec3Properties();
-    map<string, Vec3>::iterator vIt;
-    map<string, Matrix4> mUniforms = material.getMatrix4Properties();
-    map<string, Matrix4>::iterator mIt;
+    const OpenGLMaterial& glMaterial = reinterpret_cast<const OpenGLMaterial&>(material);
+    unsigned int programId = glMaterial.getId();
+    auto& fUniforms  = glMaterial.getFloatProperties();
+    auto& iUniforms  = glMaterial.getIntProperties();
+    auto& uiUniforms = glMaterial.getUintProperties();
+    auto& v2Uniforms = glMaterial.getVec2Properties();
+    auto& vUniforms  = glMaterial.getVec3Properties();
+    auto& mUniforms  = const_cast<std::map<std::string, std::pair<int, Matrix4>>&>(glMaterial.getMatrix4Properties());
 
     glUseProgram(programId);
 
-    for (fIt = fUniforms.begin(); fIt != fUniforms.end(); fIt++)
+    for (auto fIt = fUniforms.begin(); fIt != fUniforms.end(); fIt++)
     {
-        int loc = glGetUniformLocation(programId, fIt->first.c_str());
-        if (loc >= 0)
-        {
-            glUniform1f(loc, fIt->second);
-        }
+        glUniform1f(fIt->second.first, fIt->second.second);
     }
 
-    for (iIt = iUniforms.begin(); iIt != iUniforms.end(); iIt++)
+    for (auto iIt = iUniforms.begin(); iIt != iUniforms.end(); iIt++)
     {
-        int loc = glGetUniformLocation(programId, iIt->first.c_str());
-        if (loc >= 0)
-        {
-            glUniform1i(loc, iIt->second);
-        }
+        glUniform1i(iIt->second.first, iIt->second.second);
     }
 
-    for (uiIt = uiUniforms.begin(); uiIt != uiUniforms.end(); uiIt++)
+    for (auto uiIt = uiUniforms.begin(); uiIt != uiUniforms.end(); uiIt++)
     {
-        int loc = glGetUniformLocation(programId, uiIt->first.c_str());
-        if (loc >= 0)
-        {
-            glUniform1ui(loc, uiIt->second);
-        }
+        glUniform1ui(uiIt->second.first, uiIt->second.second);
     }
 
-    for (vIt = vUniforms.begin(); vIt != vUniforms.end(); vIt++)
+    for (auto v2It = v2Uniforms.begin(); v2It != v2Uniforms.end(); v2It++)
     {
-        int loc = glGetUniformLocation(programId, vIt->first.c_str());
-        if (loc >= 0)
-        {
-            glUniform3f(loc, vIt->second.x, vIt->second.y, vIt->second.z);
-        }
+        glUniform2f(v2It->second.first, v2It->second.second.x, v2It->second.second.y);
     }
 
-    for (mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
+    for (auto vIt = vUniforms.begin(); vIt != vUniforms.end(); vIt++)
     {
-        int loc = glGetUniformLocation(programId, mIt->first.c_str());
-        if (loc >= 0)
-        {
-            glUniformMatrix4fv(loc, 1, false, mIt->second.raw());
-        }
+        glUniform3f(vIt->second.first, vIt->second.second.x, vIt->second.second.y, vIt->second.second.z);
+    }
+
+    for (auto mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
+    {
+        glUniformMatrix4fv(mIt->second.first, 1, false,  mIt->second.second.raw());
     }
 }
 
@@ -421,16 +400,16 @@ void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
     }
 
     glViewport((GLsizei) quarterRes.x, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect0, camera);
+    render(deferredShadingRect[0].get(), camera);
 
     glViewport(0, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect1, camera);
+    render(deferredShadingRect[1].get(), camera);
 
     glViewport((GLsizei) quarterRes.x, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect2, camera);
+    render(deferredShadingRect[2].get(), camera);
 
     glViewport(0, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(&deferredShadingRect3, camera);
+    render(deferredShadingRect[3].get(), camera);
 
     glViewport(0, 0, (GLsizei) resolution.x, (GLsizei) resolution.y);
 }

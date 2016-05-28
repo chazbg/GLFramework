@@ -1,4 +1,7 @@
-#include <Core/Scene.hpp>
+#include "Core/Scene.hpp"
+#include <iostream>
+
+using namespace std;
 
 Scene::Scene()
 {
@@ -15,9 +18,24 @@ void Scene::add(IMesh * mesh)
 
 void Scene::remove(const IMesh* mesh)
 {
-    std::vector<IMesh*>::iterator it;
-    it = std::find(meshes.begin(), meshes.end(), mesh);
-    meshes.erase(it);
+    auto it = find(meshes.begin(), meshes.end(), mesh);
+    if (it != meshes.end())
+    {
+        meshes.erase(it);
+    }    
+}
+
+void Scene::remove(const unsigned int index)
+{
+    if (index < meshes.size())
+    {
+        meshes.erase(meshes.begin() + index);
+    }
+    else
+    {
+        cout << "Index out of range: " << index 
+             << ". Scene has currently " << meshes.size() << "children." << endl;
+    }
 }
 
 std::vector<IMesh*>& Scene::getChildren()

@@ -2,6 +2,11 @@
 #include "Math/GeometryAlgorithm.hpp"
 #include <iostream>
 
+BlockMesh::BlockMesh(const BlockMesh & rhs) :
+    Mesh(rhs)
+{
+}
+
 BlockMesh::BlockMesh(IResourceManager& rm, const float width, const float height, const float length)
 {
     unsigned int vertexCount = 36; //6 sides * 2 triangles * 3 vertices

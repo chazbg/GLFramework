@@ -15,6 +15,17 @@ receivesShadow(false)
 {
     vbos.resize(5);
 }
+Mesh::Mesh(const Mesh& rhs) :
+    material(rhs.material),
+    ibo(rhs.ibo),
+    vbos(rhs.vbos),
+    castsShadow(rhs.castsShadow),
+    model(rhs.model),
+    children(rhs.children),
+    receivesShadow(rhs.receivesShadow)
+{
+
+}
 
 Mesh::~Mesh()
 {
@@ -103,31 +114,6 @@ void Mesh::addChild(IMesh* child)
 std::vector<IMesh*>& Mesh::getChildren() 
 {
     return children;
-}
-
-void Mesh::SetUniformValue(string uniform, const int v)
-{
-    material->setProperty(uniform, v);
-}
-
-void Mesh::SetUniformValue(string uniform, const unsigned int v)
-{
-    material->setProperty(uniform, v);
-}
-
-void Mesh::SetUniformValue(string uniform, const Vec3& v)
-{
-    material->setProperty(uniform, v);
-}
-
-void Mesh::SetUniformValue(string uniform, const Vec4& v)
-{
-    //TODO
-}
-
-void Mesh::SetUniformValue(string uniform, const Matrix4& v)
-{
-    material->setProperty(uniform, v);
 }
 
 void Mesh::SetCastsShadow(const bool castsShadow)

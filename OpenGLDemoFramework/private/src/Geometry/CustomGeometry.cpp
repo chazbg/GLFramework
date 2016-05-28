@@ -4,6 +4,11 @@
 #include <assimp/postprocess.h>     // Post processing flags
 #include <stack>
 
+CustomGeometry::CustomGeometry(const CustomGeometry & rhs) :
+    Mesh(rhs)
+{
+}
+
 CustomGeometry::CustomGeometry(IResourceManager& rm, const std::string fileName) : CustomGeometry(rm, fileName, false)
 {
 }

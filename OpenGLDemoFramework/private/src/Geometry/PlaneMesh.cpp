@@ -1,5 +1,10 @@
 #include "Geometry/PlaneMesh.hpp"
 
+PlaneMesh::PlaneMesh(const PlaneMesh & rhs) :
+    Mesh(rhs)
+{
+}
+
 PlaneMesh::PlaneMesh(IResourceManager& rm, int width, int height)
 {
     unsigned int vertexCount = width * height * 6;

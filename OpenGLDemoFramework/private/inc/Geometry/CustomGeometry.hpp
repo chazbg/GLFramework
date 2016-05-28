@@ -7,6 +7,7 @@
 class CustomGeometry : public Mesh
 {
 public:
+    CustomGeometry(const CustomGeometry& rhs);
     CustomGeometry(IResourceManager& rm, const std::string fileName);
     CustomGeometry(IResourceManager& rm, const std::string fileName, const bool flipFaces);
 };

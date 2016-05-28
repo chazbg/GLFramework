@@ -19,6 +19,56 @@ void SimpleParticle::update(const float t)
     alpha = remainingLife / duration;    
 }
 
+float SimpleParticle::getRemainingLife() const
+{
+    return remainingLife;
+}
+
+float SimpleParticle::getDuration() const
+{
+    return duration;
+}
+
+void SimpleParticle::setTangentialAcceleration(const float value)
+{
+    tangentAcceleration = value;
+}
+
+float SimpleParticle::getTangentialAcceleration() const
+{
+    return tangentAcceleration;
+}
+
+float SimpleParticle::getMaxTangentialVelocity() const
+{
+    return MAX_TANGENT_VELOCITY;
+}
+
+void SimpleParticle::setRadialAcceleration(const float value)
+{
+    radialAcceleration = value;
+}
+
+float SimpleParticle::getRadialAcceleration() const
+{
+    return radialAcceleration;
+}
+
+float SimpleParticle::getMaxRadialVelocity() const
+{
+    return MAX_RADIAL_VELOCITY;
+}
+
+void SimpleParticle::setScale(const Vec2 & scale)
+{
+    this->scale = scale;
+}
+
+Vec2 SimpleParticle::getScale() const
+{
+    return scale;
+}
+
 void SimpleParticle::init(
     const Vec2 & emitterPos, 
     const Vec2 & particlePos, 

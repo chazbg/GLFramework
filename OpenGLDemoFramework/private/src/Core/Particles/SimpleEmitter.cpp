@@ -1,11 +1,15 @@
 #include "Core/Particles/SimpleEmitter.hpp"
+#include "Core/Particles/GpuParticle2D.hpp"
 #include <iostream>
 #include <stdlib.h>
 
 using namespace std;
 
-SimpleEmitter::SimpleEmitter(const unsigned int particleCount,
+SimpleEmitter::SimpleEmitter(
+    IParticle2DRenderer& particleRenderer,
+    const unsigned int particleCount,
     const float spawnInterval) :
+    particleRenderer(particleRenderer),
     particleCount(particleCount),
     spawnInterval(spawnInterval),
     aliveParticles(0),
@@ -13,7 +17,7 @@ SimpleEmitter::SimpleEmitter(const unsigned int particleCount,
 {
 	for (unsigned int i = 0; i < particleCount; i++)
 	{
-		particles.push_back(new SimpleParticle());
+		particles.push_back(new GpuParticle2D());
 	}
 }
 
@@ -27,9 +31,9 @@ SimpleEmitter::~SimpleEmitter()
 
 void SimpleEmitter::updateParticles(const float t)
 {
-	if (nextSpawn <= 0.0f)
+	if (nextSpawn <= 0.0f && aliveParticles < particleCount)
 	{
-		SimpleParticle* p = particles[aliveParticles];
+        IParticle2D* p = particles[aliveParticles];
 
 		float r1 = static_cast<float>(rand() % 200 - 100) / 1000.0f;
 		float r2 = static_cast<float>(rand() % 200 - 100) / 10000.0f;
@@ -46,29 +50,31 @@ void SimpleEmitter::updateParticles(const float t)
 
 		aliveParticles++;
         nextSpawn = spawnInterval;
+        particleRenderer.particleSpawned(*p);
 	}
 
 	for (unsigned int i = 0; i < aliveParticles; i++)
 	{
-		SimpleParticle* p = particles[i];
+        IParticle2D* p = particles[i];
 
 		p->update(t);
 		//cout << "Pos(" << i << "): " << p->particlePos.toString() << endl;
 
-		if (p->remainingLife < 0)
+		if (p->getRemainingLife() < 0)
 		{
             p->deinit();
-            SimpleParticle* lastAliveParticle = particles[aliveParticles - 1];
+            IParticle2D* lastAliveParticle = particles[aliveParticles - 1];
             particles[i] = lastAliveParticle;
             particles[aliveParticles - 1] = p;
             aliveParticles--;
+            particleRenderer.particleDied(i);
 		}
 	}
 
     nextSpawn -= t;
 }
 
-const std::vector<SimpleParticle*>& SimpleEmitter::getParticles()
+const std::vector<IParticle2D*>& SimpleEmitter::getParticles()
 {
     return particles;
 }

@@ -174,6 +174,9 @@
     <ClCompile Include="private\src\Geometry\GeometryFactory.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Core\Particles\GpuParticle2D.cpp">
+      <Filter>Source Files\Core\Particles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -400,6 +403,15 @@
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoMinecraft.hpp">
       <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Particles\IParticle2D.hpp">
+      <Filter>Header Files\Core\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Particles\IParticle2DRenderer.hpp">
+      <Filter>Header Files\Core\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Particles\GpuParticle2D.hpp">
+      <Filter>Header Files\Core\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

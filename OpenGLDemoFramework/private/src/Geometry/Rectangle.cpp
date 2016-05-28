@@ -1,5 +1,12 @@
 #include "Geometry/Rectangle.hpp"
 
+Rectangle::Rectangle(const Rectangle & rhs) :
+    Mesh(rhs),
+    topLeft(rhs.topLeft),
+    bottomRight(rhs.bottomRight)
+{
+}
+
 Rectangle::Rectangle(IResourceManager& rm) : topLeft(-1, 1), bottomRight(1, -1)
 {
     init(rm);
