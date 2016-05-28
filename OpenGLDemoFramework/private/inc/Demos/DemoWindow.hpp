@@ -18,6 +18,7 @@ namespace WindowDemo
         virtual void onEvent(const unsigned int event) { cout << "onEvent: " << event << endl; }
         virtual void onMouseEvent(int button, int state, int x, int y) { cout << button << " " << state << " " << x << " " << y << endl; }
         virtual void onKeyboardEvent(unsigned char c, int x, int y) { cout << c << " " << x << " " << y << endl; }
+        virtual void onMouseMove(int x, int y) { } 
     };
 
     void main()

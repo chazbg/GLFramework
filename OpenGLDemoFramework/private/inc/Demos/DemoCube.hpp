@@ -5,35 +5,20 @@
 #include "Geometry/BlockMesh.hpp"
 #include "Core/Scene.hpp"
 #include "Core/PerspectiveCamera.hpp"
+#include "Demos/Demo3DBase.hpp"
 
 namespace CubeDemo
 {
-    class TestWindowApp : public IApplication
+    class TestWindowApp : public Demo3DBase
     {
     public:
         TestWindowApp(const Vec2 resolution) : 
-            resolution(resolution), 
-            camera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), 
-            renderer(0),
+            Demo3DBase(resolution),
             cubesCount(30) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            renderer = new Renderer(resolution);
-
-            initTextures();
-            initMaterials();
-            initGeometry();
-
-            time = 0;
-            stopTime = false;
-            prevDir = Vec3(0.01f, 0.1f, 0);
-            prevMousePos = Vec2(0.5, 0.5);
-            phi = 3.14f / 2.0f;
-            theta = 0;
-            radius = 30;
-            float t = radius * cos(theta);
-            cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
+            Demo3DBase::onInit();
 
             cubeVertices[0] = Vec3(0, 0, 0);
             cubeVertices[1] = Vec3(1, 0, 0);
@@ -56,17 +41,15 @@ namespace CubeDemo
             interpolationSteps = 30;
             interpolator = 0;
         }
-        virtual void onUpdate(const unsigned int deltaTime) {}
+
         virtual void onRender(const unsigned int deltaTime)
         {
-            renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
+            Demo3DBase::onRender(deltaTime);
 
-            camera.setPosition(cameraPos);
+            renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
             if (!stopTime)
             {
-                time++;
-
                 float delta = 1.0f / interpolationSteps;
                 int index = (interpolator / interpolationSteps) % 8;
                 Vec3 newPos = cubeVertices[index] * barycentricCoords[index] * 5.0f +
@@ -74,12 +57,12 @@ namespace CubeDemo
 
                 for (unsigned int i = cubesCount - 1; i >= 1; i--)
                 {
-                    Vec3 translation = cubes[i - 1].getPosition() - cubes[i].getPosition();
-                    BlockMesh* cube = &(*(cubes.begin() + i));
+                    Vec3 translation = cubes[i - 1]->getPosition() - cubes[i]->getPosition();
+                    shared_ptr<BlockMesh> cube = cubes[i];
                     cube->Translate(translation.x, translation.y, translation.z);
                 }
 
-                BlockMesh* cube = &(*cubes.begin());
+                shared_ptr<BlockMesh> cube = cubes[0];
                 Vec3 translation = newPos - cube->getPosition();
                 cube->Translate(translation.x, translation.y, translation.z);
 
@@ -91,81 +74,15 @@ namespace CubeDemo
             renderer->render(scene, camera);
         }
 
-        virtual void onDestroy() {}
-        virtual void onEvent(const unsigned int event) { cout << "onEvent: " << event << endl; }
-        virtual void onMouseEvent(int button, int state, int x, int y)
-        {
-            cout << "onMouseEvent: " << button << " " << state << endl;
-            if (0 == button)
-            {
-                cameraRotating = (0 == state ? true : false);
-            }
-
-            if (2 == button)
-            {
-                cameraPanning = (0 == state ? true : false);
-            }
-
-            if (3 == button)
-            {
-                radius -= 1.0f;
-                updateCamera();
-            }
-
-            if (4 == button)
-            {
-                radius += 1.0f;
-                updateCamera();
-            }
-        }
-
-        virtual void onKeyboardEvent(unsigned char c, int x, int y)
-        {
-            cout << static_cast<int>(c) << " " << x << " " << y << endl;
-
-            switch (c)
-            {
-            default:
-                stopTime = !stopTime;
-                break;
-            }
-        }
-
-        virtual void onMouseMove(int x, int y)
-        {
-            Vec2 delta = Vec2(static_cast<float>(x), static_cast<float>(y)) - prevMousePos;
-            delta.x /= resolution.x;
-            delta.y /= resolution.y;
-            if (cameraRotating)
-            {
-                phi += 3.14f * delta.x;
-                theta += 3.14f * delta.y;
-                updateCamera();
-            }
-
-            if (cameraPanning)
-            {
-                Vec3 center = camera.getLookDirection();
-                Vec3 z = center - cameraPos;
-                Vec3 y = camera.getUpVector();
-                Vec3 dx = (z * y).normalize();
-                Vec3 dy = (z * dx).normalize();
-
-                cameraPos += (dx * delta.x + dy * delta.y) * 30.0f;
-                camera.setLookDirection(center + (dx * delta.x + dy * delta.y) * 30.0f);
-            }
-
-            prevMousePos = Vec2(static_cast<float>(x), static_cast<float>(y));
-        }
     private:
-        void initTextures()
+        virtual void initTextures()
         {
             IResourceManager& rm = renderer->getResourceManager();
 
             textures.push_back(rm.createTexture("Images/pattern_133/diffuse.png"));
         }
 
-        void initMaterials()
+        virtual void initMaterials()
         {
             IResourceManager& resourceManager = renderer->getResourceManager();
 
@@ -184,7 +101,7 @@ namespace CubeDemo
             materials[1]->setProperty("diffuse", Vec3(0.5f, 0.0f, 0.0f));
         }
 
-        void initGeometry()
+        virtual void initGeometry()
         {
             IGeometryFactory& geometryFactory = renderer->getGeometryFactory();
 
@@ -193,46 +110,25 @@ namespace CubeDemo
             for (unsigned int i = 0; i < cubesCount; i++)
             {
                 cubes.push_back(geometryFactory.createBlockMesh());
-                BlockMesh* cube = &(*(cubes.begin() + i));
+                shared_ptr<BlockMesh> cube = cubes[i];
                 const float baseSize = 0.2f;
                 const float scale = 0.2f + (static_cast<float>(cubesCount - i) / cubesCount) * 0.1f;
                 cube->Scale(scale, scale, scale);
                 cube->setMaterial(materials[0]);
-                scene.add(cube);
+                scene.add(cube.get());
             }     
 
             cubes.push_back(geometryFactory.createBlockMesh());
-            BlockMesh* cube = &(*(cubes.begin() + cubesCount));
+            shared_ptr<BlockMesh> cube = cubes[cubesCount];
             cube->Translate(0.5f, 0.5f, 0.5f);
             cube->Scale(5.0f, 5.0f, 5.0f);
             cube->setMaterial(materials[1]);
-            scene.add(cube);
+            scene.add(cube.get());
         }
 
-        void updateCamera()
-        {
-            float t = radius * cos(theta);
-            cameraPos = camera.getLookDirection() + Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
-        }
-
-        const Vec2 resolution;
-        PerspectiveCamera camera;
-        Scene scene;
-        Renderer* renderer;
-        unsigned int time;
-        bool stopTime;
-        Vec3 cameraPos;
-        Vec3 prevDir;
-        Vec2 prevMousePos;
-        float phi;
-        float theta;
-        float radius;
-        vector<BlockMesh> cubes;
+        vector<shared_ptr<BlockMesh>> cubes;
         vector<IMaterial*> materials;
         vector<ITexture*> textures;
-        ITextureCubemap* envMap;
-        bool cameraRotating;
-        bool cameraPanning;
         const unsigned int cubesCount;
         Vec3 cubeVertices[8];
         float barycentricCoords[8];

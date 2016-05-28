@@ -1,6 +1,6 @@
-#include "Demos/DemoParticles.hpp"
+#include "Demos/DemoMinecraft.hpp"
 int main(int argc, char* argv[])
 {
-    ParticlesDemo::main();
+    MinecraftDemo::main();
     return 0;
 }

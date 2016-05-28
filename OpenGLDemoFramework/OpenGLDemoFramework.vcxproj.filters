@@ -73,6 +73,9 @@
     <Filter Include="Source Files\Core\Particles">
       <UniqueIdentifier>{4d7df560-b005-47fd-b0c3-a16724152959}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Demos">
+      <UniqueIdentifier>{993999cf-a4b3-47ad-a01a-460a6a9688b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -176,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="private\src\Core\Particles\GpuParticle2D.cpp">
       <Filter>Source Files\Core\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Demos\Demo3DBase.cpp">
+      <Filter>Source Files\Demos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +418,9 @@
     </ClInclude>
     <ClInclude Include="private\inc\Core\Particles\GpuParticle2D.hpp">
       <Filter>Header Files\Core\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\Demo3DBase.hpp">
+      <Filter>Header Files\Demos</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
