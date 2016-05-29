@@ -20,11 +20,12 @@ public:
     virtual void setTexCoords(const IVertexBuffer& texCoords);
     virtual void setMaterial(IMaterial* material);
     virtual IMaterial& getMaterial() const;
-    virtual void addChild(IMesh* child);
-    virtual std::vector<IMesh*>& getChildren();
+    virtual void addChild(shared_ptr<IMesh> child);
+    virtual std::vector<shared_ptr<IMesh>>& getChildren();
     virtual void Scale(const float scaleX, const float scaleY, const float scaleZ);//TODO: Use Vec3
     virtual void Rotate(const float thetaX, const float thetaY, const float thetaZ);//TODO: Use Vec3
     virtual void Translate(const float transX, const float transY, const float transZ);//TODO: Use Vec3
+    virtual shared_ptr<IMesh> clone();
     void SetCastsShadow(const bool castsShadow);
     void SetReceivesShadow(const bool receivesShadow);
     Vec3 getPosition();
@@ -34,7 +35,7 @@ protected:
     IMaterial* material;
     const IIndexBuffer* ibo;
     std::vector<const IVertexBuffer*> vbos;
-    std::vector<IMesh*> children;
+    std::vector<shared_ptr<IMesh>> children;
     Matrix4 model;
     bool castsShadow;
     bool receivesShadow;

@@ -46,7 +46,7 @@ CustomGeometry::CustomGeometry(IResourceManager& rm, const std::string fileName,
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            Mesh* bufferGeometry = new Mesh();
+            shared_ptr<Mesh> bufferGeometry = shared_ptr<Mesh>(new Mesh());
 
             Matrix4 modelMat(
                 Vec4(node->mTransformation.a1, node->mTransformation.a2, node->mTransformation.a3, node->mTransformation.a4),

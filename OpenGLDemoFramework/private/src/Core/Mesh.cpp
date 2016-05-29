@@ -21,18 +21,16 @@ Mesh::Mesh(const Mesh& rhs) :
     vbos(rhs.vbos),
     castsShadow(rhs.castsShadow),
     model(rhs.model),
-    children(rhs.children),
     receivesShadow(rhs.receivesShadow)
 {
-
+    for (unsigned int i = 0; i < rhs.children.size(); i++)
+    {
+        children.push_back(rhs.children[i]->clone());
+    }
 }
 
 Mesh::~Mesh()
 {
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        delete children[i];
-    }
 }
 
 const IIndexBuffer * Mesh::getIBO()
@@ -106,12 +104,12 @@ IMaterial & Mesh::getMaterial() const
     return *material;
 }
 
-void Mesh::addChild(IMesh* child)
+void Mesh::addChild(shared_ptr<IMesh> child)
 {
     children.push_back(child);
 }
 
-std::vector<IMesh*>& Mesh::getChildren() 
+std::vector<shared_ptr<IMesh>>& Mesh::getChildren()
 {
     return children;
 }
@@ -165,6 +163,11 @@ void Mesh::Translate(const float transX, const float transY, const float transZ)
     {
         children[i]->Translate(transX, transY, transZ);
     }
+}
+
+shared_ptr<IMesh> Mesh::clone()
+{
+    return shared_ptr<IMesh>(new Mesh(*this));
 }
 
 float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int vertexCount)

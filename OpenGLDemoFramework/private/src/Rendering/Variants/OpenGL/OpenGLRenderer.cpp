@@ -189,7 +189,7 @@ void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 
 void Renderer::render(IMesh* mesh, ICamera& camera)
 {
-    std::vector<IMesh*> children = mesh->getChildren();
+    std::vector<shared_ptr<IMesh>>& children = mesh->getChildren();
 
     if (children.size() == 0)
     {
@@ -253,7 +253,7 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
     {
         for (unsigned int i = 0; i < children.size(); i++)
         {
-            render(children[i], camera);
+            render(children[i].get(), camera);
         }
     }
 }
