@@ -19,8 +19,8 @@ Mesh::Mesh(const Mesh& rhs) :
     material(rhs.material),
     ibo(rhs.ibo),
     vbos(rhs.vbos),
-    castsShadow(rhs.castsShadow),
     model(rhs.model),
+    castsShadow(rhs.castsShadow),
     receivesShadow(rhs.receivesShadow)
 {
     for (unsigned int i = 0; i < rhs.children.size(); i++)
@@ -55,7 +55,6 @@ void Mesh::setModelMatrix(const Matrix4 & model)
 
 Matrix4 Mesh::getModelMatrix() const
 {
-    //return translation * rotation * scale;
     return model;
 }
 

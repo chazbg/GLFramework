@@ -58,8 +58,6 @@ namespace PBRDemo
 
         virtual void onKeyboardEvent(unsigned char c, int x, int y)
         {
-            Demo3DBase::onKeyboardEvent(c, x, y);
-
             cout << c << " " << x << " " << y << endl;
 
             switch (c)

@@ -52,4 +52,8 @@ inline void OpenGLMaterial::setProperty(T1 & map, const std::string name, const 
     {
         map[name].second = value;
     }
+    //else
+    //{
+    //    std::cout << "No property named " << name << " for Material[" << id << "]" << std::endl;
+    //}
 }

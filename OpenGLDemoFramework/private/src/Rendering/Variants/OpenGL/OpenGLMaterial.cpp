@@ -28,6 +28,12 @@ OpenGLMaterial::OpenGLMaterial(const int id) :
         switch (values[1])
         {
         case GL_INT:
+        case GL_SAMPLER_1D:
+        case GL_SAMPLER_2D:
+        case GL_SAMPLER_3D:
+        case GL_SAMPLER_CUBE:
+        case GL_SAMPLER_1D_SHADOW:
+        case GL_SAMPLER_2D_SHADOW:
         {
             iUniforms[name].first = values[2];
             break;
