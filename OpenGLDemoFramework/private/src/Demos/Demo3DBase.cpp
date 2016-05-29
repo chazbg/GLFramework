@@ -22,7 +22,6 @@ void Demo3DBase::onInit()
 
     time = 0;
     stopTime = false;
-    prevDir = Vec3(0.01f, 0.1f, 0);
     prevMousePos = Vec2(0.5, 0.5);
     phi = 3.14f / 2.0f;
     theta = 0;

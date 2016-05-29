@@ -5,7 +5,7 @@ layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 uv;
 
 uniform mat4 mvp;
-uniform mat4 mv;
+uniform mat4 modelToWorld;
 uniform mat4 depthMvp;
 
 smooth out vec3 inNormal;
@@ -22,7 +22,7 @@ void main(){
     shadowBias[2] = vec4(0,0,0.5,0);
     shadowBias[3] = vec4(0.5,0.5,0.5,1);
 
-    vec4 n = normalize(mv * normalize(vec4(normal,0)));
+    vec4 n = normalize(modelToWorld * normalize(vec4(normal,0)));
     gl_Position = mvp * vec4(vertexPosition_modelspace,1.0);
 	inNormal = n.xyz;
     //inColor = dot(n.xyz, light) * vec3(1,0,0);
@@ -30,6 +30,6 @@ void main(){
     shadowCoord = sc;
     
     inUVs = uv;
-    pos = (mv * vec4(vertexPosition_modelspace, 1.0)).xyz;
+    pos = (modelToWorld * vec4(vertexPosition_modelspace, 1.0)).xyz;
 }
 

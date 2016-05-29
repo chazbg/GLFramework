@@ -1,6 +1,6 @@
-#include "Demos/DemoMinecraft.hpp"
+#include "Demos/DemoTexture.hpp"
 int main(int argc, char* argv[])
 {
-    MinecraftDemo::main();
+    TextureDemo::main();
     return 0;
 }

@@ -226,7 +226,6 @@
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRotatingCalipers.hpp" />
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp" />
-    <ClInclude Include="private\inc\Demos\DemoTextureLoader.hpp" />
     <ClInclude Include="private\inc\Demos\DemoWave.hpp" />
     <ClInclude Include="private\inc\Demos\DemoWindow.hpp" />
     <ClInclude Include="private\inc\Geometry\Bar.hpp" />

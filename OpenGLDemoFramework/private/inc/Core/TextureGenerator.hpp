@@ -63,16 +63,15 @@ public:
         }
 
         unsigned char*  tex = new unsigned char[SIZE*SIZE * 4];
-        //textures.push_back(tex);
 
         for (int i = 0; i < SIZE; i++)
         {
             for (int j = 0; j < SIZE * 4; j += 4)
             {
                 float v = 255.0f * perlin((j / 64.0f) / scale, (i / 16.0f) / scale, 0, p);
-                tex[i * SIZE * 4 + j] = v;
-                tex[i * SIZE * 4 + j + 1] = v;
-                tex[i * SIZE * 4 + j + 2] = v;
+                tex[i * SIZE * 4 + j]     = static_cast<unsigned char>(v);
+                tex[i * SIZE * 4 + j + 1] = static_cast<unsigned char>(v);
+                tex[i * SIZE * 4 + j + 2] = static_cast<unsigned char>(v);
                 tex[i * SIZE * 4 + j + 3] = 255;
             }
         }
@@ -110,9 +109,9 @@ public:
             for (int j = 0; j < SIZE * 4; j += 4)
             {
                 float v = 255.0f * perlin((j / 64.0f) / scale, (i / 16.0f) / scale, z, p);
-                tex[i * SIZE * 4 + j] = v;
-                tex[i * SIZE * 4 + j + 1] = v;
-                tex[i * SIZE * 4 + j + 2] = v;
+                tex[i * SIZE * 4 + j]     = static_cast<unsigned char>(v);
+                tex[i * SIZE * 4 + j + 1] = static_cast<unsigned char>(v);
+                tex[i * SIZE * 4 + j + 2] = static_cast<unsigned char>(v);
                 tex[i * SIZE * 4 + j + 3] = 255;
             }
         }
@@ -142,8 +141,7 @@ public:
             p[x] = permutation[x % SIZE];
         }
 
-        unsigned char*  tex = new unsigned char[SIZE*SIZE * 4];
-        //textures.push_back(tex);
+        unsigned char* tex = new unsigned char[SIZE*SIZE * 4];
 
         for (int i = 0; i < SIZE; i++)
         {
@@ -163,9 +161,9 @@ public:
                 }
 
                 float v = 255.0f *  total / maxValue; 
-                tex[i * SIZE * 4 + j] = v;
-                tex[i * SIZE * 4 + j + 1] = v;
-                tex[i * SIZE * 4 + j + 2] = v;
+                tex[i * SIZE * 4 + j]     = static_cast<unsigned char>(v);
+                tex[i * SIZE * 4 + j + 1] = static_cast<unsigned char>(v);
+                tex[i * SIZE * 4 + j + 2] = static_cast<unsigned char>(v);
                 tex[i * SIZE * 4 + j + 3] = 255;
             }
         }
