@@ -190,6 +190,7 @@
     <ClInclude Include="private\inc\Core\ICamera.hpp" />
     <ClInclude Include="private\inc\Core\IIndexBuffer.hpp" />
     <ClInclude Include="private\inc\Core\IMaterial.hpp" />
+    <ClInclude Include="private\inc\Core\IMaterialProperty.hpp" />
     <ClInclude Include="private\inc\Core\IMesh.hpp" />
     <ClInclude Include="private\inc\Core\IResourceManager.hpp" />
     <ClInclude Include="private\inc\Core\IScene.hpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="private\inc\Rendering\Renderer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLIndexBuffer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterial.hpp" />
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterialProperty.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLRenderer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLResourceManager.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLTexture.hpp" />

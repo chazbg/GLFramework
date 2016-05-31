@@ -419,6 +419,12 @@
     <ClInclude Include="private\inc\Demos\Demo3DBase.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Core\IMaterialProperty.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterialProperty.hpp">
+      <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

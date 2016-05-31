@@ -65,32 +65,32 @@ OpenGLMaterial::OpenGLMaterial(const int id) :
         case GL_UNSIGNED_INT_SAMPLER_BUFFER:
         case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
         {
-            iUniforms[name].first = values[2];
+            addProperty(iUniforms, name, values[2]);
             break;
         }
         case GL_UNSIGNED_INT:
         {
-            uiUniforms[name].first = values[2];
+            addProperty(uiUniforms, name, values[2]);
             break;
         }
         case GL_FLOAT:
         {
-            fUniforms[name].first = values[2];
+            addProperty(fUniforms, name, values[2]);
             break;
         }
         case GL_FLOAT_VEC2:
         {
-            v2Uniforms[name].first = values[2];
+            addProperty(v2Uniforms, name, values[2]);
             break;
         }
         case GL_FLOAT_VEC3:
         {
-            vUniforms[name].first = values[2];
+            addProperty(v3Uniforms, name, values[2]);
             break;
         }
         case GL_FLOAT_MAT4:
         {
-            mUniforms[name].first = values[2];
+            addProperty(m4Uniforms, name, values[2]);
             break;
         }
         default:
@@ -104,19 +104,84 @@ OpenGLMaterial::OpenGLMaterial(const int id) :
 OpenGLMaterial::OpenGLMaterial(const OpenGLMaterial& rhs) :
     id(rhs.id),
     textures(rhs.textures),
-    textureCubemaps(rhs.textureCubemaps),
-    iUniforms(rhs.iUniforms),
-    uiUniforms(rhs.uiUniforms),
-    fUniforms(rhs.fUniforms),
-    v2Uniforms(rhs.v2Uniforms),
-    vUniforms(rhs.vUniforms),
-    mUniforms(rhs.mUniforms)
+    textureCubemaps(rhs.textureCubemaps)
 {
-
+    copyProperties(iUniforms, rhs.iUniforms);
+    copyProperties(uiUniforms, rhs.uiUniforms);
+    copyProperties(fUniforms, rhs.fUniforms);
+    copyProperties(v2Uniforms, rhs.v2Uniforms);
+    copyProperties(v3Uniforms, rhs.v3Uniforms);
+    copyProperties(m4Uniforms, rhs.m4Uniforms);
 }
 
 OpenGLMaterial::~OpenGLMaterial()
 {
+}
+
+void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<int>>& materialProperty)
+{
+    getProperty(iUniforms, name, materialProperty);
+}
+
+void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<unsigned int>>& materialProperty)
+{
+    getProperty(uiUniforms, name, materialProperty);
+}
+
+void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<float>>& materialProperty)
+{
+    getProperty(fUniforms, name, materialProperty);
+}
+
+void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec2>>& materialProperty)
+{
+    getProperty(v2Uniforms, name, materialProperty);
+}
+
+void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec3>>& materialProperty)
+{
+    getProperty(v3Uniforms, name, materialProperty);
+}
+
+void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Matrix4>>& materialProperty)
+{
+    getProperty(m4Uniforms, name, materialProperty);
+}
+
+void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<int>> p, const int v)
+{
+    OpenGLMaterialProperty<int>* glProperty = reinterpret_cast<OpenGLMaterialProperty<int>*>(p.get());
+    glProperty->value = v;
+}
+
+void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<unsigned int>> p, const unsigned int v)
+{
+    OpenGLMaterialProperty<unsigned int>* glProperty = reinterpret_cast<OpenGLMaterialProperty<unsigned int>*>(p.get());
+    glProperty->value = v;
+}
+
+void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<float>> p, const float v)
+{
+    OpenGLMaterialProperty<float>* glProperty = reinterpret_cast<OpenGLMaterialProperty<float>*>(p.get());
+    glProperty->value = v;
+}
+
+void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<Vec2>> p, const Vec2 & v)
+{
+    OpenGLMaterialProperty<Vec2>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Vec2>*>(p.get());
+    glProperty->value = v;
+}
+
+void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<Vec3>> p, const Vec3 & v)
+{
+    OpenGLMaterialProperty<Vec3>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Vec3>*>(p.get());
+    glProperty->value = v;
+}
+
+void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<Matrix4>> p, const Matrix4 & v)
+{
+    OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
+    glProperty->value = v;
 }
 
 int OpenGLMaterial::getId() const
@@ -124,34 +189,34 @@ int OpenGLMaterial::getId() const
     return id;
 }
 
-const std::map<std::string, std::pair<int, int>>& OpenGLMaterial::getIntProperties() const
+const std::vector<std::shared_ptr<OpenGLMaterialProperty<int>>>& OpenGLMaterial::getIntProperties() const
 {
     return iUniforms;
 }
 
-const std::map<std::string, std::pair<int, unsigned int>>& OpenGLMaterial::getUintProperties() const
+const std::vector<std::shared_ptr<OpenGLMaterialProperty<unsigned int>>>& OpenGLMaterial::getUintProperties() const
 {
     return uiUniforms;
 }
 
-const std::map<std::string, std::pair<int, float>>& OpenGLMaterial::getFloatProperties() const
+const std::vector<std::shared_ptr<OpenGLMaterialProperty<float>>>& OpenGLMaterial::getFloatProperties() const
 {
     return fUniforms;
 }
 
-const std::map<std::string, std::pair<int, Vec2>>& OpenGLMaterial::getVec2Properties() const
+const std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec2>>>& OpenGLMaterial::getVec2Properties() const
 {
     return v2Uniforms;
 }
 
-const std::map<std::string, std::pair<int, Vec3>>& OpenGLMaterial::getVec3Properties() const
+const std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec3>>>& OpenGLMaterial::getVec3Properties() const
 {
-    return vUniforms;
+    return v3Uniforms;
 }
 
-const std::map<std::string, std::pair<int, Matrix4>>& OpenGLMaterial::getMatrix4Properties() const
+const std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>& OpenGLMaterial::getMatrix4Properties() const
 {
-    return mUniforms;
+    return m4Uniforms;
 }
 
 const std::vector<const ITexture*>& OpenGLMaterial::getTextures() const
@@ -190,34 +255,4 @@ void OpenGLMaterial::removeTextureCubemap(const ITextureCubemap* tex)
     {
         textureCubemaps.erase(it);
     }
-}
-
-void OpenGLMaterial::setProperty(const string name, const int v)
-{
-    setProperty(iUniforms, name, v);
-}
-
-void OpenGLMaterial::setProperty(const string name, const unsigned int v)
-{
-    setProperty(uiUniforms, name, v);
-}
-
-void OpenGLMaterial::setProperty(const string name, const float v)
-{
-    setProperty(fUniforms, name, v);
-}
-
-void OpenGLMaterial::setProperty(const std::string name, const Vec2 & v)
-{
-    setProperty(v2Uniforms, name, v);
-}
-
-void OpenGLMaterial::setProperty(const string name, const Vec3 & v)
-{
-    setProperty(vUniforms, name, v);
-}
-
-void OpenGLMaterial::setProperty(const string name, const Matrix4 & v)
-{
-    setProperty(mUniforms, name, v);
 }

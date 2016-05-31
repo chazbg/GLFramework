@@ -38,9 +38,12 @@ void Renderer::initDeferredShading()
     deferredShadingRectMat[1] = resourceManager.cloneMaterial(deferredShadingRectMat[0]);
     deferredShadingRectMat[2] = resourceManager.cloneMaterial(deferredShadingRectMat[0]);
     deferredShadingRectMat[3] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/deferredShadingCompose.fs");
-    deferredShadingRectMat[3]->setProperty("colorMap", 0);
-    deferredShadingRectMat[3]->setProperty("normalMap", 1);
-    deferredShadingRectMat[3]->setProperty("depthMap", 2);
+    deferredShadingRectMat[3]->getProperty("colorMap", dsColorMap);
+    deferredShadingRectMat[3]->getProperty("normalMap", dsNormalMap);
+    deferredShadingRectMat[3]->getProperty("depthMap", dsDepthMap);
+    deferredShadingRectMat[3]->setProperty(dsColorMap, 0);
+    deferredShadingRectMat[3]->setProperty(dsNormalMap, 1);
+    deferredShadingRectMat[3]->setProperty(dsNormalMap, 2);
 
     deferredShadingTex[0] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, false);
     deferredShadingTex[1] = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 3, false);
@@ -193,10 +196,38 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
 
     if (children.size() == 0)
     {
-        mesh->getMaterial().setProperty("depthMvp", lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
-        mesh->getMaterial().setProperty("mvp", camera.getViewProjectionMatrix() * mesh->getModelMatrix());
-        mesh->getMaterial().setProperty("modelToWorld", mesh->getModelMatrix());
-        mesh->getMaterial().setProperty("modelView", camera.getViewMatrix() * mesh->getModelMatrix());
+        {
+            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
+            mesh->getMaterial().getProperty("depthMvp", p);
+            if (0 != p)
+            {
+                mesh->getMaterial().setProperty(p, lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
+            }
+        }
+        {
+            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
+            mesh->getMaterial().getProperty("mvp", p);
+            if (0 != p)
+            {
+                mesh->getMaterial().setProperty(p, camera.getViewProjectionMatrix() * mesh->getModelMatrix());
+            }
+        }
+        {
+            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
+            mesh->getMaterial().getProperty("modelToWorld", p);
+            if (0 != p)
+            {
+                mesh->getMaterial().setProperty(p, mesh->getModelMatrix());
+            }
+        }
+        {
+            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
+            mesh->getMaterial().getProperty("modelView", p);
+            if (0 != p)
+            {
+                mesh->getMaterial().setProperty(p, camera.getViewMatrix() * mesh->getModelMatrix());
+            }
+        }
 
         updateUniforms(mesh->getMaterial());
         std::vector<const ITexture*> textures = mesh->getMaterial().getTextures();
@@ -272,38 +303,40 @@ void Renderer::updateUniforms(const IMaterial& material)
     auto& uiUniforms = glMaterial.getUintProperties();
     auto& v2Uniforms = glMaterial.getVec2Properties();
     auto& vUniforms  = glMaterial.getVec3Properties();
-    auto& mUniforms  = const_cast<std::map<std::string, std::pair<int, Matrix4>>&>(glMaterial.getMatrix4Properties());
+    auto& mUniforms  = const_cast<std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>&>(glMaterial.getMatrix4Properties());
 
     glUseProgram(programId);
 
     for (auto fIt = fUniforms.begin(); fIt != fUniforms.end(); fIt++)
     {
-        glUniform1f(fIt->second.first, fIt->second.second);
+        glUniform1f(fIt->operator->()->location, fIt->operator->()->value);
     }
 
     for (auto iIt = iUniforms.begin(); iIt != iUniforms.end(); iIt++)
     {
-        glUniform1i(iIt->second.first, iIt->second.second);
+        glUniform1i(iIt->operator->()->location, iIt->operator->()->value);
     }
 
     for (auto uiIt = uiUniforms.begin(); uiIt != uiUniforms.end(); uiIt++)
     {
-        glUniform1ui(uiIt->second.first, uiIt->second.second);
+        glUniform1ui(uiIt->operator->()->location, uiIt->operator->()->value);
     }
 
     for (auto v2It = v2Uniforms.begin(); v2It != v2Uniforms.end(); v2It++)
     {
-        glUniform2f(v2It->second.first, v2It->second.second.x, v2It->second.second.y);
+        glUniform2f(v2It->operator->()->location, v2It->operator->()->value.x, v2It->operator->()->value.y);
     }
 
     for (auto vIt = vUniforms.begin(); vIt != vUniforms.end(); vIt++)
     {
-        glUniform3f(vIt->second.first, vIt->second.second.x, vIt->second.second.y, vIt->second.second.z);
+        glUniform3f(vIt->operator->()->location, vIt->operator->()->value.x,
+                                                 vIt->operator->()->value.y, 
+                                                 vIt->operator->()->value.z);
     }
 
     for (auto mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
     {
-        glUniformMatrix4fv(mIt->second.first, 1, false,  mIt->second.second.raw());
+        glUniformMatrix4fv(mIt->operator->()->location, 1, false,  mIt->operator->()->value.raw());
     }
 }
 

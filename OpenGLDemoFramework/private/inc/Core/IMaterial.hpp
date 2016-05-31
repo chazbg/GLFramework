@@ -1,11 +1,14 @@
 #pragma once
+#include "Core/ITexture.hpp"
+#include "Core/ITextureCubemap.hpp"
+#include "Core/IMaterialProperty.hpp"
+#include "Math/Vector.hpp"
+#include "Math/Matrix.hpp"
+
 #include <vector>
 #include <map>
 #include <string>
-#include "Core/ITexture.hpp"
-#include "Core/ITextureCubemap.hpp"
-#include "Math/Vector.hpp"
-#include "Math/Matrix.hpp"
+#include <memory>
 
 class IMaterial
 {
@@ -16,12 +19,18 @@ public:
     virtual void addTextureCubemap(const ITextureCubemap* tex) = 0;
     virtual void removeTexture(const ITexture* tex) = 0;
     virtual void removeTextureCubemap(const ITextureCubemap* tex) = 0;
-    virtual void setProperty(const std::string name, const int v) = 0;
-    virtual void setProperty(const std::string name, const unsigned int v) = 0;
-    virtual void setProperty(const std::string name, const float v) = 0;
-    virtual void setProperty(const std::string name, const Vec2& v) = 0;
-    virtual void setProperty(const std::string name, const Vec3& v) = 0;
-    virtual void setProperty(const std::string name, const Matrix4& v) = 0;
+    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<int>>& materialProperty) = 0;
+    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<unsigned int>>& materialProperty) = 0;
+    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<float>>& materialProperty) = 0;
+    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec2>>& materialProperty) = 0;
+    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec3>>& materialProperty) = 0;
+    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Matrix4>>& materialProperty) = 0;
+    virtual void setProperty(std::shared_ptr<IMaterialProperty<int>>         , const int v) = 0;
+    virtual void setProperty(std::shared_ptr<IMaterialProperty<unsigned int>>, const unsigned int v) = 0;
+    virtual void setProperty(std::shared_ptr<IMaterialProperty<float>>       , const float v) = 0;
+    virtual void setProperty(std::shared_ptr<IMaterialProperty<Vec2>>        , const Vec2& v) = 0;
+    virtual void setProperty(std::shared_ptr<IMaterialProperty<Vec3>>        , const Vec3& v) = 0;
+    virtual void setProperty(std::shared_ptr<IMaterialProperty<Matrix4>>     , const Matrix4& v) = 0;
 protected:
     virtual ~IMaterial() {}
 };

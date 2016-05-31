@@ -52,7 +52,7 @@ namespace ParticlesDemo
 
             for (unsigned int i = 0; i < aliveParticles; i++)
             {
-                meshes[i]->getMaterial().setProperty("remainingLife", particles[i]->getRemainingLife());
+                meshes[i]->getMaterial().setProperty(remainingLife[i + 1], particles[i]->getRemainingLife());
             }
 
             renderer->render(scene, camera);
@@ -86,10 +86,10 @@ namespace ParticlesDemo
         {
             unsigned int index = emitter.getAliveParticlesCount() - 1;
             scene.add(meshes[index].get());
-            meshes[index]->getMaterial().setProperty("scale", particle.getScale());
-            meshes[index]->getMaterial().setProperty("duration", particle.getDuration());
-            meshes[index]->getMaterial().setProperty("tangentAcceleration", particle.getTangentialAcceleration());
-            meshes[index]->getMaterial().setProperty("radialAcceleration", particle.getRadialAcceleration());
+            meshes[index]->getMaterial().setProperty(scale[index], particle.getScale());
+            meshes[index]->getMaterial().setProperty(duration[index], particle.getDuration());
+            meshes[index]->getMaterial().setProperty(tangentAcceleration[index], particle.getTangentialAcceleration());
+            meshes[index]->getMaterial().setProperty(radialAcceleration[index], particle.getRadialAcceleration());
         }
 
         virtual void particleDied(const unsigned int index)
@@ -116,13 +116,31 @@ namespace ParticlesDemo
             materials.push_back(resourceManager.createMaterial(
                 "Shaders/particle.vs",
                 "Shaders/particle.fs"));
-            materials[0]->setProperty("sampler", 0);
+            shared_ptr<IMaterialProperty<int>> samplerProperty;
+            materials[0]->getProperty("sampler", samplerProperty);
+            materials[0]->setProperty(samplerProperty, 0);
             materials[0]->addTexture(textures[0]);
 
-            for (unsigned int i = 1; i < particleCount; i++)
+            for (unsigned int i = 1; i < particleCount; ++i)
             {
                 materials.push_back(resourceManager.cloneMaterial(materials[0]));
-            }            
+            }    
+
+            for (unsigned int i = 0; i < particleCount; ++i)
+            {
+                shared_ptr<IMaterialProperty<float>> p;
+                shared_ptr<IMaterialProperty<Vec2>> p2;
+                materials[i]->getProperty("remainingLife", p);
+                remainingLife.push_back(p);
+                materials[i]->getProperty("duration", p);
+                duration.push_back(p);
+                materials[i]->getProperty("tangentAcceleration", p);
+                tangentAcceleration.push_back(p);
+                materials[i]->getProperty("radialAcceleration", p);
+                radialAcceleration.push_back(p);
+                materials[i]->getProperty("scale", p2);
+                scale.push_back(p2);
+            }
         }
 
         void initGeometry()
@@ -155,6 +173,11 @@ namespace ParticlesDemo
         bool cameraPanning;
         unsigned int particleCount;
         SimpleEmitter emitter;
+        vector<shared_ptr<IMaterialProperty<float>>> remainingLife;
+        vector<shared_ptr<IMaterialProperty<float>>> duration;
+        vector<shared_ptr<IMaterialProperty<float>>> tangentAcceleration;
+        vector<shared_ptr<IMaterialProperty<float>>> radialAcceleration;
+        vector<shared_ptr<IMaterialProperty<Vec2>>>  scale;
     };
 
     void main()
