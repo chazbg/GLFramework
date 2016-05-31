@@ -37,13 +37,13 @@ void SimpleEmitter::updateParticles(const float t)
 
 		float r1 = static_cast<float>(rand() % 200 - 100) / 1000.0f;
 		float r2 = static_cast<float>(rand() % 200 - 100) / 10000.0f;
-		float r3 = static_cast<float>(rand() % 100)       / 10000.0f;
-		float r4 = static_cast<float>(rand() % 100)       / 1000000.0f;
+		float r3 = static_cast<float>(rand() % 200)       / 10000.0f;
+		float r4 = static_cast<float>(rand() % 200)       / 1000000.0f;
 		float r5 = static_cast<float>(rand() % 200 - 100) / 1000.0f;
 
         p->init(Vec2(0.0f, 0.0f),
             Vec2(0.0f + r1, 0.0f + r2),
-            0.1f + r3,
+            0.05f + r3,
 			0.0005f + r4,
             20.0f,
 			Vec2(r5, r5));
