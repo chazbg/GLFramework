@@ -128,13 +128,13 @@ float Vec2::polarAngle(const Vec2& rhs) const
 
 float Vec2::length() const
 {
-	return sqrt(x * x + y * y);
+    return sqrt(x * x + y * y);
 }
 
 Vec2 Vec2::normalize() const
 {
-	float len = length();
-	return Vec2(x / len, y / len);
+    float len = length();
+    return Vec2(x / len, y / len);
 }
 
 //Vec3

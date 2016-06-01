@@ -8,17 +8,17 @@
 class SimpleEmitter : public IEmitter
 {
 public:
-	SimpleEmitter(
+    SimpleEmitter(
         IParticle2DRenderer& particleRenderer,
         const unsigned int particleCount,
         const float spawnInterval);
-	~SimpleEmitter();
-	virtual void updateParticles(const float t);
+    ~SimpleEmitter();
+    virtual void updateParticles(const float t);
     const std::vector<IParticle2D*>& getParticles();
     unsigned int getAliveParticlesCount();
 private:
     IParticle2DRenderer& particleRenderer;
-	std::vector<IParticle2D*> particles;
+    std::vector<IParticle2D*> particles;
     const unsigned int particleCount;
     const float spawnInterval;
     unsigned int aliveParticles;

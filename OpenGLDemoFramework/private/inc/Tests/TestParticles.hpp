@@ -4,10 +4,10 @@
 
 void TestParticles1()
 {
-	SimpleEmitter emitter;
+    SimpleEmitter emitter;
 
-	for (int i = 0; i < 20; i++)
-	{
-		emitter.updateParticles(0.16);
-	}
+    for (int i = 0; i < 20; i++)
+    {
+        emitter.updateParticles(0.16);
+    }
 }

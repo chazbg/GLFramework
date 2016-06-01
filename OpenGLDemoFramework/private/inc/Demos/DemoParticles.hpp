@@ -40,11 +40,11 @@ namespace ParticlesDemo
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
             camera.setPosition(cameraPos);
-			
-			if (!stopTime)
-			{
-				time++;
-			}
+            
+            if (!stopTime)
+            {
+                time++;
+            }
 
             emitter.updateParticles(0.03f);
             const std::vector<IParticle2D*>& particles = emitter.getParticles();
