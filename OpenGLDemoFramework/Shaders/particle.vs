@@ -7,14 +7,13 @@ layout(location = 2) in vec2 texCoord;
 smooth out vec2 texCoords;
 flat out float alpha;
 
-uniform uint time;
-uniform mat4 mvp;
 uniform float remainingLife;
 uniform float duration;
 uniform float tangentAcceleration;
 uniform float radialAcceleration;
 uniform vec2 scale;
-
+uniform float phase;
+ 
 void main(){
     const float MAX_TANGENT_VELOCITY = 0.0f;
     const float MAX_RADIAL_VELOCITY = 0.0f;
@@ -28,10 +27,14 @@ void main(){
 	float elaspedLifeSq = elapsedLife * elapsedLife * 0.5;
     float t1 = elaspedLifeSq * tangentAcceleration;
     float t2 = elaspedLifeSq * radialAcceleration * 5.0;
-    vec2 newPos = vec2(cos(t1), sin(t1)) * t2;
     
-    gl_Position.xy += newPos; 
-	
+    gl_Position.x += t2 * 0.005; 
+    float cosTheta = cos(t1);
+    float sinTheta = sin(t1); // sqrt(1.0 - cosTheta * cosTheta);
+    mat2 rotation = mat2(vec2(cosTheta, -sinTheta),
+                         vec2(sinTheta, cosTheta));
+    gl_Position.xy *= rotation;
+    
     alpha = normalizedLife;  
     
     texCoords = texCoord;

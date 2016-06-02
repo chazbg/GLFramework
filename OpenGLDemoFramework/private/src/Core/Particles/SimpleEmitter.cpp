@@ -40,13 +40,15 @@ void SimpleEmitter::updateParticles(const float t)
         float r3 = static_cast<float>(rand() % 200)       / 10000.0f;
         float r4 = static_cast<float>(rand() % 200)       / 1000000.0f;
         float r5 = static_cast<float>(rand() % 200 - 100) / 1000.0f;
+        float r6 = static_cast<float>(rand() % 100)       / 100.0f;
 
         p->init(Vec2(0.0f, 0.0f),
             Vec2(0.0f + r1, 0.0f + r2),
             0.05f + r3,
-            0.0005f + r4,
+            0.005f + r4,
             20.0f,
-            Vec2(r5, r5));
+            Vec2(r5, r5),
+            r6 * 6.28f);
 
         aliveParticles++;
         nextSpawn = spawnInterval;

@@ -61,19 +61,31 @@ Vec2 GpuParticle2D::getScale() const
     return scale;
 }
 
+void GpuParticle2D::setPhase(const float phase)
+{
+    this->phase = phase;
+}
+
+float GpuParticle2D::getPhase() const
+{
+    return phase;
+}
+
 void GpuParticle2D::init(
     const Vec2 & emitterPos, 
     const Vec2 & particlePos, 
     const float tangentAcceleration, 
     const float radialAcceleration, 
     const float duration, 
-    const Vec2 & scale)
+    const Vec2 & scale,
+    const float phase)
 {
     this->tangentAcceleration = tangentAcceleration;
     this->radialAcceleration  = radialAcceleration;
     this->duration            = duration;
     this->scale               = scale;
     this->remainingLife       = duration;
+    this->phase               = phase;
 }
 
 void GpuParticle2D::deinit()
@@ -83,4 +95,5 @@ void GpuParticle2D::deinit()
     duration            = 0.0f;
     scale               = Vec2(0.0f, 0.0f);
     remainingLife       = 0.0f;
+    phase               = 0.0f;
 }

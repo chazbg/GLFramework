@@ -69,20 +69,30 @@ Vec2 SimpleParticle::getScale() const
     return scale;
 }
 
+void SimpleParticle::setPhase(const float phase)
+{
+}
+
+float SimpleParticle::getPhase() const
+{
+    return 0.0f;
+}
+
 void SimpleParticle::init(
     const Vec2 & emitterPos, 
     const Vec2 & particlePos, 
     const float tangentAcceleration, 
     const float radialAcceleration, 
     const float duration,
-    const Vec2 & scale)
+    const Vec2 & scale,
+    const float phase)
 {
     this->emitterPos          = emitterPos;
     this->particlePos         = particlePos;
     this->tangentAcceleration = tangentAcceleration;
     this->radialAcceleration  = radialAcceleration;
-    this->duration              = duration;
-    this->scale                  = scale;
+    this->duration            = duration;
+    this->scale               = scale;
     this->remainingLife       = duration;
     this->alpha               = 1.0f;
     this->tangentVelocity     = 0.0f;
@@ -96,7 +106,7 @@ void SimpleParticle::deinit()
     tangentAcceleration = 0.0f;
     radialAcceleration  = 0.0f;
     duration            = 0.0f;
-    scale                = Vec2(0.0f, 0.0f);
+    scale               = Vec2(0.0f, 0.0f);
     remainingLife       = 0.0f;
     alpha               = 0.0f;
     tangentVelocity     = 0.0f;

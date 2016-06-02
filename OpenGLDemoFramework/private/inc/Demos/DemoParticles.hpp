@@ -16,11 +16,16 @@ namespace ParticlesDemo
     class TestWindowApp : public IApplication, public IParticle2DRenderer
     {
     public:
-        TestWindowApp() : camera(), renderer(0), particleCount(100), emitter(*this, particleCount, 0.5f) {}
+        TestWindowApp(const Vec2& resolution) : 
+            camera(), 
+            resolution(resolution), 
+            renderer(0), 
+            particleCount(100), 
+            emitter(*this, particleCount, 0.5f) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            renderer = new Renderer(Vec2(600, 600));
+            renderer = new Renderer(resolution);
 
             renderer->setAlphaBlending(true);
             renderer->setDepthTest(false);
@@ -52,7 +57,7 @@ namespace ParticlesDemo
 
             for (unsigned int i = 0; i < aliveParticles; i++)
             {
-                meshes[i]->getMaterial().setProperty(remainingLife[i + 1], particles[i]->getRemainingLife());
+                meshes[i]->getMaterial().setProperty(remainingLife[i], particles[i]->getRemainingLife());
             }
 
             renderer->render(scene, camera);
@@ -90,6 +95,7 @@ namespace ParticlesDemo
             meshes[index]->getMaterial().setProperty(duration[index], particle.getDuration());
             meshes[index]->getMaterial().setProperty(tangentAcceleration[index], particle.getTangentialAcceleration());
             meshes[index]->getMaterial().setProperty(radialAcceleration[index], particle.getRadialAcceleration());
+            meshes[index]->getMaterial().setProperty(phase[index], particle.getPhase());
         }
 
         virtual void particleDied(const unsigned int index)
@@ -140,6 +146,8 @@ namespace ParticlesDemo
                 radialAcceleration.push_back(p);
                 materials[i]->getProperty("scale", p2);
                 scale.push_back(p2);
+                materials[i]->getProperty("phase", p);
+                phase.push_back(p);
             }
         }
 
@@ -155,6 +163,7 @@ namespace ParticlesDemo
         }
 
         DefaultCamera camera;
+        Vec2 resolution;
         Scene scene;
         Renderer* renderer;
         unsigned int time;
@@ -178,6 +187,7 @@ namespace ParticlesDemo
         vector<shared_ptr<IMaterialProperty<float>>> tangentAcceleration;
         vector<shared_ptr<IMaterialProperty<float>>> radialAcceleration;
         vector<shared_ptr<IMaterialProperty<Vec2>>>  scale;
+        vector<shared_ptr<IMaterialProperty<float>>> phase;
     };
 
     void main()
@@ -188,7 +198,8 @@ namespace ParticlesDemo
         params.posX = 0;
         params.posY = 0;
         params.name = "Particles";
-        TestWindowApp app;
+        TestWindowApp app(Vec2(static_cast<float>(params.width),
+                               static_cast<float>(params.height)));
         Window window(params, app);
         window.startRenderLoop();
     }

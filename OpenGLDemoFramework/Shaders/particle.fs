@@ -7,10 +7,9 @@ flat in float alpha;
 layout(location = 0) out vec4 color;
 
 uniform sampler2D sampler;
-uniform uint time;
 
 void main()
 {
-	color.xyz = texture(sampler, texCoords).rgb;
+    color.xyz = texture(sampler, texCoords).rgb;
     color.a = color.x * alpha;
 }

@@ -17,13 +17,16 @@ public:
     virtual float getMaxRadialVelocity() const;
     virtual void  setScale(const Vec2& scale);
     virtual Vec2  getScale() const;
+    virtual void  setPhase(const float phase);
+    virtual float getPhase() const;
     virtual void init(
         const Vec2& emitterPos,
         const Vec2& particlePos,
         const float tangentAcceleration,
         const float radialAcceleration,
         const float duration,
-        const Vec2 & scale);
+        const Vec2 & scale,
+        const float phase);
     virtual void deinit();
 
 private:
@@ -34,4 +37,5 @@ private:
     float duration;
     Vec2 scale;
     float remainingLife;
+    float phase;
 };
