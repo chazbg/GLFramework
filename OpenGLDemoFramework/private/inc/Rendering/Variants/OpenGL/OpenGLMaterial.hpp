@@ -78,6 +78,7 @@ inline void OpenGLMaterial::setProperty(T1 & map, const std::string name, const 
 template<typename T1, typename T2>
 inline void OpenGLMaterial::getProperty(T1 & uniforms, const std::string name, std::shared_ptr<IMaterialProperty<T2>>& materialProperty)
 {
+    materialProperty = 0;
     for (unsigned int i = 0; i < uniforms.size(); ++i)
     {
         if (name == uniforms[i]->name)

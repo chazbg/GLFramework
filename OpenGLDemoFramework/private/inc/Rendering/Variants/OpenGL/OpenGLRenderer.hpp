@@ -21,6 +21,12 @@ Vec2                     resolution;
 shared_ptr<IMaterialProperty<int>> dsColorMap;
 shared_ptr<IMaterialProperty<int>> dsNormalMap;
 shared_ptr<IMaterialProperty<int>> dsDepthMap;
+typedef std::function<void(IMesh& mesh, 
+                           ICamera& camera, 
+                           ICamera& lightCamera)> PropertySetter;
+std::map<int, std::vector<PropertySetter>> systemPropertySetters;
+virtual void materialCreated(IMaterial& material);
+virtual void materialDestroyed(IMaterial& material);
 void initDeferredShading();
 void initPostProcessing();
 void initShadowMapping();

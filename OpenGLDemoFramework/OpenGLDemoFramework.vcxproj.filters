@@ -425,6 +425,9 @@
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterialProperty.hpp">
       <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Core\IResourceManagerNotify.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

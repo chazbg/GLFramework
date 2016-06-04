@@ -12,7 +12,7 @@
 #define BUFFER_OFFSET(i) ((void*)(i))
 
 Renderer::Renderer(const Vec2& resolution) : 
-    resourceManager(), 
+    resourceManager(*this), 
     geometryFactory(resourceManager),
     r(geometryFactory.createRectangle()),
     postProcessRect(geometryFactory.createRectangle()),
@@ -29,6 +29,56 @@ Renderer::Renderer(const Vec2& resolution) :
     initDeferredShading();
     initPostProcessing();
     initShadowMapping();
+}
+
+void Renderer::materialCreated(IMaterial& material)
+{
+    OpenGLMaterial& glMaterial = reinterpret_cast<OpenGLMaterial&>(material);
+    shared_ptr<IMaterialProperty<Matrix4>> p; 
+    glMaterial.getProperty("depthMvp", p);
+    if (p != 0)
+    {
+        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        { 
+            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
+            glProperty->value = lightCamera.getViewProjectionMatrix() * mesh.getModelMatrix();
+        });
+    }
+    
+    glMaterial.getProperty("mvp", p);
+    if (p != 0)
+    {
+        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        {
+            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
+            glProperty->value = camera.getViewProjectionMatrix() * mesh.getModelMatrix();
+        });
+    }
+
+    glMaterial.getProperty("modelToWorld", p);
+    if (p != 0)
+    {
+        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        {
+            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
+            glProperty->value = mesh.getModelMatrix();
+        });
+    }
+
+    glMaterial.getProperty("modelView", p);
+    if (p != 0)
+    {
+        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        {
+            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
+            glProperty->value = camera.getViewMatrix() * mesh.getModelMatrix();
+        });
+    }
+}
+
+void Renderer::materialDestroyed(IMaterial& material)
+{
+
 }
 
 void Renderer::initDeferredShading()
@@ -196,37 +246,11 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
 
     if (children.size() == 0)
     {
+        OpenGLMaterial& glMaterial = reinterpret_cast<OpenGLMaterial&>(mesh->getMaterial());
+        auto& propertySetters = systemPropertySetters[glMaterial.getId()];
+        for (unsigned int i = 0; i < propertySetters.size(); ++i)
         {
-            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
-            mesh->getMaterial().getProperty("depthMvp", p);
-            if (0 != p)
-            {
-                mesh->getMaterial().setProperty(p, lightCamera.getViewProjectionMatrix() * mesh->getModelMatrix());
-            }
-        }
-        {
-            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
-            mesh->getMaterial().getProperty("mvp", p);
-            if (0 != p)
-            {
-                mesh->getMaterial().setProperty(p, camera.getViewProjectionMatrix() * mesh->getModelMatrix());
-            }
-        }
-        {
-            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
-            mesh->getMaterial().getProperty("modelToWorld", p);
-            if (0 != p)
-            {
-                mesh->getMaterial().setProperty(p, mesh->getModelMatrix());
-            }
-        }
-        {
-            shared_ptr<IMaterialProperty<Matrix4>> p = 0;
-            mesh->getMaterial().getProperty("modelView", p);
-            if (0 != p)
-            {
-                mesh->getMaterial().setProperty(p, camera.getViewMatrix() * mesh->getModelMatrix());
-            }
+            propertySetters[i](*mesh, camera, lightCamera);
         }
 
         updateUniforms(mesh->getMaterial());
@@ -302,41 +326,41 @@ void Renderer::updateUniforms(const IMaterial& material)
     auto& iUniforms  = glMaterial.getIntProperties();
     auto& uiUniforms = glMaterial.getUintProperties();
     auto& v2Uniforms = glMaterial.getVec2Properties();
-    auto& vUniforms  = glMaterial.getVec3Properties();
-    auto& mUniforms  = const_cast<std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>&>(glMaterial.getMatrix4Properties());
+    auto& v3Uniforms = glMaterial.getVec3Properties();
+    auto& m4Uniforms = const_cast<std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>&>(glMaterial.getMatrix4Properties());
 
     glUseProgram(programId);
 
-    for (auto fIt = fUniforms.begin(); fIt != fUniforms.end(); fIt++)
+    for (unsigned int i = 0; i < fUniforms.size(); ++i)
     {
-        glUniform1f(fIt->operator->()->location, fIt->operator->()->value);
+        glUniform1f(fUniforms[i]->location, fUniforms[i]->value);
     }
 
-    for (auto iIt = iUniforms.begin(); iIt != iUniforms.end(); iIt++)
+    for (unsigned int i = 0; i < iUniforms.size(); ++i)
     {
-        glUniform1i(iIt->operator->()->location, iIt->operator->()->value);
+        glUniform1i(iUniforms[i]->location, iUniforms[i]->value);
     }
 
-    for (auto uiIt = uiUniforms.begin(); uiIt != uiUniforms.end(); uiIt++)
+    for (unsigned int i = 0; i < uiUniforms.size(); ++i)
     {
-        glUniform1ui(uiIt->operator->()->location, uiIt->operator->()->value);
+        glUniform1ui(uiUniforms[i]->location, uiUniforms[i]->value);
     }
 
-    for (auto v2It = v2Uniforms.begin(); v2It != v2Uniforms.end(); v2It++)
+    for (unsigned int i = 0; i < v2Uniforms.size(); ++i)
     {
-        glUniform2f(v2It->operator->()->location, v2It->operator->()->value.x, v2It->operator->()->value.y);
+        glUniform2f(v2Uniforms[i]->location, v2Uniforms[i]->value.x, v2Uniforms[i]->value.y);
     }
 
-    for (auto vIt = vUniforms.begin(); vIt != vUniforms.end(); vIt++)
+    for (unsigned int i = 0; i < v3Uniforms.size(); ++i)
     {
-        glUniform3f(vIt->operator->()->location, vIt->operator->()->value.x,
-                                                 vIt->operator->()->value.y, 
-                                                 vIt->operator->()->value.z);
+        glUniform3f(v3Uniforms[i]->location, v3Uniforms[i]->value.x,
+                                             v3Uniforms[i]->value.y, 
+                                             v3Uniforms[i]->value.z);
     }
 
-    for (auto mIt = mUniforms.begin(); mIt != mUniforms.end(); mIt++)
+    for (unsigned int i = 0; i < m4Uniforms.size(); ++i)
     {
-        glUniformMatrix4fv(mIt->operator->()->location, 1, false,  mIt->operator->()->value.raw());
+        glUniformMatrix4fv(m4Uniforms[i]->location, 1, false, m4Uniforms[i]->value.raw());
     }
 }
 

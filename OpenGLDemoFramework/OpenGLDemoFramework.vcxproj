@@ -193,6 +193,7 @@
     <ClInclude Include="private\inc\Core\IMaterialProperty.hpp" />
     <ClInclude Include="private\inc\Core\IMesh.hpp" />
     <ClInclude Include="private\inc\Core\IResourceManager.hpp" />
+    <ClInclude Include="private\inc\Core\IResourceManagerNotify.hpp" />
     <ClInclude Include="private\inc\Core\IScene.hpp" />
     <ClInclude Include="private\inc\Core\ITexture.hpp" />
     <ClInclude Include="private\inc\Core\ITextureCubemap.hpp" />

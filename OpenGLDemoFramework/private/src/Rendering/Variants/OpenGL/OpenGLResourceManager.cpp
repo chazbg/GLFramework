@@ -7,7 +7,8 @@
 #include "Rendering/Variants/OpenGL/OpenGLIndexBuffer.hpp"
 #include <GL/glew.h>
 
-OpenGLResourceManager::OpenGLResourceManager()
+OpenGLResourceManager::OpenGLResourceManager(IResourceManagerNotify& notify) :
+    notify(notify)
 {
 #ifdef FREEIMAGE_LIB
     FreeImage_Initialise();
@@ -227,6 +228,7 @@ IMaterial * OpenGLResourceManager::createMaterial(const std::string vShaderPath,
     if (it == materialRefCounters.end())
     {
         materialRefCounters[id] = 0;
+        notify.materialCreated(*material);
     }
     else
     {
@@ -286,6 +288,7 @@ void OpenGLResourceManager::destroyMaterial(IMaterial * material)
         {
             materialRefCounters.erase(refCountersIt);
             glDeleteProgram(id);
+            notify.materialDestroyed(*material);
         }
         else
         {

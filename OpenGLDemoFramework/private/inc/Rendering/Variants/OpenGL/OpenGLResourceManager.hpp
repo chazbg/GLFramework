@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Core/IResourceManager.hpp"
+#include "Core/IResourceManagerNotify.hpp"
 #include <FreeImage.h>
 #include <map>
 
 class OpenGLResourceManager : public IResourceManager
 {
 public:
-    OpenGLResourceManager();
+    OpenGLResourceManager(IResourceManagerNotify& notify);
     virtual ~OpenGLResourceManager();
     virtual ITexture* createTexture(const std::string path);
     virtual ITexture* createTexture(
@@ -45,6 +46,7 @@ private:
     FIBITMAP* loadImage(const std::string path); //TODO: Implement class Image (open, close, getters, etc.)
     void unloadImage(FIBITMAP* dib); //TODO: Implement class Image (open, close, getters, etc.)
 
+    IResourceManagerNotify& notify;
     std::vector<ITexture*> textures;
     std::vector<ITextureCubemap*> textureCubemaps;
     std::vector<FIBITMAP*> bitmaps; //TODO: Implement class Image (open, close, getters, etc.)
