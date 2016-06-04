@@ -26,11 +26,11 @@ void main(){
 
 	float elaspedLifeSq = elapsedLife * elapsedLife * 0.5;
     float t1 = elaspedLifeSq * tangentAcceleration;
-    float t2 = elaspedLifeSq * radialAcceleration * 5.0;
+    float t2 = elaspedLifeSq * radialAcceleration;
     
-    gl_Position.x += t2 * 0.005; 
-    float cosTheta = cos(t1);
-    float sinTheta = sin(t1); // sqrt(1.0 - cosTheta * cosTheta);
+    gl_Position.x += t2; 
+    float cosTheta = cos(phase + t1);
+    float sinTheta = sin(phase + t1);
     mat2 rotation = mat2(vec2(cosTheta, -sinTheta),
                          vec2(sinTheta, cosTheta));
     gl_Position.xy *= rotation;

@@ -6,6 +6,7 @@ class Vec2
 {
 public:
     inline Vec2() {}
+    inline Vec2(float v) : x(v), y(v) {}
     inline Vec2(float x, float y) : x(x), y(y) {}
     inline ~Vec2() {}
     Vec2(const Vec2& vec);

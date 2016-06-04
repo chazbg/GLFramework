@@ -106,9 +106,9 @@ OpenGLMaterial::OpenGLMaterial(const OpenGLMaterial& rhs) :
     textures(rhs.textures),
     textureCubemaps(rhs.textureCubemaps)
 {
-    copyProperties(iUniforms, rhs.iUniforms);
+    copyProperties(iUniforms,  rhs.iUniforms);
     copyProperties(uiUniforms, rhs.uiUniforms);
-    copyProperties(fUniforms, rhs.fUniforms);
+    copyProperties(fUniforms,  rhs.fUniforms);
     copyProperties(v2Uniforms, rhs.v2Uniforms);
     copyProperties(v3Uniforms, rhs.v3Uniforms);
     copyProperties(m4Uniforms, rhs.m4Uniforms);

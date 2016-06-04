@@ -21,7 +21,7 @@ namespace ParticlesDemo
             resolution(resolution), 
             renderer(0), 
             particleCount(100), 
-            emitter(*this, particleCount, 0.5f) {}
+            emitter(*this, particleCount, 0.1f) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
@@ -51,7 +51,7 @@ namespace ParticlesDemo
                 time++;
             }
 
-            emitter.updateParticles(0.03f);
+            emitter.updateParticles(0.016f);
             const std::vector<IParticle2D*>& particles = emitter.getParticles();
             unsigned int aliveParticles = emitter.getAliveParticlesCount();
 
@@ -102,9 +102,8 @@ namespace ParticlesDemo
         {
             scene.remove(meshes[index].get());
             unsigned int aliveParticles = emitter.getAliveParticlesCount();
-            shared_ptr<Rectangle> tmp = meshes[index];
-            meshes[index] = meshes[aliveParticles];
-            meshes[aliveParticles] = tmp;
+            
+            swapParticles(index, aliveParticles);
         }
     private:
 
@@ -160,6 +159,25 @@ namespace ParticlesDemo
                 meshes.push_back(geometryFactory.createRectangle());
                 meshes[i]->setMaterial(materials[i]);
             }
+        }
+
+        template<typename T>
+        void swap(vector<T>& container, const int l, const int r)
+        {
+            T tmp = container[l];
+            container[l] = container[r];
+            container[r] = tmp;
+        }
+
+        void swapParticles(const int l, const int r)
+        {
+            swap(meshes, l, r);
+            swap(remainingLife, l, r);
+            swap(duration, l, r);
+            swap(tangentAcceleration, l, r);
+            swap(radialAcceleration, l, r);
+            swap(scale, l, r);
+            swap(phase, l, r);
         }
 
         DefaultCamera camera;
