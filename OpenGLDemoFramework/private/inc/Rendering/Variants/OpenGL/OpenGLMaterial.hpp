@@ -38,8 +38,8 @@ private:
     OpenGLMaterial(const int id);
     OpenGLMaterial(const OpenGLMaterial& rhs);
     ~OpenGLMaterial();
-    template <typename T1, typename T2>
-    void setProperty(T1& map, const std::string name, const T2& value);
+    template <typename T>
+    void setPropertyImpl(std::shared_ptr<IMaterialProperty<T>>& p, const T& v);
     int id;
     vector<const ITexture*> textures;
     vector<const ITextureCubemap*> textureCubemaps;
@@ -61,18 +61,16 @@ private:
     void copyProperties(T& lhsUniforms, const T& rhsUniforms);
 };
 
-template<typename T1, typename T2>
-inline void OpenGLMaterial::setProperty(T1 & map, const std::string name, const T2 & value)
+
+template<typename T>
+inline void OpenGLMaterial::setPropertyImpl(std::shared_ptr<IMaterialProperty<T>>& p, const T & v)
 {
-    auto it = map.find(name);
-    if (it != map.end())
+    if (p)
     {
-        map[name].second = value;
+        OpenGLMaterialProperty<T>* glProperty =
+            reinterpret_cast<OpenGLMaterialProperty<T>*>(p.get());
+        glProperty->value = v;
     }
-    //else
-    //{
-    //    std::cout << "No property named " << name << " for Material[" << id << "]" << std::endl;
-    //}
 }
 
 template<typename T1, typename T2>

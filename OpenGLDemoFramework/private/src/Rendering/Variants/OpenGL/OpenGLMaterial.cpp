@@ -150,38 +150,32 @@ void OpenGLMaterial::getProperty(const std::string name, Mat4PropertySharedPtr& 
 
 void OpenGLMaterial::setProperty(IntPropertySharedPtr p, const int v)
 {
-    OpenGLMaterialProperty<int>* glProperty = reinterpret_cast<OpenGLMaterialProperty<int>*>(p.get());
-    glProperty->value = v;
+    setPropertyImpl(p, v);
 }
 
 void OpenGLMaterial::setProperty(UintPropertySharedPtr p, const unsigned int v)
 {
-    OpenGLMaterialProperty<unsigned int>* glProperty = reinterpret_cast<OpenGLMaterialProperty<unsigned int>*>(p.get());
-    glProperty->value = v;
+    setPropertyImpl(p, v);
 }
 
 void OpenGLMaterial::setProperty(FloatPropertySharedPtr p, const float v)
 {
-    OpenGLMaterialProperty<float>* glProperty = reinterpret_cast<OpenGLMaterialProperty<float>*>(p.get());
-    glProperty->value = v;
+    setPropertyImpl(p, v);
 }
 
 void OpenGLMaterial::setProperty(Vec2PropertySharedPtr p, const Vec2 & v)
 {
-    OpenGLMaterialProperty<Vec2>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Vec2>*>(p.get());
-    glProperty->value = v;
+    setPropertyImpl(p, v);
 }
 
 void OpenGLMaterial::setProperty(Vec3PropertySharedPtr p, const Vec3 & v)
 {
-    OpenGLMaterialProperty<Vec3>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Vec3>*>(p.get());
-    glProperty->value = v;
+    setPropertyImpl(p, v);
 }
 
 void OpenGLMaterial::setProperty(Mat4PropertySharedPtr p, const Matrix4 & v)
 {
-    OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
-    glProperty->value = v;
+    setPropertyImpl(p, v);
 }
 
 int OpenGLMaterial::getId() const

@@ -23,6 +23,9 @@ protected:
     virtual void initMaterials();
     virtual void initGeometry();
     virtual void updateCamera();
+
+    template <typename T>
+    void initMaterialProperty(IMaterial& material, const std::string propertyName, const T& value);
     Vec2 resolution;
     PerspectiveCamera camera;
     Scene scene;
@@ -38,3 +41,18 @@ protected:
     bool cameraRotating;
     bool cameraPanning;
 };
+
+template<typename T>
+inline void Demo3DBase::initMaterialProperty(IMaterial & material, const std::string propertyName, const T & value)
+{
+    std::shared_ptr<IMaterialProperty<T>> p;
+    material.getProperty(propertyName, p);
+    if (p != 0)
+    {
+        material.setProperty(p, value);
+    }
+    else
+    {
+        std::cout << "Couldn't find property \"" << propertyName << "\"" << std::endl;
+    }
+}
