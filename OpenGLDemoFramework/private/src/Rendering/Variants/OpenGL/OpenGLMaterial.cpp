@@ -118,67 +118,67 @@ OpenGLMaterial::~OpenGLMaterial()
 {
 }
 
-void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<int>>& materialProperty)
+void OpenGLMaterial::getProperty(const std::string name, IntPropertySharedPtr& materialProperty)
 {
     getProperty(iUniforms, name, materialProperty);
 }
 
-void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<unsigned int>>& materialProperty)
+void OpenGLMaterial::getProperty(const std::string name, UintPropertySharedPtr& materialProperty)
 {
     getProperty(uiUniforms, name, materialProperty);
 }
 
-void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<float>>& materialProperty)
+void OpenGLMaterial::getProperty(const std::string name, FloatPropertySharedPtr& materialProperty)
 {
     getProperty(fUniforms, name, materialProperty);
 }
 
-void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec2>>& materialProperty)
+void OpenGLMaterial::getProperty(const std::string name, Vec2PropertySharedPtr& materialProperty)
 {
     getProperty(v2Uniforms, name, materialProperty);
 }
 
-void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec3>>& materialProperty)
+void OpenGLMaterial::getProperty(const std::string name, Vec3PropertySharedPtr& materialProperty)
 {
     getProperty(v3Uniforms, name, materialProperty);
 }
 
-void OpenGLMaterial::getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Matrix4>>& materialProperty)
+void OpenGLMaterial::getProperty(const std::string name, Mat4PropertySharedPtr& materialProperty)
 {
     getProperty(m4Uniforms, name, materialProperty);
 }
 
-void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<int>> p, const int v)
+void OpenGLMaterial::setProperty(IntPropertySharedPtr p, const int v)
 {
     OpenGLMaterialProperty<int>* glProperty = reinterpret_cast<OpenGLMaterialProperty<int>*>(p.get());
     glProperty->value = v;
 }
 
-void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<unsigned int>> p, const unsigned int v)
+void OpenGLMaterial::setProperty(UintPropertySharedPtr p, const unsigned int v)
 {
     OpenGLMaterialProperty<unsigned int>* glProperty = reinterpret_cast<OpenGLMaterialProperty<unsigned int>*>(p.get());
     glProperty->value = v;
 }
 
-void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<float>> p, const float v)
+void OpenGLMaterial::setProperty(FloatPropertySharedPtr p, const float v)
 {
     OpenGLMaterialProperty<float>* glProperty = reinterpret_cast<OpenGLMaterialProperty<float>*>(p.get());
     glProperty->value = v;
 }
 
-void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<Vec2>> p, const Vec2 & v)
+void OpenGLMaterial::setProperty(Vec2PropertySharedPtr p, const Vec2 & v)
 {
     OpenGLMaterialProperty<Vec2>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Vec2>*>(p.get());
     glProperty->value = v;
 }
 
-void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<Vec3>> p, const Vec3 & v)
+void OpenGLMaterial::setProperty(Vec3PropertySharedPtr p, const Vec3 & v)
 {
     OpenGLMaterialProperty<Vec3>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Vec3>*>(p.get());
     glProperty->value = v;
 }
 
-void OpenGLMaterial::setProperty(std::shared_ptr<IMaterialProperty<Matrix4>> p, const Matrix4 & v)
+void OpenGLMaterial::setProperty(Mat4PropertySharedPtr p, const Matrix4 & v)
 {
     OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
     glProperty->value = v;
@@ -199,22 +199,22 @@ const std::vector<std::shared_ptr<OpenGLMaterialProperty<unsigned int>>>& OpenGL
     return uiUniforms;
 }
 
-const std::vector<std::shared_ptr<OpenGLMaterialProperty<float>>>& OpenGLMaterial::getFloatProperties() const
+const std::vector<OpenGLFloatPropertySharedPtr>& OpenGLMaterial::getFloatProperties() const
 {
     return fUniforms;
 }
 
-const std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec2>>>& OpenGLMaterial::getVec2Properties() const
+const std::vector<OpenGLVec2PropertySharedPtr>& OpenGLMaterial::getVec2Properties() const
 {
     return v2Uniforms;
 }
 
-const std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec3>>>& OpenGLMaterial::getVec3Properties() const
+const std::vector<OpenGLVec3PropertySharedPtr>& OpenGLMaterial::getVec3Properties() const
 {
     return v3Uniforms;
 }
 
-const std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>& OpenGLMaterial::getMatrix4Properties() const
+const std::vector<OpenGLMat4PropertySharedPtr>& OpenGLMaterial::getMatrix4Properties() const
 {
     return m4Uniforms;
 }

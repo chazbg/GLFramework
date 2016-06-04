@@ -10,3 +10,10 @@ public:
     int location;
     T value;
 };
+
+typedef std::shared_ptr<OpenGLMaterialProperty<int>>          OpenGLIntPropertySharedPtr;
+typedef std::shared_ptr<OpenGLMaterialProperty<unsigned int>> OpenGLUintPropertySharedPtr;
+typedef std::shared_ptr<OpenGLMaterialProperty<float>>        OpenGLFloatPropertySharedPtr;
+typedef std::shared_ptr<OpenGLMaterialProperty<Vec2>>         OpenGLVec2PropertySharedPtr;
+typedef std::shared_ptr<OpenGLMaterialProperty<Vec3>>         OpenGLVec3PropertySharedPtr;
+typedef std::shared_ptr<OpenGLMaterialProperty<Matrix4>>      OpenGLMat4PropertySharedPtr;

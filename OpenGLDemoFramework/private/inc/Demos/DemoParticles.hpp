@@ -121,7 +121,7 @@ namespace ParticlesDemo
             materials.push_back(resourceManager.createMaterial(
                 "Shaders/particle.vs",
                 "Shaders/particle.fs"));
-            shared_ptr<IMaterialProperty<int>> samplerProperty;
+            IntPropertySharedPtr samplerProperty;
             materials[0]->getProperty("sampler", samplerProperty);
             materials[0]->setProperty(samplerProperty, 0);
             materials[0]->addTexture(textures[0]);
@@ -133,8 +133,8 @@ namespace ParticlesDemo
 
             for (unsigned int i = 0; i < particleCount; ++i)
             {
-                shared_ptr<IMaterialProperty<float>> p;
-                shared_ptr<IMaterialProperty<Vec2>> p2;
+                FloatPropertySharedPtr p;
+                Vec2PropertySharedPtr p2;
                 materials[i]->getProperty("remainingLife", p);
                 remainingLife.push_back(p);
                 materials[i]->getProperty("duration", p);
@@ -200,12 +200,12 @@ namespace ParticlesDemo
         bool cameraPanning;
         unsigned int particleCount;
         SimpleEmitter emitter;
-        vector<shared_ptr<IMaterialProperty<float>>> remainingLife;
-        vector<shared_ptr<IMaterialProperty<float>>> duration;
-        vector<shared_ptr<IMaterialProperty<float>>> tangentAcceleration;
-        vector<shared_ptr<IMaterialProperty<float>>> radialAcceleration;
-        vector<shared_ptr<IMaterialProperty<Vec2>>>  scale;
-        vector<shared_ptr<IMaterialProperty<float>>> phase;
+        vector<FloatPropertySharedPtr> remainingLife;
+        vector<FloatPropertySharedPtr> duration;
+        vector<FloatPropertySharedPtr> tangentAcceleration;
+        vector<FloatPropertySharedPtr> radialAcceleration;
+        vector<Vec2PropertySharedPtr>  scale;
+        vector<FloatPropertySharedPtr> phase;
     };
 
     void main()

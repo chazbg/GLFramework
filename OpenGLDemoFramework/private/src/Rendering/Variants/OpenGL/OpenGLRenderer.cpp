@@ -327,7 +327,7 @@ void Renderer::updateUniforms(const IMaterial& material)
     auto& uiUniforms = glMaterial.getUintProperties();
     auto& v2Uniforms = glMaterial.getVec2Properties();
     auto& v3Uniforms = glMaterial.getVec3Properties();
-    auto& m4Uniforms = const_cast<std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>&>(glMaterial.getMatrix4Properties());
+    auto& m4Uniforms = const_cast<std::vector<OpenGLMat4PropertySharedPtr>&>(glMaterial.getMatrix4Properties());
 
     glUseProgram(programId);
 

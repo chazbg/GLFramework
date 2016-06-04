@@ -14,26 +14,26 @@ public:
     virtual void addTextureCubemap(const ITextureCubemap* tex);
     virtual void removeTexture(const ITexture* tex);
     virtual void removeTextureCubemap(const ITextureCubemap* tex);
-    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<int>>& materialProperty);
-    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<unsigned int>>& materialProperty);
-    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<float>>& materialProperty);
-    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec2>>& materialProperty);
-    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Vec3>>& materialProperty);
-    virtual void getProperty(const std::string name, std::shared_ptr<IMaterialProperty<Matrix4>>& materialProperty);
-    virtual void setProperty(std::shared_ptr<IMaterialProperty<int>>, const int v);
-    virtual void setProperty(std::shared_ptr<IMaterialProperty<unsigned int>>, const unsigned int v);
-    virtual void setProperty(std::shared_ptr<IMaterialProperty<float>>, const float v);
-    virtual void setProperty(std::shared_ptr<IMaterialProperty<Vec2>>, const Vec2& v);
-    virtual void setProperty(std::shared_ptr<IMaterialProperty<Vec3>>, const Vec3& v);
-    virtual void setProperty(std::shared_ptr<IMaterialProperty<Matrix4>>, const Matrix4& v);
+    virtual void getProperty(const std::string name, IntPropertySharedPtr& materialProperty);
+    virtual void getProperty(const std::string name, UintPropertySharedPtr& materialProperty);
+    virtual void getProperty(const std::string name, FloatPropertySharedPtr& materialProperty);
+    virtual void getProperty(const std::string name, Vec2PropertySharedPtr& materialProperty);
+    virtual void getProperty(const std::string name, Vec3PropertySharedPtr& materialProperty);
+    virtual void getProperty(const std::string name, Mat4PropertySharedPtr& materialProperty);
+    virtual void setProperty(IntPropertySharedPtr, const int v);
+    virtual void setProperty(UintPropertySharedPtr, const unsigned int v);
+    virtual void setProperty(FloatPropertySharedPtr, const float v);
+    virtual void setProperty(Vec2PropertySharedPtr, const Vec2& v);
+    virtual void setProperty(Vec3PropertySharedPtr, const Vec3& v);
+    virtual void setProperty(Mat4PropertySharedPtr, const Matrix4& v);
 
     int getId() const;
-    const std::vector<std::shared_ptr<OpenGLMaterialProperty<int>>>&           getIntProperties() const;
-    const std::vector<std::shared_ptr<OpenGLMaterialProperty<unsigned int>>>&  getUintProperties() const;
-    const std::vector<std::shared_ptr<OpenGLMaterialProperty<float>>>&         getFloatProperties() const;
-    const std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec2>>>&          getVec2Properties() const;
-    const std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec3>>>&          getVec3Properties() const;
-    const std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>&       getMatrix4Properties() const;
+    const std::vector<OpenGLIntPropertySharedPtr>&    getIntProperties() const;
+    const std::vector<OpenGLUintPropertySharedPtr>&   getUintProperties() const;
+    const std::vector<OpenGLFloatPropertySharedPtr>&  getFloatProperties() const;
+    const std::vector<OpenGLVec2PropertySharedPtr>&   getVec2Properties() const;
+    const std::vector<OpenGLVec3PropertySharedPtr>&   getVec3Properties() const;
+    const std::vector<OpenGLMat4PropertySharedPtr>&   getMatrix4Properties() const;
 private:
     OpenGLMaterial(const int id);
     OpenGLMaterial(const OpenGLMaterial& rhs);
@@ -44,12 +44,12 @@ private:
     vector<const ITexture*> textures;
     vector<const ITextureCubemap*> textureCubemaps;
 
-    std::vector<std::shared_ptr<OpenGLMaterialProperty<int>>>          iUniforms;
-    std::vector<std::shared_ptr<OpenGLMaterialProperty<unsigned int>>> uiUniforms;
-    std::vector<std::shared_ptr<OpenGLMaterialProperty<float>>>        fUniforms;
-    std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec2>>>         v2Uniforms;
-    std::vector<std::shared_ptr<OpenGLMaterialProperty<Vec3>>>         v3Uniforms;
-    std::vector<std::shared_ptr<OpenGLMaterialProperty<Matrix4>>>      m4Uniforms;
+    std::vector<OpenGLIntPropertySharedPtr>   iUniforms;
+    std::vector<OpenGLUintPropertySharedPtr>  uiUniforms;
+    std::vector<OpenGLFloatPropertySharedPtr> fUniforms;
+    std::vector<OpenGLVec2PropertySharedPtr>  v2Uniforms;
+    std::vector<OpenGLVec3PropertySharedPtr>  v3Uniforms;
+    std::vector<OpenGLMat4PropertySharedPtr>  m4Uniforms;
 
     template <typename T1, typename T2>
     void getProperty(T1 & uniforms, const std::string name, std::shared_ptr<IMaterialProperty<T2>>& materialProperty);
