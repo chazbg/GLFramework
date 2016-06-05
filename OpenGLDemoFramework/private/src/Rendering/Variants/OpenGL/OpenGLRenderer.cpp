@@ -113,7 +113,7 @@ void OpenGLRenderer::initDeferredShading()
         deferredShadingRect[i]->setMaterial(deferredShadingRectMat[i]);
     }
 
-    deferredShadingFbo = resourceManager.createRenderTarget(0, 0);
+    deferredShadingFbo = resourceManager.createRenderTarget();
     deferredShadingFbo->addColorTexture(deferredShadingTex[0]);
     deferredShadingFbo->addColorTexture(deferredShadingTex[1]);
     deferredShadingFbo->addDepthTexture(deferredShadingTex[2]);
@@ -132,7 +132,7 @@ void OpenGLRenderer::initPostProcessing()
 
     postProcessRect->setMaterial(postProcessMat);
 
-    postProcessFbo = resourceManager.createRenderTarget(0, 0);
+    postProcessFbo = resourceManager.createRenderTarget();
     postProcessFbo->addColorTexture(postProcessTex);
     postProcessFbo->addDepthTexture(resourceManager.createTexture(
         (unsigned int)resolution.x,
@@ -152,7 +152,7 @@ void OpenGLRenderer::initShadowMapping()
     r->Translate(0.5f, 0.5f, 0.0f);
     r->setMaterial(rectMat);
 
-    fb = resourceManager.createRenderTarget(0, 0);
+    fb = resourceManager.createRenderTarget();
     fb->addDepthTexture(shadowMap);
 
     lightCamera.setPosition(Vec3(0, 15, 25));
@@ -216,13 +216,15 @@ void OpenGLRenderer::render(IScene& scene, ICamera& camera)
 void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTarget & renderTarget)
 {
     unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
+    GLint originalFbo;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     render(scene, camera);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }
 
 void OpenGLRenderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
@@ -236,13 +238,15 @@ void OpenGLRenderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 void OpenGLRenderer::renderToTarget(std::vector<IMesh*>& meshes, ICamera & camera, IRenderTarget & renderTarget)
 {
     unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
+    GLint originalFbo;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     render(meshes, camera);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }
 
 void OpenGLRenderer::render(IMesh* mesh, ICamera& camera)

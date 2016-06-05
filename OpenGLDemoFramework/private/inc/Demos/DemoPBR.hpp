@@ -3,6 +3,7 @@
 #include "Geometry/CustomGeometry.hpp"
 #include "Math/GeometryAlgorithm.hpp"
 #include "Demos/Demo3DBase.hpp"
+#include "Core/DefaultCamera.hpp"
 #include <iostream>
 #include <algorithm>
 
@@ -54,7 +55,9 @@ namespace PBRDemo
                 materials[i]->setProperty(lightPositions[2][pIndex], lights[2]->getPosition());
             }
 
-            renderer->render(scene, camera);
+            //renderer->render(scene, camera);
+            renderer->renderToTarget(scene, camera, *renderTarget);
+            renderer->render(motionBlurScene, camera);
         }
 
         virtual void onKeyboardEvent(unsigned char c, int x, int y)
@@ -103,6 +106,19 @@ namespace PBRDemo
             }
         }
 
+        virtual void onMouseMove(int x, int y)
+        {
+            if (cameraPanning || cameraRotating)
+            {
+                Vec2 delta = Vec2(static_cast<float>(x), static_cast<float>(y)) - prevMousePos;
+                delta.x /= resolution.x;
+                delta.y /= resolution.y;
+
+                motionBlurMat->setProperty(motionBlurDirProperty, delta);
+            }
+            
+            Demo3DBase::onMouseMove(x, y);
+        }
     private:
 
         virtual void initMaterials()
@@ -175,6 +191,12 @@ namespace PBRDemo
             materials.push_back(resourceManager.createMaterial("Shaders/BRDF/Isotropic/semiGGX.vs", "Shaders/BRDF/Anisotropic/ashikhmin_body.fs"));
             initMaterialProperties(14);
             materials[14]->addTextureCubemap(envMap);
+
+            //---
+            motionBlurMat = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/motionBlur.fs");
+            motionBlurMat->getProperty("motionBlurDir", motionBlurDirProperty);
+            motionBlurMat->addTexture(offscreenTexture);
+            initMaterialProperty(*motionBlurMat, "sampler", 0);
         }
 
         virtual void initTextures()
@@ -196,6 +218,15 @@ namespace PBRDemo
             textures.push_back(rm.createTexture("Images/pattern6/specular.jpg"));
             textures.push_back(rm.createTexture("Images/ogrehead_diffuse.png"));
             textures.push_back(rm.createTexture("Images/ogre_normalmap.png"));
+
+            offscreenTexture = rm.createTexture(
+                static_cast<unsigned int>(resolution.x),
+                static_cast<unsigned int>(resolution.y), 3, false);
+            renderTarget = rm.createRenderTarget();
+            renderTarget->addColorTexture(offscreenTexture);
+            renderTarget->addDepthTexture(rm.createTexture(
+                static_cast<unsigned int>(resolution.x),
+                static_cast<unsigned int>(resolution.y), 3, true));
         }
 
         void initLights()
@@ -280,6 +311,10 @@ namespace PBRDemo
             currentMesh = meshes[0];
             currentMesh->setMaterial(materials[11]);
             scene.add(currentMesh.get());
+
+            motionBlurRect = geometryFactory.createRectangle();
+            motionBlurRect->setMaterial(motionBlurMat);
+            motionBlurScene.add(motionBlurRect.get());
         }
 
         void showNextMesh()
@@ -356,6 +391,12 @@ namespace PBRDemo
         ITextureCubemap* envMap;
         int materialIndex;
         int meshIndex;
+        IRenderTarget* renderTarget;
+        ITexture* offscreenTexture;
+        IMaterial* motionBlurMat;
+        Vec2PropertySharedPtr motionBlurDirProperty;
+        shared_ptr<Rectangle> motionBlurRect;
+        Scene motionBlurScene;
     };
 
     void main()

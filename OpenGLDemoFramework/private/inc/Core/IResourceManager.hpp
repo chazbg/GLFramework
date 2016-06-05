@@ -44,7 +44,7 @@ public:
     virtual void destroyVertexBuffer(IVertexBuffer* vb) = 0;
     virtual IIndexBuffer* createIndexBuffer(const unsigned int indexCount, const unsigned int* data) = 0;
     virtual void destroyIndexBuffer(IIndexBuffer* ib) = 0;
-    virtual IRenderTarget* createRenderTarget(const unsigned int width, const unsigned height) = 0;
+    virtual IRenderTarget* createRenderTarget() = 0;
     virtual void destroyRenderTarget(IRenderTarget* rt) = 0;
 };
 

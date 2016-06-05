@@ -353,11 +353,11 @@ void OpenGLResourceManager::destroyIndexBuffer(IIndexBuffer * ib)
     }
 }
 
-IRenderTarget * OpenGLResourceManager::createRenderTarget(const unsigned int width, const unsigned height)
+IRenderTarget * OpenGLResourceManager::createRenderTarget()
 {
     unsigned int id;
     glGenFramebuffers(1, &id);
-    IRenderTarget* rt = new OpenGLRenderTarget(id, width, height);
+    IRenderTarget* rt = new OpenGLRenderTarget(id);
     renderTargets.push_back(rt);
     return rt;
 }

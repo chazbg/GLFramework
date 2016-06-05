@@ -3,12 +3,8 @@
 #include <GL/glew.h>
 #include <iostream>
 
-OpenGLRenderTarget::OpenGLRenderTarget(const unsigned int id, 
-    const unsigned int width,
-    const unsigned int height) :
+OpenGLRenderTarget::OpenGLRenderTarget(const unsigned int id) :
     id(id),
-    width(width),
-    height(height),
     depthTexture(0)
 {
 

@@ -42,7 +42,7 @@ public:
     virtual void destroyVertexBuffer(IVertexBuffer* vb);
     virtual IIndexBuffer* createIndexBuffer(const unsigned int indexCount, const unsigned int* data);
     virtual void destroyIndexBuffer(IIndexBuffer* ib);
-    virtual IRenderTarget* createRenderTarget(const unsigned int width, const unsigned height);
+    virtual IRenderTarget* createRenderTarget();
     virtual void destroyRenderTarget(IRenderTarget* rt);
 private:
     FIBITMAP* loadImage(const std::string path); //TODO: Implement class Image (open, close, getters, etc.)

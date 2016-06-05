@@ -14,15 +14,11 @@ public:
 
     unsigned int getId() const;
 private:
-    OpenGLRenderTarget(const unsigned int id, 
-        const unsigned int width, 
-        const unsigned int height);
+    OpenGLRenderTarget(const unsigned int id);
     ~OpenGLRenderTarget();
     void updateRenderTarget();
 
     const unsigned int id;
-    const unsigned int width;
-    const unsigned int height;
     std::vector<ITexture*> colorTextures;
     ITexture* depthTexture;
 };
