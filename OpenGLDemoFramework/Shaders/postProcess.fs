@@ -1,5 +1,6 @@
 #version 330 core
 uniform uint time;
+uniform vec2 resolution;
 in vec2 interpolatedCoords;
 in vec2 texCoords;
 
@@ -71,7 +72,6 @@ void main()
 {
 	//color = texture2D(sampler, texCoords).rgb + vec3(0, 0.1, 0);
     
-    vec2 resolution = vec2(1024,1024);
     vec2 inverseVP = 1.0 / resolution.xy;  
 
 	vec2 v_rgbNW = (gl_FragCoord.xy + vec2(-1.0, 1.0)) * inverseVP;

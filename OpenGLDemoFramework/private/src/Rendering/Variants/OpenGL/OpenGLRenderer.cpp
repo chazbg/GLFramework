@@ -1,17 +1,17 @@
-#include "Rendering/Renderer.hpp"
-#include <GL/glew.h>
-#include "Core/Shader.hpp"
-#include <cstdio>
-#include <cstdlib>
-#include <algorithm>
+#include "Rendering/Variants/OpenGL/OpenGLRenderer.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLTexture.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLTextureCubemap.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLVertexBuffer.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLIndexBuffer.hpp"
+#include "Core/Shader.hpp"
+#include <GL/glew.h>
+#include <cstdio>
+#include <cstdlib>
+#include <algorithm>
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
-Renderer::Renderer(const Vec2& resolution) : 
+OpenGLRenderer::OpenGLRenderer(const Vec2& resolution) :
     resourceManager(*this), 
     geometryFactory(resourceManager),
     r(geometryFactory.createRectangle()),
@@ -31,7 +31,7 @@ Renderer::Renderer(const Vec2& resolution) :
     initShadowMapping();
 }
 
-void Renderer::materialCreated(IMaterial& material)
+void OpenGLRenderer::materialCreated(IMaterial& material)
 {
     OpenGLMaterial& glMaterial = reinterpret_cast<OpenGLMaterial&>(material);
     shared_ptr<IMaterialProperty<Matrix4>> p; 
@@ -76,12 +76,12 @@ void Renderer::materialCreated(IMaterial& material)
     }
 }
 
-void Renderer::materialDestroyed(IMaterial& material)
+void OpenGLRenderer::materialDestroyed(IMaterial& material)
 {
 
 }
 
-void Renderer::initDeferredShading()
+void OpenGLRenderer::initDeferredShading()
 {
     deferredShadingMat = resourceManager.createMaterial("Shaders/deferredShading.vs", "Shaders/deferredShading.fs");
     deferredShadingRectMat[0] = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
@@ -130,12 +130,16 @@ void Renderer::initDeferredShading()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Renderer::initPostProcessing()
+void OpenGLRenderer::initPostProcessing()
 {
     postProcessMat = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/postProcess.fs");
+    postProcessTex = resourceManager.createTexture(static_cast<unsigned int>(resolution.x), 
+                                                   static_cast<unsigned int>(resolution.y), 4, false);
     postProcessMat->addTexture(postProcessTex);
 
-    postProcessTex = resourceManager.createTexture((unsigned int) resolution.x, (unsigned int) resolution.y, 4, false);
+    Vec2PropertySharedPtr resProperty;
+    postProcessMat->getProperty("resolution", resProperty);
+    postProcessMat->setProperty(resProperty, resolution);
 
     postProcessRect->setMaterial(postProcessMat);
 
@@ -148,7 +152,7 @@ void Renderer::initPostProcessing()
 
     glGenRenderbuffers(1, &depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, (unsigned int) resolution.x, (unsigned int) resolution.y);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, postProcessTex->getWidth(), postProcessTex->getHeight());
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 
@@ -157,7 +161,7 @@ void Renderer::initPostProcessing()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Renderer::initShadowMapping()
+void OpenGLRenderer::initShadowMapping()
 {
     rectMat = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
 
@@ -178,18 +182,18 @@ void Renderer::initShadowMapping()
     lightCamera.setPosition(Vec3(0, 15, 25));
 }
 
-Renderer::~Renderer()
+OpenGLRenderer::~OpenGLRenderer()
 {
 
 }
 
-void Renderer::clear(const Vec4& color)
+void OpenGLRenderer::clear(const Vec4& color)
 {
     glClearColor(color.x, color.y, color.z, color.w);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::setDepthTest(const bool enabled)
+void OpenGLRenderer::setDepthTest(const bool enabled)
 {
     if (enabled)
     {
@@ -202,7 +206,7 @@ void Renderer::setDepthTest(const bool enabled)
     }
 }
 
-void Renderer::setAlphaBlending(const bool enabled)
+void OpenGLRenderer::setAlphaBlending(const bool enabled)
 {
     if (enabled)
     {
@@ -215,24 +219,25 @@ void Renderer::setAlphaBlending(const bool enabled)
     }
 }
 
-IResourceManager& Renderer::getResourceManager()
+IResourceManager& OpenGLRenderer::getResourceManager()
 {
     return resourceManager;
 }
 
-IGeometryFactory& Renderer::getGeometryFactory()
+IGeometryFactory& OpenGLRenderer::getGeometryFactory()
 {
     return geometryFactory;
 }
 
-void Renderer::render(IScene& scene, ICamera& camera)
+void OpenGLRenderer::render(IScene& scene, ICamera& camera)
 {  
     //renderToTexture(scene.getChildren(), camera);
-    render(scene.getChildren(), camera);
+    //render(scene.getChildren(), camera);
+    renderWithPostProcess(scene.getChildren(), camera);
     //renderDeferred(scene.getChildren(), camera);
 }
 
-void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
+void OpenGLRenderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
@@ -240,7 +245,7 @@ void Renderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
     }
 }
 
-void Renderer::render(IMesh* mesh, ICamera& camera)
+void OpenGLRenderer::render(IMesh* mesh, ICamera& camera)
 {
     std::vector<shared_ptr<IMesh>>& children = mesh->getChildren();
 
@@ -313,12 +318,12 @@ void Renderer::render(IMesh* mesh, ICamera& camera)
     }
 }
 
-void Renderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
+void OpenGLRenderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     render(postProcessRect.get(), camera);
 }
 
-void Renderer::updateUniforms(const IMaterial& material)
+void OpenGLRenderer::updateUniforms(const IMaterial& material)
 {
     const OpenGLMaterial& glMaterial = reinterpret_cast<const OpenGLMaterial&>(material);
     unsigned int programId = glMaterial.getId();
@@ -364,7 +369,7 @@ void Renderer::updateUniforms(const IMaterial& material)
     }
 }
 
-void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec4& viewport)
+void OpenGLRenderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec4& viewport)
 {
     unsigned int fbo = fb->getFbo();
     unsigned int texId = reinterpret_cast<OpenGLTexture*>(shadowMap)->getId();
@@ -406,7 +411,7 @@ void Renderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec
     //render(&r, camera);
 }
 
-void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
+void OpenGLRenderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     unsigned int fbo = postProcessFbo->getFbo();
 
@@ -425,7 +430,7 @@ void Renderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camer
     postProcess(meshes, camera);
 }
 
-void Renderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
+void OpenGLRenderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     Vec2 quarterRes = resolution / 2.0f;
     glViewport(0, 0, (GLsizei) resolution.x, (GLsizei)resolution.y);

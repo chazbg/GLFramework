@@ -43,6 +43,7 @@ class Vec3
 {
 public:
     inline Vec3() {}
+    inline Vec3(float v) : x(v), y(v), z(v) {}
     inline Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
     inline ~Vec3() {}
     Vec3(const Vec3& vec);
