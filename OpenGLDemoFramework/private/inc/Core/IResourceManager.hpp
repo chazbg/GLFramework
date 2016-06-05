@@ -4,6 +4,7 @@
 #include "Core/IMaterial.hpp"
 #include "Core/ITexture.hpp"
 #include "Core/ITextureCubemap.hpp"
+#include "Core/IRenderTarget.hpp"
 #include <string>
 
 class IResourceManager
@@ -43,5 +44,7 @@ public:
     virtual void destroyVertexBuffer(IVertexBuffer* vb) = 0;
     virtual IIndexBuffer* createIndexBuffer(const unsigned int indexCount, const unsigned int* data) = 0;
     virtual void destroyIndexBuffer(IIndexBuffer* ib) = 0;
+    virtual IRenderTarget* createRenderTarget(const unsigned int width, const unsigned height) = 0;
+    virtual void destroyRenderTarget(IRenderTarget* rt) = 0;
 };
 

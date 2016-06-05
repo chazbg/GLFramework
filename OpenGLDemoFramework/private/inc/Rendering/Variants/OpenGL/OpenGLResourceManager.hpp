@@ -42,6 +42,8 @@ public:
     virtual void destroyVertexBuffer(IVertexBuffer* vb);
     virtual IIndexBuffer* createIndexBuffer(const unsigned int indexCount, const unsigned int* data);
     virtual void destroyIndexBuffer(IIndexBuffer* ib);
+    virtual IRenderTarget* createRenderTarget(const unsigned int width, const unsigned height);
+    virtual void destroyRenderTarget(IRenderTarget* rt);
 private:
     FIBITMAP* loadImage(const std::string path); //TODO: Implement class Image (open, close, getters, etc.)
     void unloadImage(FIBITMAP* dib); //TODO: Implement class Image (open, close, getters, etc.)
@@ -54,4 +56,5 @@ private:
     std::map<int, int> materialRefCounters;
     std::vector<IVertexBuffer*> vertexBuffers;
     std::vector<IIndexBuffer*> indexBuffers;
+    std::vector<IRenderTarget*> renderTargets;
 };

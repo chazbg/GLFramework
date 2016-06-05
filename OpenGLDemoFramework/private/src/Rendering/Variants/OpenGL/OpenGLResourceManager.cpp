@@ -5,6 +5,7 @@
 #include "Rendering/Variants/OpenGL/OpenGLTextureCubemap.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLVertexBuffer.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLIndexBuffer.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLRenderTarget.hpp"
 #include <GL/glew.h>
 
 OpenGLResourceManager::OpenGLResourceManager(IResourceManagerNotify& notify) :
@@ -349,6 +350,28 @@ void OpenGLResourceManager::destroyIndexBuffer(IIndexBuffer * ib)
         unsigned int id = glIndexBuffer->getId();
         glDeleteBuffers(1, &id);
         delete glIndexBuffer;
+    }
+}
+
+IRenderTarget * OpenGLResourceManager::createRenderTarget(const unsigned int width, const unsigned height)
+{
+    unsigned int id;
+    glGenFramebuffers(1, &id);
+    IRenderTarget* rt = new OpenGLRenderTarget(id, width, height);
+    renderTargets.push_back(rt);
+    return rt;
+}
+
+void OpenGLResourceManager::destroyRenderTarget(IRenderTarget * rt)
+{
+    auto it = std::find(renderTargets.begin(), renderTargets.end(), rt);
+    if (it != renderTargets.end())
+    {
+        renderTargets.erase(it);
+        OpenGLRenderTarget* glRenderTarget = reinterpret_cast<OpenGLRenderTarget*>(rt);
+        unsigned int id = glRenderTarget->getId();
+        glDeleteFramebuffers(1, &id);
+        delete glRenderTarget;
     }
 }
 

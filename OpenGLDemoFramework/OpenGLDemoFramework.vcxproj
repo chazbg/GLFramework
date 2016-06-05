@@ -150,7 +150,6 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
-    <ClCompile Include="private\src\Core\FrameBuffer.cpp" />
     <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\Particles\GpuParticle2D.cpp" />
     <ClCompile Include="private\src\Core\Particles\SimpleEmitter.cpp" />
@@ -177,6 +176,7 @@
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLIndexBuffer.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderer.cpp" />
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderTarget.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLResourceManager.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLTextureCubemap.cpp" />
@@ -186,12 +186,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Core\DefaultCamera.hpp" />
-    <ClInclude Include="private\inc\Core\FrameBuffer.hpp" />
     <ClInclude Include="private\inc\Core\ICamera.hpp" />
     <ClInclude Include="private\inc\Core\IIndexBuffer.hpp" />
     <ClInclude Include="private\inc\Core\IMaterial.hpp" />
     <ClInclude Include="private\inc\Core\IMaterialProperty.hpp" />
     <ClInclude Include="private\inc\Core\IMesh.hpp" />
+    <ClInclude Include="private\inc\Core\IRenderTarget.hpp" />
     <ClInclude Include="private\inc\Core\IResourceManager.hpp" />
     <ClInclude Include="private\inc\Core\IResourceManagerNotify.hpp" />
     <ClInclude Include="private\inc\Core\IScene.hpp" />
@@ -252,6 +252,7 @@
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterial.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterialProperty.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLRenderer.hpp" />
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLRenderTarget.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLResourceManager.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLTexture.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLTextureCubemap.hpp" />

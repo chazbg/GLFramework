@@ -9,7 +9,6 @@
 #include "Core/ITexture.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLMaterial.hpp"
 #include "Geometry/Rectangle.hpp"
-#include "Core/FrameBuffer.hpp"
 #include "Core/IResourceManager.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLResourceManager.hpp"
 #include "Core/PerspectiveCamera.hpp"
@@ -26,6 +25,7 @@ public:
     IResourceManager& getResourceManager();
     IGeometryFactory& getGeometryFactory();
     void render(IScene& scene, ICamera& camera);
+    void renderToTarget(IScene& scene, ICamera& camera, IRenderTarget& renderTarget);
 private:
     std::map<unsigned int, unsigned int> textures;
     OpenGLResourceManager    resourceManager;
@@ -38,9 +38,9 @@ private:
     shared_ptr<Rectangle>    r;
     shared_ptr<Rectangle>    postProcessRect;
     shared_ptr<Rectangle>    deferredShadingRect[4];
-    FrameBuffer*             fb;
-    FrameBuffer*             postProcessFbo;
-    FrameBuffer*             deferredShadingFbo;
+    IRenderTarget*           fb;
+    IRenderTarget*           postProcessFbo;
+    IRenderTarget*           deferredShadingFbo;
     ITexture*                shadowMap;
     ITexture*                postProcessTex;
     ITexture*                deferredShadingTex[3];
@@ -60,6 +60,7 @@ private:
     void initShadowMapping();
     unsigned int depthRenderBuffer;
     void render(std::vector<IMesh*>& meshes, ICamera& camera);
+    void renderToTarget(std::vector<IMesh*>& meshes, ICamera& camera, IRenderTarget& renderTarget);
     void render(IMesh* mesh, ICamera& camera);
     void updateUniforms(const IMaterial& material);
     void renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec4& viewport = Vec4(0, 0, 0, 0));

@@ -3,6 +3,7 @@
 #include "Rendering/Variants/OpenGL/OpenGLTextureCubemap.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLVertexBuffer.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLIndexBuffer.hpp"
+#include "Rendering/Variants/OpenGL/OpenGLRenderTarget.hpp"
 #include "Core/Shader.hpp"
 #include <GL/glew.h>
 #include <cstdio>
@@ -112,22 +113,10 @@ void OpenGLRenderer::initDeferredShading()
         deferredShadingRect[i]->setMaterial(deferredShadingRectMat[i]);
     }
 
-    deferredShadingFbo = new FrameBuffer();
-
-    unsigned int fbo = deferredShadingFbo->getFbo();
-    unsigned int texId[3];
-    texId[0] = reinterpret_cast<OpenGLTexture*>(deferredShadingTex[0])->getId();
-    texId[1] = reinterpret_cast<OpenGLTexture*>(deferredShadingTex[1])->getId();
-    texId[2] = reinterpret_cast<OpenGLTexture*>(deferredShadingTex[2])->getId();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId[0], 0);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, texId[1], 0);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texId[2], 0);
-
-    GLenum drawBuffs[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-    glDrawBuffers(2, drawBuffs);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    deferredShadingFbo = resourceManager.createRenderTarget(0, 0);
+    deferredShadingFbo->addColorTexture(deferredShadingTex[0]);
+    deferredShadingFbo->addColorTexture(deferredShadingTex[1]);
+    deferredShadingFbo->addDepthTexture(deferredShadingTex[2]);
 }
 
 void OpenGLRenderer::initPostProcessing()
@@ -143,41 +132,28 @@ void OpenGLRenderer::initPostProcessing()
 
     postProcessRect->setMaterial(postProcessMat);
 
-    postProcessFbo = new FrameBuffer();
-
-    unsigned int fbo = postProcessFbo->getFbo();
-    unsigned int texId = reinterpret_cast<OpenGLTexture*>(postProcessTex)->getId();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    glGenRenderbuffers(1, &depthRenderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, postProcessTex->getWidth(), postProcessTex->getHeight());
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
-
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texId, 0);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    postProcessFbo = resourceManager.createRenderTarget(0, 0);
+    postProcessFbo->addColorTexture(postProcessTex);
+    postProcessFbo->addDepthTexture(resourceManager.createTexture(
+        (unsigned int)resolution.x,
+        (unsigned int)resolution.y, 3, true));
 }
 
 void OpenGLRenderer::initShadowMapping()
 {
     rectMat = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
-
     depthMat = resourceManager.createMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-
     shadowMap = resourceManager.createTexture((unsigned int)resolution.x, (unsigned int)resolution.y, 4, true);
 
     rectMat->addTexture(shadowMap);
-
     depthMat->addTexture(shadowMap);
 
     r->Scale(0.5f, 0.5f, 0.0f);
     r->Translate(0.5f, 0.5f, 0.0f);
     r->setMaterial(rectMat);
 
-    fb = new FrameBuffer();
+    fb = resourceManager.createRenderTarget(0, 0);
+    fb->addDepthTexture(shadowMap);
 
     lightCamera.setPosition(Vec3(0, 15, 25));
 }
@@ -237,12 +213,36 @@ void OpenGLRenderer::render(IScene& scene, ICamera& camera)
     //renderDeferred(scene.getChildren(), camera);
 }
 
+void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTarget & renderTarget)
+{
+    unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    render(scene, camera);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void OpenGLRenderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
         render(meshes[i], camera);
     }
+}
+
+void OpenGLRenderer::renderToTarget(std::vector<IMesh*>& meshes, ICamera & camera, IRenderTarget & renderTarget)
+{
+    unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    render(meshes, camera);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGLRenderer::render(IMesh* mesh, ICamera& camera)
@@ -371,8 +371,7 @@ void OpenGLRenderer::updateUniforms(const IMaterial& material)
 
 void OpenGLRenderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec4& viewport)
 {
-    unsigned int fbo = fb->getFbo();
-    unsigned int texId = reinterpret_cast<OpenGLTexture*>(shadowMap)->getId();
+    unsigned int fbo = reinterpret_cast<OpenGLRenderTarget*>(fb)->getId();
 
     std::vector<IMaterial*> originalMaterials;
     for (unsigned int i = 0; i < meshes.size(); i++)
@@ -381,21 +380,7 @@ void OpenGLRenderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camer
         meshes[i]->setMaterial(depthMat);
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texId, 0);
-
-    glDrawBuffer(GL_NONE); // No color buffer is drawn to.
-
-                           // Always check that our framebuffer is ok
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        printf("INVALID\n");
-
-    render(meshes, lightCamera);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    renderToTarget(meshes, lightCamera, *fb);
 
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
@@ -413,20 +398,7 @@ void OpenGLRenderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camer
 
 void OpenGLRenderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
 {
-    unsigned int fbo = postProcessFbo->getFbo();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-                                   // Always check that our framebuffer is ok
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        printf("INVALID %d\n", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-
-    render(meshes, camera);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+    renderToTarget(meshes, camera, *postProcessFbo);
     postProcess(meshes, camera);
 }
 
@@ -435,8 +407,6 @@ void OpenGLRenderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera
     Vec2 quarterRes = resolution / 2.0f;
     glViewport(0, 0, (GLsizei) resolution.x, (GLsizei)resolution.y);
 
-    unsigned int fbo = deferredShadingFbo->getFbo();
-
     std::vector<IMaterial*> originalMaterials;
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
@@ -444,17 +414,7 @@ void OpenGLRenderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera
         meshes[i]->setMaterial(deferredShadingMat);
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Always check that our framebuffer is ok
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        printf("INVALID %d\n", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-
-    render(meshes, camera);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    renderToTarget(meshes, camera, *deferredShadingFbo);
 
     for (unsigned int i = 0; i < meshes.size(); i++)
     {

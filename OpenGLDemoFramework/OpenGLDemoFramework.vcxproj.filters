@@ -96,9 +96,6 @@
     <ClCompile Include="private\src\Math\Vector.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Core\FrameBuffer.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\Mesh.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -183,6 +180,9 @@
     <ClCompile Include="private\src\Demos\Demo3DBase.cpp">
       <Filter>Source Files\Demos</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderTarget.cpp">
+      <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -208,9 +208,6 @@
     </ClInclude>
     <ClInclude Include="private\inc\Geometry\Triangle.hpp">
       <Filter>Header Files\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Core\FrameBuffer.hpp">
-      <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\Mesh.hpp">
       <Filter>Header Files\Core</Filter>
@@ -427,6 +424,12 @@
     </ClInclude>
     <ClInclude Include="private\inc\Core\IResourceManagerNotify.hpp">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\IRenderTarget.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLRenderTarget.hpp">
+      <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
