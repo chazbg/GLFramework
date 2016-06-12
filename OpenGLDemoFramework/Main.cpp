@@ -1,6 +1,6 @@
-#include "Demos/DemoHoughTransform.hpp"
+#include "Demos/DemoGeometryShader.hpp"
 int main(int argc, char* argv[])
 {
-    HoughTransformDemo::main();
+    GeometryShaderDemo::main();
     return 0;
 }
