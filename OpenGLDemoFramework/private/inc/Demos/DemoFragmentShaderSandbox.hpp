@@ -4,10 +4,8 @@
 #include "Rendering/Renderer.hpp"
 #include "Geometry/Rectangle.hpp"
 #include "Core/TextureGenerator.hpp"
-#include <Core/DefaultCamera.hpp>
-#include <Core/Scene.hpp>
-#include <Core/ShaderMaterial.hpp>
-#include <Core/TextureFactory.hpp>
+#include "Core/DefaultCamera.hpp"
+#include "Core/Scene.hpp"
 #include <iostream>
 using namespace std;
 
@@ -16,27 +14,28 @@ namespace FragmentShaderSandboxDemo
     class TestWindowApp : public IApplication
     {
     public:
-        TestWindowApp() : renderer(0) {}
+        TestWindowApp(const Vec2 resolution) : resolution(resolution), renderer(0) {}
         ~TestWindowApp() {}
         virtual void onInit()
         {
-            renderer = new Renderer(Vec2(1200, 600));
+            renderer = new Renderer(resolution);
             TextureGenerator gen;
-            TextureFactory texFactory;
-            shaderMaterial = new OpenGLMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/raymarching0.fs");
-            shaderMaterial->setProperty("sampler0", 0);
-            shaderMaterial->setProperty("sampler1", 1);
-            shaderMaterial->setProperty("sampler2", 2);
-            shaderMaterial->addTexture(texFactory.createTexture(256, 1, 4, (unsigned char*)gen.generateGradient()));
-            shaderMaterial->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(0.5)));
-            shaderMaterial->addTexture(texFactory.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(1)));
-            rectangle = new Rectangle();
+            IResourceManager& rm = renderer->getResourceManager();
+            IGeometryFactory& gf = renderer->getGeometryFactory();
+
+            shaderMaterial = rm.createMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/raymarching0.fs");
+            initMaterialProperty(*shaderMaterial, "sampler0", 0);
+            initMaterialProperty(*shaderMaterial, "sampler1", 1);
+            initMaterialProperty(*shaderMaterial, "sampler2", 2);
+
+            shaderMaterial->addTexture(rm.createTexture(256, 1, 4, (unsigned char*)gen.generateGradient()));
+            shaderMaterial->addTexture(rm.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(0.5)));
+            shaderMaterial->addTexture(rm.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(1)));
+            rectangle = gf.createRectangle();
             rectangle->setMaterial(shaderMaterial);
-            scene.add(rectangle);
+            scene.add(rectangle.get());
             time = 0;
             stopTime = false;
-            //cameraPos = Vec3(0, 5, 5);
-            prevDir = Vec3(0.01f, 0.1f, 0);
             prevMousePos = Vec2(0.5, 0.5);
             phi = 0;
             theta = 0;
@@ -48,8 +47,8 @@ namespace FragmentShaderSandboxDemo
         {
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
-            shaderMaterial->setProperty("time", (float) time);
-            shaderMaterial->setProperty("cameraPos", cameraPos);
+            shaderMaterial->setProperty(timeProperty, static_cast<float>(time));
+            shaderMaterial->setProperty(cameraPosProperty, cameraPos);
             renderer->render(scene, camera);
             if (!stopTime)
             {
@@ -100,9 +99,9 @@ namespace FragmentShaderSandboxDemo
 
         virtual void onMouseMove(int x, int y)
         {
-            float nx = x / 800.0f;
-            float ny = y / 800.0f;
-            Vec2 delta = Vec2(nx, ny) - prevMousePos;
+            float nx = x / resolution.x;
+            float ny = y / resolution.y;
+            Vec2 delta = Vec2(nx, ny)- prevMousePos;
 
             Vec3 zAxis = (-cameraPos).normalize();
             Vec3 up(0, 1, 0);
@@ -115,19 +114,24 @@ namespace FragmentShaderSandboxDemo
             prevMousePos = Vec2(nx, ny);
         }
     private:
+        template <typename T>
+        void initMaterialProperty(IMaterial& material, const std::string propertyName, const T& value);
+
+        Vec2 resolution;
         DefaultCamera camera;
         Scene scene;
         Renderer* renderer;
-        Rectangle* rectangle;
-        OpenGLMaterial* shaderMaterial;
+        std::shared_ptr<Rectangle> rectangle;
+        IMaterial* shaderMaterial;
         unsigned int time;
         bool stopTime;
         Vec3 cameraPos;
-        Vec3 prevDir;
         Vec2 prevMousePos;
         float phi;
         float theta;
         float radius;
+        FloatPropertySharedPtr timeProperty;
+        Vec3PropertySharedPtr cameraPosProperty;
     };
 
     void main()
@@ -138,8 +142,23 @@ namespace FragmentShaderSandboxDemo
         params.posX = 100;
         params.posY = 100;
         params.name = "TestWindow";
-        TestWindowApp app;
+        TestWindowApp app(Vec2(static_cast<float>(params.width),
+                               static_cast<float>(params.height)));
         Window window(params, app);
         window.startRenderLoop();
+    }
+    template<typename T>
+    inline void TestWindowApp::initMaterialProperty(IMaterial & material, const std::string propertyName, const T & value)
+    {
+        std::shared_ptr<IMaterialProperty<T>> p;
+        material.getProperty(propertyName, p);
+        if (p != 0)
+        {
+            material.setProperty(p, value);
+        }
+        else
+        {
+            std::cout << "Couldn't find property \"" << propertyName << "\"" << std::endl;
+        }
     }
 }

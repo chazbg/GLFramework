@@ -1,6 +1,6 @@
-#include "Demos/DemoCube.hpp"
+#include "Demos/DemoHoughTransform.hpp"
 int main(int argc, char* argv[])
 {
-    CubeDemo::main();
+    HoughTransformDemo::main();
     return 0;
 }

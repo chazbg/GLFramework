@@ -188,6 +188,6 @@ void main()
     }
     else
     {
-        color = vec3(1,1,1);
+        color = vec3(0.7);
     }
 }

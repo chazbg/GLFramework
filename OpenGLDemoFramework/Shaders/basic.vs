@@ -6,13 +6,6 @@ layout(location = 1) in vec3 normal;
 uniform uint time;
 uniform mat4 mvp;
 
-// uniform vec3 materialDiffuseColor;
-// uniform vec3 materialAmbientColor;
-// uniform vec3 materialSpecularColor;
-// uniform float materialSpecularExp;
-// uniform vec3 lightAmbDiffSpec;
-// uniform vec3 lightColor;
-
 smooth out vec3 inColor;
 
 struct lightSampleValues {
