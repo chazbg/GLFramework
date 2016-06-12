@@ -9,6 +9,7 @@ public:
     std::string name;
     int location;
     T value;
+    unsigned int internalLocation;
 };
 
 typedef std::shared_ptr<OpenGLMaterialProperty<int>>          OpenGLIntPropertySharedPtr;

@@ -90,15 +90,15 @@ namespace CubeDemo
             materials.push_back(resourceManager.createMaterial(
                 "Shaders/basicDiffuse.vs",
                 "Shaders/basicDiffuse.fs"));
-            materials[0]->setProperty("sampler", 0);
-            materials[0]->setProperty("diffuse", Vec3(1, 1, 0));
+            initMaterialProperty(*materials[0], "sampler", 0);
+            initMaterialProperty(*materials[0], "diffuse", Vec3(1, 1, 0));
 
             //1
             materials.push_back(resourceManager.createMaterial(
                 "Shaders/basicDiffuse.vs",
                 "Shaders/basicDiffuse.fs",
                 "Shaders/wireframe.gs"));
-            materials[1]->setProperty("diffuse", Vec3(0.5f, 0.0f, 0.0f));
+            initMaterialProperty(*materials[1], "diffuse", Vec3(0.5f, 0.0f, 0.0f));
         }
 
         virtual void initGeometry()

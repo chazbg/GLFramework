@@ -1,7 +1,6 @@
 #version 330 core
 
 uniform sampler2D colorMap;
-uniform sampler2D sampler;
 
 uniform float time;
 uniform vec3 diffuse;

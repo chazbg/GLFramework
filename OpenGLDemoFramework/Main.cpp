@@ -1,6 +1,6 @@
-#include "Demos/DemoPBR.hpp"
+#include "Demos/DemoCube.hpp"
 int main(int argc, char* argv[])
 {
-    PBRDemo::main();
+    CubeDemo::main();
     return 0;
 }

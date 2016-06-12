@@ -41,8 +41,8 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
     {
         systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         { 
-            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
-            glProperty->value = lightCamera.getViewProjectionMatrix() * mesh.getModelMatrix();
+            mesh.getMaterial().setProperty(p,
+                lightCamera.getViewProjectionMatrix() * mesh.getModelMatrix());
         });
     }
     
@@ -51,8 +51,8 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
     {
         systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         {
-            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
-            glProperty->value = camera.getViewProjectionMatrix() * mesh.getModelMatrix();
+            mesh.getMaterial().setProperty(p, 
+                camera.getViewProjectionMatrix() * mesh.getModelMatrix());
         });
     }
 
@@ -61,8 +61,8 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
     {
         systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         {
-            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
-            glProperty->value = mesh.getModelMatrix();
+            mesh.getMaterial().setProperty(p,
+                mesh.getModelMatrix());
         });
     }
 
@@ -71,8 +71,8 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
     {
         systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         {
-            OpenGLMaterialProperty<Matrix4>* glProperty = reinterpret_cast<OpenGLMaterialProperty<Matrix4>*>(p.get());
-            glProperty->value = camera.getViewMatrix() * mesh.getModelMatrix();
+            mesh.getMaterial().setProperty(p,
+                camera.getViewMatrix() * mesh.getModelMatrix());
         });
     }
 }
@@ -135,15 +135,17 @@ void OpenGLRenderer::initPostProcessing()
     postProcessFbo = resourceManager.createRenderTarget();
     postProcessFbo->addColorTexture(postProcessTex);
     postProcessFbo->addDepthTexture(resourceManager.createTexture(
-        (unsigned int)resolution.x,
-        (unsigned int)resolution.y, 3, true));
+        static_cast<unsigned int>(resolution.x),
+        static_cast<unsigned int>(resolution.y), 3, true));
 }
 
 void OpenGLRenderer::initShadowMapping()
 {
     rectMat = resourceManager.createMaterial("Shaders/tex.vs", "Shaders/tex.fs");
     depthMat = resourceManager.createMaterial("Shaders/depthMapping.vs", "Shaders/depthMapping.fs");
-    shadowMap = resourceManager.createTexture((unsigned int)resolution.x, (unsigned int)resolution.y, 4, true);
+    shadowMap = resourceManager.createTexture(
+        static_cast<unsigned int>(resolution.x), 
+        static_cast<unsigned int>(resolution.y), 4, true);
 
     rectMat->addTexture(shadowMap);
     depthMat->addTexture(shadowMap);
@@ -208,8 +210,8 @@ IGeometryFactory& OpenGLRenderer::getGeometryFactory()
 void OpenGLRenderer::render(IScene& scene, ICamera& camera)
 {  
     //renderToTexture(scene.getChildren(), camera);
-    //render(scene.getChildren(), camera);
-    renderWithPostProcess(scene.getChildren(), camera);
+    render(scene.getChildren(), camera);
+    //renderWithPostProcess(scene.getChildren(), camera);
     //renderDeferred(scene.getChildren(), camera);
 }
 

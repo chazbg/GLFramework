@@ -251,6 +251,7 @@ IMaterial * OpenGLResourceManager::createMaterial(const std::string vShaderPath,
     if (it == materialRefCounters.end())
     {
         materialRefCounters[id] = 0;
+        notify.materialCreated(*material);
     }
     else
     {

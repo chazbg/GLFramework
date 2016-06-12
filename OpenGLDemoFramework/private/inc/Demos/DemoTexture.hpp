@@ -40,8 +40,8 @@ namespace TextureDemo
                 animatedMeshes[i]->Translate(pos.x, pos.y, pos.z);
             }
 
-            cubeTexturedMat->setProperty("time", (float) time);
-            cubeTexturedMat2->setProperty("time", time * 0.1f);
+            cubeTexturedMat[0]->setProperty(timeProperty[0], static_cast<float>(time));
+            cubeTexturedMat[1]->setProperty(timeProperty[1], time * 0.1f);
 
             renderer->render(scene, camera);
         }
@@ -88,15 +88,18 @@ namespace TextureDemo
             IResourceManager& resourceManager = renderer->getResourceManager();
 
             cubeMat = resourceManager.createMaterial("Shaders/cube.vs", "Shaders/cube.fs");
-            cubeTexturedMat = resourceManager.createMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
-            cubeTexturedMat->addTexture(textures[0]);
-            cubeTexturedMat->setProperty("colorMap", 0);
-            cubeTexturedMat->setProperty("sampler", 1);
-            cubeTexturedMat->setProperty("diffuse", Vec3(0.2f, 0.2f, 0.8f));
+            cubeTexturedMat[0] = resourceManager.createMaterial("Shaders/texturedCube.vs", "Shaders/texturedCube.fs");
+            cubeTexturedMat[1] = resourceManager.cloneMaterial(cubeTexturedMat[0]);
 
-            cubeTexturedMat2 = resourceManager.cloneMaterial(cubeTexturedMat);
-            cubeTexturedMat2->addTexture(textures[1]);
-            cubeTexturedMat2->setProperty("diffuse", Vec3(0.3f, 0, 0));
+            cubeTexturedMat[0]->addTexture(textures[0]);
+            initMaterialProperty(*cubeTexturedMat[0], "colorMap", 0);
+            initMaterialProperty(*cubeTexturedMat[0], "diffuse", Vec3(0.2f, 0.2f, 0.8f));
+            cubeTexturedMat[0]->getProperty("time", timeProperty[0]);
+
+            cubeTexturedMat[1]->addTexture(textures[1]);
+            initMaterialProperty(*cubeTexturedMat[0], "colorMap", 0);
+            initMaterialProperty(*cubeTexturedMat[1], "diffuse", Vec3(0.3f, 0.0f, 0.0f));
+            cubeTexturedMat[1]->getProperty("time", timeProperty[1]);
         }
 
         virtual void initGeometry()
@@ -118,11 +121,11 @@ namespace TextureDemo
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[2]->Scale(20.0f, 0.2f, 20.0f);
             meshes[2]->Translate(0, -3, 0);
-            meshes[2]->setMaterial(cubeTexturedMat2);
+            meshes[2]->setMaterial(cubeTexturedMat[1]);
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[3]->Scale(20.0f, 20.0f, 0.2f);
             meshes[3]->Translate(0, -3, -10);
-            meshes[3]->setMaterial(cubeTexturedMat);
+            meshes[3]->setMaterial(cubeTexturedMat[0]);
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[4]->Scale(0.5f, 0.5f, 0.5f);
             meshes[4]->setMaterial(cubeMat);
@@ -138,10 +141,10 @@ namespace TextureDemo
         shared_ptr<BlockMesh> c1;
         vector<shared_ptr<BlockMesh>> meshes;
         IMaterial* cubeMat;
-        IMaterial* cubeTexturedMat;
-        IMaterial* cubeTexturedMat2;
+        IMaterial* cubeTexturedMat[2];
         vector<ITexture*> textures;
         Vec3 prevDir;
+        FloatPropertySharedPtr timeProperty[2];
     };
 
     void main()

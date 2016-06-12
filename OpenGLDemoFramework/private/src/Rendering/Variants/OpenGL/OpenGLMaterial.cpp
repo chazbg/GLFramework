@@ -150,32 +150,32 @@ void OpenGLMaterial::getProperty(const std::string name, Mat4PropertySharedPtr& 
 
 void OpenGLMaterial::setProperty(IntPropertySharedPtr p, const int v)
 {
-    setPropertyImpl(p, v);
+    setPropertyImpl(iUniforms, p, v);
 }
 
 void OpenGLMaterial::setProperty(UintPropertySharedPtr p, const unsigned int v)
 {
-    setPropertyImpl(p, v);
+    setPropertyImpl(uiUniforms, p, v);
 }
 
 void OpenGLMaterial::setProperty(FloatPropertySharedPtr p, const float v)
 {
-    setPropertyImpl(p, v);
+    setPropertyImpl(fUniforms, p, v);
 }
 
 void OpenGLMaterial::setProperty(Vec2PropertySharedPtr p, const Vec2 & v)
 {
-    setPropertyImpl(p, v);
+    setPropertyImpl(v2Uniforms, p, v);
 }
 
 void OpenGLMaterial::setProperty(Vec3PropertySharedPtr p, const Vec3 & v)
 {
-    setPropertyImpl(p, v);
+    setPropertyImpl(v3Uniforms, p, v);
 }
 
 void OpenGLMaterial::setProperty(Mat4PropertySharedPtr p, const Matrix4 & v)
 {
-    setPropertyImpl(p, v);
+    setPropertyImpl(m4Uniforms, p, v);
 }
 
 int OpenGLMaterial::getId() const

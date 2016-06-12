@@ -28,7 +28,7 @@ namespace WaveDemo
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
             //p->Rotate(0, 0.01f, 0);
-            waveMat->setProperty("time", time);
+            waveMat->setProperty(timeProperty, time);
 
             renderer->render(scene, camera);
         }
@@ -48,7 +48,8 @@ namespace WaveDemo
 
             waveMat = resourceManager.createMaterial("Shaders/plane.vs", "Shaders/plane.fs");
             waveMat->addTexture(texture);
-            waveMat->setProperty("sampler", 0);
+            initMaterialProperty(*waveMat, "sampler", 0);
+            waveMat->getProperty("time", timeProperty);
         }
 
         virtual void initGeometry()
@@ -62,6 +63,7 @@ namespace WaveDemo
         shared_ptr<PlaneMesh> p;
         IMaterial* waveMat;
         ITexture* texture;
+        UintPropertySharedPtr timeProperty;
     };
 
     void main()

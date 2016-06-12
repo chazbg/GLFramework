@@ -39,7 +39,10 @@ private:
     OpenGLMaterial(const OpenGLMaterial& rhs);
     ~OpenGLMaterial();
     template <typename T>
-    void setPropertyImpl(std::shared_ptr<IMaterialProperty<T>>& p, const T& v);
+    void setPropertyImpl(
+        std::vector<std::shared_ptr<OpenGLMaterialProperty<T>>>& uniforms,
+        std::shared_ptr<IMaterialProperty<T>>& p, 
+        const T& v);
     int id;
     vector<const ITexture*> textures;
     vector<const ITextureCubemap*> textureCubemaps;
@@ -63,13 +66,16 @@ private:
 
 
 template<typename T>
-inline void OpenGLMaterial::setPropertyImpl(std::shared_ptr<IMaterialProperty<T>>& p, const T & v)
+inline void OpenGLMaterial::setPropertyImpl(
+    std::vector<std::shared_ptr<OpenGLMaterialProperty<T>>>& uniforms,
+    std::shared_ptr<IMaterialProperty<T>>& p, 
+    const T & v)
 {
     if (p)
     {
         OpenGLMaterialProperty<T>* glProperty =
             reinterpret_cast<OpenGLMaterialProperty<T>*>(p.get());
-        glProperty->value = v;
+        uniforms[glProperty->internalLocation]->value = v;
     }
 }
 
@@ -93,6 +99,7 @@ inline void OpenGLMaterial::addProperty(std::vector<std::shared_ptr<T>> & unifor
     std::shared_ptr<T> p(new T());
     p->name = name;
     p->location = location;
+    p->internalLocation = uniforms.size();
     uniforms.push_back(p);
 }
 

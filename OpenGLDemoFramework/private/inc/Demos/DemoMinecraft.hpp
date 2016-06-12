@@ -93,9 +93,9 @@ namespace MinecraftDemo
                 materials.push_back(resourceManager.createMaterial(
                     "Shaders/minecraft.vs",
                     "Shaders/minecraft.fs"));
-                materials[i]->setProperty("sampler", 0);
-                materials[i]->setProperty("diffuse", Vec3(1.0f, 1.0f - i, 0.0f));
-                materials[i]->setProperty("alpha", 0.5f + i * 0.5f);
+                initMaterialProperty(*materials[i], "sampler", 0);
+                initMaterialProperty(*materials[i], "diffuse", Vec3(1.0f, 1.0f - i, 0.0f));
+                initMaterialProperty(*materials[i], "alpha", 0.5f + i * 0.5f);
                 materials[i]->addTexture(textures[0]);
             }
         }
