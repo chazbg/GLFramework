@@ -31,6 +31,10 @@ SimpleEmitter::~SimpleEmitter()
 
 void SimpleEmitter::updateParticles(const float t)
 {
+}
+
+void SimpleEmitter::updateParticles(const float t, const bool beat)
+{
     if (nextSpawn <= 0.0f && aliveParticles < particleCount)
     {
         IParticle2D* p = particles[aliveParticles];
@@ -44,8 +48,8 @@ void SimpleEmitter::updateParticles(const float t)
 
         p->init(Vec2(0.0f),
             Vec2(0.0f + r1, 0.0f + r2),
-            0.35 + 0.1 * r3,
-            0.05 + 0.1 * r4,
+            0.35f + 0.1f * r3,
+            0.05f + 0.1f * r4,
             5.0f,
             Vec2(0.03f + 0.02f * r5),
             r6 * 6.28f);
@@ -72,6 +76,29 @@ void SimpleEmitter::updateParticles(const float t)
     }
 
     nextSpawn -= t;
+
+    if (beat)
+    {
+        addAnimation();
+    }
+
+    auto it = animations.begin();
+    while (it != animations.end())
+    {
+        it->update(t);
+        if (it->isExpired())
+        {
+            it = animations.erase(it);
+        }
+
+        if (it == animations.end())
+        {
+            break;
+        }
+        it++;
+    }
+
+    calculateScale();
 }
 
 const std::vector<IParticle2D*>& SimpleEmitter::getParticles()
@@ -82,4 +109,32 @@ const std::vector<IParticle2D*>& SimpleEmitter::getParticles()
 unsigned int SimpleEmitter::getAliveParticlesCount()
 {
     return aliveParticles;
+}
+
+float SimpleEmitter::getScale()
+{
+    return scale;
+}
+
+void SimpleEmitter::addAnimation()
+{
+    LinearAnimation<float> animation;
+    animation.addKeyframe(AnimationKeyframe<float>(0.0f, 0.0f));
+    animation.addKeyframe(AnimationKeyframe<float>(0.15f, 0.05f));
+    animation.addKeyframe(AnimationKeyframe<float>(0.3f, 0.0f));
+    animations.push_back(animation);
+}
+
+void SimpleEmitter::calculateScale()
+{
+    scale = 0.0f;
+    if (!animations.empty())
+    {
+        for (unsigned int i = 0; i < animations.size(); ++i)
+        {
+            scale += animations[i].getValue();
+        }
+    
+        scale /= animations.size();
+    }    
 }

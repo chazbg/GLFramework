@@ -133,13 +133,15 @@ namespace ParticlesDemo
                 time++;
             }
 
-            emitter.updateParticles(0.016f);
+            emitter.updateParticles(0.016f, beatmap[beatIterator]);
+            beatIterator = (beatIterator + 1) % sizeof(beatmap);
             const std::vector<IParticle2D*>& particles = emitter.getParticles();
             unsigned int aliveParticles = emitter.getAliveParticlesCount();
 
             for (unsigned int i = 0; i < aliveParticles; i++)
             {
                 meshes[i]->getMaterial().setProperty(remainingLife[i], particles[i]->getRemainingLife());
+                meshes[i]->getMaterial().setProperty(scale[i], particles[i]->getScale() + Vec2(emitter.getScale()));
             }
 
             renderer->render(scene, camera);
@@ -288,6 +290,7 @@ namespace ParticlesDemo
         vector<FloatPropertySharedPtr> radialAcceleration;
         vector<Vec2PropertySharedPtr>  scale;
         vector<FloatPropertySharedPtr> phase;
+        unsigned int beatIterator;
     };
 
     void main()
