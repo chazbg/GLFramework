@@ -13,7 +13,7 @@ using namespace std;
 
 namespace ParticlesDemo
 {
-	unsigned char beatmap[] =
+	bool beatmap[] =
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
 	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -134,14 +134,14 @@ namespace ParticlesDemo
             }
 
             emitter.updateParticles(0.016f, beatmap[beatIterator]);
-            beatIterator = (beatIterator + 1) % sizeof(beatmap);
+            beatIterator = (beatIterator + 1) % (sizeof(beatmap) / sizeof(bool));
             const std::vector<IParticle2D*>& particles = emitter.getParticles();
             unsigned int aliveParticles = emitter.getAliveParticlesCount();
 
             for (unsigned int i = 0; i < aliveParticles; i++)
             {
                 meshes[i]->getMaterial().setProperty(remainingLife[i], particles[i]->getRemainingLife());
-                meshes[i]->getMaterial().setProperty(scale[i], particles[i]->getScale() + Vec2(emitter.getScale()));
+				meshes[i]->getMaterial().setProperty(scale[i], particles[i]->getScale() * (emitter.getScale() + 1.0f));
             }
 
             renderer->render(scene, camera);

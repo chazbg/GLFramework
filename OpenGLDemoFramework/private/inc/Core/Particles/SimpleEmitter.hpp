@@ -41,7 +41,6 @@ class LinearAnimation
 public:
     LinearAnimation() : expired(false), interval(0), time(0.0f) 
     {
-        std::cout << interval << std::endl;
     }
     void addKeyframe(const AnimationKeyframe<T>& keyframe)
     {

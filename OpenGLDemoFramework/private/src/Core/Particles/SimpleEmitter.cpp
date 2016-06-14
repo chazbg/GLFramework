@@ -120,7 +120,7 @@ void SimpleEmitter::addAnimation()
 {
     LinearAnimation<float> animation;
     animation.addKeyframe(AnimationKeyframe<float>(0.0f, 0.0f));
-    animation.addKeyframe(AnimationKeyframe<float>(0.15f, 0.05f));
+    animation.addKeyframe(AnimationKeyframe<float>(0.15f, 0.5f));
     animation.addKeyframe(AnimationKeyframe<float>(0.3f, 0.0f));
     animations.push_back(animation);
 }
