@@ -76,6 +76,9 @@
     <Filter Include="Source Files\Demos">
       <UniqueIdentifier>{993999cf-a4b3-47ad-a01a-460a6a9688b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Animation">
+      <UniqueIdentifier>{54ac8769-68ee-459b-be83-3a7c0f5f3675}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -430,6 +433,15 @@
     </ClInclude>
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLRenderTarget.hpp">
       <Filter>Header Files\Rendering\Variants\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Animation\IAnimation.hpp">
+      <Filter>Header Files\Core\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Animation\LinearAnimation.hpp">
+      <Filter>Header Files\Core\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Animation\AnimationKeyFrame.hpp">
+      <Filter>Header Files\Core\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

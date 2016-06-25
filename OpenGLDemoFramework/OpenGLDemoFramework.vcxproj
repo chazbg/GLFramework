@@ -185,6 +185,9 @@
     <ClCompile Include="private\src\Windowing\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="private\inc\Core\Animation\AnimationKeyFrame.hpp" />
+    <ClInclude Include="private\inc\Core\Animation\IAnimation.hpp" />
+    <ClInclude Include="private\inc\Core\Animation\LinearAnimation.hpp" />
     <ClInclude Include="private\inc\Core\DefaultCamera.hpp" />
     <ClInclude Include="private\inc\Core\ICamera.hpp" />
     <ClInclude Include="private\inc\Core\IIndexBuffer.hpp" />
