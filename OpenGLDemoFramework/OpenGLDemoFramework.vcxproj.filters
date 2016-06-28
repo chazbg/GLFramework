@@ -186,6 +186,9 @@
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderTarget.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Math\Quarternion.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -442,6 +445,12 @@
     </ClInclude>
     <ClInclude Include="private\inc\Core\Animation\AnimationKeyFrame.hpp">
       <Filter>Header Files\Core\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Math\Quarternion.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Tests\TestQuarternion.hpp">
+      <Filter>Header Files\Tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

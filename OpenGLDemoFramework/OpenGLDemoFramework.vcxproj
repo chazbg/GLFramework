@@ -172,6 +172,7 @@
     <ClCompile Include="private\src\Math\Line.cpp" />
     <ClCompile Include="private\src\Math\LineSegment.cpp" />
     <ClCompile Include="private\src\Math\Plane.cpp" />
+    <ClCompile Include="private\src\Math\Quarternion.cpp" />
     <ClCompile Include="private\src\Math\Vector.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLIndexBuffer.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLMaterial.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="private\inc\Math\LineSegment.hpp" />
     <ClInclude Include="private\inc\Math\Matrix.hpp" />
     <ClInclude Include="private\inc\Math\Plane.hpp" />
+    <ClInclude Include="private\inc\Math\Quarternion.hpp" />
     <ClInclude Include="private\inc\Math\Vector.hpp" />
     <ClInclude Include="private\inc\Rendering\Renderer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLIndexBuffer.hpp" />
@@ -265,6 +267,7 @@
     <ClInclude Include="private\inc\Tests\TestMatrix.hpp" />
     <ClInclude Include="private\inc\Tests\TestParticles.hpp" />
     <ClInclude Include="private\inc\Tests\TestPlane.hpp" />
+    <ClInclude Include="private\inc\Tests\TestQuarternion.hpp" />
     <ClInclude Include="private\inc\Tests\TestVector.hpp" />
     <ClInclude Include="private\inc\Tests\TestWindow.hpp" />
     <ClInclude Include="private\inc\Windowing\Variants\GLUTWrapper.hpp" />
