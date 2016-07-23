@@ -17,14 +17,6 @@ Quarternion::Quarternion(const Vec4 & v)
     data[3] = v.w;
 }
 
-Quarternion::Quarternion(const float r, const Vec3 & v)
-{
-    data[0] = r;
-    data[1] = v.x;
-    data[2] = v.y;
-    data[3] = v.z;
-}
-
 Quarternion::Quarternion(const Quarternion & q)
 {
     data[0] = q.data[0];
@@ -40,6 +32,11 @@ Quarternion Quarternion::operator*(const float scalar) const
         data[1] * scalar,
         data[2] * scalar,
         data[3] * scalar);
+}
+
+Quarternion operator*(const float scalar, const Quarternion& rhs)
+{
+    return rhs * scalar;
 }
 
 Quarternion Quarternion::operator+(const Quarternion & rhs) const
@@ -87,16 +84,41 @@ Quarternion Quarternion::normalize() const
     }    
 }
 
+Quarternion Quarternion::inverse() const
+{
+    return Quarternion(data[0], -data[1], -data[2], -data[3]);
+}
+
 Vec3 Quarternion::rotate(const Vec3 & v) const
 {
-    Quarternion p(0.0f, v);
-    float halfTheta    = data[0] / 2.0f;
-    float cosHalfTheta = cos(halfTheta);
-    float sinHalfTheta = sin(halfTheta);
-    Vec3 vectorPart    = sinHalfTheta * Vec3(data[1], data[2], data[3]).normalize();
+    Quarternion p(0.0f, v.x, v.y, v.z);
    
-    Quarternion q(cosHalfTheta, vectorPart);
-    Quarternion qInv(cosHalfTheta, -vectorPart);
-    Quarternion res = q * p * qInv;
+    Quarternion res = *this * p * inverse();
     return Vec3(res.data[1], res.data[2], res.data[3]);
+}
+
+Quarternion Quarternion::slerp(const Quarternion & a, const Quarternion & b, float t)
+{
+    float cosPhi = a.data[0] * b.data[0] +
+        a.data[1] * b.data[1] +
+        a.data[2] * b.data[2] +
+        a.data[3] * b.data[3];
+    float phi = acos(cosPhi);
+    float invSinPhi = 1.0f / sin(phi);
+    float ca = sin((1.0f - t) * phi) * invSinPhi;
+    float cb = sin(t * phi) * invSinPhi;
+
+    return ca * a + cb * b;
+}
+
+Quarternion Quarternion::makeRotation(const Quarternion & q)
+{
+    Vec3 vectorPart = sin(q.data[0] / 2.0f) * Vec3(q.data[1], q.data[2], q.data[3]).normalize();
+    return Quarternion(cos(q.data[0] / 2.0f), vectorPart.x, vectorPart.y, vectorPart.z);
+}
+
+Quarternion Quarternion::makeRotation(const float r, const Vec3 & v)
+{
+    Vec3 vectorPart = sin(r / 2.0f) * v.normalize();
+    return Quarternion(cos(r / 2.0f), vectorPart.x, vectorPart.y, vectorPart.z);
 }

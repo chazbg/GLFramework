@@ -229,6 +229,7 @@
     <ClInclude Include="private\inc\Demos\DemoPBR.hpp" />
     <ClInclude Include="private\inc\Demos\DemoPointInPolygon.hpp" />
     <ClInclude Include="private\inc\Demos\DemoProjections.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoQuarternion.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRotatingCalipers.hpp" />
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp" />

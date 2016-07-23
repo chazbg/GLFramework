@@ -1,8 +1,6 @@
-//#include "Demos/DemoParticles.hpp"
-#include "Tests/TestQuarternion.hpp"
+#include "Demos/DemoQuarternion.hpp"
 int main(int argc, char* argv[])
 {
-    //ParticlesDemo::main();
-    TestQuarternion1();
+    QuarternionDemo::main();
     return 0;
 }

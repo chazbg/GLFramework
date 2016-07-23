@@ -452,6 +452,9 @@
     <ClInclude Include="private\inc\Tests\TestQuarternion.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoQuarternion.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
