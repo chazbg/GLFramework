@@ -31,7 +31,7 @@ namespace QuarternionDemo
 
             if (!stopTime)
             {
-                Quarternion rot = Quarternion::slerp(rotA, rotB, abs(sin(time * 0.01f)));
+                Quarternion rot = Quarternion::slerp(rotA, rotB, abs(sin(time * 0.02f)));
                 Vec3 newPos = rot.rotate(spheres[0]->getPosition());
 
                 for (unsigned int i = sphereCount - 1; i >= 1; i--)
