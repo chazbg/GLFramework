@@ -1,13 +1,8 @@
 #include "Math/Vector.hpp"
 #include <sstream>
 #include <math.h>
-//Vec2
-Vec2::Vec2(const Vec2& vec)
-{
-    x = vec.x;
-    y = vec.y;
-}
 
+//Vec2
 Vec2& Vec2::operator=(const Vec2& vec)
 {
     x = vec.x;
@@ -138,13 +133,6 @@ Vec2 Vec2::normalize() const
 }
 
 //Vec3
-Vec3::Vec3(const Vec3& vec)
-{
-    x = vec.x;
-    y = vec.y;
-    z = vec.z;
-}
-
 Vec3& Vec3::operator=(const Vec3& vec)
 {
     x = vec.x;
@@ -257,11 +245,7 @@ string Vec3::toString() const
 
 const float* Vec3::raw()
 {
-    rawData[0] = x;
-    rawData[1] = y;
-    rawData[2] = z;
-
-    return rawData;
+    return data;
 }
 
 float Vec3::dot(const Vec3& rhs) const
@@ -281,14 +265,6 @@ Vec3 Vec3::normalize() const
 }
 
 //Vec4
-Vec4::Vec4(const Vec4& vec)
-{
-    x = vec.x;
-    y = vec.y;
-    z = vec.z;
-    w = vec.w;
-}
-
 Vec4& Vec4::operator=(const Vec4& vec)
 {
     x = vec.x;
@@ -398,12 +374,7 @@ string Vec4::toString() const
 
 const float* Vec4::raw()
 {
-    rawData[0] = x;
-    rawData[1] = y;
-    rawData[2] = z;
-    rawData[3] = w;
-
-    return rawData;
+    return data;
 }
 
 float Vec4::dot(const Vec4& rhs) const

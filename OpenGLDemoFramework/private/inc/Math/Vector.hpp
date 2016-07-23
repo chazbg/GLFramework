@@ -2,14 +2,13 @@
 #include <string>
 using namespace std;
 
-class Vec2
+union Vec2
 {
 public:
     inline Vec2() {}
     inline Vec2(float v) : x(v), y(v) {}
     inline Vec2(float x, float y) : x(x), y(y) {}
     inline ~Vec2() {}
-    Vec2(const Vec2& vec);
     Vec2& operator=(const Vec2& vec);
     Vec2 operator+(const Vec2& rhs) const;
     Vec2& operator+=(const Vec2& rhs);
@@ -35,18 +34,21 @@ public:
 
     //TODO: Add operations
 public:
-    float x;
-    float y;
+    struct {
+        float x;
+        float y;
+    };
+private:
+    float data[2];
 };
 
-class Vec3
+union Vec3
 {
 public:
     inline Vec3() {}
     inline Vec3(float v) : x(v), y(v), z(v) {}
     inline Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
     inline ~Vec3() {}
-    Vec3(const Vec3& vec);
     Vec3& operator=(const Vec3& vec);
     Vec3 operator+(const Vec3& rhs) const;
     Vec3& operator+=(const Vec3& rhs);
@@ -62,7 +64,7 @@ public:
     bool operator==(const Vec3& rhs) const;
     float distanceTo(const Vec3& point);
     float distanceSquaredTo(const Vec3& point);
-     operator string() const;
+    operator string() const;
     string toString() const;
     const float* raw();
     float dot(const Vec3& rhs) const;
@@ -70,22 +72,22 @@ public:
     Vec3 normalize() const;
     //TODO: Add operations
 public:
-    float x;
-    float y;
-    float z;
+    struct {
+        float x;
+        float y;
+        float z;
+    };
 private:
-private:
-    float rawData[3];
+    float data[3];
 };
 
-class Vec4
+union Vec4
 {
 public:
     inline Vec4() {}
     inline Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
     inline Vec4(const Vec3& v, const float w) : x(v.x), y(v.y), z(v.z), w(w) {}
     inline ~Vec4() {}
-    Vec4(const Vec4& vec);
     Vec4& operator=(const Vec4& vec);
     Vec4 operator+(const Vec4& rhs) const;
     Vec4& operator+=(const Vec4& rhs);
@@ -106,10 +108,12 @@ public:
     Vec4 normalize() const;
     //TODO: Add operations
 public:
-    float x;
-    float y;
-    float z;
-    float w;
+    struct {
+        float x;
+        float y;
+        float z;
+        float w;
+    };
 private:
-    float rawData[4];
+    float data[4];
 };
