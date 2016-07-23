@@ -55,9 +55,9 @@ namespace PBRDemo
                 materials[i]->setProperty(lightPositions[2][pIndex], lights[2]->getPosition());
             }
 
-            //renderer->render(scene, camera);
-            renderer->renderToTarget(scene, camera, *renderTarget);
-            renderer->render(motionBlurScene, camera);
+            renderer->render(scene, camera);
+            //renderer->renderToTarget(scene, camera, *renderTarget);
+            //renderer->render(motionBlurScene, camera);
         }
 
         virtual void onKeyboardEvent(unsigned char c, int x, int y)
@@ -352,8 +352,7 @@ namespace PBRDemo
             initMaterialProperty(*materials[materialIndex], "diffuseMap", 0);
             initMaterialProperty(*materials[materialIndex], "normalMap", 1);
             initMaterialProperty(*materials[materialIndex], "specMap", 2);
-            initMaterialProperty(*materials[materialIndex], "sampler", 3);
-            initMaterialProperty(*materials[materialIndex], "envMap", 4);
+            initMaterialProperty(*materials[materialIndex], "envMap", 3);
             initMaterialProperty(*materials[materialIndex], "diffuse", Vec3(0.5f, 0.5f, 0.5f));
             initMaterialProperty(*materials[materialIndex], "specular", Vec3(1.0f, 0.71f, 0.29f));
 
