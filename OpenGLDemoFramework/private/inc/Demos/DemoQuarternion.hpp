@@ -83,7 +83,7 @@ namespace QuarternionDemo
                 spheres2[i]->setMaterial(materials[0]);
                 float scale = 0.05f + 0.05f * (sphereCount - i) / static_cast<float>(sphereCount);
                 spheres2[i]->Scale(scale, scale, scale);
-                spheres2[i]->Translate(-4.0f, 2.0f, 0.0f);
+                spheres2[i]->Translate(-4.0f, 4.0f, 0.0f);
                 scene.add(spheres2[i].get());
             }
         }
