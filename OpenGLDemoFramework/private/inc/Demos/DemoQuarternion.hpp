@@ -28,21 +28,16 @@ namespace QuarternionDemo
 
             Quarternion rotA = Quarternion::makeRotation(static_cast<float>(M_PI) / 30.0f, Vec3(-1.0f, 1.0f, 0.0f));
             Quarternion rotB = Quarternion::makeRotation(static_cast<float>(M_PI) / 30.0f, Vec3(1.0f, 1.0f, 1.0f));
+            Quarternion rotC = Quarternion::makeRotation(static_cast<float>(M_PI) / 30.0f, Vec3(1.0f, 0.0f, 0.0f));
 
             if (!stopTime)
             {
                 Quarternion rot = Quarternion::slerp(rotA, rotB, abs(sin(time * 0.02f)));
-                Vec3 newPos = rot.rotate(spheres[0]->getPosition());
+                updateSpheres(spheres, rot);
 
-                for (unsigned int i = sphereCount - 1; i >= 1; i--)
-                {
-                    Vec3 translation = spheres[i - 1]->getPosition() - spheres[i]->getPosition();
-                    auto sphere = spheres[i];
-                    sphere->Translate(translation.x, translation.y, translation.z);
-                }
+                spheres2[0]->Translate(sin(time * 0.02f) * 0.1f, 0.0f, 0.0f);
 
-                Vec3 translation = newPos - spheres[0]->getPosition();
-                spheres[0]->Translate(translation.x, translation.y, translation.z);
+                updateSpheres(spheres2, rotC);               
             }
 
             renderer->render(scene, camera);
@@ -79,10 +74,36 @@ namespace QuarternionDemo
                 spheres[i]->Scale(scale, scale, scale);
                 spheres[i]->Translate(2.0f, 0.0f, 0.0f);
                 scene.add(spheres[i].get());
-            }            
+            }   
+
+            for (unsigned int i = 0; i < sphereCount; i++)
+            {
+                spheres2.push_back(geometryFactory.createCustomGeometry("3DAssets/Sphere.3ds"));
+
+                spheres2[i]->setMaterial(materials[0]);
+                float scale = 0.05f + 0.05f * (sphereCount - i) / static_cast<float>(sphereCount);
+                spheres2[i]->Scale(scale, scale, scale);
+                spheres2[i]->Translate(-4.0f, 2.0f, 0.0f);
+                scene.add(spheres2[i].get());
+            }
         }
 
+        void updateSpheres(vector <shared_ptr<CustomGeometry>>& spheres, const Quarternion& rotation)
+        {
+            Vec3 newPos = rotation.rotate(spheres[0]->getPosition());
+
+            for (unsigned int i = spheres.size() - 1; i >= 1; i--)
+            {
+                Vec3 translation = spheres[i - 1]->getPosition() - spheres[i]->getPosition();
+                auto sphere = spheres[i];
+                sphere->Translate(translation.x, translation.y, translation.z);
+            }
+
+            Vec3 translation = newPos - spheres[0]->getPosition();
+            spheres[0]->Translate(translation.x, translation.y, translation.z);
+        }
         vector<shared_ptr<CustomGeometry>> spheres;
+        vector<shared_ptr<CustomGeometry>> spheres2;
         vector<IMaterial*> materials;
         vector<ITexture*> textures;
         unsigned int sphereCount;
