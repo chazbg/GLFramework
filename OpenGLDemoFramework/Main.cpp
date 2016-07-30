@@ -1,6 +1,6 @@
-#include "Demos/DemoQuarternion.hpp"
+#include "Demos/DemoPBR.hpp"
 int main(int argc, char* argv[])
 {
-    QuarternionDemo::main();
+    PBRDemo::main();
     return 0;
 }

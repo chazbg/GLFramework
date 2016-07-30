@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Geometry/CustomGeometry.hpp"
 #include "Math/GeometryAlgorithm.hpp"
 #include "Demos/Demo3DBase.hpp"
 #include "Core/DefaultCamera.hpp"
@@ -39,9 +38,9 @@ namespace PBRDemo
             if (!stopTime)
             {
                 time++;
-                lights[0]->Rotate(0, 3.14f / 360.0f, 0);
-                lights[1]->Rotate(0, 3.14f / 360.0f, 0);
-                lights[2]->Rotate(0, 3.14f / 360.0f, 0);
+                lights[0]->rotate(Vec3(0.0f, 3.14f / 360.0f, 0.0f));
+                lights[1]->rotate(Vec3(0.0f, 3.14f / 360.0f, 0.0f));
+                lights[2]->rotate(Vec3(0.0f, 3.14f / 360.0f, 0.0f));
             }
 
             for (unsigned int i = 2; i < materials.size(); i++)
@@ -235,22 +234,22 @@ namespace PBRDemo
             float r = 20.0f;
             lights.push_back(geometryFactory.createCustomGeometry("3DAssets/Sphere.3ds"));
             lights[0]->setMaterial(materials[0]);
-            lights[0]->Scale(0.05f, 0.05f, 0.05f);
-            lights[0]->Translate(-sqrt(3.0f) * (r / 2.0f), 6.0f, (r / 2.0f));
+            lights[0]->scale(Vec3(0.05f));
+            lights[0]->translate(Vec3(-sqrt(3.0f) * (r / 2.0f), 6.0f, (r / 2.0f)));
 
             lights.push_back(geometryFactory.createCustomGeometry("3DAssets/Sphere.3ds"));
             lights[1]->setMaterial(materials[0]);
-            lights[1]->Scale(0.05f, 0.05f, 0.05f);
-            lights[1]->Translate(sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f));
+            lights[1]->scale(Vec3(0.05f));
+            lights[1]->translate(Vec3(sqrt(3.0f) * (r / 2.0f), 3.0f, (r / 2.0f)));
 
             lights.push_back(geometryFactory.createCustomGeometry("3DAssets/Sphere.3ds"));
             lights[2]->setMaterial(materials[0]);
-            lights[2]->Scale(0.05f, 0.05f, 0.05f);
-            lights[2]->Translate(0, 0.0f, -r);
+            lights[2]->scale(Vec3(0.05f));
+            lights[2]->translate(Vec3(0.0f, 0.0f, -r));
 
-            scene.add(lights[0].get());
-            scene.add(lights[1].get());
-            scene.add(lights[2].get());
+            scene.add(lights[0]);
+            scene.add(lights[1]);
+            scene.add(lights[2]);
         }
 
         void initEnvMap()
@@ -258,8 +257,8 @@ namespace PBRDemo
             IGeometryFactory& geometryFactory = renderer->getGeometryFactory();
             environmentCube = geometryFactory.createCustomGeometry("3DAssets/cube.3ds", true);
             environmentCube->setMaterial(materials[1]);
-            environmentCube->Scale(60, 60, 60);
-            scene.add(environmentCube.get());
+            environmentCube->scale(Vec3(60.0f));
+            scene.add(environmentCube);
         }
 
         void initGround()
@@ -269,70 +268,65 @@ namespace PBRDemo
             {
                 ground[i] = geometryFactory.createCustomGeometry("3DAssets/rectangle.3ds");
                 ground[i]->setMaterial(materials[2 + i]);
-                ground[i]->Rotate(-3.14f / 2.0f, 0.0f, 0.0f);
-                ground[i]->Scale(10.0f, 1.0f, 10.0f);
-                scene.add(ground[i].get());
+                ground[i]->rotate(Vec3(-3.14f / 2.0f, 0.0f, 0.0f));
+                ground[i]->scale(Vec3(10.0f, 1.0f, 10.0f));
+                scene.add(ground[i]);
             }
 
-            ground[0]->Translate(-20.0f, -5.0f, -20.0f);
-            ground[1]->Translate(0.0f, -5.0f, -20.0f);
-            ground[2]->Translate(20.0f, -5.0f, -20.0f);
-            ground[3]->Translate(-20.0f, -5.0f, 0.0f);
-            ground[4]->Translate(0.0f, -5.0f, 0.0f);
-            ground[5]->Translate(20.0f, -5.0f, 0.0f);
-            ground[6]->Translate(-20.0f, -5.0f, 20.0f);
-            ground[7]->Translate(0.0f, -5.0f, 20.0f);
-            ground[8]->Translate(20.0f, -5.0f, 20.0f);
+            ground[0]->translate(Vec3(-20.0f, -5.0f, -20.0f));
+            ground[1]->translate(Vec3(0.0f, -5.0f, -20.0f));
+            ground[2]->translate(Vec3(20.0f, -5.0f, -20.0f));
+            ground[3]->translate(Vec3(-20.0f, -5.0f, 0.0f));
+            ground[4]->translate(Vec3(0.0f, -5.0f, 0.0f));
+            ground[5]->translate(Vec3(20.0f, -5.0f, 0.0f));
+            ground[6]->translate(Vec3(-20.0f, -5.0f, 20.0f));
+            ground[7]->translate(Vec3(0.0f, -5.0f, 20.0f));
+            ground[8]->translate(Vec3(20.0f, -5.0f, 20.0f));
         }
 
         virtual void initGeometry()
         {
             IGeometryFactory& geometryFactory = renderer->getGeometryFactory();
             meshes.push_back(geometryFactory.createCustomGeometry("3DAssets/female_elf-3ds.3DS"));
-            meshes[0]->Scale(0.1f, 0.1f, 0.1f);
-            meshes[0]->Rotate(-3.14f / 2.0f, 0, 0);
-            meshes[0]->Translate(0, -20, 0);
+            meshes[0]->scale(Vec3(0.1f));
+            meshes[0]->rotate(Vec3(-3.14f / 2.0f, 0.0f, 0.0f));
+            meshes[0]->translate(Vec3(-1.0f, 5.0f, 2.0f));
 
             meshes.push_back(geometryFactory.createCustomGeometry("3DAssets/ogrehead.obj"));
-            meshes[1]->Scale(7.0f, 7.0f, 7.0f);
-
-            /*g = geometryFactory.createCustomGeometry("3DAssets/buddha.3ds");
-            g->Scale(0.01f, 0.01f, 0.01f);
-            g->Rotate(-3.14f / 2.0f, 0, 0);
-            g->Translate(0, 1, 0);*/
+            meshes[1]->scale(Vec3(7.0f));
 
             meshes.push_back(geometryFactory.createCustomGeometry("3DAssets/hair5.obj"));
-            meshes[2]->Scale(87, 85, 77);
-            meshes[2]->Translate(0, -55, 0);
+            meshes[2]->scale(Vec3(87, 85, 77));
+            meshes[2]->translate(Vec3(0, -55, 0));
 
             meshes.push_back(geometryFactory.createCustomGeometry("3DAssets/Sphere.3ds"));
-            meshes[3]->Scale(0.5, 0.5, 0.5);
+            meshes[3]->scale(Vec3(0.5f));
 
             currentMesh = meshes[0];
             currentMesh->setMaterial(materials[11]);
-            scene.add(currentMesh.get());
+            scene.add(currentMesh);
 
             motionBlurRect = geometryFactory.createRectangle();
             motionBlurRect->setMaterial(motionBlurMat);
-            motionBlurScene.add(motionBlurRect.get());
+            motionBlurScene.add(motionBlurRect);
         }
 
         void showNextMesh()
         {
             meshIndex = (meshIndex + 1) % 4;
-            scene.remove(currentMesh.get());
+            scene.remove(currentMesh);
             currentMesh = meshes[meshIndex];
             currentMesh->setMaterial(materials[11 + materialIndex]);
-            scene.add(currentMesh.get());
+            scene.add(currentMesh);
         }
 
         void showPreviousMesh()
         {
             meshIndex = (0 == meshIndex ? 3 : (meshIndex - 1) % 4);
-            scene.remove(currentMesh.get());
+            scene.remove(currentMesh);
             currentMesh = meshes[meshIndex];
             currentMesh->setMaterial(materials[11 + materialIndex]);
-            scene.add(currentMesh.get());
+            scene.add(currentMesh);
         }
 
         void showNextMaterial()
@@ -374,13 +368,13 @@ namespace PBRDemo
             glossinessProperties.push_back(fp);            
         }
 
-        shared_ptr<CustomGeometry> currentMesh;
-        shared_ptr<CustomGeometry> environmentCube;
-        shared_ptr<CustomGeometry> ground[9];
+        std::shared_ptr<MeshNode> currentMesh;
+        std::shared_ptr<MeshNode> environmentCube;
+        std::shared_ptr<MeshNode> ground[9];
         float ior;
         float glossiness;
-        vector<shared_ptr<CustomGeometry>> lights;
-        vector<shared_ptr<CustomGeometry>> meshes;
+        vector<std::shared_ptr<MeshNode>> lights;
+        vector<std::shared_ptr<MeshNode>> meshes;
         vector<IMaterial*> materials;
         vector<Vec3PropertySharedPtr> cameraPositions;
         vector<Vec3PropertySharedPtr> lightPositions[3];
@@ -394,7 +388,7 @@ namespace PBRDemo
         ITexture* offscreenTexture;
         IMaterial* motionBlurMat;
         Vec2PropertySharedPtr motionBlurDirProperty;
-        shared_ptr<Rectangle> motionBlurRect;
+        shared_ptr<MeshNode> motionBlurRect;
         Scene motionBlurScene;
     };
 
