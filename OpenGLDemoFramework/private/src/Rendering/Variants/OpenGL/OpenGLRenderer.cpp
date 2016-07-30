@@ -39,40 +39,40 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
     glMaterial.getProperty("depthMvp", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         { 
-            mesh.getMaterial().setProperty(p,
-                lightCamera.getViewProjectionMatrix() * mesh.getModelMatrix());
+            meshNode.getMesh()->getMaterial().setProperty(p,
+                lightCamera.getViewProjectionMatrix() * meshNode.getModelMatrix());
         });
     }
     
     glMaterial.getProperty("mvp", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         {
-            mesh.getMaterial().setProperty(p, 
-                camera.getViewProjectionMatrix() * mesh.getModelMatrix());
+            meshNode.getMesh()->getMaterial().setProperty(p,
+                camera.getViewProjectionMatrix() * meshNode.getModelMatrix());
         });
     }
 
     glMaterial.getProperty("modelToWorld", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         {
-            mesh.getMaterial().setProperty(p,
-                mesh.getModelMatrix());
+            meshNode.getMesh()->getMaterial().setProperty(p,
+                meshNode.getModelMatrix());
         });
     }
 
     glMaterial.getProperty("modelView", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         {
-            mesh.getMaterial().setProperty(p,
-                camera.getViewMatrix() * mesh.getModelMatrix());
+            meshNode.getMesh()->getMaterial().setProperty(p,
+                camera.getViewMatrix() * meshNode.getModelMatrix());
         });
     }
 }
@@ -150,8 +150,8 @@ void OpenGLRenderer::initShadowMapping()
     rectMat->addTexture(shadowMap);
     depthMat->addTexture(shadowMap);
 
-    r->Scale(0.5f, 0.5f, 0.0f);
-    r->Translate(0.5f, 0.5f, 0.0f);
+    r->scale(Vec3(0.5f, 0.5f, 0.0f));
+    r->translate(Vec3(0.5f, 0.5f, 0.0f));
     r->setMaterial(rectMat);
 
     fb = resourceManager.createRenderTarget();
@@ -229,15 +229,31 @@ void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTar
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }
 
-void OpenGLRenderer::render(std::vector<IMesh*>& meshes, ICamera& camera)
+void OpenGLRenderer::render(std::vector<std::shared_ptr<INode>>& nodes, ICamera & camera)
 {
-    for (unsigned int i = 0; i < meshes.size(); i++)
+    for (auto node : nodes)
     {
-        render(meshes[i], camera);
+        switch (node->getNodeType())
+        {
+        case NodeType::Container:
+        {
+            auto actualNode = std::static_pointer_cast<ContainerNode>(node);
+            render(actualNode, camera);
+            break;
+        }
+        case NodeType::Mesh:
+        {
+            auto actualNode = std::static_pointer_cast<MeshNode>(node);
+            render(actualNode, camera);
+            break;
+        }
+        default:
+            break;
+        }
     }
 }
 
-void OpenGLRenderer::renderToTarget(std::vector<IMesh*>& meshes, ICamera & camera, IRenderTarget & renderTarget)
+void OpenGLRenderer::renderToTarget(NodeList& nodes, ICamera & camera, IRenderTarget & renderTarget)
 {
     unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
     GLint originalFbo;
@@ -246,87 +262,156 @@ void OpenGLRenderer::renderToTarget(std::vector<IMesh*>& meshes, ICamera & camer
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    render(meshes, camera);
+    render(nodes, camera);
 
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }
 
-void OpenGLRenderer::render(IMesh* mesh, ICamera& camera)
+void OpenGLRenderer::render(std::shared_ptr<MeshNode> node, ICamera& camera)
 {
-    std::vector<shared_ptr<IMesh>>& children = mesh->getChildren();
-
-    if (children.size() == 0)
+    auto mesh = node->getMesh();
+    OpenGLMaterial& glMaterial = reinterpret_cast<OpenGLMaterial&>(mesh->getMaterial());
+    auto& propertySetters = systemPropertySetters[glMaterial.getId()];
+    for (unsigned int i = 0; i < propertySetters.size(); ++i)
     {
-        OpenGLMaterial& glMaterial = reinterpret_cast<OpenGLMaterial&>(mesh->getMaterial());
-        auto& propertySetters = systemPropertySetters[glMaterial.getId()];
-        for (unsigned int i = 0; i < propertySetters.size(); ++i)
-        {
-            propertySetters[i](*mesh, camera, lightCamera);
-        }
-
-        updateUniforms(mesh->getMaterial());
-        std::vector<const ITexture*> textures = mesh->getMaterial().getTextures();
-        std::vector<const ITextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
-
-        for (unsigned int i = 0; i < textures.size(); i++)
-        {
-            const OpenGLTexture* tex = reinterpret_cast<const OpenGLTexture*>(textures[i]);
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, tex->getId());
-        }
-
-        for (unsigned int i = textures.size(); i < textures.size() + textureCubemaps.size(); i++)
-        {
-            const OpenGLTextureCubemap* tex = reinterpret_cast<const OpenGLTextureCubemap*>(textureCubemaps[i - textures.size()]);
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, tex->getId());
-        }
-
-        std::vector<const IVertexBuffer*> vbos = mesh->getVBOs();
-        for (unsigned int i = 0; i < vbos.size(); i++)
-        {
-            const OpenGLVertexBuffer* buf = reinterpret_cast<const OpenGLVertexBuffer*>(vbos[i]);
-            if (buf)
-            {
-                glBindBuffer(GL_ARRAY_BUFFER, buf->getId());
-                glEnableVertexAttribArray(buf->getLocation());
-                glVertexAttribPointer(buf->getLocation(), buf->getAttributeSize(), GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-            }
-        }
-
-        //TODO: Strategy pattern
-        const IIndexBuffer* ibo = mesh->getIBO();
-        if (ibo)
-        {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, reinterpret_cast<const OpenGLIndexBuffer*>(ibo)->getId());
-            glDrawElements(GL_TRIANGLES, ibo->getIndexCount(), GL_UNSIGNED_INT, NULL);
-        }
-        else
-        {
-            glDrawArrays(GL_TRIANGLES, 0, vbos[0]->getVertexCount());
-        }
-
-        for (unsigned int i = 0; i < vbos.size(); i++)
-        {
-            const OpenGLVertexBuffer* buf = reinterpret_cast<const OpenGLVertexBuffer*>(vbos[i]);
-            if (buf)
-            {
-                glDisableVertexAttribArray(buf->getLocation());
-            }
-        }
+        propertySetters[i](*node, camera, lightCamera);
     }
-    else
+    render(node->getMesh(), camera);
+
+    for (auto child : node->getChildren())
     {
-        for (unsigned int i = 0; i < children.size(); i++)
+        render(child, camera);
+    }
+}
+
+void OpenGLRenderer::render(std::shared_ptr<ContainerNode> node, ICamera & camera)
+{
+    for (auto child : node->getChildren())
+    {
+        switch (child->getNodeType())
         {
-            render(children[i].get(), camera);
+        case NodeType::Mesh:
+        {
+            auto actualNode = std::static_pointer_cast<MeshNode>(child);
+            render(actualNode, camera);
+            break;
+        }
+        default:
+            break;
         }
     }
 }
 
-void OpenGLRenderer::postProcess(std::vector<IMesh*>& meshes, ICamera& camera)
+void OpenGLRenderer::render(std::shared_ptr<IMesh> mesh, ICamera& camera)
 {
-    render(postProcessRect.get(), camera);
+    updateUniforms(mesh->getMaterial());
+    std::vector<const ITexture*> textures = mesh->getMaterial().getTextures();
+    std::vector<const ITextureCubemap*> textureCubemaps = mesh->getMaterial().getTextureCubemaps();
+
+    for (unsigned int i = 0; i < textures.size(); i++)
+    {
+        const OpenGLTexture* tex = reinterpret_cast<const OpenGLTexture*>(textures[i]);
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, tex->getId());
+    }
+
+    for (unsigned int i = textures.size(); i < textures.size() + textureCubemaps.size(); i++)
+    {
+        const OpenGLTextureCubemap* tex = reinterpret_cast<const OpenGLTextureCubemap*>(textureCubemaps[i - textures.size()]);
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, tex->getId());
+    }
+
+    std::vector<const IVertexBuffer*> vbos = mesh->getVBOs();
+    for (unsigned int i = 0; i < vbos.size(); i++)
+    {
+        const OpenGLVertexBuffer* buf = reinterpret_cast<const OpenGLVertexBuffer*>(vbos[i]);
+        if (buf)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, buf->getId());
+            glEnableVertexAttribArray(buf->getLocation());
+            glVertexAttribPointer(buf->getLocation(), buf->getAttributeSize(), GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+        }
+    }
+
+    //TODO: Strategy pattern
+    const IIndexBuffer* ibo = mesh->getIBO();
+    if (ibo)
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, reinterpret_cast<const OpenGLIndexBuffer*>(ibo)->getId());
+        glDrawElements(GL_TRIANGLES, ibo->getIndexCount(), GL_UNSIGNED_INT, NULL);
+    }
+    else
+    {
+        glDrawArrays(GL_TRIANGLES, 0, vbos[0]->getVertexCount());
+    }
+
+    for (unsigned int i = 0; i < vbos.size(); i++)
+    {
+        const OpenGLVertexBuffer* buf = reinterpret_cast<const OpenGLVertexBuffer*>(vbos[i]);
+        if (buf)
+        {
+            glDisableVertexAttribArray(buf->getLocation());
+        }
+    }
+}
+
+void OpenGLRenderer::renderToTarget(std::shared_ptr<IMesh> mesh, ICamera & camera, IRenderTarget & renderTarget)
+{
+    unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
+    GLint originalFbo;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    render(mesh, camera);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
+}
+
+void OpenGLRenderer::renderToTexture(std::shared_ptr<MeshNode> node, ICamera & camera, Vec4 & viewport)
+{
+    auto mesh = node->getMesh();
+    auto originalMaterial = &mesh->getMaterial();
+    mesh->setMaterial(depthMat);
+
+    renderToTarget(mesh, lightCamera, *fb);
+
+    auto& textures = originalMaterial->getTextures();
+    auto it = find(textures.begin(), textures.end(), shadowMap);
+
+    if (textures.end() == it)
+    {
+        originalMaterial->addTexture(shadowMap);
+    }
+    mesh->setMaterial(originalMaterial);
+
+    for (auto child : node->getChildren())
+    {
+        renderToTexture(child, camera, viewport);
+    }
+}
+
+void OpenGLRenderer::renderDeferred(std::shared_ptr<MeshNode> node, ICamera & camera)
+{
+    auto mesh = node->getMesh();
+    auto originalMaterial = &mesh->getMaterial();
+    mesh->setMaterial(deferredShadingMat);
+
+    renderToTarget(mesh, camera, *deferredShadingFbo);
+
+    mesh->setMaterial(originalMaterial);
+
+    for (auto child : node->getChildren())
+    {
+        renderDeferred(child, camera);
+    }
+}
+
+void OpenGLRenderer::postProcess(NodeList& nodes, ICamera& camera)
+{
+    render(postProcessRect, camera);
 }
 
 void OpenGLRenderer::updateUniforms(const IMaterial& material)
@@ -375,69 +460,43 @@ void OpenGLRenderer::updateUniforms(const IMaterial& material)
     }
 }
 
-void OpenGLRenderer::renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec4& viewport)
+void OpenGLRenderer::renderWithPostProcess(NodeList& nodes, ICamera& camera)
 {
-    unsigned int fbo = reinterpret_cast<OpenGLRenderTarget*>(fb)->getId();
+    renderToTarget(nodes, camera, *postProcessFbo);
+    postProcess(nodes, camera);
+}
 
-    std::vector<IMaterial*> originalMaterials;
-    for (unsigned int i = 0; i < meshes.size(); i++)
+void OpenGLRenderer::renderDeferred(NodeList& nodes, ICamera& camera)
+{
+    for (auto node : nodes)
     {
-        originalMaterials.push_back(&meshes[i]->getMaterial());
-        meshes[i]->setMaterial(depthMat);
-    }
-
-    renderToTarget(meshes, lightCamera, *fb);
-
-    for (unsigned int i = 0; i < meshes.size(); i++)
-    {
-        vector<const ITexture*> textures = originalMaterials[i]->getTextures();
-        vector<const ITexture*>::iterator it = find(textures.begin(), textures.end(), shadowMap);
-        if (textures.end() == it)
+        switch (node->getNodeType())
         {
-            originalMaterials[i]->addTexture(shadowMap);
+        case NodeType::Mesh:
+        {
+            auto actualNode = std::static_pointer_cast<MeshNode>(node);
+            renderDeferred(actualNode, camera);
+            break;
         }
-        meshes[i]->setMaterial(originalMaterials[i]);
+        default:
+            break;
+        }
     }
 
-    //render(&r, camera);
-}
-
-void OpenGLRenderer::renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera)
-{
-    renderToTarget(meshes, camera, *postProcessFbo);
-    postProcess(meshes, camera);
-}
-
-void OpenGLRenderer::renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera)
-{
     Vec2 quarterRes = resolution / 2.0f;
-    glViewport(0, 0, (GLsizei) resolution.x, (GLsizei)resolution.y);
-
-    std::vector<IMaterial*> originalMaterials;
-    for (unsigned int i = 0; i < meshes.size(); i++)
-    {
-        originalMaterials.push_back(&meshes[i]->getMaterial());
-        meshes[i]->setMaterial(deferredShadingMat);
-    }
-
-    renderToTarget(meshes, camera, *deferredShadingFbo);
-
-    for (unsigned int i = 0; i < meshes.size(); i++)
-    {
-        meshes[i]->setMaterial(originalMaterials[i]);
-    }
+    glViewport(0, 0, (GLsizei)resolution.x, (GLsizei)resolution.y);
 
     glViewport((GLsizei) quarterRes.x, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[0].get(), camera);
+    render(deferredShadingRect[0], camera);
 
     glViewport(0, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[1].get(), camera);
+    render(deferredShadingRect[1], camera);
 
     glViewport((GLsizei) quarterRes.x, (GLsizei) quarterRes.y, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[2].get(), camera);
+    render(deferredShadingRect[2], camera);
 
     glViewport(0, 0, (GLsizei) quarterRes.x, (GLsizei) quarterRes.y);
-    render(deferredShadingRect[3].get(), camera);
+    render(deferredShadingRect[3], camera);
 
     glViewport(0, 0, (GLsizei) resolution.x, (GLsizei) resolution.y);
 }

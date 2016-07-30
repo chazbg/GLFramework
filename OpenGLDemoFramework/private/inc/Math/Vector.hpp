@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+
+//TODO: remove "using namespace std;"
 using namespace std;
 
 union Vec2

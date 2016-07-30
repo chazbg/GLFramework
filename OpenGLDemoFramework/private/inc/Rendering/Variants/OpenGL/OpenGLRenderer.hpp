@@ -7,6 +7,8 @@
 #include "Core/IScene.hpp"
 #include "Core/ICamera.hpp"
 #include "Core/ITexture.hpp"
+#include "Core/MeshNode.hpp"
+#include "Core/ContainerNode.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLMaterial.hpp"
 #include "Geometry/Rectangle.hpp"
 #include "Core/IResourceManager.hpp"
@@ -28,43 +30,56 @@ public:
     void renderToTarget(IScene& scene, ICamera& camera, IRenderTarget& renderTarget);
 private:
     std::map<unsigned int, unsigned int> textures;
-    OpenGLResourceManager    resourceManager;
-    GeometryFactory          geometryFactory;
-    IMaterial*               depthMat;
-    IMaterial*               rectMat;
-    IMaterial*               postProcessMat;
-    IMaterial*               deferredShadingMat;
-    IMaterial*               deferredShadingRectMat[4];
-    shared_ptr<Rectangle>    r;
-    shared_ptr<Rectangle>    postProcessRect;
-    shared_ptr<Rectangle>    deferredShadingRect[4];
-    IRenderTarget*           fb;
-    IRenderTarget*           postProcessFbo;
-    IRenderTarget*           deferredShadingFbo;
-    ITexture*                shadowMap;
-    ITexture*                postProcessTex;
-    ITexture*                deferredShadingTex[3];
-    PerspectiveCamera        lightCamera;
-    Vec2                     resolution;
+    OpenGLResourceManager      resourceManager;
+    GeometryFactory            geometryFactory;
+    IMaterial*                 depthMat;
+    IMaterial*                 rectMat;
+    IMaterial*                 postProcessMat;
+    IMaterial*                 deferredShadingMat;
+    IMaterial*                 deferredShadingRectMat[4];
+    std::shared_ptr<MeshNode>  r;
+    std::shared_ptr<MeshNode>  postProcessRect;
+    std::shared_ptr<MeshNode>  deferredShadingRect[4];
+    IRenderTarget*             fb;
+    IRenderTarget*             postProcessFbo;
+    IRenderTarget*             deferredShadingFbo;
+    ITexture*                  shadowMap;
+    ITexture*                  postProcessTex;
+    ITexture*                  deferredShadingTex[3];
+    PerspectiveCamera          lightCamera;
+    Vec2                       resolution;
     IntPropertySharedPtr dsColorMap;
     IntPropertySharedPtr dsNormalMap;
     IntPropertySharedPtr dsDepthMap;
-    typedef std::function<void(IMesh& mesh,
+    unsigned int         depthRenderBuffer;
+
+    typedef std::function<void(MeshNode& mesh,
         ICamera& camera,
         ICamera& lightCamera)> PropertySetter;
     std::map<int, std::vector<PropertySetter>> systemPropertySetters;
+
     virtual void materialCreated(IMaterial& material);
     virtual void materialDestroyed(IMaterial& material);
     void initDeferredShading();
     void initPostProcessing();
     void initShadowMapping();
-    unsigned int depthRenderBuffer;
-    void render(std::vector<IMesh*>& meshes, ICamera& camera);
-    void renderToTarget(std::vector<IMesh*>& meshes, ICamera& camera, IRenderTarget& renderTarget);
-    void render(IMesh* mesh, ICamera& camera);
+
     void updateUniforms(const IMaterial& material);
-    void renderToTexture(std::vector<IMesh*>& meshes, ICamera& camera, Vec4& viewport = Vec4(0, 0, 0, 0));
-    void renderWithPostProcess(std::vector<IMesh*>& meshes, ICamera& camera);
-    void renderDeferred(std::vector<IMesh*>& meshes, ICamera& camera);
-    void postProcess(std::vector<IMesh*>& meshes, ICamera& camera);
+
+    // Single node render functions
+    void render(std::shared_ptr<MeshNode> node, ICamera& camera);
+    void render(std::shared_ptr<ContainerNode> node, ICamera& camera);
+    void render(std::shared_ptr<IMesh> mesh, ICamera& camera);
+    void renderToTarget(std::shared_ptr<IMesh> mesh, ICamera& camera, IRenderTarget& renderTarget);
+    void renderToTexture(std::shared_ptr<MeshNode> node, ICamera& camera, Vec4& viewport = Vec4(0, 0, 0, 0));
+    void renderDeferred(std::shared_ptr<MeshNode> node, ICamera& camera);
+
+    typedef std::vector<std::shared_ptr<INode>> NodeList;
+    // Node list render functions
+    void render(NodeList& nodes, ICamera& camera);
+    void renderToTarget(NodeList& nodes, ICamera& camera, IRenderTarget& renderTarget);
+    
+    void renderWithPostProcess(NodeList& nodes, ICamera& camera);
+    void renderDeferred(NodeList& nodes, ICamera& camera);
+    void postProcess(NodeList& nodes, ICamera& camera);
 };

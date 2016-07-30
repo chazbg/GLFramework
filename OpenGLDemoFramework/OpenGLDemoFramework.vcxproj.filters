@@ -144,9 +144,6 @@
     <ClCompile Include="private\src\Core\PerspectiveCamera.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Geometry\CustomGeometry.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderer.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
@@ -188,6 +185,18 @@
     </ClCompile>
     <ClCompile Include="private\src\Math\Quarternion.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\Node.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\MeshNode.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\ContainerNode.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Core\GeometryLoader.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -332,9 +341,6 @@
     <ClInclude Include="private\inc\Demos\DemoWave.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Geometry\CustomGeometry.hpp">
-      <Filter>Header Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
@@ -454,6 +460,24 @@
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoQuarternion.hpp">
       <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\INode.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\Node.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\MeshNode.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\NodeTypes.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\ContainerNode.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\GeometryLoader.hpp">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

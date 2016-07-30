@@ -11,12 +11,12 @@ Scene::~Scene()
 {
 }
 
-void Scene::add(IMesh * mesh)
+void Scene::add(std::shared_ptr<INode> mesh)
 {
     meshes.push_back(mesh);
 }
 
-void Scene::remove(const IMesh* mesh)
+void Scene::remove(const std::shared_ptr<INode> mesh)
 {
     auto it = find(meshes.begin(), meshes.end(), mesh);
     if (it != meshes.end())
@@ -38,7 +38,7 @@ void Scene::remove(const unsigned int index)
     }
 }
 
-std::vector<IMesh*>& Scene::getChildren()
+std::vector<std::shared_ptr<INode>>& Scene::getChildren()
 {
     return meshes;
 }

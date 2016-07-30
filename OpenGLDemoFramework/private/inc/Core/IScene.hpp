@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Core/IMesh.hpp"
+#include "Core/INode.hpp"
 #include <vector>
+#include <memory>
 
 class IScene
 {
 public:
     virtual ~IScene() {}
-    virtual void add(IMesh* mesh) = 0;
-    virtual void remove(const IMesh* mesh) = 0;
-    virtual void remove(const unsigned int index) = 0;
-    virtual std::vector<IMesh*>& getChildren() = 0;
+    virtual void add(std::shared_ptr<INode> node)              = 0;
+    virtual void remove(const std::shared_ptr<INode> mesh)     = 0;
+    virtual void remove(const unsigned int index)              = 0;
+    virtual std::vector<std::shared_ptr<INode>>& getChildren() = 0;
 };

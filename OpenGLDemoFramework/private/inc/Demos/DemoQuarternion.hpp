@@ -35,7 +35,7 @@ namespace QuarternionDemo
                 Quarternion rot = Quarternion::slerp(rotA, rotB, abs(sin(time * 0.02f)));
                 updateSpheres(spheres, rot);
 
-                spheres2[0]->Translate(sin(time * 0.02f) * 0.1f, 0.0f, 0.0f);
+                spheres2[0]->translate(Vec3(sin(time * 0.02f) * 0.1f, 0.0f, 0.0f));
 
                 updateSpheres(spheres2, rotC);               
             }
@@ -71,9 +71,9 @@ namespace QuarternionDemo
 
                 spheres[i]->setMaterial(materials[0]);
                 float scale = 0.05f + 0.05f * (sphereCount - i) / static_cast<float>(sphereCount);
-                spheres[i]->Scale(scale, scale, scale);
-                spheres[i]->Translate(2.0f, 0.0f, 0.0f);
-                scene.add(spheres[i].get());
+                spheres[i]->scale(Vec3(scale, scale, scale));
+                spheres[i]->translate(Vec3(2.0f, 0.0f, 0.0f));
+                scene.add(spheres[i]);
             }   
 
             for (unsigned int i = 0; i < sphereCount; i++)
@@ -82,13 +82,13 @@ namespace QuarternionDemo
 
                 spheres2[i]->setMaterial(materials[0]);
                 float scale = 0.05f + 0.05f * (sphereCount - i) / static_cast<float>(sphereCount);
-                spheres2[i]->Scale(scale, scale, scale);
-                spheres2[i]->Translate(-4.0f, 4.0f, 0.0f);
-                scene.add(spheres2[i].get());
+                spheres2[i]->scale(Vec3(scale, scale, scale));
+                spheres2[i]->translate(Vec3(-4.0f, 4.0f, 0.0f));
+                scene.add(spheres2[i]);
             }
         }
 
-        void updateSpheres(vector <shared_ptr<CustomGeometry>>& spheres, const Quarternion& rotation)
+        void updateSpheres(std::vector<shared_ptr<MeshNode>>& spheres, const Quarternion& rotation)
         {
             Vec3 newPos = rotation.rotate(spheres[0]->getPosition());
 
@@ -96,14 +96,14 @@ namespace QuarternionDemo
             {
                 Vec3 translation = spheres[i - 1]->getPosition() - spheres[i]->getPosition();
                 auto sphere = spheres[i];
-                sphere->Translate(translation.x, translation.y, translation.z);
+                sphere->translate(translation);
             }
 
             Vec3 translation = newPos - spheres[0]->getPosition();
-            spheres[0]->Translate(translation.x, translation.y, translation.z);
+            spheres[0]->translate(translation);
         }
-        vector<shared_ptr<CustomGeometry>> spheres;
-        vector<shared_ptr<CustomGeometry>> spheres2;
+        vector<shared_ptr<MeshNode>> spheres;
+        vector<shared_ptr<MeshNode>> spheres2;
         vector<IMaterial*> materials;
         vector<ITexture*> textures;
         unsigned int sphereCount;

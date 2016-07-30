@@ -7,10 +7,11 @@ class Scene : public IScene
 public:
     Scene();
     ~Scene();
-    virtual void add(IMesh* mesh);
-    virtual void remove(const IMesh* mesh);
+    virtual void add(std::shared_ptr<INode> node);
+    virtual void remove(const std::shared_ptr<INode> mesh);
     virtual void remove(const unsigned int index);
-    virtual std::vector<IMesh*>& getChildren();
+    virtual std::vector<std::shared_ptr<INode>>& getChildren();
+
 private:
-    std::vector<IMesh*> meshes;
+    std::vector<std::shared_ptr<INode>> meshes;
 };

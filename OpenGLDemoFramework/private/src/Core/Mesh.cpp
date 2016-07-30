@@ -19,14 +19,9 @@ Mesh::Mesh(const Mesh& rhs) :
     material(rhs.material),
     ibo(rhs.ibo),
     vbos(rhs.vbos),
-    model(rhs.model),
     castsShadow(rhs.castsShadow),
     receivesShadow(rhs.receivesShadow)
 {
-    for (unsigned int i = 0; i < rhs.children.size(); i++)
-    {
-        children.push_back(rhs.children[i]->clone());
-    }
 }
 
 Mesh::~Mesh()
@@ -41,21 +36,6 @@ const IIndexBuffer * Mesh::getIBO()
 std::vector<const IVertexBuffer*>& Mesh::getVBOs()
 {
     return vbos;
-}
-
-void Mesh::setModelMatrix(const Matrix4 & model)
-{
-    this->model = model;
-
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->setModelMatrix(model);
-    }
-}
-
-Matrix4 Mesh::getModelMatrix() const
-{
-    return model;
 }
 
 void Mesh::setIndices(const IIndexBuffer & indices)
@@ -91,26 +71,11 @@ void Mesh::setBitangents(const IVertexBuffer& bitangents)
 void Mesh::setMaterial(IMaterial * material)
 {
     this->material = material;
-
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->setMaterial(material);
-    }
 }
 
 IMaterial & Mesh::getMaterial() const
 {
     return *material;
-}
-
-void Mesh::addChild(shared_ptr<IMesh> child)
-{
-    children.push_back(child);
-}
-
-std::vector<shared_ptr<IMesh>>& Mesh::getChildren()
-{
-    return children;
 }
 
 void Mesh::SetCastsShadow(const bool castsShadow)
@@ -121,47 +86,6 @@ void Mesh::SetCastsShadow(const bool castsShadow)
 void Mesh::SetReceivesShadow(const bool receivesShadow)
 {
     this->receivesShadow = receivesShadow;
-}
-
-Vec3 Mesh::getPosition()
-{
-    Vec4 base(0.0f, 0.0f, 0.0f, 1.0f);
-    base = model * base;
-    return Vec3(base.x, base.y, base.z);
-}
-
-void Mesh::Scale(const float scaleX, const float scaleY, const float scaleZ)
-{
-    Matrix4 m = GeometryAlgorithm::CreateSRTMatrix(Vec3(scaleX, scaleY, scaleZ), Vec3(0, 0, 0), Vec3(0, 0, 0));
-    model = m * model;
-
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->Scale(scaleX, scaleY, scaleZ);
-    }
-}
-
-void Mesh::Rotate(const float thetaX, const float thetaY, const float thetaZ)
-{
-    Matrix4 m;
-    m.setRotation(thetaX, thetaY, thetaZ);
-    model = m * model;
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->Rotate(thetaX, thetaY, thetaZ);
-    }
-}
-
-void Mesh::Translate(const float transX, const float transY, const float transZ)
-{
-    Matrix4 m;
-    m.setTranslation(Vec3(transX, transY, transZ));
-    model = m * model;
-
-    for (unsigned int i = 0; i < children.size(); i++)
-    {
-        children[i]->Translate(transX, transY, transZ);
-    }
 }
 
 shared_ptr<IMesh> Mesh::clone()
