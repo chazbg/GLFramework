@@ -37,6 +37,16 @@ void ContainerNode::scale(const Vec3 & scale)
     }
 }
 
+void ContainerNode::rotate(const float angle, const Vec3 & axis)
+{
+    //Node::rotate(rotation);
+
+    //for (auto child : children)
+    //{
+    //    child->rotate(rotation);
+    //}
+}
+
 void ContainerNode::rotate(const Vec3 & rotation)
 {
     Node::rotate(rotation);

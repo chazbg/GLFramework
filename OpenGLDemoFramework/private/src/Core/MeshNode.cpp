@@ -1,4 +1,5 @@
 #include "Core/MeshNode.hpp"
+#include "Math/Quarternion.hpp"
 
 MeshNode::MeshNode(std::shared_ptr<IMesh> mesh) : Node(NodeType::Mesh), mesh(mesh)
 {
@@ -59,6 +60,19 @@ void MeshNode::scale(const Vec3 & scale)
     for (auto child : children)
     {
         child->scale(scale);
+    }
+}
+
+void MeshNode::rotate(const float angle, const Vec3 & axis)
+{
+    Quarternion rot = Quarternion::makeRotation(angle, axis);
+    Matrix4 rotation = rot.toMatrix().toMatrix4();
+
+    Node::setModelMatrix(rotation * getModelMatrix());
+
+    for (auto child : children)
+    {
+        child->rotate(angle, axis);
     }
 }
 

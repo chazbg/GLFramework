@@ -97,6 +97,26 @@ Vec3 Quarternion::rotate(const Vec3 & v) const
     return Vec3(res.data[1], res.data[2], res.data[3]);
 }
 
+Matrix3 Quarternion::toMatrix() const
+{
+    Quarternion q = normalize();
+    float xy = 2.0f * q.data[1] * q.data[2];
+    float zw = 2.0f * q.data[3] * q.data[0]; 
+    float xz = 2.0f * q.data[1] * q.data[3];
+    float yw = 2.0f * q.data[2] * q.data[0];
+    float yz = 2.0f * q.data[2] * q.data[3];
+    float xw = 2.0f * q.data[1] * q.data[0];
+
+    float aa = 1.0f - 2.0f * (q.data[2] * q.data[2] - q.data[3] * q.data[3]);
+    float bb = 1.0f - 2.0f * (q.data[1] * q.data[1] - q.data[3] * q.data[3]);
+    float cc = 1.0f - 2.0f * (q.data[1] * q.data[1] - q.data[2] * q.data[2]);
+
+    return Matrix3(
+        Vec3(aa, xy - zw, xz + yw),
+        Vec3(xy + zw, bb, yz - xw),
+        Vec3(xz - yw, yz + xw, cc));
+}
+
 Quarternion Quarternion::slerp(const Quarternion & a, const Quarternion & b, float t)
 {
     float cosPhi = a.data[0] * b.data[0] +

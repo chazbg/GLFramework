@@ -6,6 +6,26 @@
 
 using namespace std;
 
+class Matrix4;
+
+class Matrix3
+{
+public:
+    Matrix3();
+    Matrix3(const Vec3& a0, const Vec3& a1, const Vec3& a2);
+    Vec3 operator*(const Vec3& vec) const;
+    Matrix3 operator*(const Matrix3& rhs) const;
+    Matrix3 operator*(const float rhs) const;
+    Matrix3 operator/(const float rhs) const;
+    operator string() const;
+    string toString() const;
+    Matrix4 toMatrix4() const;
+    const float* raw() const;
+    void setRotation(const float thetaX, const float thetaY, const float thetaZ);
+private:
+    float data[9];
+};
+
 class Matrix4 {
 public:
     Matrix4() 
@@ -51,7 +71,12 @@ public:
         res.y = m[1].dot(vec);
         res.z = m[2].dot(vec);
         res.w = m[3].dot(vec);
-        res /= res.w;
+
+        if (abs(res.w) - 0.0001f > 0)
+        {
+            res /= res.w;
+        }
+       
         return res;
     }
 

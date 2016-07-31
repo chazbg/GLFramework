@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="private\src\Core\CameraNode.cpp" />
     <ClCompile Include="private\src\Core\ContainerNode.cpp" />
     <ClCompile Include="private\src\Core\DefaultCamera.cpp" />
     <ClCompile Include="private\src\Core\GeometryLoader.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="private\src\Math\GeometryAlgorithm.cpp" />
     <ClCompile Include="private\src\Math\Line.cpp" />
     <ClCompile Include="private\src\Math\LineSegment.cpp" />
+    <ClCompile Include="private\src\Math\Matrix.cpp" />
     <ClCompile Include="private\src\Math\Plane.cpp" />
     <ClCompile Include="private\src\Math\Quarternion.cpp" />
     <ClCompile Include="private\src\Math\Vector.cpp" />
@@ -192,6 +194,7 @@
     <ClInclude Include="private\inc\Core\Animation\AnimationKeyFrame.hpp" />
     <ClInclude Include="private\inc\Core\Animation\IAnimation.hpp" />
     <ClInclude Include="private\inc\Core\Animation\LinearAnimation.hpp" />
+    <ClInclude Include="private\inc\Core\CameraNode.hpp" />
     <ClInclude Include="private\inc\Core\ContainerNode.hpp" />
     <ClInclude Include="private\inc\Core\DefaultCamera.hpp" />
     <ClInclude Include="private\inc\Core\GeometryLoader.hpp" />
@@ -242,6 +245,7 @@
     <ClInclude Include="private\inc\Demos\DemoRenderer.hpp" />
     <ClInclude Include="private\inc\Demos\DemoRotatingCalipers.hpp" />
     <ClInclude Include="private\inc\Demos\DemoTexture.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoThirdPerson.hpp" />
     <ClInclude Include="private\inc\Demos\DemoWave.hpp" />
     <ClInclude Include="private\inc\Demos\DemoWindow.hpp" />
     <ClInclude Include="private\inc\Geometry\Bar.hpp" />

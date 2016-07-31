@@ -28,6 +28,7 @@ void Demo3DBase::onInit()
     radius = 30;
     float t = radius * cos(theta);
     cameraPos = Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
+    camera.setPosition(cameraPos);
 }
 
 void Demo3DBase::onUpdate(const unsigned int deltaTime)

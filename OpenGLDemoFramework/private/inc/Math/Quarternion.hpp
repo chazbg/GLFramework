@@ -1,5 +1,6 @@
 #pragma once
 #include "Math/Vector.hpp"
+#include "Math/Matrix.hpp"
 
 class Quarternion
 {
@@ -15,6 +16,7 @@ public:
     Quarternion normalize() const;
     Quarternion inverse() const;
     Vec3 rotate(const Vec3& v) const;
+    Matrix3 toMatrix() const;
     static Quarternion slerp(const Quarternion& a, const Quarternion& b, float t);
     static Quarternion makeRotation(const Quarternion& q);
     static Quarternion makeRotation(const float r, const Vec3& v);

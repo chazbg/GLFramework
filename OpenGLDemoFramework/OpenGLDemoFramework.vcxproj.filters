@@ -198,6 +198,12 @@
     <ClCompile Include="private\src\Core\GeometryLoader.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Core\CameraNode.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\src\Math\Matrix.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -477,6 +483,12 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Core\GeometryLoader.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoThirdPerson.hpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Core\CameraNode.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
