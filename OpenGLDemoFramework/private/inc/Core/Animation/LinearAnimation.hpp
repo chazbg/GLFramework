@@ -39,7 +39,7 @@ void LinearAnimation<T>::addKeyframe(const AnimationKeyframe<T>& keyframe)
 template<class T>
 void LinearAnimation<T>::update(const float t)
 {
-    if (keyframes.size() >= 2)
+    if (keyframes.size() >= 2 && interval < keyframes.size() - 1)
     {
         AnimationKeyframe<T>& a = keyframes[interval];
         AnimationKeyframe<T>& b = keyframes[interval + 1];
