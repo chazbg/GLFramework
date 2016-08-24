@@ -140,8 +140,8 @@ namespace ParticlesDemo
 
             for (unsigned int i = 0; i < aliveParticles; i++)
             {
-                meshes[i]->getMaterial().setProperty(remainingLife[i], particles[i]->getRemainingLife());
-				meshes[i]->getMaterial().setProperty(scale[i], particles[i]->getScale() * (emitter.getScale() + 1.0f));
+                meshes[i]->getMesh()->getMaterial().setProperty(remainingLife[i], particles[i]->getRemainingLife());
+				meshes[i]->getMesh()->getMaterial().setProperty(scale[i], particles[i]->getScale() * (emitter.getScale() + 1.0f));
             }
 
             renderer->render(scene, camera);
@@ -174,17 +174,17 @@ namespace ParticlesDemo
         virtual void particleSpawned(const IParticle2D& particle)
         {
             unsigned int index = emitter.getAliveParticlesCount() - 1;
-            scene.add(meshes[index].get());
-            meshes[index]->getMaterial().setProperty(scale[index], particle.getScale());
-            meshes[index]->getMaterial().setProperty(duration[index], particle.getDuration());
-            meshes[index]->getMaterial().setProperty(tangentAcceleration[index], particle.getTangentialAcceleration());
-            meshes[index]->getMaterial().setProperty(radialAcceleration[index], particle.getRadialAcceleration());
-            meshes[index]->getMaterial().setProperty(phase[index], particle.getPhase());
+            scene.add(meshes[index]);
+            meshes[index]->getMesh()->getMaterial().setProperty(scale[index], particle.getScale());
+            meshes[index]->getMesh()->getMaterial().setProperty(duration[index], particle.getDuration());
+            meshes[index]->getMesh()->getMaterial().setProperty(tangentAcceleration[index], particle.getTangentialAcceleration());
+            meshes[index]->getMesh()->getMaterial().setProperty(radialAcceleration[index], particle.getRadialAcceleration());
+            meshes[index]->getMesh()->getMaterial().setProperty(phase[index], particle.getPhase());
         }
 
         virtual void particleDied(const unsigned int index)
         {
-            scene.remove(meshes[index].get());
+            scene.remove(meshes[index]);
             unsigned int aliveParticles = emitter.getAliveParticlesCount();
             
             swapParticles(index, aliveParticles);
@@ -276,7 +276,7 @@ namespace ParticlesDemo
         float phi;
         float theta;
         float radius;
-        vector<shared_ptr<Rectangle>> meshes;
+        vector<shared_ptr<MeshNode>> meshes;
         vector<IMaterial*> materials;
         vector<ITexture*> textures;
         ITextureCubemap* envMap;
