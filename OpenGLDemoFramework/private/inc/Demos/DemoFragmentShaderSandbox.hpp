@@ -23,17 +23,24 @@ namespace FragmentShaderSandboxDemo
             IResourceManager& rm = renderer->getResourceManager();
             IGeometryFactory& gf = renderer->getGeometryFactory();
 
-            shaderMaterial = rm.createMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/raymarching0.fs");
+            shaderMaterial = rm.createMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/raycast.fs");
             initMaterialProperty(*shaderMaterial, "sampler0", 0);
             initMaterialProperty(*shaderMaterial, "sampler1", 1);
-            initMaterialProperty(*shaderMaterial, "sampler2", 2);
+            shaderMaterial->getProperty("time", timeProperty);
 
             shaderMaterial->addTexture(rm.createTexture(256, 1, 4, (unsigned char*)gen.generateGradient()));
-            shaderMaterial->addTexture(rm.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(0.5)));
-            shaderMaterial->addTexture(rm.createTexture(256, 256, 4, (unsigned char*)gen.generatePerlinNoise(1)));
-            rectangle = gf.createRectangle();
+            shaderMaterial->addTextureCubemap(rm.createTextureCubemap(
+                "Images/cubemap_1_light/posz.png",
+                "Images/cubemap_1_light/negz.png",
+                "Images/cubemap_1_light/posy.png",
+                "Images/cubemap_1_light/negy.png",
+                "Images/cubemap_1_light/posx.png",
+                "Images/cubemap_1_light/negx.png"
+                ));
+            
+            auto rectangle = gf.createRectangle();
             rectangle->setMaterial(shaderMaterial);
-            scene.add(rectangle.get());
+            scene.add(rectangle);
             time = 0;
             stopTime = false;
             prevMousePos = Vec2(0.5, 0.5);
@@ -121,7 +128,6 @@ namespace FragmentShaderSandboxDemo
         DefaultCamera camera;
         Scene scene;
         Renderer* renderer;
-        std::shared_ptr<Rectangle> rectangle;
         IMaterial* shaderMaterial;
         unsigned int time;
         bool stopTime;

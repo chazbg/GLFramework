@@ -35,7 +35,7 @@ void SimpleEmitter::updateParticles(const float t)
 
 void SimpleEmitter::updateParticles(const float t, const bool beat)
 {
-    if (nextSpawn <= 0.0f && aliveParticles < particleCount)
+    while (nextSpawn <= 0.0f && aliveParticles < particleCount)
     {
         IParticle2D* p = particles[aliveParticles];
 
@@ -55,8 +55,9 @@ void SimpleEmitter::updateParticles(const float t, const bool beat)
             r6 * 6.28f);
 
         aliveParticles++;
-        nextSpawn = spawnInterval;
+            
         particleRenderer.particleSpawned(*p);
+        nextSpawn += spawnInterval;
     }
 
     for (unsigned int i = 0; i < aliveParticles; i++)
