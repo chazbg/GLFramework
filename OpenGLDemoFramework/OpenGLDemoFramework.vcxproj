@@ -163,6 +163,7 @@
     <ClCompile Include="private\src\Core\Scene.cpp" />
     <ClCompile Include="private\src\Core\Shader.cpp" />
     <ClCompile Include="private\src\Demos\Demo3DBase.cpp" />
+    <ClCompile Include="private\src\Demos\DemoGForceMeter.cpp" />
     <ClCompile Include="private\src\Geometry\Bar.cpp" />
     <ClCompile Include="private\src\Geometry\BlockMesh.cpp" />
     <ClCompile Include="private\src\Geometry\Cube.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp" />
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp" />
     <ClInclude Include="private\inc\Demos\DemoGeometryShader.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoGForceMeter.hpp" />
     <ClInclude Include="private\inc\Demos\DemoGrahamScan.hpp" />
     <ClInclude Include="private\inc\Demos\DemoHoughTransform.hpp" />
     <ClInclude Include="private\inc\Demos\DemoIntersectingLineSegments.hpp" />

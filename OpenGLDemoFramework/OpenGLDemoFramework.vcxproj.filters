@@ -204,6 +204,9 @@
     <ClCompile Include="private\src\Math\Matrix.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
+    <ClCompile Include="private\src\Demos\DemoGForceMeter.cpp">
+      <Filter>Header Files\Demos</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\inc\Geometry\Bar.hpp">
@@ -490,6 +493,9 @@
     </ClInclude>
     <ClInclude Include="private\inc\Core\CameraNode.hpp">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="private\inc\Demos\DemoGForceMeter.hpp">
+      <Filter>Header Files\Demos</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

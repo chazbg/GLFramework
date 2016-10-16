@@ -1,6 +1,6 @@
-#include "Demos/DemoThirdPerson.hpp"
+#include "Demos/DemoGForceMeter.hpp"
 int main(int argc, char* argv[])
 {
-    ThirdPersonDemo::main();
+    GForceMeterDemo::main();
     return 0;
 }
