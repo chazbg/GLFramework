@@ -129,56 +129,10 @@ namespace ThirdPersonDemo
             anonymous->translate(Vec3(0.0f, 0.0f, -20.0f));
             scene.add(anonymous);
         }
-      
-        void update()
-        {
-            if (accState == -1)
-            {
-                cam->translate(-camera.getLookDirection().normalize());
-                jet->translate(-camera.getLookDirection().normalize());
-            }
-
-            if (accState == 1)
-            {
-                cam->translate(camera.getLookDirection().normalize());
-                jet->translate(camera.getLookDirection().normalize());
-            }
-
-            if (rollState == -1)
-            {
-                //Rotate around Z
-                Vec3 dir = camera.getLookDirection();
-                cam->rotate(Vec3(0.0f, 0.0f, 0.1f));
-                jet->rotate(Vec3(0.0f, 0.0f, -0.1f));
-            }
-
-            if (rollState == 1)
-            {
-                //Rotate around Z
-                Vec3 dir = camera.getLookDirection();
-                cam->rotate(Vec3(0.0f, 0.0f, -0.1f));
-                jet->rotate(Vec3(0.0f, 0.0f, 0.1f));
-            }
-
-            if (pitchState == -1)
-            {
-                //Rotate around X
-                Vec3 dir = (camera.getLookDirection() * camera.getUpVector()).normalize();
-                cam->rotate(-0.1f, dir);
-                jet->rotate(Vec3(0.1f, 0.0f, 0.0f));
-            }
-
-            if (pitchState == 1)
-            {
-                //Rotate around X
-                Vec3 dir = (camera.getLookDirection() * camera.getUpVector()).normalize();
-                cam->rotate(0.1f, dir);
-                jet->rotate(Vec3(-0.1f, 0.0f, 0.0f));
-            }
-        }
 
         std::shared_ptr<CameraNode> cam;
         std::shared_ptr<MeshNode> jet;
+        std::shared_ptr<ContainerNode> container;
         vector<IMaterial*> materials;
         vector<ITexture*> textures;
         unsigned int sphereCount;

@@ -1,6 +1,6 @@
-#include "Demos/DemoParticles.hpp"
+#include "Demos/DemoThirdPerson.hpp"
 int main(int argc, char* argv[])
 {
-    ParticlesDemo::main();
+    ThirdPersonDemo::main();
     return 0;
 }
