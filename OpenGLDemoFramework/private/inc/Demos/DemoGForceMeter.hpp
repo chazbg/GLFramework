@@ -38,7 +38,7 @@ namespace GForceMeterDemo
 
             renderMaterial = rm.createMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/GForceMeter/gforceRender.fs");
             renderMaterial->addTexture(intensityTexture->getColorTexture(0));
-            renderMaterial->addTexture(rm.createTexture("Images/GForceMeter/gforceGradient.png"));
+            renderMaterial->addTexture(rm.createTexture("Images/GForceMeter/gforceGradient2.png"));
             initMaterialProperty(*renderMaterial, "intensity", 0);
             initMaterialProperty(*renderMaterial, "gradient", 1);
 
