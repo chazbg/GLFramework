@@ -229,6 +229,23 @@ void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTar
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }
 
+void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTarget & renderTarget, bool clear)
+{
+    unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
+    GLint originalFbo;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    if (clear)
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    
+    render(scene, camera);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
+}
+
 void OpenGLRenderer::render(std::vector<std::shared_ptr<INode>>& nodes, ICamera & camera)
 {
     for (auto node : nodes)

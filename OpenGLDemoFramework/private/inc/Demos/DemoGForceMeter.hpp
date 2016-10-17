@@ -38,6 +38,10 @@ namespace GForceMeterDemo
 
             renderMaterial = rm.createMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/GForceMeter/gforceRender.fs");
             renderMaterial->addTexture(intensityTexture->getColorTexture(0));
+            renderMaterial->addTexture(rm.createTexture("Images/GForceMeter/gforceGradient.png"));
+            initMaterialProperty(*renderMaterial, "intensity", 0);
+            initMaterialProperty(*renderMaterial, "gradient", 1);
+
             rect = gf.createRectangle();
             scene.add(rect);
             time       = 0.0f;
@@ -50,7 +54,7 @@ namespace GForceMeterDemo
             v          = Vec2(0.0f);
             prevEventV = Vec2(0.0f);
             prevEvent  = 0.0f;
-            duration   = 0.2f;
+            duration   = 1.0f;
         }
         virtual void onUpdate(const unsigned int deltaTime) {}
         virtual void onRender(const unsigned int deltaTime)
@@ -67,7 +71,7 @@ namespace GForceMeterDemo
             intensityMaterial->setProperty(vProperty, v);
             rect->setMaterial(intensityMaterial);
 
-            renderer->renderToTarget(scene, camera, *intensityTexture);
+            renderer->renderToTarget(scene, camera, *intensityTexture, false);
             rect->setMaterial(renderMaterial);
 
             renderer->render(scene, camera);

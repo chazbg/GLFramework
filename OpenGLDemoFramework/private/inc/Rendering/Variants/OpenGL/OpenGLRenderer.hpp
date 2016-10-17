@@ -28,6 +28,7 @@ public:
     IGeometryFactory& getGeometryFactory();
     void render(IScene& scene, ICamera& camera);
     void renderToTarget(IScene& scene, ICamera& camera, IRenderTarget& renderTarget);
+    void renderToTarget(IScene & scene, ICamera & camera, IRenderTarget & renderTarget, bool clear);
 private:
     std::map<unsigned int, unsigned int> textures;
     OpenGLResourceManager      resourceManager;
