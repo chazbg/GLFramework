@@ -27,8 +27,12 @@ namespace GForceMeterDemo
             intensityTexture->addColorTexture(rm.createTexture(
                 static_cast<unsigned int>(resolution.x), 
                 static_cast<unsigned int>(resolution.y), 3, false));
+            intensityTexture->addColorTexture(rm.createTexture(
+                static_cast<unsigned int>(resolution.x),
+                static_cast<unsigned int>(resolution.y), 3, false));
             intensityMaterial = rm.createMaterial("Shaders/fragmentShaderSandbox.vs", "Shaders/GForceMeter/gforceIntensity.fs");
-            
+            intensityMaterial->addTexture(intensityTexture->getColorTexture(0));
+
             intensityMaterial->getProperty("p", pProperty);
             intensityMaterial->getProperty("v", vProperty);
 
