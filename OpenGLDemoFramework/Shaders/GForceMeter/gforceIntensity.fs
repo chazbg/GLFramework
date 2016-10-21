@@ -9,22 +9,23 @@ uniform sampler2D prevIntensity;
 // Ouput data
 layout(location = 0) out vec3 intensity;
 
-#define R 0.03
-#define STEPS 10.0
+#define R 0.08
+#define STEPS 25.0
+#define INV_STEPS 0.04
 
 vec3 getColor(float dist, float r)
 {
     vec3 res = vec3(0.0);
-    res.x    = 1.0 - dist / r;
+    res.x    = pow(1.0 - dist / r, 4.0);
     return res;
 }
 
 void main()
 {
     vec2 pos = p - v;
-    float delta = length(v) / STEPS;
+    vec2 delta = v * INV_STEPS;
     
-    intensity = texture2D(prevIntensity, texCoords).rgb * 0.95;
+    intensity = texture2D(prevIntensity, texCoords).rgb * 0.98;
     float hits = 0.0;
     vec3 additional = vec3(0.0);
     
@@ -34,15 +35,22 @@ void main()
         
         if (dist <= R)
         {
-            additional += getColor(dist, R);
-            hits       += 1.0;
+            if (length(delta) > 0.0)
+            {
+                additional += getColor(dist, R);
+                hits       += 1.0;
+            }
         }
-        pos += delta * v;
+        pos += delta;
     }
 
-    if (hits > 1.0)
+    if (hits >= 1.0)
     {
-        additional /= hits;
+        if (length(delta) == 0.0)
+        {
+            intensity *= 1.0 / 0.98;
+        }
+        additional /= hits;   
     }        
     
     intensity += additional;

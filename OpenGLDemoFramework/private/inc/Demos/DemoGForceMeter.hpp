@@ -54,7 +54,7 @@ namespace GForceMeterDemo
             v          = Vec2(0.0f);
             prevEventV = Vec2(0.0f);
             prevEvent  = 0.0f;
-            duration   = 1.0f;
+            duration   = 0.2f;
         }
         virtual void onUpdate(const unsigned int deltaTime) {}
         virtual void onRender(const unsigned int deltaTime)
