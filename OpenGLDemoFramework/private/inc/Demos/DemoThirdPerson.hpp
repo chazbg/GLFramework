@@ -18,15 +18,26 @@ namespace ThirdPersonDemo
     {
     public:
         TestWindowApp(const Vec2 resolution) :
-            Demo3DBase(resolution), sphereCount(50) {}
+            Demo3DBase(resolution), sphereCount(50) 
+        {
+        }
         ~TestWindowApp() {}
+
+        virtual void onInit()
+        {
+            renderer = new Renderer(resolution);
+
+            initTextures();
+            initMaterials();
+            initGeometry();
+
+            time = 0;
+            stopTime = false;
+        }
 
         virtual void onRender(const unsigned int deltaTime)
         {
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
-
-            Quarternion rotA = Quarternion::makeRotation(static_cast<float>(M_PI) / 30.0f, Vec3(-1.0f, 1.0f, 0.0f));
-
 
             if (!stopTime)
             {
@@ -40,59 +51,71 @@ namespace ThirdPersonDemo
         {
             cout << c << " " << x << " " << y << endl;
 
+            Vec4 jetDir = (jet->getModelMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
+            Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
+            Vec3 dir = Vec3(jetDir.x, jetDir.y, jetDir.z);
+            Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
+
             switch (c)
             {
             case 'q':
             {
-                cam->translate(-camera.getLookDirection().normalize());
-                jet->translate(-camera.getLookDirection().normalize());
+                jet->translate(-dir);
                 break;
             }
             case 'e':
             {
-                cam->translate(camera.getLookDirection().normalize());
-                jet->translate(camera.getLookDirection().normalize());
+                jet->translate(dir);
                 break;
             }
             case 'a':
             {
                 //Rotate around Z
-                Vec3 dir = camera.getLookDirection();
-                cam->rotate(-0.1f, dir);
                 jet->rotate(-0.1f, dir);
                 break;
             }                
             case 'd':
             {
                 //Rotate around Z
-                Vec3 dir = camera.getLookDirection();
-                cam->rotate(0.1f, dir);
                 jet->rotate(0.1f, dir);
                 break;
             }
             case 'w':
             {
                 //Rotate around X
-                Vec3 dir = (camera.getLookDirection() * camera.getUpVector()).normalize();
-                cam->rotate(-0.1f, dir);
-                jet->rotate(-0.1f, dir);
+                jet->rotate(-0.1f, right);
                 break;
             }
             case 's':
             {
                 //Rotate around X
-                Vec3 dir = (camera.getLookDirection() * camera.getUpVector()).normalize();
-                cam->rotate(0.1f, dir);
-                jet->rotate(0.1f, dir);
+                jet->rotate(0.1f, right);
                 break;
             }
             default:
                 stopTime = !stopTime;
                 break;
             }
+
+            updateCamera();
         }
 
     private:
+
+        void updateCamera()
+        {
+            Vec4 jetDir = (jet->getModelMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
+            Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
+            Vec3 dir = Vec3(jetDir.x, jetDir.y, jetDir.z);
+            Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
+            float cosTheta = 0.54f;
+            Quarternion rot = Quarternion::makeRotation(-cosTheta, right);
+            Vec3 jetToCamera = rot.rotate(dir);
+            cam->setPosition(jet->getPosition() - jetToCamera * 50.0f);
+            cam->setDirVector(jet->getPosition());
+            Vec3 cameraUp = right * cam->getDirVector();
+            cam->setUpVector(cameraUp);
+        }
         virtual void initTextures()
         {
             IResourceManager& rm = renderer->getResourceManager();
@@ -121,6 +144,8 @@ namespace ThirdPersonDemo
 
             scene.add(jet);
             scene.add(cam);
+
+            updateCamera();
 
             auto anonymous = geometryFactory.createCustomGeometry("3DAssets/StarWars/Space_Fighter.obj");
             anonymous->setMaterial(materials[0]);

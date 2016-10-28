@@ -61,3 +61,23 @@ void CameraNode::translate(const Vec3 & translation)
     camera.setPosition(camera.getPosition() + translation);
     camera.setLookDirection(camera.getPosition() + camera.getLookDirection() + translation);
 }
+
+void CameraNode::setDirVector(const Vec3& dir)
+{
+    camera.setLookDirection(dir);
+}
+
+Vec3 CameraNode::getDirVector() const
+{
+    return camera.getLookDirection().normalize();
+}
+
+void CameraNode::setUpVector(const Vec3& up)
+{
+    camera.setUpVector(up);
+}
+
+Vec3 CameraNode::getUpVector() const
+{
+    return camera.getUpVector();
+}

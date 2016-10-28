@@ -18,6 +18,10 @@ public:
     virtual void rotate(const float angle, const Vec3& axis);
     virtual void rotate(const Vec3& rotation);
     virtual void translate(const Vec3& translation);
+    virtual void setDirVector(const Vec3& dir);
+    virtual Vec3 getDirVector() const;
+    virtual void setUpVector(const Vec3& up);
+    virtual Vec3 getUpVector() const;
 private:
     ICamera& camera;
 };

@@ -107,9 +107,9 @@ Matrix3 Quarternion::toMatrix() const
     float yz = 2.0f * q.data[2] * q.data[3];
     float xw = 2.0f * q.data[1] * q.data[0];
 
-    float aa = 1.0f - 2.0f * (q.data[2] * q.data[2] - q.data[3] * q.data[3]);
-    float bb = 1.0f - 2.0f * (q.data[1] * q.data[1] - q.data[3] * q.data[3]);
-    float cc = 1.0f - 2.0f * (q.data[1] * q.data[1] - q.data[2] * q.data[2]);
+    float aa = 1.0f - 2.0f * (q.data[2] * q.data[2] + q.data[3] * q.data[3]);
+    float bb = 1.0f - 2.0f * (q.data[1] * q.data[1] + q.data[3] * q.data[3]);
+    float cc = 1.0f - 2.0f * (q.data[1] * q.data[1] + q.data[2] * q.data[2]);
 
     return Matrix3(
         Vec3(aa, xy - zw, xz + yw),
@@ -134,11 +134,11 @@ Quarternion Quarternion::slerp(const Quarternion & a, const Quarternion & b, flo
 Quarternion Quarternion::makeRotation(const Quarternion & q)
 {
     Vec3 vectorPart = sin(q.data[0] / 2.0f) * Vec3(q.data[1], q.data[2], q.data[3]).normalize();
-    return Quarternion(cos(q.data[0] / 2.0f), vectorPart.x, vectorPart.y, vectorPart.z);
+    return Quarternion(cos(q.data[0] / 2.0f), vectorPart.x, vectorPart.y, vectorPart.z).normalize();
 }
 
 Quarternion Quarternion::makeRotation(const float r, const Vec3 & v)
 {
     Vec3 vectorPart = sin(r / 2.0f) * v.normalize();
-    return Quarternion(cos(r / 2.0f), vectorPart.x, vectorPart.y, vectorPart.z);
+    return Quarternion(cos(r / 2.0f), vectorPart.x, vectorPart.y, vectorPart.z).normalize();
 }
