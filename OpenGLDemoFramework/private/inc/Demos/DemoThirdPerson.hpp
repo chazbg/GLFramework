@@ -8,6 +8,7 @@
 #include "Demos/Demo3DBase.hpp"
 #include "Math/Quarternion.hpp"
 #include "Core/CameraNode.hpp"
+#include "Core/Animation/LinearAnimation.hpp"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -33,11 +34,42 @@ namespace ThirdPersonDemo
 
             time = 0;
             stopTime = false;
+            velocity = 0.1f;
         }
 
         virtual void onRender(const unsigned int deltaTime)
         {
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
+
+            rollAnimation.update(0.016f);
+            pitchAnimation.update(0.016f);
+            accAnimation.update(0.016f);
+
+            Vec4 jetDir = (jet->getModelMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
+            Vec3 dir = Vec3(jetDir.x, jetDir.y, jetDir.z);
+
+            if (!rollAnimation.isExpired())
+            {
+                jet->rotate(rollAnimation.getValue(), dir);
+            }
+
+            if (!pitchAnimation.isExpired())
+            {
+                Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
+                Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
+                jet->rotate(pitchAnimation.getValue(), right);
+            }
+
+            float actualVelocity = velocity;
+            if (!accAnimation.isExpired())
+            {
+                actualVelocity += accAnimation.getValue();
+            }
+
+            jet->translate(dir * actualVelocity);
+
+            updateCamera();
+
 
             if (!stopTime)
             {
@@ -60,44 +92,50 @@ namespace ThirdPersonDemo
             {
             case 'q':
             {
-                jet->translate(-dir);
-                break;
-            }
-            case 'e':
-            {
-                jet->translate(dir);
+                accAnimation = LinearAnimation<float>();
+                accAnimation.addKeyframe(AnimationKeyframe<float>(0.00f, 0.0f));
+                accAnimation.addKeyframe(AnimationKeyframe<float>(0.25f, 0.3f));
+                accAnimation.addKeyframe(AnimationKeyframe<float>(0.50f, 0.4f));
+                accAnimation.addKeyframe(AnimationKeyframe<float>(0.75f, 0.3f));
+                accAnimation.addKeyframe(AnimationKeyframe<float>(1.00f, 0.0f));
                 break;
             }
             case 'a':
             {
                 //Rotate around Z
-                jet->rotate(-0.1f, dir);
+                rollAnimation = LinearAnimation<float>();
+                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, -0.03f));
+                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, -0.03f));
                 break;
             }                
             case 'd':
             {
                 //Rotate around Z
-                jet->rotate(0.1f, dir);
+                rollAnimation = LinearAnimation<float>();
+                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, 0.03f));
+                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, 0.03f));
                 break;
             }
             case 'w':
             {
                 //Rotate around X
-                jet->rotate(-0.1f, right);
+                pitchAnimation = LinearAnimation<float>();
+                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, -0.03f));
+                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, -0.03f));
                 break;
             }
             case 's':
             {
                 //Rotate around X
-                jet->rotate(0.1f, right);
+                pitchAnimation = LinearAnimation<float>();
+                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, 0.03f));
+                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, 0.03f));
                 break;
             }
             default:
                 stopTime = !stopTime;
                 break;
             }
-
-            updateCamera();
         }
 
     private:
@@ -164,6 +202,10 @@ namespace ThirdPersonDemo
         int accState;
         int rollState;
         int pitchState;
+        LinearAnimation<float> rollAnimation;
+        LinearAnimation<float> pitchAnimation;
+        LinearAnimation<float> accAnimation;
+        float velocity;
     };
 
     void main()
