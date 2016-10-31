@@ -32,9 +32,11 @@ namespace ThirdPersonDemo
             initMaterials();
             initGeometry();
 
-            time = 0;
-            stopTime = false;
-            velocity = 0.1f;
+            time           = 0;
+            stopTime       = false;
+            velocity       = 0.1f;
+            cameraDistance = 50.0f;
+            cameraAngle    = static_cast<float>(M_PI) / 6.0f;
         }
 
         virtual void onRender(const unsigned int deltaTime)
@@ -90,6 +92,16 @@ namespace ThirdPersonDemo
 
             switch (c)
             {
+            case '[':
+            {
+                cameraDistance -= 5.0f;
+                break;
+            }
+            case ']':
+            {
+                cameraDistance += 5.0f;
+                break;
+            }
             case 'q':
             {
                 accAnimation = LinearAnimation<float>();
@@ -146,10 +158,9 @@ namespace ThirdPersonDemo
             Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
             Vec3 dir = Vec3(jetDir.x, jetDir.y, jetDir.z);
             Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
-            float cosTheta = 0.54f;
-            Quarternion rot = Quarternion::makeRotation(-cosTheta, right);
+            Quarternion rot = Quarternion::makeRotation(-cameraAngle, right);
             Vec3 jetToCamera = rot.rotate(dir);
-            cam->setPosition(jet->getPosition() - jetToCamera * 50.0f);
+            cam->setPosition(jet->getPosition() - jetToCamera * cameraDistance);
             cam->setDirVector(jet->getPosition());
             Vec3 cameraUp = right * cam->getDirVector();
             cam->setUpVector(cameraUp);
@@ -157,6 +168,7 @@ namespace ThirdPersonDemo
         virtual void initTextures()
         {
             IResourceManager& rm = renderer->getResourceManager();
+            textures.push_back(rm.createTexture("Images/XWing_Diffuse_01.png"));
         }
 
         virtual void initMaterials()
@@ -165,8 +177,9 @@ namespace ThirdPersonDemo
 
             //0
             materials.push_back(resourceManager.createMaterial(
-                "Shaders/cube.vs",
-                "Shaders/cube.fs"));
+                "Shaders/textured.vs",
+                "Shaders/textured.fs"));
+            materials[0]->addTexture(textures[0]);
         }
 
         virtual void initGeometry()
@@ -206,6 +219,8 @@ namespace ThirdPersonDemo
         LinearAnimation<float> pitchAnimation;
         LinearAnimation<float> accAnimation;
         float velocity;
+        float cameraDistance;
+        float cameraAngle;
     };
 
     void main()
