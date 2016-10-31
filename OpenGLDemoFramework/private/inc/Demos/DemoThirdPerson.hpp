@@ -36,7 +36,7 @@ namespace ThirdPersonDemo
             stopTime       = false;
             velocity       = 0.05f;
             cameraDistance = 50.0f;
-            cameraAngle    = static_cast<float>(M_PI) / 6.0f;
+            cameraAngle    = 0.0f;
         }
 
         virtual void onRender(const unsigned int deltaTime)
@@ -203,12 +203,22 @@ namespace ThirdPersonDemo
 
             updateCamera();
 
-            auto anonymous = geometryFactory.createCustomGeometry("3DAssets/StarWars/Space_Fighter.obj");
-            anonymous->setMaterial(materials[1]);
-            anonymous->scale(Vec3(0.01f));
-            anonymous->rotate(Vec3(0.0f, static_cast<float>(M_PI), 0.0f));
-            anonymous->translate(Vec3(0.0f, 0.0f, -20.0f));
-            scene.add(anonymous);
+            for (auto i = -1.5f; i < 2.5f; i += 1.0f)
+            {
+                for (auto j = -1.5f; j < 2.5f; j += 1.0f)
+                {
+                    for (auto k = -1.5f; k < 2.5f; k += 1.0f)
+                    {
+                        auto anonymous = geometryFactory.createCustomGeometry("3DAssets/StarWars/Space_Fighter.obj");
+                        anonymous->setMaterial(materials[1]);
+                        anonymous->scale(Vec3(0.01f));
+                        anonymous->rotate(Vec3(0.0f, static_cast<float>(M_PI), 0.0f));
+                        anonymous->translate(Vec3(i * 15.0f, j * 15.0f, k * -15.0f));
+                        scene.add(anonymous);
+                    }
+                }
+            }
+
         }
 
         std::shared_ptr<CameraNode> cam;
