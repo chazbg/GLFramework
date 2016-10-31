@@ -34,7 +34,7 @@ namespace ThirdPersonDemo
 
             time           = 0;
             stopTime       = false;
-            velocity       = 0.1f;
+            velocity       = 0.05f;
             cameraDistance = 50.0f;
             cameraAngle    = static_cast<float>(M_PI) / 6.0f;
         }
@@ -169,6 +169,7 @@ namespace ThirdPersonDemo
         {
             IResourceManager& rm = renderer->getResourceManager();
             textures.push_back(rm.createTexture("Images/XWing_Diffuse_01.png"));
+            textures.push_back(rm.createTexture("Images/Tie_Fighter_Wing_Diffuse.png"));
         }
 
         virtual void initMaterials()
@@ -179,7 +180,11 @@ namespace ThirdPersonDemo
             materials.push_back(resourceManager.createMaterial(
                 "Shaders/textured.vs",
                 "Shaders/textured.fs"));
+            //1
+            materials.push_back(resourceManager.cloneMaterial(materials[0]));
+
             materials[0]->addTexture(textures[0]);
+            materials[1]->addTexture(textures[1]);
         }
 
         virtual void initGeometry()
@@ -199,7 +204,7 @@ namespace ThirdPersonDemo
             updateCamera();
 
             auto anonymous = geometryFactory.createCustomGeometry("3DAssets/StarWars/Space_Fighter.obj");
-            anonymous->setMaterial(materials[0]);
+            anonymous->setMaterial(materials[1]);
             anonymous->scale(Vec3(0.01f));
             anonymous->rotate(Vec3(0.0f, static_cast<float>(M_PI), 0.0f));
             anonymous->translate(Vec3(0.0f, 0.0f, -20.0f));
