@@ -13,5 +13,5 @@ void main()
 {
     vec3 l    = normalize(vec3(0.1));
     float NoL = dot(normalize(vNormal), l);
-    outColor = NoL * texture2D(tex, vUV).rgb;
+    outColor  = NoL * texture2D(tex, vec2(vUV.x, 1.0 - vUV.y)).bgr;
 }
