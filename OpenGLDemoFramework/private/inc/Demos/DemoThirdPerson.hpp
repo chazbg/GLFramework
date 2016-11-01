@@ -34,9 +34,9 @@ namespace ThirdPersonDemo
 
             time           = 0;
             stopTime       = false;
-            velocity       = 0.05f;
+            velocity       = 0.1f;
             cameraDistance = 50.0f;
-            cameraAngle    = 0.0f;
+            cameraAngle    = static_cast<float>(M_PI) / 8.0f;
         }
 
         virtual void onRender(const unsigned int deltaTime)
@@ -52,14 +52,21 @@ namespace ThirdPersonDemo
 
             if (!rollAnimation.isExpired())
             {
+                Vec3 jetPos = jet->getPosition();
+                jet->translate(-jetPos);
                 jet->rotate(rollAnimation.getValue(), dir);
+                jet->translate(jetPos);
             }
 
             if (!pitchAnimation.isExpired())
             {
                 Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
                 Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
+                Vec3 jetPos = jet->getPosition();
+                jet->translate(-jetPos);
                 jet->rotate(pitchAnimation.getValue(), right);
+                jet->translate(jetPos);
+
             }
 
             float actualVelocity = velocity;
@@ -71,7 +78,6 @@ namespace ThirdPersonDemo
             jet->translate(dir * actualVelocity);
 
             updateCamera();
-
 
             if (!stopTime)
             {
@@ -117,7 +123,7 @@ namespace ThirdPersonDemo
                 //Rotate around Z
                 rollAnimation = LinearAnimation<float>();
                 rollAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, -0.03f));
-                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, -0.03f));
+                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.2f, -0.03f));
                 break;
             }                
             case 'd':
@@ -125,7 +131,7 @@ namespace ThirdPersonDemo
                 //Rotate around Z
                 rollAnimation = LinearAnimation<float>();
                 rollAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, 0.03f));
-                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, 0.03f));
+                rollAnimation.addKeyframe(AnimationKeyframe<float>(0.2f, 0.03f));
                 break;
             }
             case 'w':
@@ -133,7 +139,7 @@ namespace ThirdPersonDemo
                 //Rotate around X
                 pitchAnimation = LinearAnimation<float>();
                 pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, -0.03f));
-                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, -0.03f));
+                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.2f, -0.03f));
                 break;
             }
             case 's':
@@ -141,7 +147,7 @@ namespace ThirdPersonDemo
                 //Rotate around X
                 pitchAnimation = LinearAnimation<float>();
                 pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.0f, 0.03f));
-                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.5f, 0.03f));
+                pitchAnimation.addKeyframe(AnimationKeyframe<float>(0.2f, 0.03f));
                 break;
             }
             default:
@@ -195,7 +201,7 @@ namespace ThirdPersonDemo
             jet->setMaterial(materials[0]);
             jet->scale(Vec3(0.01f));
             jet->rotate(Vec3(0.0f, static_cast<float>(M_PI), 0.0f));
-
+            jet->translate(Vec3(0.0f, 0.0f, 100.0f));
             cam = std::shared_ptr<CameraNode>(new CameraNode(camera));
 
             scene.add(jet);
