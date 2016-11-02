@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E6304748-D8B1-4E9D-B508-91AD5EA4ACDD}</ProjectGuid>
-    <RootNamespace>Physics</RootNamespace>
+    <ProjectGuid>{39BEC3F1-236A-4A62-9950-0D876071B54B}</ProjectGuid>
+    <RootNamespace>Math</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>inc;../Math/inc;$(IncludePath)</IncludePath>
+    <IncludePath>inc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,16 +120,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="inc\IPhysicsManager.hpp" />
-    <ClInclude Include="inc\PhysicsManager.hpp" />
+    <ClCompile Include="src\Math\GeometryAlgorithm.cpp" />
+    <ClCompile Include="src\Math\Line.cpp" />
+    <ClCompile Include="src\Math\LineSegment.cpp" />
+    <ClCompile Include="src\Math\Matrix.cpp" />
+    <ClCompile Include="src\Math\Plane.cpp" />
+    <ClCompile Include="src\Math\Quarternion.cpp" />
+    <ClCompile Include="src\Math\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\PhysicsManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Math\Math.vcxproj">
-      <Project>{39bec3f1-236a-4a62-9950-0d876071b54b}</Project>
-    </ProjectReference>
+    <ClInclude Include="inc\Math\GeometryAlgorithm.hpp" />
+    <ClInclude Include="inc\Math\Line.hpp" />
+    <ClInclude Include="inc\Math\LineSegment.hpp" />
+    <ClInclude Include="inc\Math\Matrix.hpp" />
+    <ClInclude Include="inc\Math\Plane.hpp" />
+    <ClInclude Include="inc\Math\Quarternion.hpp" />
+    <ClInclude Include="inc\Math\Vector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

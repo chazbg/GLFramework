@@ -28,14 +28,8 @@
     <Filter Include="Header Files\Windowing">
       <UniqueIdentifier>{4819e71d-bc3a-4d68-b4ca-e7ac775b3474}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Math">
-      <UniqueIdentifier>{7ace5328-3289-4f80-a471-cc17b2e905c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Geometry">
       <UniqueIdentifier>{2964d88a-29a9-471d-b740-6ad57b16c4da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Math">
-      <UniqueIdentifier>{419db822-0b88-4986-a59c-abe5cbe9a82a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{a62fa10b-1b48-4a99-b1b8-ca58abc3a3b5}</UniqueIdentifier>
@@ -83,21 +77,6 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Math\GeometryAlgorithm.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Math\Line.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Math\LineSegment.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Math\Plane.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Math\Vector.cpp">
-      <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Core\Mesh.cpp">
       <Filter>Source Files\Core</Filter>
@@ -183,9 +162,6 @@
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderTarget.cpp">
       <Filter>Source Files\Rendering\Variants\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="private\src\Math\Quarternion.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
     <ClCompile Include="private\src\Core\Node.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -200,9 +176,6 @@
     </ClCompile>
     <ClCompile Include="private\src\Core\CameraNode.cpp">
       <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="private\src\Math\Matrix.cpp">
-      <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="private\src\Demos\DemoGForceMeter.cpp">
       <Filter>Header Files\Demos</Filter>
@@ -242,24 +215,6 @@
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Math\GeometryAlgorithm.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Math\Line.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Math\LineSegment.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Math\Matrix.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Math\Plane.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Math\Vector.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp">
       <Filter>Header Files\Demos</Filter>
     </ClInclude>
@@ -290,16 +245,7 @@
     <ClInclude Include="private\inc\Tests\TestGeometryAlgorithm.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
-    <ClInclude Include="private\inc\Tests\TestLine.hpp">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
     <ClInclude Include="private\inc\Tests\TestMatrix.hpp">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Tests\TestPlane.hpp">
-      <Filter>Header Files\Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Tests\TestVector.hpp">
       <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Windowing\Variants\WindowDX.hpp">
@@ -310,9 +256,6 @@
     </ClInclude>
     <ClInclude Include="private\inc\Windowing\Variants\GLUTWrapper.hpp">
       <Filter>Header Files\Windowing\Variants</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Tests\TestWindow.hpp">
-      <Filter>Header Files\Tests</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Demos\DemoWindow.hpp">
       <Filter>Header Files\Demos</Filter>
@@ -460,9 +403,6 @@
     </ClInclude>
     <ClInclude Include="private\inc\Core\Animation\AnimationKeyFrame.hpp">
       <Filter>Header Files\Core\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="private\inc\Math\Quarternion.hpp">
-      <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="private\inc\Tests\TestQuarternion.hpp">
       <Filter>Header Files\Tests</Filter>

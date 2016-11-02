@@ -66,7 +66,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Assimp\include;./include;./private/inc;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Assimp\include;./include;./private/inc;../Math/inc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Assimp\lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
@@ -173,13 +173,6 @@
     <ClCompile Include="private\src\Geometry\PointListMesh.cpp" />
     <ClCompile Include="private\src\Geometry\Rectangle.cpp" />
     <ClCompile Include="private\src\Geometry\Triangle.cpp" />
-    <ClCompile Include="private\src\Math\GeometryAlgorithm.cpp" />
-    <ClCompile Include="private\src\Math\Line.cpp" />
-    <ClCompile Include="private\src\Math\LineSegment.cpp" />
-    <ClCompile Include="private\src\Math\Matrix.cpp" />
-    <ClCompile Include="private\src\Math\Plane.cpp" />
-    <ClCompile Include="private\src\Math\Quarternion.cpp" />
-    <ClCompile Include="private\src\Math\Vector.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLIndexBuffer.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="private\src\Rendering\Variants\OpenGL\OpenGLRenderer.cpp" />
@@ -260,13 +253,6 @@
     <ClInclude Include="private\inc\Geometry\PointListMesh.hpp" />
     <ClInclude Include="private\inc\Geometry\rectangle.hpp" />
     <ClInclude Include="private\inc\Geometry\Triangle.hpp" />
-    <ClInclude Include="private\inc\Math\GeometryAlgorithm.hpp" />
-    <ClInclude Include="private\inc\Math\Line.hpp" />
-    <ClInclude Include="private\inc\Math\LineSegment.hpp" />
-    <ClInclude Include="private\inc\Math\Matrix.hpp" />
-    <ClInclude Include="private\inc\Math\Plane.hpp" />
-    <ClInclude Include="private\inc\Math\Quarternion.hpp" />
-    <ClInclude Include="private\inc\Math\Vector.hpp" />
     <ClInclude Include="private\inc\Rendering\Renderer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLIndexBuffer.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLMaterial.hpp" />
@@ -278,16 +264,17 @@
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLTextureCubemap.hpp" />
     <ClInclude Include="private\inc\Rendering\Variants\OpenGL\OpenGLVertexBuffer.hpp" />
     <ClInclude Include="private\inc\Tests\TestGeometryAlgorithm.hpp" />
-    <ClInclude Include="private\inc\Tests\TestLine.hpp" />
     <ClInclude Include="private\inc\Tests\TestMatrix.hpp" />
     <ClInclude Include="private\inc\Tests\TestParticles.hpp" />
-    <ClInclude Include="private\inc\Tests\TestPlane.hpp" />
     <ClInclude Include="private\inc\Tests\TestQuarternion.hpp" />
-    <ClInclude Include="private\inc\Tests\TestVector.hpp" />
-    <ClInclude Include="private\inc\Tests\TestWindow.hpp" />
     <ClInclude Include="private\inc\Windowing\Variants\GLUTWrapper.hpp" />
     <ClInclude Include="private\inc\Windowing\Variants\WindowDX.hpp" />
     <ClInclude Include="private\inc\Windowing\Window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{39bec3f1-236a-4a62-9950-0d876071b54b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
