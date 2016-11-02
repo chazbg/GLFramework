@@ -168,7 +168,7 @@ namespace ThirdPersonDemo
             Vec3 jetToCamera = rot.rotate(dir);
             cam->setPosition(jet->getPosition() - jetToCamera * cameraDistance);
             cam->setDirVector(jet->getPosition());
-            Vec3 cameraUp = right * cam->getDirVector();
+            Vec3 cameraUp = right.cross(cam->getDirVector());
             cam->setUpVector(cameraUp);
         }
         virtual void initTextures()
@@ -224,7 +224,6 @@ namespace ThirdPersonDemo
                     }
                 }
             }
-
         }
 
         std::shared_ptr<CameraNode> cam;

@@ -60,7 +60,6 @@ public:
     Vec3& operator*=(const float scalar);
     Vec3 operator/(const float scalar) const;
     Vec3& operator/=(const float scalar);
-    Vec3 operator*(const Vec3& rhs) const;
     friend Vec3 operator*(const float scalar, const Vec3& rhs);
     friend Vec3 operator-(const Vec3& rhs);
     bool operator==(const Vec3& rhs) const;
@@ -70,6 +69,7 @@ public:
     string toString() const;
     const float* raw();
     float dot(const Vec3& rhs) const;
+    Vec3 cross(const Vec3& rhs) const;
     float length() const;
     Vec3 normalize() const;
     //TODO: Add operations

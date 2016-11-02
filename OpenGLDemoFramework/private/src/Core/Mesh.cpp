@@ -104,7 +104,7 @@ float* Mesh::generateNormals(const float* vertexBuffer, const unsigned int verte
         Vec3 c(vertexBuffer[i + 6], vertexBuffer[i + 7], vertexBuffer[i + 8]);
         Vec3 cb = c - b;
         Vec3 ab = a - b;
-        Vec3 res = (cb * ab).normalize();
+        Vec3 res = cb.cross(ab).normalize();
 
         normalsBuffer[i] = res.x;
         normalsBuffer[i + 1] = res.y;

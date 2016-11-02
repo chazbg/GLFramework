@@ -104,8 +104,8 @@ void Demo3DBase::onMouseMove(int x, int y)
         Vec3 center = camera.getLookDirection();
         Vec3 z = center - cameraPos;
         Vec3 y = camera.getUpVector();
-        Vec3 dx = (z * y).normalize();
-        Vec3 dy = (z * dx).normalize();
+        Vec3 dx = z.cross(y).normalize();
+        Vec3 dy = z.cross(dx).normalize();
 
         cameraPos += (dx * delta.x + dy * delta.y) * 30.0f;
         camera.setLookDirection(center + (dx * delta.x + dy * delta.y) * 30.0f);
