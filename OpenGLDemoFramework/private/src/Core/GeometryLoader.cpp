@@ -121,6 +121,11 @@ static void loadChild(IResourceManager& rm, std::shared_ptr<MeshNode> parent, co
         auto bufferGeometry = std::shared_ptr<Mesh>(new Mesh());
         auto meshNode = std::shared_ptr<MeshNode>(new MeshNode(bufferGeometry));
 
+        // Our scene graph supports one mesh per node.
+        // Interpret the first mesh as the parent mesh.
+        // Interpret the rest of the meshes as children.
+        // TODO: This interpretation is probably incorrect: 
+        // Multiple meshes having transformations, relative to the same parent.
         loadMesh(rm, meshNode, scene, child, scene->mMeshes[child->mMeshes[0]]);
 
         for (unsigned int i = 1; i < child->mNumMeshes; i++)
@@ -131,9 +136,11 @@ static void loadChild(IResourceManager& rm, std::shared_ptr<MeshNode> parent, co
             aiMesh* mesh = scene->mMeshes[child->mMeshes[i]];
             loadMesh(rm, childMeshNode, scene, child, mesh);
 
+            childMeshNode->setParent(meshNode);
             meshNode->addChild(childMeshNode);
         }
 
+        meshNode->setParent(parent);
         parent->addChild(meshNode);
 
         for (unsigned int i = 0; i < child->mNumChildren; i++)
@@ -179,6 +186,11 @@ std::shared_ptr<MeshNode> GeometryLoader::loadCustomGeometry(IResourceManager& r
 
     if (node->mNumMeshes > 0)
     {
+        // Our scene graph supports one mesh per node.
+        // Interpret the first mesh as the parent mesh.
+        // Interpret the rest of the meshes as children.
+        // TODO: This interpretation is probably incorrect: 
+        // Multiple meshes having transformations, relative to the same parent.
         aiMesh* mesh = scene->mMeshes[node->mMeshes[0]];
         loadMesh(rm, rootNode, scene, node, mesh);
 
@@ -190,6 +202,7 @@ std::shared_ptr<MeshNode> GeometryLoader::loadCustomGeometry(IResourceManager& r
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             loadMesh(rm, childMeshNode, scene, node, mesh);
 
+            childMeshNode->setParent(rootNode);
             rootNode->addChild(childMeshNode);
         }
 

@@ -42,7 +42,7 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
         systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         { 
             meshNode.getMesh()->getMaterial().setProperty(p,
-                lightCamera.getViewProjectionMatrix() * meshNode.getModelMatrix());
+                lightCamera.getViewProjectionMatrix() * meshNode.getModelToWorldMatrix());
         });
     }
     
@@ -52,7 +52,7 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
         systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         {
             meshNode.getMesh()->getMaterial().setProperty(p,
-                camera.getViewProjectionMatrix() * meshNode.getModelMatrix());
+                camera.getViewProjectionMatrix() * meshNode.getModelToWorldMatrix());
         });
     }
 
@@ -62,7 +62,7 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
         systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         {
             meshNode.getMesh()->getMaterial().setProperty(p,
-                meshNode.getModelMatrix());
+                meshNode.getModelToWorldMatrix());
         });
     }
 
@@ -72,7 +72,7 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
         systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
         {
             meshNode.getMesh()->getMaterial().setProperty(p,
-                camera.getViewMatrix() * meshNode.getModelMatrix());
+                camera.getViewMatrix() * meshNode.getModelToWorldMatrix());
         });
     }
 }

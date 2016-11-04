@@ -8,8 +8,11 @@ public:
     Node(const NodeType type);
     virtual void setModelMatrix(const Matrix4& model);
     virtual Matrix4 getModelMatrix() const;
+    virtual Matrix4 getModelToWorldMatrix() const;
     virtual Vec3 getPosition() const;
     virtual NodeType getNodeType() const;
+    virtual void setParent(std::shared_ptr<INode> parent);
+    virtual std::shared_ptr<INode> getParent();
 
     // scale.x - Scale coefficient in X-direction
     // scale.y - Scale coefficient in Y-direction
@@ -28,4 +31,5 @@ public:
 private:
     NodeType type;
     Matrix4 model;
+    shared_ptr<INode> parent;
 };

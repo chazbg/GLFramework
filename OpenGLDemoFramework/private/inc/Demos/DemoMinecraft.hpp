@@ -64,7 +64,7 @@ namespace MinecraftDemo
                 cubes.push_back(geometryFactory.createBlockMesh());
                 shared_ptr<BlockMesh> cube = cubes[cubes.size() - 1];
                 cube->setMaterial(materials[1]);
-                cube->setModelMatrix(cubes[0]->getModelMatrix());
+                cube->setModelMatrix(cubes[0]->getModelToWorldMatrix());
  
                 scene.add(cube.get());
                 break;

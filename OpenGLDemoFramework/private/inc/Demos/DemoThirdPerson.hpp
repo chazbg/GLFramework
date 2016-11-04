@@ -47,7 +47,7 @@ namespace ThirdPersonDemo
             pitchAnimation.update(0.016f);
             accAnimation.update(0.016f);
 
-            Vec4 jetDir = (jet->getModelMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
+            Vec4 jetDir = (jet->getModelToWorldMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
             Vec3 dir = Vec3(jetDir.x, jetDir.y, jetDir.z);
 
             if (!rollAnimation.isExpired())
@@ -60,7 +60,7 @@ namespace ThirdPersonDemo
 
             if (!pitchAnimation.isExpired())
             {
-                Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
+                Vec4 jetRight = (jet->getModelToWorldMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
                 Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
                 Vec3 jetPos = jet->getPosition();
                 jet->translate(-jetPos);
@@ -91,8 +91,8 @@ namespace ThirdPersonDemo
         {
             cout << c << " " << x << " " << y << endl;
 
-            Vec4 jetDir = (jet->getModelMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
-            Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
+            Vec4 jetDir = (jet->getModelToWorldMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
+            Vec4 jetRight = (jet->getModelToWorldMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
             Vec3 dir = Vec3(jetDir.x, jetDir.y, jetDir.z);
             Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
 
@@ -160,8 +160,8 @@ namespace ThirdPersonDemo
 
         void updateCamera()
         {
-            Vec4 jetDir = (jet->getModelMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
-            Vec4 jetRight = (jet->getModelMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
+            Vec4 jetDir = (jet->getModelToWorldMatrix() * Vec4(0.0f, 0.0f, 1.0f, 0.0f)).normalize();
+            Vec4 jetRight = (jet->getModelToWorldMatrix() * Vec4(-1.0f, 0.0f, 0.0f, 0.0f)).normalize();
             Vec3 dir = Vec3(jetDir.x, jetDir.y, jetDir.z);
             Vec3 right = Vec3(jetRight.x, jetRight.y, jetRight.z);
             Quarternion rot = Quarternion::makeRotation(-cameraAngle, right);

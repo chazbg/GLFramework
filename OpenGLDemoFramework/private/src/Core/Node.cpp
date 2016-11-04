@@ -1,7 +1,7 @@
 #include "Core/Node.hpp"
 #include "Math/GeometryAlgorithm.hpp"
 
-Node::Node(const NodeType type) : type(type)
+Node::Node(const NodeType type) : type(type), model(), parent(0)
 {
 }
 
@@ -15,16 +15,38 @@ Matrix4 Node::getModelMatrix() const
     return model;
 }
 
+Matrix4 Node::getModelToWorldMatrix() const
+{
+    if (parent)
+    {
+        return parent->getModelToWorldMatrix() * model;
+    }
+    else
+    {
+        return model;
+    }
+}
+
 Vec3 Node::getPosition() const
 {
     Vec4 base(0.0f, 0.0f, 0.0f, 1.0f);
-    base = model * base;
+    base = getModelToWorldMatrix() * base;
     return Vec3(base.x, base.y, base.z);
 }
 
 NodeType Node::getNodeType() const
 {
     return type;
+}
+
+void Node::setParent(std::shared_ptr<INode> parent)
+{
+    this->parent = parent;
+}
+
+std::shared_ptr<INode> Node::getParent()
+{
+    return parent;
 }
 
 void Node::scale(const Vec3 & scale)

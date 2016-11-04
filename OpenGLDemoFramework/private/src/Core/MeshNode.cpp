@@ -46,21 +46,11 @@ void MeshNode::setMaterial(IMaterial * material)
 void MeshNode::setModelMatrix(const Matrix4 & model)
 {
     Node::setModelMatrix(model);
-
-    for (auto child : children)
-    {
-        child->setModelMatrix(model);
-    }
 }
 
 void MeshNode::scale(const Vec3 & scale)
 {
     Node::scale(scale);
-
-    for (auto child : children)
-    {
-        child->scale(scale);
-    }
 }
 
 void MeshNode::rotate(const float angle, const Vec3 & axis)
@@ -69,29 +59,14 @@ void MeshNode::rotate(const float angle, const Vec3 & axis)
     Matrix4 rotation = rot.toMatrix().toMatrix4();
 
     Node::setModelMatrix(rotation * getModelMatrix());
-
-    for (auto child : children)
-    {
-        child->rotate(angle, axis);
-    }
 }
 
 void MeshNode::rotate(const Vec3 & rotation)
 {
     Node::rotate(rotation);
-
-    for (auto child : children)
-    {
-        child->rotate(rotation);
-    }
 }
 
 void MeshNode::translate(const Vec3 & translation)
 {
     Node::translate(translation);
-
-    for (auto child : children)
-    {
-        child->translate(translation);
-    }
 }
