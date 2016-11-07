@@ -1,23 +1,34 @@
 #include "Core/MeshNode.hpp"
 #include "Math/Quarternion.hpp"
 
-MeshNode::MeshNode(std::shared_ptr<IMesh> mesh) : Node(NodeType::Mesh), mesh(mesh)
+MeshNode::MeshNode() : Node(NodeType::Mesh)
 {
 }
 
 MeshNode::MeshNode(const MeshNode & rhs) : Node(NodeType::Mesh)
 {
-    mesh = rhs.mesh->clone();
-    
+    for (auto mesh : rhs.meshes)
+    {
+        meshes.push_back(mesh->clone());
+    }
+
     for (auto child : rhs.children)
     {
         addChild(std::shared_ptr<MeshNode>(new MeshNode(*child)));
     }
 }
 
-std::shared_ptr<IMesh> MeshNode::getMesh()
+void MeshNode::addMesh(std::shared_ptr<IMesh> mesh)
 {
-    return mesh;
+    if (nullptr != mesh)
+    {
+        meshes.push_back(mesh);
+    }
+}
+
+std::vector<std::shared_ptr<IMesh>>& MeshNode::getMeshes()
+{
+    return meshes;
 }
 
 void MeshNode::addChild(shared_ptr<MeshNode> child)
@@ -35,7 +46,10 @@ std::vector<shared_ptr<MeshNode>>& MeshNode::getChildren()
 
 void MeshNode::setMaterial(IMaterial * material)
 {
-    mesh->setMaterial(material); 
+    for (auto mesh : meshes)
+    {
+        mesh->setMaterial(material);
+    }
 
     for (auto child : children)
     {

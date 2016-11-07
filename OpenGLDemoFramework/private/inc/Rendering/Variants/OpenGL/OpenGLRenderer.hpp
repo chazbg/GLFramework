@@ -54,7 +54,8 @@ private:
     IntPropertySharedPtr dsDepthMap;
     unsigned int         depthRenderBuffer;
 
-    typedef std::function<void(MeshNode& mesh,
+    typedef std::function<void(Matrix4& modelToWorld,
+        IMesh& mesh,
         ICamera& camera,
         ICamera& lightCamera)> PropertySetter;
     std::map<int, std::vector<PropertySetter>> systemPropertySetters;

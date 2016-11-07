@@ -5,17 +5,10 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-static void loadMesh(IResourceManager& rm, std::shared_ptr<MeshNode> meshNode, const aiScene* scene, aiNode* node, aiMesh* mesh)
+static std::shared_ptr<IMesh> loadMesh(IResourceManager& rm, aiMesh* mesh)
 {
-    auto bufferGeometry = meshNode->getMesh();
-    Matrix4 modelMat(
-        Vec4(node->mTransformation.a1, node->mTransformation.a2, node->mTransformation.a3, node->mTransformation.a4),
-        Vec4(node->mTransformation.b1, node->mTransformation.b2, node->mTransformation.b3, node->mTransformation.b4),
-        Vec4(node->mTransformation.c1, node->mTransformation.c2, node->mTransformation.c3, node->mTransformation.c4),
-        Vec4(node->mTransformation.d1, node->mTransformation.d2, node->mTransformation.d3, node->mTransformation.d4)
-        );
+    auto bufferGeometry = std::shared_ptr<IMesh>(new Mesh());
 
-    meshNode->setModelMatrix(modelMat);
     if (mesh->HasPositions())
     {
         float* vertexBuffer = new float[3 * mesh->mNumVertices];
@@ -113,35 +106,35 @@ static void loadMesh(IResourceManager& rm, std::shared_ptr<MeshNode> meshNode, c
         delete[] indexBuffer;
         bufferGeometry->setIndices(*indices);
     }
+
+    return bufferGeometry;
 }
+
+static Matrix4 getModelTransform(const aiNode* node)
+{
+    return Matrix4(
+        Vec4(node->mTransformation.a1, node->mTransformation.a2, node->mTransformation.a3, node->mTransformation.a4),
+        Vec4(node->mTransformation.b1, node->mTransformation.b2, node->mTransformation.b3, node->mTransformation.b4),
+        Vec4(node->mTransformation.c1, node->mTransformation.c2, node->mTransformation.c3, node->mTransformation.c4),
+        Vec4(node->mTransformation.d1, node->mTransformation.d2, node->mTransformation.d3, node->mTransformation.d4)
+        );
+}
+
 static void loadChild(IResourceManager& rm, std::shared_ptr<MeshNode> parent, const aiScene* scene, aiNode* child)
 {
     if (child->mNumMeshes > 0)
     {
-        auto bufferGeometry = std::shared_ptr<Mesh>(new Mesh());
-        auto meshNode = std::shared_ptr<MeshNode>(new MeshNode(bufferGeometry));
-
-        // Our scene graph supports one mesh per node.
-        // Interpret the first mesh as the parent mesh.
-        // Interpret the rest of the meshes as children.
-        // TODO: This interpretation is probably incorrect: 
-        // Multiple meshes having transformations, relative to the same parent.
-        loadMesh(rm, meshNode, scene, child, scene->mMeshes[child->mMeshes[0]]);
-
-        for (unsigned int i = 1; i < child->mNumMeshes; i++)
-        {
-            auto childBufferGeometry = std::shared_ptr<Mesh>(new Mesh());
-            auto childMeshNode = std::shared_ptr<MeshNode>(new MeshNode(childBufferGeometry));
-
-            aiMesh* mesh = scene->mMeshes[child->mMeshes[i]];
-            loadMesh(rm, childMeshNode, scene, child, mesh);
-
-            childMeshNode->setParent(meshNode);
-            meshNode->addChild(childMeshNode);
-        }
+        auto meshNode = std::shared_ptr<MeshNode>(new MeshNode());
 
         meshNode->setParent(parent);
+        meshNode->setModelMatrix(getModelTransform(child));
         parent->addChild(meshNode);
+
+        for (unsigned int i = 0; i < child->mNumMeshes; i++)
+        {
+            aiMesh* mesh = scene->mMeshes[child->mMeshes[i]];
+            meshNode->addMesh(loadMesh(rm, mesh));
+        }
 
         for (unsigned int i = 0; i < child->mNumChildren; i++)
         {
@@ -178,32 +171,16 @@ std::shared_ptr<MeshNode> GeometryLoader::loadCustomGeometry(IResourceManager& r
         printf("Assimp Scene Import Error: %s \n", importer.GetErrorString());
     }
 
-    auto bufferGeometry = std::shared_ptr<Mesh>(new Mesh());
-    auto rootNode = std::shared_ptr<MeshNode>(new MeshNode(bufferGeometry));
-
     aiNode* node = scene->mRootNode;
-    unsigned int childrenStartIndex = 0;
+    auto rootNode = std::shared_ptr<MeshNode>(new MeshNode());
+    rootNode->setModelMatrix(getModelTransform(node));
 
     if (node->mNumMeshes > 0)
     {
-        // Our scene graph supports one mesh per node.
-        // Interpret the first mesh as the parent mesh.
-        // Interpret the rest of the meshes as children.
-        // TODO: This interpretation is probably incorrect: 
-        // Multiple meshes having transformations, relative to the same parent.
-        aiMesh* mesh = scene->mMeshes[node->mMeshes[0]];
-        loadMesh(rm, rootNode, scene, node, mesh);
-
-        for (unsigned int i = 1; i < node->mNumMeshes; i++)
+        for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            auto childBufferGeometry = std::shared_ptr<Mesh>(new Mesh());
-            auto childMeshNode = std::shared_ptr<MeshNode>(new MeshNode(childBufferGeometry));
-
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            loadMesh(rm, childMeshNode, scene, node, mesh);
-
-            childMeshNode->setParent(rootNode);
-            rootNode->addChild(childMeshNode);
+            rootNode->addMesh(loadMesh(rm, mesh));
         }
 
         for (unsigned int i = 0; i < node->mNumChildren; i++)
