@@ -18,7 +18,7 @@ class LineSegment3
 {
 public:
     LineSegment3();
-    LineSegment3(Vec3 a, Vec3 b);
+    LineSegment3(const Vec3& a, const Vec3& b);
     operator string() const;
     string toString() const;
     bool operator==(const LineSegment3& rhs) const;

@@ -13,6 +13,6 @@ layout(location = 1) out vec3 outNormal;
 
 void main()
 {
-    outColor = normalize(pos);
+    outColor  = normalize(pos);
     outNormal = normalize(inNormal);
 }

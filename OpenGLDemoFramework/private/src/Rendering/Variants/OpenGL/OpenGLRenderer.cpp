@@ -210,9 +210,9 @@ IGeometryFactory& OpenGLRenderer::getGeometryFactory()
 void OpenGLRenderer::render(IScene& scene, ICamera& camera)
 {  
     //renderToTexture(scene.getChildren(), camera);
-    render(scene.getChildren(), camera);
+    //render(scene.getChildren(), camera);
     //renderWithPostProcess(scene.getChildren(), camera);
-    //renderDeferred(scene.getChildren(), camera);
+    renderDeferred(scene.getChildren(), camera);
 }
 
 void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTarget & renderTarget)

@@ -44,7 +44,7 @@ private:
     float data[2];
 };
 
-union Vec3
+union alignas(16) Vec3
 {
 public:
     inline Vec3() {}

@@ -23,7 +23,7 @@ LineSegment3::LineSegment3()
 {
 }
 
-LineSegment3::LineSegment3(Vec3 a, Vec3 b) : a(a), b(b)
+LineSegment3::LineSegment3(const Vec3& a, const Vec3& b) : a(a), b(b)
 {
 
 }
