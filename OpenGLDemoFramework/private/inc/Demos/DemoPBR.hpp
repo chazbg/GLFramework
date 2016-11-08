@@ -2,7 +2,6 @@
 
 #include "Math/GeometryAlgorithm.hpp"
 #include "Demos/Demo3DBase.hpp"
-#include "Core/DefaultCamera.hpp"
 #include <iostream>
 #include <algorithm>
 
@@ -395,8 +394,8 @@ namespace PBRDemo
     void main()
     {
         WindowParameters params;
-        params.width = 1920;
-        params.height = 1080;
+        params.width = 1600;
+        params.height = 900;
         params.posX = 0;
         params.posY = 0;
         params.name = "PhysicallyBasedShading";
