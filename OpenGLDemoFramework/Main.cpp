@@ -1,6 +1,6 @@
-#include "Demos/DemoPBR.hpp"
+#include "Demos/DemoCamera.hpp"
 int main(int argc, char* argv[])
 {
-    PBRDemo::main();
+    CameraDemo::main();
     return 0;
 }

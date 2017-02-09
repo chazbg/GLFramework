@@ -230,6 +230,7 @@
     <ClInclude Include="private\inc\Core\Shader.hpp" />
     <ClInclude Include="private\inc\Core\TextureGenerator.hpp" />
     <ClInclude Include="private\inc\Demos\Demo3DBase.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoCamera.hpp" />
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp" />
