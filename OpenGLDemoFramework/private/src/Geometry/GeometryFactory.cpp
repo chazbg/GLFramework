@@ -6,10 +6,12 @@
 GeometryFactory::GeometryFactory(IResourceManager & rm) : rm(rm)
 {
     auto rectangleGeometry = std::shared_ptr<Rectangle>(new Rectangle(rm));
-    rectangle = std::shared_ptr<MeshNode>(new MeshNode(rectangleGeometry));
+    rectangle = std::shared_ptr<MeshNode>(new MeshNode());
+    rectangle->addMesh(rectangleGeometry);
 
     auto blockGeometry = std::shared_ptr<BlockMesh>(new BlockMesh(rm));
-    blockMesh = std::shared_ptr<MeshNode>(new MeshNode(blockGeometry));
+    blockMesh = std::shared_ptr<MeshNode>(new MeshNode());
+    blockMesh->addMesh(blockGeometry);
 }
 
 std::shared_ptr<MeshNode> GeometryFactory::createCustomGeometry(const std::string fileName)
@@ -48,7 +50,8 @@ std::shared_ptr<MeshNode> GeometryFactory::createPlaneMesh(const unsigned int wi
     if (it == planeMeshes.end())
     {
         auto geometry = std::shared_ptr<PlaneMesh>(new PlaneMesh(rm, width, height));
-        auto meshNode = std::shared_ptr<MeshNode>(new MeshNode(geometry));
+        auto meshNode = std::shared_ptr<MeshNode>(new MeshNode());
+        meshNode->addMesh(geometry);
         planeMeshes[key] = meshNode;
     }
 

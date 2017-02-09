@@ -4,6 +4,7 @@
 #include "Math/Vector.hpp"
 #include "Core/NodeTypes.hpp"
 #include <vector>
+#include <memory>
 
 class INode
 {
@@ -11,8 +12,11 @@ public:
     virtual ~INode() {}
     virtual void setModelMatrix(const Matrix4& model)     = 0;
     virtual Matrix4 getModelMatrix() const                = 0;
+    virtual Matrix4 getModelToWorldMatrix() const         = 0;
     virtual Vec3 getPosition() const                      = 0;
     virtual NodeType getNodeType() const                  = 0;
+    virtual void setParent(std::shared_ptr<INode> parent) = 0;
+    virtual std::shared_ptr<INode> getParent()            = 0;
 
     // scale.x - Scale coefficient in X-direction
     // scale.y - Scale coefficient in Y-direction

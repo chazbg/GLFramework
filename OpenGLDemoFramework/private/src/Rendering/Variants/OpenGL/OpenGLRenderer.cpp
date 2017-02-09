@@ -39,40 +39,40 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
     glMaterial.getProperty("depthMvp", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](Matrix4& modelToWorld, IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         { 
-            meshNode.getMesh()->getMaterial().setProperty(p,
-                lightCamera.getViewProjectionMatrix() * meshNode.getModelMatrix());
+            mesh.getMaterial().setProperty(p,
+                lightCamera.getViewProjectionMatrix() * modelToWorld);
         });
     }
     
     glMaterial.getProperty("mvp", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](Matrix4& modelToWorld, IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         {
-            meshNode.getMesh()->getMaterial().setProperty(p,
-                camera.getViewProjectionMatrix() * meshNode.getModelMatrix());
+            mesh.getMaterial().setProperty(p,
+                camera.getViewProjectionMatrix() * modelToWorld);
         });
     }
 
     glMaterial.getProperty("modelToWorld", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](Matrix4& modelToWorld, IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         {
-            meshNode.getMesh()->getMaterial().setProperty(p,
-                meshNode.getModelMatrix());
+            mesh.getMaterial().setProperty(p,
+                modelToWorld);
         });
     }
 
     glMaterial.getProperty("modelView", p);
     if (p != 0)
     {
-        systemPropertySetters[glMaterial.getId()].push_back([p](MeshNode& meshNode, ICamera& camera, ICamera& lightCamera)
+        systemPropertySetters[glMaterial.getId()].push_back([p](Matrix4& modelToWorld, IMesh& mesh, ICamera& camera, ICamera& lightCamera)
         {
-            meshNode.getMesh()->getMaterial().setProperty(p,
-                camera.getViewMatrix() * meshNode.getModelMatrix());
+            mesh.getMaterial().setProperty(p,
+                camera.getViewMatrix() * modelToWorld);
         });
     }
 }
@@ -210,9 +210,9 @@ IGeometryFactory& OpenGLRenderer::getGeometryFactory()
 void OpenGLRenderer::render(IScene& scene, ICamera& camera)
 {  
     //renderToTexture(scene.getChildren(), camera);
-    render(scene.getChildren(), camera);
+    //render(scene.getChildren(), camera);
     //renderWithPostProcess(scene.getChildren(), camera);
-    //renderDeferred(scene.getChildren(), camera);
+    renderDeferred(scene.getChildren(), camera);
 }
 
 void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTarget & renderTarget)
@@ -286,14 +286,20 @@ void OpenGLRenderer::renderToTarget(NodeList& nodes, ICamera & camera, IRenderTa
 
 void OpenGLRenderer::render(std::shared_ptr<MeshNode> node, ICamera& camera)
 {
-    auto mesh = node->getMesh();
-    OpenGLMaterial& glMaterial = reinterpret_cast<OpenGLMaterial&>(mesh->getMaterial());
-    auto& propertySetters = systemPropertySetters[glMaterial.getId()];
-    for (unsigned int i = 0; i < propertySetters.size(); ++i)
+    auto meshes = node->getMeshes();
+
+    for (auto mesh : meshes)
     {
-        propertySetters[i](*node, camera, lightCamera);
+        OpenGLMaterial& glMaterial = reinterpret_cast<OpenGLMaterial&>(mesh->getMaterial());
+        auto& propertySetters = systemPropertySetters[glMaterial.getId()];
+        for (unsigned int i = 0; i < propertySetters.size(); ++i)
+        {
+            propertySetters[i](node->getModelToWorldMatrix(), *mesh, camera, lightCamera);
+        }
+
+        render(mesh, camera);
     }
-    render(node->getMesh(), camera);
+
 
     for (auto child : node->getChildren())
     {
@@ -389,20 +395,23 @@ void OpenGLRenderer::renderToTarget(std::shared_ptr<IMesh> mesh, ICamera & camer
 
 void OpenGLRenderer::renderToTexture(std::shared_ptr<MeshNode> node, ICamera & camera, Vec4 & viewport)
 {
-    auto mesh = node->getMesh();
-    auto originalMaterial = &mesh->getMaterial();
-    mesh->setMaterial(depthMat);
-
-    renderToTarget(mesh, lightCamera, *fb);
-
-    auto& textures = originalMaterial->getTextures();
-    auto it = find(textures.begin(), textures.end(), shadowMap);
-
-    if (textures.end() == it)
+    for (auto mesh : node->getMeshes())
     {
-        originalMaterial->addTexture(shadowMap);
+        auto originalMaterial = &mesh->getMaterial();
+        mesh->setMaterial(depthMat);
+
+        renderToTarget(mesh, lightCamera, *fb);
+
+        auto& textures = originalMaterial->getTextures();
+        auto it = find(textures.begin(), textures.end(), shadowMap);
+
+        if (textures.end() == it)
+        {
+            originalMaterial->addTexture(shadowMap);
+        }
+
+        mesh->setMaterial(originalMaterial);
     }
-    mesh->setMaterial(originalMaterial);
 
     for (auto child : node->getChildren())
     {
@@ -412,13 +421,15 @@ void OpenGLRenderer::renderToTexture(std::shared_ptr<MeshNode> node, ICamera & c
 
 void OpenGLRenderer::renderDeferred(std::shared_ptr<MeshNode> node, ICamera & camera)
 {
-    auto mesh = node->getMesh();
-    auto originalMaterial = &mesh->getMaterial();
-    mesh->setMaterial(deferredShadingMat);
+    for (auto mesh : node->getMeshes())
+    {
+        auto originalMaterial = &mesh->getMaterial();
+        mesh->setMaterial(deferredShadingMat);
 
-    renderToTarget(mesh, camera, *deferredShadingFbo);
+        renderToTarget(mesh, camera, *deferredShadingFbo);
 
-    mesh->setMaterial(originalMaterial);
+        mesh->setMaterial(originalMaterial);
+    }
 
     for (auto child : node->getChildren())
     {

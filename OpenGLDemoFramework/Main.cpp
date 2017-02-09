@@ -1,6 +1,6 @@
-#include "Demos/DemoThirdPerson.hpp"
+#include "Demos/DemoPBR.hpp"
 int main(int argc, char* argv[])
 {
-    ThirdPersonDemo::main();
+    PBRDemo::main();
     return 0;
 }
