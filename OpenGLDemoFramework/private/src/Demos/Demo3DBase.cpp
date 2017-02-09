@@ -101,14 +101,14 @@ void Demo3DBase::onMouseMove(int x, int y)
 
     if (cameraPanning)
     {
-        Vec3 center = camera.getLookDirection();
+        Vec3 center = camera.getTarget();
         Vec3 z = center - cameraPos;
         Vec3 y = camera.getUpVector();
         Vec3 dx = z.cross(y).normalize();
         Vec3 dy = z.cross(dx).normalize();
 
         cameraPos += (dx * delta.x + dy * delta.y) * 30.0f;
-        camera.setLookDirection(center + (dx * delta.x + dy * delta.y) * 30.0f);
+        camera.setTarget(center + (dx * delta.x + dy * delta.y) * 30.0f);
     }
 
     prevMousePos = Vec2(static_cast<float>(x), static_cast<float>(y));
@@ -129,5 +129,5 @@ void Demo3DBase::initGeometry()
 void Demo3DBase::updateCamera()
 {
     float t = radius * cos(theta);
-    cameraPos = camera.getLookDirection() + Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
+    cameraPos = camera.getTarget() + Vec3(t * cos(phi), radius * sin(theta), t * sin(phi));
 }

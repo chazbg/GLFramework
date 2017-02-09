@@ -1,7 +1,7 @@
 #include <Core/PerspectiveCamera.hpp>
 #include <Math/GeometryAlgorithm.hpp>
 
-PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float near, float far) : upVector(0, 1, 0)
+PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float near, float far) : up(0.0f, 1.0f, 0.0f)
 {
     perspective = GeometryAlgorithm::CreatePerspectiveMatrix(fov, aspectRatio, near, far);
 }
@@ -16,33 +16,38 @@ Vec3 PerspectiveCamera::getPosition() const
     return pos;
 }
 
-void PerspectiveCamera::setLookDirection(const Vec3 & position)
+void PerspectiveCamera::setTarget(const Vec3& position)
 {
-    lookAt = position;
+    target = position;
 }
 
-Vec3 PerspectiveCamera::getLookDirection() const
+Vec3 PerspectiveCamera::getTarget() const
 {
-    return lookAt - pos;
+    return target;
+}
+
+Vec3 PerspectiveCamera::getViewDirection() const
+{
+    return (target - pos).normalize();
 }
 
 Matrix4 PerspectiveCamera::getViewMatrix() const
 {
-    return GeometryAlgorithm::CreateLookAtMatrix(pos, lookAt, upVector);
+    return GeometryAlgorithm::CreateLookAtMatrix(pos, target, up);
 }
 
 Matrix4 PerspectiveCamera::getViewProjectionMatrix() const
 {
 
-    return perspective * GeometryAlgorithm::CreateLookAtMatrix(pos, lookAt, upVector);
+    return perspective * getViewMatrix();
 }
 
 Vec3 PerspectiveCamera::getUpVector() const
 {
-    return upVector;
+    return up;
 }
 
 void PerspectiveCamera::setUpVector(const Vec3 & upVector)
 {
-    this->upVector = upVector;
+    up = upVector;
 }

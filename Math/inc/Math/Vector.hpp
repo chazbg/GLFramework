@@ -4,7 +4,7 @@
 //TODO: remove "using namespace std;"
 using namespace std;
 
-union Vec2
+class Vec2
 {
 public:
     inline Vec2() {}
@@ -36,15 +36,11 @@ public:
 
     //TODO: Add operations
 public:
-    struct {
-        float x;
-        float y;
-    };
-private:
-    float data[2];
+    float x;
+    float y;
 };
 
-union Vec3
+class Vec3
 {
 public:
     inline Vec3() {}
@@ -74,16 +70,12 @@ public:
     Vec3 normalize() const;
     //TODO: Add operations
 public:
-    struct {
-        float x;
-        float y;
-        float z;
-    };
-private:
-    float data[3];
+    float x;
+    float y;
+    float z;
 };
 
-union Vec4
+class Vec4
 {
 public:
     inline Vec4() {}
@@ -110,12 +102,8 @@ public:
     Vec4 normalize() const;
     //TODO: Add operations
 public:
-    struct {
-        float x;
-        float y;
-        float z;
-        float w;
-    };
-private:
-    float data[4];
+    float x;
+    float y;
+    float z;
+    float w;
 };

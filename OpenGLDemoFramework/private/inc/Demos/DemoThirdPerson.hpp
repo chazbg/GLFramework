@@ -167,8 +167,8 @@ namespace ThirdPersonDemo
             Quarternion rot = Quarternion::makeRotation(-cameraAngle, right);
             Vec3 jetToCamera = rot.rotate(dir);
             cam->setPosition(jet->getPosition() - jetToCamera * cameraDistance);
-            cam->setDirVector(jet->getPosition());
-            Vec3 cameraUp = right.cross(cam->getDirVector());
+            cam->setTarget(jet->getPosition());
+            Vec3 cameraUp = right.cross(cam->getViewDirection());
             cam->setUpVector(cameraUp);
         }
         virtual void initTextures()

@@ -19,11 +19,17 @@ Vec3 DefaultCamera::getPosition() const
     return Vec3();
 }
 
-void DefaultCamera::setLookDirection(const Vec3& position)
+void DefaultCamera::setTarget(const Vec3& position)
 {
+
 }
 
-Vec3 DefaultCamera::getLookDirection() const
+Vec3 DefaultCamera::getTarget() const
+{
+    return Vec3();
+}
+
+Vec3 DefaultCamera::getViewDirection() const
 {
     return Vec3();
 }

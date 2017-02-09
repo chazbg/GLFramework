@@ -240,7 +240,7 @@ string Vec3::toString() const
 
 const float* Vec3::raw()
 {
-    return data;
+    return &this->x;
 }
 
 float Vec3::dot(const Vec3& rhs) const
@@ -374,7 +374,7 @@ string Vec4::toString() const
 
 const float* Vec4::raw()
 {
-    return data;
+    return &this->x;
 }
 
 float Vec4::dot(const Vec4& rhs) const
