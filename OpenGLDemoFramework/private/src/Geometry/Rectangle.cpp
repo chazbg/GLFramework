@@ -21,46 +21,57 @@ void Rectangle::init(IResourceManager& rm)
 {
     unsigned int vertexCount = 6;
     
-    float* vertexBuffer = genVertices();
-    float* uvs = genTexCoords();
+    float* vertexBuffer  = genVertices();
+    float* normalsBuffer = generateNormals(vertexBuffer, vertexCount);
+    float* uvs           = genTexCoords();
 
-    IVertexBuffer* vertices = rm.createVertexBuffer(vertexCount, 2, 0, vertexBuffer);
+    IVertexBuffer* vertices  = rm.createVertexBuffer(vertexCount, 3, 0, vertexBuffer);
+    IVertexBuffer* normals   = rm.createVertexBuffer(vertexCount, 3, 1, normalsBuffer);
     IVertexBuffer* texCoords = rm.createVertexBuffer(vertexCount, 2, 2, uvs);
-
+    
     setVertices(*vertices);
     setTexCoords(*texCoords);
+    setNormals(*normals);
 
     delete[] vertexBuffer;
+    delete[] normalsBuffer;
     delete[] uvs;
 }
 
 float* Rectangle::genVertices()
 {
-    float* verts = new float[12];
+    float* verts = new float[18];
 
     //Top left
     verts[0] = topLeft.x;
     verts[1] = topLeft.y;
+    verts[2] = 0.0f;
 
     //Bottom left
-    verts[2] = topLeft.x;
-    verts[3] = bottomRight.y;
+    verts[3] = topLeft.x;
+    verts[4] = bottomRight.y;
+    verts[5] = 0.0f;
 
     //Top right
-    verts[4] = bottomRight.x;
-    verts[5] = topLeft.y;
+    verts[6] = bottomRight.x;
+    verts[7] = topLeft.y;
+    verts[8] = 0.0f;
 
     //Bottom left
-    verts[6] = topLeft.x;
-    verts[7] = bottomRight.y;
+    verts[9]  = topLeft.x;
+    verts[10] = bottomRight.y;
+    verts[11] = 0.0f;
     
     //Bottom right
-    verts[8] = bottomRight.x;
-    verts[9] = bottomRight.y;
+    verts[12] = bottomRight.x;
+    verts[13] = bottomRight.y;
+    verts[14] = 0.0f;
 
     //Top right
-    verts[10] = bottomRight.x;
-    verts[11] = topLeft.y;
+    verts[15] = bottomRight.x;
+    verts[16] = topLeft.y;
+    verts[17] = 0.0f;
+
     return verts;
 }
 

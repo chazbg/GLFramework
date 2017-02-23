@@ -3,16 +3,20 @@
 #include "Core/Node.hpp"
 #include "Core/IMesh.hpp"
 
+class MeshNode;
+
+typedef std::shared_ptr<MeshNode> MeshNodeSharedPtr;
+
 class MeshNode : public Node
 {
 public:
     MeshNode();
     MeshNode(const MeshNode& rhs);
-    void addMesh(std::shared_ptr<IMesh> mesh);
-    std::vector<std::shared_ptr<IMesh>>& getMeshes();
-    void addChild(std::shared_ptr<MeshNode> child);
-    std::vector<std::shared_ptr<MeshNode>>& getChildren();
-    void setMaterial(IMaterial* material);
+    void                            addMesh(IMeshSharedPtr mesh);
+    std::vector<IMeshSharedPtr>&    getMeshes();
+    void                            addChild(MeshNodeSharedPtr child);
+    std::vector<MeshNodeSharedPtr>& getChildren();
+    void                            setMaterial(IMaterial* material);
 
     virtual void setModelMatrix(const Matrix4& model);
     virtual void scale(const Vec3& scale);
@@ -20,6 +24,6 @@ public:
     virtual void rotate(const Vec3& rotation);
     virtual void translate(const Vec3& translation);
 private:
-    std::vector<std::shared_ptr<IMesh>> meshes;
-    std::vector<std::shared_ptr<MeshNode>> children;
+    std::vector<IMeshSharedPtr>    meshes;
+    std::vector<MeshNodeSharedPtr> children;
 };

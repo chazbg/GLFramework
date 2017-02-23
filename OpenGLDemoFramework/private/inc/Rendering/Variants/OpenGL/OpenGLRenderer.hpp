@@ -16,6 +16,12 @@
 #include "Core/PerspectiveCamera.hpp"
 #include "Geometry/GeometryFactory.hpp"
 
+enum class BlendMode
+{
+    Additive,
+    Normal
+};
+
 class OpenGLRenderer : public IResourceManagerNotify
 {
 public:
@@ -23,7 +29,7 @@ public:
     ~OpenGLRenderer();
     void clear(const Vec4& color);
     void setDepthTest(const bool enabled);
-    void setAlphaBlending(const bool enabled); //TODO: modes
+    void setAlphaBlending(const bool enabled, BlendMode mode = BlendMode::Additive); //TODO: modes
     IResourceManager& getResourceManager();
     IGeometryFactory& getGeometryFactory();
     void render(IScene& scene, ICamera& camera);

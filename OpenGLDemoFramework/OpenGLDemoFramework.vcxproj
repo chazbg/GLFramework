@@ -234,6 +234,7 @@
     <ClInclude Include="private\inc\Demos\DemoClipping.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCube.hpp" />
     <ClInclude Include="private\inc\Demos\DemoCustomGeometry.hpp" />
+    <ClInclude Include="private\inc\Demos\DemoFan.hpp" />
     <ClInclude Include="private\inc\Demos\DemoFragmentShaderSandbox.hpp" />
     <ClInclude Include="private\inc\Demos\DemoGeometryShader.hpp" />
     <ClInclude Include="private\inc\Demos\DemoGForceMeter.hpp" />

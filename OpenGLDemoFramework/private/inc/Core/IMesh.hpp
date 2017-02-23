@@ -7,6 +7,10 @@
 #include <vector>
 #include <memory>
 
+class IMesh;
+
+typedef std::shared_ptr<IMesh> IMeshSharedPtr;
+
 class IMesh
 {
 public:

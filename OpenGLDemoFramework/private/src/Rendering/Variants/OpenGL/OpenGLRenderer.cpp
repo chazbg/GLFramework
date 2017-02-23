@@ -184,12 +184,37 @@ void OpenGLRenderer::setDepthTest(const bool enabled)
     }
 }
 
-void OpenGLRenderer::setAlphaBlending(const bool enabled)
+void OpenGLRenderer::setAlphaBlending(const bool enabled, BlendMode mode)
 {
     if (enabled)
     {
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        int sfactor = GL_SRC_ALPHA;
+        int dfactor = GL_ONE_MINUS_SRC_ALPHA;
+
+        //TODO: Replace with array lookup
+        switch (mode)
+        {
+        case BlendMode::Additive:
+        {
+            sfactor = GL_SRC_ALPHA;
+            dfactor = GL_ONE;
+            break;
+        }
+        case BlendMode::Normal:
+        {
+            sfactor = GL_SRC_ALPHA;
+            dfactor = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        default:
+        {
+            sfactor = GL_SRC_ALPHA;
+            dfactor = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        }
+        glBlendFunc(sfactor, dfactor);
     }
     else
     {
