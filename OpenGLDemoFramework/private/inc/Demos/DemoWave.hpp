@@ -27,9 +27,8 @@ namespace WaveDemo
 
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
-            //p->Rotate(0, 0.01f, 0);
             waveMat->setProperty(timeProperty, time);
-
+            waveMat->setProperty(cameraPosProperty, cameraPos);
             renderer->render(scene, camera);
         }
 
@@ -50,6 +49,7 @@ namespace WaveDemo
             waveMat->addTexture(texture);
             initMaterialProperty(*waveMat, "sampler", 0);
             waveMat->getProperty("time", timeProperty);
+            waveMat->getProperty("cameraPos", cameraPosProperty);
         }
 
         virtual void initGeometry()
@@ -57,13 +57,15 @@ namespace WaveDemo
             IGeometryFactory& geometryFactory = renderer->getGeometryFactory();
             p = geometryFactory.createPlaneMesh(50, 50);
             p->setMaterial(waveMat);
-            scene.add(p.get());
+            p->scale(Vec3(20.0, 20.0, 1.0));
+            scene.add(p);
         }
 
-        shared_ptr<PlaneMesh> p;
+        shared_ptr<MeshNode> p;
         IMaterial* waveMat;
         ITexture* texture;
         UintPropertySharedPtr timeProperty;
+        Vec3PropertySharedPtr cameraPosProperty;
     };
 
     void main()

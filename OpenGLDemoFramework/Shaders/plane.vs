@@ -1,11 +1,13 @@
 #version 330 core
-// Input vertex data, different for all executions of this shader.
-layout(location = 0) in vec3 vertexPosition_modelspace;
+
+layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoords;
 uniform uint time;
+uniform mat4 mvp;
+uniform vec3 cameraPos;
 
-smooth out vec4 inColor;
-smooth out vec2 inTexCoords;
+out vec3 inColor;
+out vec2 inTexCoords;
 
 vec3 toWave(vec3 p, float amplitude, float waveLength, float speed, vec2 direction)
 {
@@ -67,108 +69,20 @@ vec3 getNormal(vec3 r)
     return normalize(cross(B, T));
 }
 
-struct lightSampleValues {
-	vec3 L;
-	float iL;
-};
-
-vec3 computeAmbientComponent(lightSampleValues light, vec3 materialAmbientColor, vec3 lightAmbDiffSpec, vec3 lightColor)
+void main()
 {
-	return light.iL * (lightColor * lightAmbDiffSpec.x) * materialAmbientColor;
-}
+	vec3 diffuseColor = vec3(1.0, 0.0, 0.0);
+	float specExp     = 16.0;
 
-// surfaceNormal is assumed to be unit-length
-vec3 computeDiffuseComponent(vec3 surfaceNormal, lightSampleValues light, vec3 materialDiffuseColor, vec3 lightAmbDiffSpec, vec3 lightColor)
-{
-	return light.iL * (lightColor * lightAmbDiffSpec.y)
-					* materialDiffuseColor.rgb
-					* max(0.0, dot(surfaceNormal, light.L));
-}
-
-vec3 computeSpecularComponent(vec3 surfaceNormal, vec4 surfacePosition, lightSampleValues light, vec3 materialSpecularColor, float materialSpecularExp, vec3 lightAmbDiffSpec, vec3 lightColor)
-{
-	vec3 viewVector = normalize(-surfacePosition.xyz);
-	vec3 reflectionVector = 2.0 * dot(light.L, surfaceNormal) * surfaceNormal - light.L;
-	return (dot(surfaceNormal, light.L) <= 0.0) ? vec3(0.0,0.0,0.0) : (light.iL * (lightColor * lightAmbDiffSpec.z)
-																				* materialSpecularColor
-																				* pow(max(0.0, dot(reflectionVector, viewVector)), materialSpecularExp));
-}
-
-lightSampleValues computeDirLightValues(vec3 dirLightPosition, float dirLightIntensity)
-{
-	lightSampleValues values;
-	values.L = dirLightPosition.xyz;
-	values.iL = dirLightIntensity;
-	return values;
-}
-
-lightSampleValues computePointLightValues(vec3 pointLightPosition, vec3 pointLightAttenuation, float pointLightIntensity, vec4 surfacePosition)
-{
-	lightSampleValues values;
-	values.L = pointLightPosition.xyz - surfacePosition.xyz;
-	float dist = length(values.L);
-	values.L = values.L / dist; // normalize
-	// Dot computes the 3-term attenuation in one operation
-	// k_c * 1.0 + k_l * dist + k_q * dist * dist
-	float distAtten = dot(pointLightAttenuation, vec3(1.0, dist, dist*dist));
-	values.iL = pointLightIntensity / distAtten;
-	return values;
-}
-
-lightSampleValues computeSpotLightValues(vec3 spotLightPosition, 
-	vec3 spotLightAttenuation, 
-	vec3 spotLightDir, 
-	float spotLightAngleCos, 
-	float spotLightExponent,
-	float spotLightIntensity,
-	vec4 surfacePosition)
-{
-	lightSampleValues values;
-	values.L = spotLightPosition.xyz - surfacePosition.xyz;
-	float dist = length(values.L);
-	values.L = values.L / dist; // normalize
-	// Dot computes the 3-term attenuation in one operation
-	// k_c * 1.0 + k_l * dist + k_q * dist * dist
-	float distAtten = dot(spotLightAttenuation,	vec3(1.0, dist, dist*dist));
-	float spotAtten = dot(-spotLightDir, values.L);
-	spotAtten = (spotAtten > spotLightAngleCos) ? pow(spotAtten, spotLightExponent) : 0.0;
-	values.iL = spotLightIntensity * spotAtten / distAtten;
-	return values;
-}
-
-void main(){
-	vec3 ambColor = vec3(1, 1, 0);
-	vec3 emissiveColor = vec3(1,1,1);
-	vec4 diffuseColor = vec4(1,0,0,1);
-	vec3 specularColor = vec3(1,1,1);
-	vec3 lightAmbDiffSpec = vec3(0.02,0.68,0.3);
-	vec3 lightColor = vec3(1,1,1);
-	float specExp = 4.0;
+    vec3 N            = getNormal(position * 0.02 + vec3(-0.5, -0.5, 0.0));
+    vec3 L            = vec3(0.0, 0.0, 1.0);
+    vec3 V            = normalize(cameraPos - position); 
+    vec3 H            = normalize(V + L);
+    inColor           = diffuseColor * max(0.0, dot(N, L)) + pow(max(0.0, dot(N, H)), specExp);
+    inTexCoords       = texCoords;
     
-    float angle = radians(20.0);
-    mat4 rot;
-    rot[0] = vec4(1, 0, 0, 0);
-    rot[1] = vec4(0, cos(angle), sin(angle), 0);
-    rot[2] = vec4(0, -sin(angle), cos(angle), 0);
-    rot[3] = vec4(0, 0, 0, 1);
-    rot = transpose(rot);
-    vec3 normal = getNormal(vertexPosition_modelspace * 0.02 + vec3(-0.5, -0.5, 0));
-    vec3 n = (rot * vec4(normal,0)).xyz;
-
-    gl_Position.xyz = toWaves(vertexPosition_modelspace * 0.02 + vec3(-0.5, -0.5, 0));
-    gl_Position.w = 1.0;
-    gl_Position = rot * gl_Position;
-    
-    lightSampleValues light = computePointLightValues(vec3(0, 0, 1), vec3(0,0,1), 1, gl_Position);
-    //lightSampleValues light = computeDirLightValues(vec3(0, 0, 1), 1);
-    
-    vec3 ambComp = computeAmbientComponent(light, ambColor, lightAmbDiffSpec, lightColor);
-	vec3 diffComp = computeDiffuseComponent(n, light, diffuseColor.xyz, lightAmbDiffSpec, lightColor);
-	vec3 specComp = computeSpecularComponent(n, gl_Position, light, specularColor, specExp, lightAmbDiffSpec, lightColor);
-    
-    inColor.xyz = ambComp + diffComp + specComp;
-    inColor.w = diffuseColor.w;
-    
-    inTexCoords = texCoords;
+    gl_Position.xyz   = toWaves(position * 0.02 + vec3(-0.5, -0.5, 0.0));
+    gl_Position.w     = 1.0;
+    gl_Position       = mvp * gl_Position;
 }
 

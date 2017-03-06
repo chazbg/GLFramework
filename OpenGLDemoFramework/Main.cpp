@@ -1,6 +1,6 @@
-#include "Demos/DemoFan.hpp"
+#include "Demos/DemoWave.hpp"
 int main(int argc, char* argv[])
 {
-    FanDemo::main();
+    WaveDemo::main();
     return 0;
 }
