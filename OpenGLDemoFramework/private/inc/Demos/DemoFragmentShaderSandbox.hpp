@@ -112,8 +112,8 @@ namespace FragmentShaderSandboxDemo
 
             Vec3 zAxis = (-cameraPos).normalize();
             Vec3 up(0, 1, 0);
-            Vec3 xAxis = (zAxis * up).normalize();
-            Vec3 yAxis = xAxis * zAxis;
+            Vec3 xAxis = zAxis.cross(up).normalize();
+            Vec3 yAxis = xAxis.cross(zAxis);
 
             cameraPos -= xAxis * delta.x * 50;
             cameraPos += yAxis * delta.y * 50;

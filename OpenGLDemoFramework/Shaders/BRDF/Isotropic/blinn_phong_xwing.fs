@@ -18,7 +18,7 @@ uniform sampler2D illuminationMap;
 
 uniform int diffuseOn;
 uniform int specularOn;
-uniform int normalMapOn;
+uniform int normalOn;
 uniform int aoOn;
 
 uniform vec3 cameraPos;
@@ -83,8 +83,16 @@ float getSpecularContribution(vec3 n, vec3 v, vec3 l, float m)
 
 vec3 getNormal(vec2 d)
 {
-    //return normalize(normalize(inNormal) + normalize(inTangent) * d.x + normalize(inBitangent) * d.y);
-    return normalize(inNormal);
+    if (normalOn != 0)
+    {
+        vec3 localNormal = normalize((vec3(1.0, 0.0, 0.0) * d.x + vec3(0.0, 1.0, 0.0) * d.y + vec3(0.0, 0.0, 1.0)) * 2.0 - 1.0);
+        mat3 tr = mat3(normalize(inTangent), normalize(inBitangent), normalize(inNormal));
+        return tr * localNormal;
+    }
+    else
+    {
+        return normalize(inNormal);
+    }
 }
 
 void main()
@@ -102,7 +110,7 @@ void main()
         glossiness    = 1.0 - texture(specularMap, uv).r;
     }
      
-    vec3 n            = getNormal(texture(normalMap, uv).ra * 2.0 - 1.0);
+    vec3 n            = getNormal(texture(normalMap, uv).ra);
     
     float ao          = 1.0;
     if (aoOn != 0)
@@ -117,7 +125,6 @@ void main()
     float lightIntensity = 1.0;
     
     vec3 v = normalize(cameraPos - pos);
-    //vec3 n = normalize(inNormal);
     
     float m = 1.0 / (glossiness * glossiness);
     
