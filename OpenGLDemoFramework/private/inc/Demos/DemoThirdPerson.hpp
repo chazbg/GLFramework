@@ -174,7 +174,14 @@ namespace ThirdPersonDemo
         virtual void initTextures()
         {
             IResourceManager& rm = renderer->getResourceManager();
-            textures.push_back(rm.createTexture("Images/XWing_Diffuse_01.png"));
+            textures.push_back(rm.createTexture("Images/XWing/XWing_Diffuse_01.png"));
+            textures.push_back(rm.createTexture("Images/XWing/XWing_Specular_01.png"));
+            textures.push_back(rm.createTexture("Images/XWing/XWing_Normal_01.png"));
+            textures.push_back(rm.createTexture("Images/XWing/XWing_Ao_01.png"));
+            textures.push_back(rm.createTexture("Images/XWing/XWing_Reflection_01.png"));
+            textures.push_back(rm.createTexture("Images/XWing/XWing_Illumination_01.png"));
+
+            // 6
             textures.push_back(rm.createTexture("Images/Tie_Fighter_Wing_Diffuse.png"));
         }
 
@@ -184,13 +191,28 @@ namespace ThirdPersonDemo
 
             //0
             materials.push_back(resourceManager.createMaterial(
+                "Shaders/BRDF/Isotropic/semiGGX.vs",
+                "Shaders/BRDF/Isotropic/blinn_phong_xwing.fs"));
+
+            initMaterialProperty(*materials[0], "diffuseMap",      0);
+            initMaterialProperty(*materials[0], "specularMap",     1);
+            initMaterialProperty(*materials[0], "normalMap",       2);
+            initMaterialProperty(*materials[0], "aoMap",           3);
+            initMaterialProperty(*materials[0], "reflectionMap",   4);
+            initMaterialProperty(*materials[0], "illuminationMap", 5);
+
+            //1
+            materials.push_back(resourceManager.createMaterial(
                 "Shaders/textured.vs",
                 "Shaders/textured.fs"));
-            //1
-            materials.push_back(resourceManager.cloneMaterial(materials[0]));
 
             materials[0]->addTexture(textures[0]);
-            materials[1]->addTexture(textures[1]);
+            materials[0]->addTexture(textures[1]);
+            materials[0]->addTexture(textures[2]);
+            materials[0]->addTexture(textures[3]);
+            materials[0]->addTexture(textures[4]);
+            materials[0]->addTexture(textures[5]);
+            materials[1]->addTexture(textures[6]);
         }
 
         virtual void initGeometry()

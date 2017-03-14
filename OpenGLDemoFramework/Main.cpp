@@ -1,6 +1,6 @@
-#include "Demos/DemoWave.hpp"
+#include "Demos/DemoThirdPerson.hpp"
 int main(int argc, char* argv[])
 {
-    WaveDemo::main();
+    ThirdPersonDemo::main();
     return 0;
 }
