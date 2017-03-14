@@ -19,7 +19,11 @@ namespace ThirdPersonDemo
     {
     public:
         TestWindowApp(const Vec2 resolution) :
-            Demo3DBase(resolution), sphereCount(50) 
+            Demo3DBase(resolution), sphereCount(50),
+            enableDiffuse(0),
+            enableSpecular(0),
+            enableNormal(0),
+            enableAo(0)
         {
         }
         ~TestWindowApp() {}
@@ -98,6 +102,30 @@ namespace ThirdPersonDemo
 
             switch (c)
             {
+            case '1':
+            {
+                enableDiffuse = !enableDiffuse;
+                materials[0]->setProperty(diffuseOn, enableDiffuse);
+                break;
+            }
+            case '2':
+            {
+                enableSpecular = !enableSpecular;
+                materials[0]->setProperty(specularOn, enableSpecular);
+                break;
+            }
+            case '3':
+            {
+                enableNormal = !enableNormal;
+                materials[0]->setProperty(normalOn, enableNormal);
+                break;
+            }
+            case '4':
+            {
+                enableAo = !enableAo;
+                materials[0]->setProperty(aoOn, enableAo);
+                break;
+            }
             case '[':
             {
                 cameraDistance -= 5.0f;
@@ -201,6 +229,15 @@ namespace ThirdPersonDemo
             initMaterialProperty(*materials[0], "reflectionMap",   4);
             initMaterialProperty(*materials[0], "illuminationMap", 5);
 
+            materials[0]->getProperty("diffuseOn",  diffuseOn);
+            materials[0]->getProperty("specularOn", specularOn);
+            materials[0]->getProperty("normalOn",   normalOn);
+            materials[0]->getProperty("aoOn",       aoOn);
+
+            materials[0]->setProperty(diffuseOn,  enableDiffuse);
+            materials[0]->setProperty(specularOn, enableSpecular);
+            materials[0]->setProperty(normalOn,   enableNormal);
+            materials[0]->setProperty(aoOn,       enableAo);
             //1
             materials.push_back(resourceManager.createMaterial(
                 "Shaders/textured.vs",
@@ -260,6 +297,16 @@ namespace ThirdPersonDemo
         LinearAnimation<float> rollAnimation;
         LinearAnimation<float> pitchAnimation;
         LinearAnimation<float> accAnimation;
+        IntPropertySharedPtr diffuseOn;
+        IntPropertySharedPtr specularOn;
+        IntPropertySharedPtr normalOn;
+        IntPropertySharedPtr aoOn;
+
+        int enableDiffuse;
+        int enableSpecular;
+        int enableNormal;
+        int enableAo;
+
         float velocity;
         float cameraDistance;
         float cameraAngle;

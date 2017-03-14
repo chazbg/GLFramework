@@ -16,6 +16,11 @@ uniform sampler2D aoMap;
 uniform sampler2D reflectionMap;
 uniform sampler2D illuminationMap;
 
+uniform int diffuseOn;
+uniform int specularOn;
+uniform int normalMapOn;
+uniform int aoOn;
+
 uniform vec3 cameraPos;
 uniform mat4 mv;
 
@@ -78,16 +83,33 @@ float getSpecularContribution(vec3 n, vec3 v, vec3 l, float m)
 
 vec3 getNormal(vec2 d)
 {
-    return normalize(normalize(inNormal) + normalize(inTangent) * d.x + normalize(inBitangent) * d.y);
+    //return normalize(normalize(inNormal) + normalize(inTangent) * d.x + normalize(inBitangent) * d.y);
+    return normalize(inNormal);
 }
 
 void main()
 {
     vec2 uv           = vec2(inUVs.x, 1.0 - inUVs.y);
-    vec3 diffuse      = texture(diffuseMap, uv).bgr;
-    float glossiness  = texture(specularMap, uv).r;
+    vec3 diffuse      = vec3(1.0);
+    if (diffuseOn != 0)
+    {
+        diffuse       = texture(diffuseMap, uv).bgr;
+    }
+    
+    float glossiness  = 1.0;
+    if (specularOn != 0)
+    {
+        glossiness    = 1.0 - texture(specularMap, uv).r;
+    }
+     
     vec3 n            = getNormal(texture(normalMap, uv).ra * 2.0 - 1.0);
-    float ao          = texture(aoMap, uv).r;
+    
+    float ao          = 1.0;
+    if (aoOn != 0)
+    {
+        ao            = texture(aoMap, uv).r;
+    }
+
     //float reflection  = texture(reflectionMap, uv).r;
     //vec3 illumination = texture(illuminationMap, uv);
     
@@ -97,7 +119,7 @@ void main()
     vec3 v = normalize(cameraPos - pos);
     //vec3 n = normalize(inNormal);
     
-    float m = glossiness * 16.0;
+    float m = 1.0 / (glossiness * glossiness);
     
     float diffuseContribution = 0;
     
@@ -107,7 +129,7 @@ void main()
     
     specularContribution += getSpecularContribution(n, v, l, m) * lightIntensity;
     vec3 result = diffuseContribution * diffuse * ao + specularContribution;
-    
+    //vec3 result = ao * vec3(1.0);
 	// Convert to sRGB    
     outColor = linearToSRGB(result);
     
