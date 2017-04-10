@@ -42,3 +42,8 @@ std::vector<std::shared_ptr<INode>>& Scene::getChildren()
 {
     return meshes;
 }
+
+void Scene::clear()
+{
+    meshes.clear();
+}

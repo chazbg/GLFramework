@@ -75,6 +75,16 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
                 camera.getViewMatrix() * modelToWorld);
         });
     }
+
+    glMaterial.getProperty("viewProjection", p);
+    if (p != 0)
+    {
+        systemPropertySetters[glMaterial.getId()].push_back([p](Matrix4& modelToWorld, IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        {
+            mesh.getMaterial().setProperty(p,
+                camera.getViewProjectionMatrix());
+        });
+    }
 }
 
 void OpenGLRenderer::materialDestroyed(IMaterial& material)

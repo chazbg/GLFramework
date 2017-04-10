@@ -1,6 +1,6 @@
-#include "Demos/DemoThirdPerson.hpp"
+#include "Demos/DemoPlanarShadow.hpp"
 int main(int argc, char* argv[])
 {
-    ThirdPersonDemo::main();
+    PlanarShadowDemo::main();
     return 0;
 }
