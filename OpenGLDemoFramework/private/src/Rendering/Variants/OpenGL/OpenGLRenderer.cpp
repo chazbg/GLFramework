@@ -160,6 +160,38 @@ void OpenGLRenderer::initShadowMapping()
     lightCamera.setPosition(Vec3(0, 15, 25));
 }
 
+int OpenGLRenderer::getStencilOp(StencilOperation op)
+{
+    const int stencilOperations[] = {
+        GL_KEEP,
+        GL_ZERO,
+        GL_REPLACE,
+        GL_INCR,
+        GL_INCR_WRAP,
+        GL_DECR,
+        GL_DECR_WRAP,
+        GL_INVERT
+    };
+    
+    return stencilOperations[static_cast<int>(op)];
+}
+
+int OpenGLRenderer::getStencilFunc(StencilFunction f)
+{
+    const int stencilFunctions[] = {
+        GL_NEVER,
+        GL_LESS,
+        GL_LEQUAL,
+        GL_GREATER,
+        GL_GEQUAL,
+        GL_EQUAL,
+        GL_NOTEQUAL,
+        GL_ALWAYS
+    };
+
+    return stencilFunctions[static_cast<int>(f)];
+}
+
 OpenGLRenderer::~OpenGLRenderer()
 {
 
@@ -182,6 +214,29 @@ void OpenGLRenderer::setDepthTest(const bool enabled)
     {
         glDisable(GL_DEPTH_TEST);
     }
+}
+
+void OpenGLRenderer::setStencilTest(const bool enabled)
+{
+    if (enabled)
+    {
+        glEnable(GL_STENCIL_TEST);
+
+    }
+    else
+    {
+        glDisable(GL_STENCIL_TEST);
+    }
+}
+
+void OpenGLRenderer::setStencilOperation(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass)
+{
+    glStencilOp(getStencilOp(sfail), getStencilOp(dpfail), getStencilOp(dppass));
+}
+
+void OpenGLRenderer::setStencilFunction(StencilFunction f, int referenceValue, int mask)
+{
+    glStencilFunc(getStencilFunc(f), referenceValue, mask);
 }
 
 void OpenGLRenderer::setAlphaBlending(const bool enabled, BlendMode mode)

@@ -22,6 +22,30 @@ enum class BlendMode
     Normal
 };
 
+enum class StencilOperation
+{
+    Keep,
+    Zero,
+    Replace,
+    Increment,
+    IncrementWrap,
+    Decrement,
+    DecrementWrap,
+    Invert
+};
+
+enum class StencilFunction
+{
+    Never,
+    Less,
+    LessOrEqual,
+    Greater,
+    GreaterOrEqual,
+    Equal,
+    NotEqual,
+    Always
+};
+
 class OpenGLRenderer : public IResourceManagerNotify
 {
 public:
@@ -29,12 +53,16 @@ public:
     ~OpenGLRenderer();
     void clear(const Vec4& color);
     void setDepthTest(const bool enabled);
+    void setStencilTest(const bool enabled);
+    void setStencilOperation(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass);
+    void setStencilFunction(StencilFunction f, int referenceValue, int mask);
     void setAlphaBlending(const bool enabled, BlendMode mode = BlendMode::Additive); //TODO: modes
     IResourceManager& getResourceManager();
     IGeometryFactory& getGeometryFactory();
     void render(IScene& scene, ICamera& camera);
     void renderToTarget(IScene& scene, ICamera& camera, IRenderTarget& renderTarget);
     void renderToTarget(IScene & scene, ICamera & camera, IRenderTarget & renderTarget, bool clear);
+
 private:
     std::map<unsigned int, unsigned int> textures;
     OpenGLResourceManager      resourceManager;
@@ -71,6 +99,8 @@ private:
     void initDeferredShading();
     void initPostProcessing();
     void initShadowMapping();
+    int  getStencilOp(StencilOperation op);
+    int  getStencilFunc(StencilFunction f);
 
     void updateUniforms(const IMaterial& material);
 
@@ -83,10 +113,10 @@ private:
     void renderDeferred(std::shared_ptr<MeshNode> node, ICamera& camera);
 
     typedef std::vector<std::shared_ptr<INode>> NodeList;
+
     // Node list render functions
     void render(NodeList& nodes, ICamera& camera);
     void renderToTarget(NodeList& nodes, ICamera& camera, IRenderTarget& renderTarget);
-    
     void renderWithPostProcess(NodeList& nodes, ICamera& camera);
     void renderDeferred(NodeList& nodes, ICamera& camera);
     void postProcess(NodeList& nodes, ICamera& camera);
