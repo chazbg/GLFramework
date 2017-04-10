@@ -53,9 +53,11 @@ public:
     ~OpenGLRenderer();
     void clear(const Vec4& color);
     void setDepthTest(const bool enabled);
+    void setDepthMask(bool state);
     void setStencilTest(const bool enabled);
     void setStencilOperation(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass);
     void setStencilFunction(StencilFunction f, int referenceValue, int mask);
+    void setStencilMask(int mask);
     void setAlphaBlending(const bool enabled, BlendMode mode = BlendMode::Additive); //TODO: modes
     IResourceManager& getResourceManager();
     IGeometryFactory& getGeometryFactory();

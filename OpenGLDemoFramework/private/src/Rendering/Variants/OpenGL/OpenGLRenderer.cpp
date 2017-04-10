@@ -210,7 +210,7 @@ OpenGLRenderer::~OpenGLRenderer()
 void OpenGLRenderer::clear(const Vec4& color)
 {
     glClearColor(color.x, color.y, color.z, color.w);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void OpenGLRenderer::setDepthTest(const bool enabled)
@@ -224,6 +224,11 @@ void OpenGLRenderer::setDepthTest(const bool enabled)
     {
         glDisable(GL_DEPTH_TEST);
     }
+}
+
+void OpenGLRenderer::setDepthMask(bool state)
+{
+    glDepthMask(state);
 }
 
 void OpenGLRenderer::setStencilTest(const bool enabled)
@@ -247,6 +252,11 @@ void OpenGLRenderer::setStencilOperation(StencilOperation sfail, StencilOperatio
 void OpenGLRenderer::setStencilFunction(StencilFunction f, int referenceValue, int mask)
 {
     glStencilFunc(getStencilFunc(f), referenceValue, mask);
+}
+
+void OpenGLRenderer::setStencilMask(int mask)
+{
+    glStencilMask(mask);
 }
 
 void OpenGLRenderer::setAlphaBlending(const bool enabled, BlendMode mode)

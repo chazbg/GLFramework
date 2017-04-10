@@ -23,8 +23,9 @@ namespace PlanarShadowDemo
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
             meshes[2]->rotate(Vec3(0.0f, 0.01f, 0.0f));
 
-            renderRegular();
+            renderPlane();
             renderShadows();
+            renderRegular();
         }
     private:
 
@@ -63,9 +64,9 @@ namespace PlanarShadowDemo
 
             meshes[0]->scale(Vec3(2.0f));
 
-            meshes[1]->scale(Vec3(50.0f));
+            meshes[1]->scale(Vec3(10.0f));
             meshes[1]->rotate(Vec3(-3.14f * 0.5f, 0.0f, 0.0f));
-            meshes[1]->translate(Vec3(0.0f, -10.0f, 0.0f));
+            meshes[1]->translate(Vec3(10.0f, -10.0f, 0.0f));
             meshes[1]->setMaterial(materials[2]);
 
             meshes[2]->setMaterial(materials[3]);
@@ -73,15 +74,19 @@ namespace PlanarShadowDemo
             meshes[2]->translate(Vec3(10.0f));
         }
 
-        void renderRegular()
+        void renderPlane()
         {
             scene.clear();
-            scene.add(meshes[0]);
+
             scene.add(meshes[1]);
-            scene.add(meshes[2]);
 
-            meshes[0]->setMaterial(materials[1]);
+            meshes[1]->setMaterial(materials[2]);
 
+            renderer->setStencilTest(true);
+            renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Keep, StencilOperation::Replace);
+            renderer->setStencilFunction(StencilFunction::Always, 0x1, 0xFF);
+            renderer->setStencilMask(0xFF);
+            renderer->setDepthMask(false);
             renderer->render(scene, camera);
         }
 
@@ -95,6 +100,24 @@ namespace PlanarShadowDemo
             materials[0]->setProperty(planePoints[0],    meshes[1]->getPosition());
             meshes[0]->setMaterial(materials[0]);
             
+            renderer->setStencilTest(true);
+            renderer->setStencilFunction(StencilFunction::Equal, 0x1, 0xFF);
+            renderer->setStencilMask(0x0);
+            renderer->setDepthMask(true);
+            renderer->render(scene, camera);
+            renderer->setStencilMask(0xFF);
+        }
+
+
+        void renderRegular()
+        {
+            scene.clear();
+            scene.add(meshes[0]);
+            scene.add(meshes[2]);
+
+            meshes[0]->setMaterial(materials[1]);
+
+            renderer->setStencilTest(false);
             renderer->render(scene, camera);
         }
 
