@@ -61,6 +61,7 @@ namespace PlanarShadowDemo
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes.push_back(geometryFactory.createRectangle());
             meshes.push_back(geometryFactory.createCustomGeometry("3DAssets/Sphere.3ds"));
+            meshes.push_back(geometryFactory.createCustomGeometry("3DAssets/female_elf-3ds.3DS"));
 
             meshes[0]->scale(Vec3(2.0f));
 
@@ -72,6 +73,10 @@ namespace PlanarShadowDemo
             meshes[2]->setMaterial(materials[3]);
             meshes[2]->scale(Vec3(0.05f));
             meshes[2]->translate(Vec3(5.0f));
+
+            meshes[3]->scale(Vec3(0.03f));
+            meshes[3]->rotate(Vec3(-3.14f / 2.0f, 0.0f, 0.0f));
+            meshes[3]->translate(Vec3(5.0f, 0.0f, 0.0f));
         }
 
         void renderPlane()
@@ -92,11 +97,13 @@ namespace PlanarShadowDemo
         {
             scene.clear();
             scene.add(meshes[0]);
+            scene.add(meshes[3]);
 
             materials[0]->setProperty(lightPositions[0], meshes[2]->getPosition());
             materials[0]->setProperty(planeNormals[0],   Vec3(0.0f, 1.0f, 0.0f));
             materials[0]->setProperty(planePoints[0],    meshes[1]->getPosition());
             meshes[0]->setMaterial(materials[0]);
+            meshes[3]->setMaterial(materials[0]);
             
             renderer->setStencilTest(true);
             renderer->setDepthTest(false);
@@ -114,8 +121,10 @@ namespace PlanarShadowDemo
             scene.clear();
             scene.add(meshes[0]);
             scene.add(meshes[2]);
+            scene.add(meshes[3]);
 
             meshes[0]->setMaterial(materials[1]);
+            meshes[3]->setMaterial(materials[1]);
 
             renderer->setStencilTest(false);
             renderer->render(scene, camera);
