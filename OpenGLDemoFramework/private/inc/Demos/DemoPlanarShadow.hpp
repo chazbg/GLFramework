@@ -14,6 +14,11 @@ namespace PlanarShadowDemo
         virtual void onInit()
         {
             Demo3DBase::onInit();
+
+            dirLightDir    = Vec3(0.0f, -1.0f, 0.0f);
+            spotLightPos   = Vec3(-2.0, 5.0f, -2.0f);
+            spotLightDir   = -spotLightPos.normalize();
+            spotLightAngle = 3.14f * 0.15f;
         }
 
         virtual void onRender(const unsigned int deltaTime)
@@ -25,6 +30,7 @@ namespace PlanarShadowDemo
             if (!stopTime)
             {
                 meshes[2]->rotate(Vec3(0.0f, 0.01f, 0.0f));
+                pointLightPos = meshes[2]->getPosition();
             }
 
             renderPlane();
@@ -40,34 +46,36 @@ namespace PlanarShadowDemo
             materials.push_back(rm.createMaterial("Shaders/Shadows/pointLightProject.vs", "Shaders/Shadows/planarShadowProject.fs"));
             materials.push_back(rm.createMaterial("Shaders/Shadows/dirLightProject.vs", "Shaders/Shadows/planarShadowProject.fs"));
             materials.push_back(rm.createMaterial("Shaders/Shadows/spotLightProject.vs", "Shaders/Shadows/planarShadowProject.fs"));
+            materials.push_back(rm.createMaterial("Shaders/basic.vs", "Shaders/basicLightSources.fs"));
+            materials.push_back(rm.cloneMaterial(materials[3]));
             materials.push_back(rm.createMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
-            materials.push_back(rm.cloneMaterial(materials[3]));
-            materials.push_back(rm.cloneMaterial(materials[3]));
 
             initMaterialProperty(*materials[3], "diffuse", Vec3(0.7f, 0.2f, 0.6f));
             initMaterialProperty(*materials[4], "diffuse", Vec3(0.2f, 0.6f, 0.6f));
             initMaterialProperty(*materials[5], "diffuse", Vec3(1.0f, 1.0f, 0.0f));
 
-            Vec3PropertySharedPtr v3p;
-            materials[0]->getProperty("pointLightPos", pointLightPosition);
-            materials[0]->getProperty("planeNormal", v3p);
-            planeNormals.push_back(v3p);
-            materials[0]->getProperty("planePoint", v3p);
-            planePoints.push_back(v3p);
+            pointLightPositions.push_back(getMaterialProperty<Vec3Property>(*materials[0], "pointLightPos"));
+            planeNormals.push_back(getMaterialProperty<Vec3Property>(*materials[0], "planeNormal"));
+            planePoints.push_back(getMaterialProperty<Vec3Property>(*materials[0], "planePoint"));
 
-            materials[1]->getProperty("dirLightDirection", dirLightDirection);
-            materials[1]->getProperty("planeNormal", v3p);
-            planeNormals.push_back(v3p);
-            materials[1]->getProperty("planePoint", v3p);
-            planePoints.push_back(v3p);
+            dirLightDirections.push_back(getMaterialProperty<Vec3Property>(*materials[1], "dirLightDirection"));
+            planeNormals.push_back(getMaterialProperty<Vec3Property>(*materials[1], "planeNormal"));
+            planePoints.push_back(getMaterialProperty<Vec3Property>(*materials[1], "planePoint"));
 
-            materials[2]->getProperty("spotLightPos", spotLightPosition);
-            materials[2]->getProperty("spotLightDirection", spotLightPosition);
-            materials[2]->getProperty("spotLightAngle", spotLightAngle);
-            materials[2]->getProperty("planeNormal", v3p);
-            planeNormals.push_back(v3p);
-            materials[2]->getProperty("planePoint", v3p);
-            planePoints.push_back(v3p);
+            spotLightPositions.push_back(getMaterialProperty<Vec3Property>(*materials[2], "spotLightPos"));
+            spotLightDirections.push_back(getMaterialProperty<Vec3Property>(*materials[2], "spotLightDir"));
+            spotLightAngles.push_back(getMaterialProperty<FloatProperty>(*materials[2], "spotLightAngle"));
+            planeNormals.push_back(getMaterialProperty<Vec3Property>(*materials[2], "planeNormal"));
+            planePoints.push_back(getMaterialProperty<Vec3Property>(*materials[2], "planePoint"));
+
+            for (int i = 3; i < 5; i++)
+            {
+                pointLightPositions.push_back(getMaterialProperty<Vec3Property>(*materials[i], "pointLightPos"));
+                dirLightDirections.push_back(getMaterialProperty<Vec3Property>(*materials[i], "dirLightDirection"));
+                spotLightPositions.push_back(getMaterialProperty<Vec3Property>(*materials[i], "spotLightPos"));
+                spotLightDirections.push_back(getMaterialProperty<Vec3Property>(*materials[i], "spotLightDir"));
+                spotLightAngles.push_back(getMaterialProperty<FloatProperty>(*materials[i], "spotLightAngle"));
+            }
         }
 
         virtual void initGeometry()
@@ -100,6 +108,11 @@ namespace PlanarShadowDemo
 
             scene.add(meshes[1]);
 
+            materials[4]->setProperty(pointLightPositions[1], pointLightPos);
+            materials[4]->setProperty(dirLightDirections[1], dirLightDir);
+            materials[4]->setProperty(spotLightAngles[1], spotLightAngle);
+            materials[4]->setProperty(spotLightDirections[1], spotLightDir);
+            materials[4]->setProperty(spotLightPositions[1], spotLightPos);
             meshes[1]->setMaterial(materials[4]);
 
             renderer->setStencilTest(true);
@@ -120,7 +133,7 @@ namespace PlanarShadowDemo
             renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Increment, StencilOperation::Increment);
             renderer->setAlphaBlending(true, BlendMode::Normal);
 
-            materials[0]->setProperty(pointLightPosition, meshes[2]->getPosition());
+            materials[0]->setProperty(pointLightPositions[0], pointLightPos);
             materials[0]->setProperty(planeNormals[0],    Vec3(0.0f, 1.0f, 0.0f));
             materials[0]->setProperty(planePoints[0],     meshes[1]->getPosition());
             meshes[0]->setMaterial(materials[0]);
@@ -128,7 +141,7 @@ namespace PlanarShadowDemo
             
             renderer->render(scene, camera);
 
-            materials[1]->setProperty(dirLightDirection, Vec3(0.0f, -1.0f, 0.0f));
+            materials[1]->setProperty(dirLightDirections[0], dirLightDir);
             materials[1]->setProperty(planeNormals[1], Vec3(0.0f, 1.0f, 0.0f));
             materials[1]->setProperty(planePoints[1], meshes[1]->getPosition());
             meshes[0]->setMaterial(materials[1]);
@@ -136,9 +149,9 @@ namespace PlanarShadowDemo
 
             renderer->render(scene, camera);
 
-            //materials[2]->setProperty(spotLightPosition, meshes[2]->getPosition());
-            //materials[2]->setProperty(spotLightDirection, (-meshes[2]->getPosition()).normalize());
-            //materials[2]->setProperty(spotLightAngle, 3.14f * 0.25);
+            //materials[2]->setProperty(spotLightPositions[0], spotLightPos);
+            //materials[2]->setProperty(spotLightDirections[0], spotLightDir);
+            //materials[2]->setProperty(spotLightAngles[0], spotLightAngle);
             //materials[2]->setProperty(planeNormals[2], Vec3(0.0f, 1.0f, 0.0f));
             //materials[2]->setProperty(planePoints[2], meshes[1]->getPosition());
             //meshes[0]->setMaterial(materials[2]);
@@ -158,6 +171,12 @@ namespace PlanarShadowDemo
             scene.add(meshes[2]);
             scene.add(meshes[3]);
 
+            materials[3]->setProperty(pointLightPositions[2], pointLightPos);
+            materials[3]->setProperty(dirLightDirections[2], dirLightDir);
+            materials[3]->setProperty(spotLightAngles[2], spotLightAngle);
+            materials[3]->setProperty(spotLightDirections[2], spotLightDir);
+            materials[3]->setProperty(spotLightPositions[2], spotLightPos);
+
             meshes[0]->setMaterial(materials[3]);
             meshes[3]->setMaterial(materials[3]);
 
@@ -165,16 +184,22 @@ namespace PlanarShadowDemo
             renderer->render(scene, camera);
         }
 
-        vector<MeshNodeSharedPtr>     meshes;
-        vector<IMaterial*>            materials;
-        vector<Vec3PropertySharedPtr> cameraPositions;
-        vector<Vec3PropertySharedPtr> planeNormals;
-        vector<Vec3PropertySharedPtr> planePoints;
-        Vec3PropertySharedPtr         pointLightPosition;
-        Vec3PropertySharedPtr         spotLightPosition;
-        Vec3PropertySharedPtr         spotLightDirection;
-        FloatPropertySharedPtr        spotLightAngle;
-        Vec3PropertySharedPtr         dirLightDirection;
+        vector<MeshNodeSharedPtr>      meshes;
+        vector<IMaterial*>             materials;
+        vector<Vec3PropertySharedPtr>  cameraPositions;
+        vector<Vec3PropertySharedPtr>  planeNormals;
+        vector<Vec3PropertySharedPtr>  planePoints;
+        vector<Vec3PropertySharedPtr>  pointLightPositions;
+        vector<Vec3PropertySharedPtr>  spotLightPositions;
+        vector<Vec3PropertySharedPtr>  spotLightDirections;
+        vector<FloatPropertySharedPtr> spotLightAngles;
+        vector<Vec3PropertySharedPtr>  dirLightDirections;
+
+        Vec3 dirLightDir;
+        Vec3 pointLightPos;
+        Vec3 spotLightPos;
+        Vec3 spotLightDir;
+        float spotLightAngle;
     };
 
     void main()

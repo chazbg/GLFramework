@@ -26,6 +26,10 @@ protected:
 
     template <typename T>
     void initMaterialProperty(IMaterial& material, const std::string propertyName, const T& value);
+
+    template <typename T>
+    std::shared_ptr<T> getMaterialProperty(IMaterial& material, const std::string propertyName);
+
     Vec2 resolution;
     PerspectiveCamera camera;
     Scene scene;
@@ -55,4 +59,12 @@ inline void Demo3DBase::initMaterialProperty(IMaterial & material, const std::st
     {
         std::cout << "Couldn't find property \"" << propertyName << "\"" << std::endl;
     }
+}
+
+template<typename T>
+inline std::shared_ptr<T> Demo3DBase::getMaterialProperty(IMaterial & material, const std::string propertyName)
+{
+    std::shared_ptr<T> res;
+    material.getProperty(propertyName, res);
+    return res;
 }
