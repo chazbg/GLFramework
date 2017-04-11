@@ -17,7 +17,7 @@ void main()
     vec3  v     = vec3(modelToWorld * vec4(vertex, 1.0));
     vec3  ray   = normalize(v - pointLightPos);
     float t     = dot(planePoint, planeNormal) / dot(ray, planeNormal);
-    vec3  p     = (t - 0.1) * ray;
+    vec3  p     = t * ray;
     gl_Position = viewProjection * vec4(p, 1.0);
 }
 

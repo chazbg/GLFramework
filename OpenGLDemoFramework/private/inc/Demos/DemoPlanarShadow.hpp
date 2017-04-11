@@ -99,8 +99,13 @@ namespace PlanarShadowDemo
             meshes[0]->setMaterial(materials[0]);
             
             renderer->setStencilTest(true);
+            renderer->setDepthTest(false);
             renderer->setStencilFunction(StencilFunction::Equal, 0x1, 0xFF);
+            renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Increment, StencilOperation::Increment);
+            renderer->setAlphaBlending(true, BlendMode::Normal);
             renderer->render(scene, camera);
+            renderer->setAlphaBlending(false);
+            renderer->setDepthTest(true);
         }
 
 
