@@ -21,7 +21,11 @@ namespace PlanarShadowDemo
             Demo3DBase::onRender(deltaTime);
 
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
-            meshes[2]->rotate(Vec3(0.0f, 0.01f, 0.0f));
+
+            if (!stopTime)
+            {
+                meshes[2]->rotate(Vec3(0.0f, 0.01f, 0.0f));
+            }
 
             renderPlane();
             renderShadows();
@@ -124,13 +128,13 @@ namespace PlanarShadowDemo
             
             renderer->render(scene, camera);
 
-            //materials[1]->setProperty(dirLightDirection, Vec3(0.0f, -1.0f, 0.0f));
-            //materials[1]->setProperty(planeNormals[1], Vec3(0.0f, 1.0f, 0.0f));
-            //materials[1]->setProperty(planePoints[1], meshes[1]->getPosition());
-            //meshes[0]->setMaterial(materials[1]);
-            //meshes[3]->setMaterial(materials[1]);
+            materials[1]->setProperty(dirLightDirection, Vec3(0.0f, -1.0f, 0.0f));
+            materials[1]->setProperty(planeNormals[1], Vec3(0.0f, 1.0f, 0.0f));
+            materials[1]->setProperty(planePoints[1], meshes[1]->getPosition());
+            meshes[0]->setMaterial(materials[1]);
+            meshes[3]->setMaterial(materials[1]);
 
-            //renderer->render(scene, camera);
+            renderer->render(scene, camera);
 
             //materials[2]->setProperty(spotLightPosition, meshes[2]->getPosition());
             //materials[2]->setProperty(spotLightDirection, (-meshes[2]->getPosition()).normalize());

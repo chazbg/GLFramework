@@ -15,9 +15,9 @@ uniform vec3 planePoint;
 void main()
 {
     vec3  v     = vec3(modelToWorld * vec4(vertex, 1.0));
-    vec3  ray   = normalize(v - dirLightDirection);
-    float t     = dot(planePoint, planeNormal) / dot(ray, planeNormal);
-    vec3  p     = t * ray;
+    vec3  ray   = dirLightDirection;
+    float t     = dot(planePoint - v, planeNormal) / dot(ray, planeNormal);
+    vec3  p     = v + t * ray;
     gl_Position = viewProjection * vec4(p, 1.0);
 }
 
