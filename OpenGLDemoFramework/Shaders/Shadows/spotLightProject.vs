@@ -8,16 +8,18 @@ uniform mat4 mv;
 uniform mat4 modelToWorld;
 uniform mat4 viewProjection;
 
-uniform vec3 pointLightPos;
-uniform vec3 planeNormal;
-uniform vec3 planePoint;
+uniform vec3  spotLightPos;
+uniform vec3  spotLightDir;
+uniform float spotLightAngle;
+uniform vec3  planeNormal;
+uniform vec3  planePoint;
 
 void main()
 {
     vec3  v     = vec3(modelToWorld * vec4(vertex, 1.0));
-    vec3  ray   = normalize(v - pointLightPos);
-    float t     = dot(planePoint, planeNormal) / dot(ray, planeNormal);
-    vec3  p     = t * ray;
+    vec3  ray   = normalize(v - spotLightPos);
+    float t     = dot(planePoint - v, planeNormal) / dot(ray, planeNormal);
+    vec3  p     = v + t * ray;
     gl_Position = viewProjection * vec4(p, 1.0);
 }
 

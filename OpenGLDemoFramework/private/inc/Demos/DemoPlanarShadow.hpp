@@ -149,15 +149,15 @@ namespace PlanarShadowDemo
 
             renderer->render(scene, camera);
 
-            //materials[2]->setProperty(spotLightPositions[0], spotLightPos);
-            //materials[2]->setProperty(spotLightDirections[0], spotLightDir);
-            //materials[2]->setProperty(spotLightAngles[0], spotLightAngle);
-            //materials[2]->setProperty(planeNormals[2], Vec3(0.0f, 1.0f, 0.0f));
-            //materials[2]->setProperty(planePoints[2], meshes[1]->getPosition());
-            //meshes[0]->setMaterial(materials[2]);
-            //meshes[3]->setMaterial(materials[2]);
+            materials[2]->setProperty(spotLightPositions[0], spotLightPos);
+            materials[2]->setProperty(spotLightDirections[0], spotLightDir);
+            materials[2]->setProperty(spotLightAngles[0], spotLightAngle);
+            materials[2]->setProperty(planeNormals[2], Vec3(0.0f, 1.0f, 0.0f));
+            materials[2]->setProperty(planePoints[2], meshes[1]->getPosition());
+            meshes[0]->setMaterial(materials[2]);
+            meshes[3]->setMaterial(materials[2]);
 
-            //renderer->render(scene, camera);
+            renderer->render(scene, camera);
 
             renderer->setAlphaBlending(false);
             renderer->setDepthTest(true);
