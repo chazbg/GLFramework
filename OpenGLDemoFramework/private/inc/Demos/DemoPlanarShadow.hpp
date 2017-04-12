@@ -117,7 +117,7 @@ namespace PlanarShadowDemo
 
             renderer->setStencilTest(true);
             renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Keep, StencilOperation::Replace);
-            renderer->setStencilFunction(StencilFunction::Always, 0x1, 0xFF);
+            renderer->setStencilFunction(StencilFunction::Always, 0x15, 0xFF);
             renderer->render(scene, camera);
         }
 
@@ -129,8 +129,9 @@ namespace PlanarShadowDemo
 
             renderer->setStencilTest(true);
             renderer->setDepthTest(false);
-            renderer->setStencilFunction(StencilFunction::Equal, 0x1, 0xFF);
-            renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Increment, StencilOperation::Increment);
+            renderer->setStencilFunction(StencilFunction::Equal, 0x1, 0x3);
+            renderer->setStencilMask(0x3);
+            renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Invert, StencilOperation::Invert);
             renderer->setAlphaBlending(true, BlendMode::Normal);
 
             materials[0]->setProperty(pointLightPositions[0], pointLightPos);
@@ -141,6 +142,9 @@ namespace PlanarShadowDemo
             
             renderer->render(scene, camera);
 
+            renderer->setStencilFunction(StencilFunction::Equal, 0x4, 0xC);
+            renderer->setStencilMask(0xC);
+
             materials[1]->setProperty(dirLightDirections[0], dirLightDir);
             materials[1]->setProperty(planeNormals[1], Vec3(0.0f, 1.0f, 0.0f));
             materials[1]->setProperty(planePoints[1], meshes[1]->getPosition());
@@ -148,6 +152,9 @@ namespace PlanarShadowDemo
             meshes[3]->setMaterial(materials[1]);
 
             renderer->render(scene, camera);
+
+            renderer->setStencilFunction(StencilFunction::Equal, 0x10, 0x30);
+            renderer->setStencilMask(0x30);
 
             materials[2]->setProperty(spotLightPositions[0], spotLightPos);
             materials[2]->setProperty(spotLightDirections[0], spotLightDir);
@@ -159,6 +166,7 @@ namespace PlanarShadowDemo
 
             renderer->render(scene, camera);
 
+            renderer->setStencilMask(0xFF);
             renderer->setAlphaBlending(false);
             renderer->setDepthTest(true);
         }
