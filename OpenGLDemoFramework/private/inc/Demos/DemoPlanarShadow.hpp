@@ -45,7 +45,7 @@ namespace PlanarShadowDemo
 
             materials.push_back(rm.createMaterial("Shaders/Shadows/pointLightProject.vs", "Shaders/Shadows/planarShadowProject.fs"));
             materials.push_back(rm.createMaterial("Shaders/Shadows/dirLightProject.vs", "Shaders/Shadows/planarShadowProject.fs"));
-            materials.push_back(rm.createMaterial("Shaders/Shadows/spotLightProject.vs", "Shaders/Shadows/planarShadowProject.fs"));
+            materials.push_back(rm.createMaterial("Shaders/Shadows/spotLightProject.vs", "Shaders/Shadows/planarShadowProjectSpotlight.fs"));
             materials.push_back(rm.createMaterial("Shaders/basic.vs", "Shaders/basicLightSources.fs"));
             materials.push_back(rm.cloneMaterial(materials[3]));
             materials.push_back(rm.createMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));

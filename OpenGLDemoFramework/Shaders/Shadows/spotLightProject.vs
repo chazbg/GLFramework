@@ -14,6 +14,8 @@ uniform float spotLightAngle;
 uniform vec3  planeNormal;
 uniform vec3  planePoint;
 
+out vec3  pos;
+
 void main()
 {
     vec3  v     = vec3(modelToWorld * vec4(vertex, 1.0));
@@ -21,5 +23,6 @@ void main()
     float t     = dot(planePoint - v, planeNormal) / dot(ray, planeNormal);
     vec3  p     = v + t * ray;
     gl_Position = viewProjection * vec4(p, 1.0);
+    pos         = p;
 }
 
