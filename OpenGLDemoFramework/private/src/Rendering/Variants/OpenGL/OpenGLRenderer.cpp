@@ -341,7 +341,10 @@ void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTar
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     
+    //TODO: Add render target resolution property
+    //glViewport(0, 0, renderTarget.getColorTexture(0)->getWidth(), renderTarget.getColorTexture(0)->getHeight());
     render(scene, camera);
+    //glViewport(0, 0, resolution.x, resolution.y);
 
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }

@@ -145,7 +145,6 @@ namespace PlanarShadowDemo
             meshes[0]->setMaterial(materials[0]);
             meshes[3]->setMaterial(materials[0]);
             
-            //renderer->render(scene, camera);
             renderer->renderToTarget(scene, planeCamera, *shadowRenderTarget, true);
 
             materials[1]->setProperty(dirLightDirections[0], dirLightDir);
@@ -154,7 +153,6 @@ namespace PlanarShadowDemo
             meshes[0]->setMaterial(materials[1]);
             meshes[3]->setMaterial(materials[1]);
 
-            //renderer->render(scene, camera);
             renderer->renderToTarget(scene, planeCamera, *shadowRenderTarget, false);
 
             materials[2]->setProperty(spotLightPositions[0], spotLightPos);
@@ -165,7 +163,6 @@ namespace PlanarShadowDemo
             meshes[0]->setMaterial(materials[2]);
             meshes[3]->setMaterial(materials[2]);
 
-            //renderer->render(scene, camera);
             renderer->renderToTarget(scene, planeCamera, *shadowRenderTarget, false);
         }
 

@@ -9,5 +9,5 @@ in float projectedDistance;
 
 void main()
 {
-    outColor = vec4(vec3(0.2), projectedDistance);
+    outColor = vec4(vec3(0.2), projectedDistance * 0.1);
 }

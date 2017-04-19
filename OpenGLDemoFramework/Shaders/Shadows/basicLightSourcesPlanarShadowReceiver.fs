@@ -16,6 +16,8 @@ uniform vec3  spotLightDir;
 uniform float spotLightAngle;
 uniform sampler2D shadowTexture;
 
+#define SAMPLES 4
+
 float getPointLightContribution(vec3 n, vec3 pos, vec3 lightPos, float intensity)
 {
     vec3  ray              = pos - lightPos;
@@ -45,19 +47,36 @@ float getSpotlightContribution(vec3 n, vec3 pos, vec3 lightPos, vec3 lightDir, f
     }
 }
 
+float getGaussianCoefficient(vec2 dist, float strength)
+{
+    return 1.0 / (2.0 * 3.14 * strength * strength) * pow(2.71828, -dot(dist, dist) / (2.0 * strength * strength));
+}
+
+vec3 blurTexture(sampler2D tex, vec2 uv, float strength)
+{
+    vec3 c = vec3(0.0);
+    vec2 delta = 1.0 / vec2(1600.0, 900.0);
+    for (float i = -SAMPLES * 0.5; i < SAMPLES * 0.5; i += 1.0)
+    {
+        for (float j = -SAMPLES * 0.5; j < SAMPLES * 0.5; j += 1.0)
+        {
+            vec2 dist = vec2(i, j) * delta;
+            c += texture(shadowTexture, vUV + dist).rgb * getGaussianCoefficient(dist, strength);
+        }
+    }
+    return c;
+}
+
 void main()
 {
     vec3 n   = normalize(vNormal);
-    float c1 = getPointLightContribution(n, vPos, pointLightPos, 64.0);
+    float c1 = getPointLightContribution(n, vPos, pointLightPos, 32.0);
     float c2 = getDirLightContribution(n, dirLightDirection, 0.25);
     float c3 = getSpotlightContribution(n, vPos, spotLightPos, spotLightDir, spotLightAngle, 16.0);
     float projectedDistance = texture(shadowTexture, vUV).a;
-    vec3 c = texture(shadowTexture,  vUV).rgb;
-    vec2 eps = vec2(3.0) / vec2(1600.0, 900.0);
-    vec3 cU = texture(shadowTexture, vUV + vec2(0.0, eps.y)).rgb;
-    vec3 cD = texture(shadowTexture, vUV + vec2(0.0, -eps.y)).rgb;
-    vec3 cL = texture(shadowTexture, vUV + vec2(-eps.x, 0.0)).rgb;
-    vec3 cR = texture(shadowTexture, vUV + vec2(eps.x, 0.0)).rgb;
+    //vec3 c = blurTexture(shadowTexture, vUV, projectedDistance * 5.0);
+    vec3 c = texture(shadowTexture, vUV).rgb;
     vec3 shadowColor = c;
-    outColor = diffuse * (c1 + c2 + c3) + shadowColor;
+    outColor = diffuse * (c1 + c2 + c3) - shadowColor;
+    //outColor = vec3(projectedDistance);
 }
