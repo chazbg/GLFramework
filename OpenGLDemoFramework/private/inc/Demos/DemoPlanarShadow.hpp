@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Demos/Demo3DBase.hpp"
+#include "Core/OrthographicCamera.hpp"
 
 using namespace std;
 
@@ -9,7 +10,12 @@ namespace PlanarShadowDemo
     class TestWindowApp : public Demo3DBase
     {
     public:
-        TestWindowApp(const Vec2 resolution) : Demo3DBase(resolution) {}
+        TestWindowApp(const Vec2 resolution) : Demo3DBase(resolution), planeCamera(0.1f, 16.0f, -10.0f, 10.0f, 10.0f, -10.0f) 
+        {
+            planeCamera.setPosition(Vec3(5.0f, 10.0f, 0.0f));
+            planeCamera.setTarget(Vec3(5.0f, 0.0f, 0.0f));
+            planeCamera.setUpVector(Vec3(0.0f, 0.0f, -1.0f));
+        }
 
         virtual void onInit()
         {
@@ -25,7 +31,7 @@ namespace PlanarShadowDemo
         {
             Demo3DBase::onRender(deltaTime);
 
-            renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
+            renderer->clear(Vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
             if (!stopTime)
             {
@@ -38,6 +44,13 @@ namespace PlanarShadowDemo
             renderRegular();
         }
     private:
+        virtual void initTextures()
+        {
+            auto& rm = renderer->getResourceManager();
+            shadowTexture      = rm.createTexture(1600, 900, 4, false);
+            shadowRenderTarget = rm.createRenderTarget();
+            shadowRenderTarget->addColorTexture(shadowTexture);
+        }
 
         virtual void initMaterials()
         {
@@ -47,7 +60,7 @@ namespace PlanarShadowDemo
             materials.push_back(rm.createMaterial("Shaders/Shadows/dirLightProject.vs", "Shaders/Shadows/planarShadowProject.fs"));
             materials.push_back(rm.createMaterial("Shaders/Shadows/spotLightProject.vs", "Shaders/Shadows/planarShadowProjectSpotlight.fs"));
             materials.push_back(rm.createMaterial("Shaders/basic.vs", "Shaders/basicLightSources.fs"));
-            materials.push_back(rm.cloneMaterial(materials[3]));
+            materials.push_back(rm.createMaterial("Shaders/basic.vs", "Shaders/Shadows/basicLightSourcesPlanarShadowReceiver.fs"));
             materials.push_back(rm.createMaterial("Shaders/basicDiffuse.vs", "Shaders/basicDiffuse.fs"));
 
             initMaterialProperty(*materials[3], "diffuse", Vec3(0.7f, 0.2f, 0.6f));
@@ -76,6 +89,8 @@ namespace PlanarShadowDemo
                 spotLightDirections.push_back(getMaterialProperty<Vec3Property>(*materials[i], "spotLightDir"));
                 spotLightAngles.push_back(getMaterialProperty<FloatProperty>(*materials[i], "spotLightAngle"));
             }
+
+            materials[4]->addTexture(shadowTexture);
         }
 
         virtual void initGeometry()
@@ -115,9 +130,6 @@ namespace PlanarShadowDemo
             materials[4]->setProperty(spotLightPositions[1], spotLightPos);
             meshes[1]->setMaterial(materials[4]);
 
-            renderer->setStencilTest(true);
-            renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Keep, StencilOperation::Replace);
-            renderer->setStencilFunction(StencilFunction::Always, 0x15, 0xFF);
             renderer->render(scene, camera);
         }
 
@@ -127,23 +139,14 @@ namespace PlanarShadowDemo
             scene.add(meshes[0]);
             scene.add(meshes[3]);
 
-            renderer->setStencilTest(true);
-            renderer->setDepthTest(false);
-            renderer->setStencilFunction(StencilFunction::Equal, 0x1, 0x3);
-            renderer->setStencilMask(0x3);
-            renderer->setStencilOperation(StencilOperation::Keep, StencilOperation::Invert, StencilOperation::Invert);
-            renderer->setAlphaBlending(true, BlendMode::Normal);
-
             materials[0]->setProperty(pointLightPositions[0], pointLightPos);
             materials[0]->setProperty(planeNormals[0],    Vec3(0.0f, 1.0f, 0.0f));
             materials[0]->setProperty(planePoints[0],     meshes[1]->getPosition());
             meshes[0]->setMaterial(materials[0]);
             meshes[3]->setMaterial(materials[0]);
             
-            renderer->render(scene, camera);
-
-            renderer->setStencilFunction(StencilFunction::Equal, 0x4, 0xC);
-            renderer->setStencilMask(0xC);
+            //renderer->render(scene, camera);
+            renderer->renderToTarget(scene, planeCamera, *shadowRenderTarget, true);
 
             materials[1]->setProperty(dirLightDirections[0], dirLightDir);
             materials[1]->setProperty(planeNormals[1], Vec3(0.0f, 1.0f, 0.0f));
@@ -151,10 +154,8 @@ namespace PlanarShadowDemo
             meshes[0]->setMaterial(materials[1]);
             meshes[3]->setMaterial(materials[1]);
 
-            renderer->render(scene, camera);
-
-            renderer->setStencilFunction(StencilFunction::Equal, 0x10, 0x30);
-            renderer->setStencilMask(0x30);
+            //renderer->render(scene, camera);
+            renderer->renderToTarget(scene, planeCamera, *shadowRenderTarget, false);
 
             materials[2]->setProperty(spotLightPositions[0], spotLightPos);
             materials[2]->setProperty(spotLightDirections[0], spotLightDir);
@@ -164,13 +165,9 @@ namespace PlanarShadowDemo
             meshes[0]->setMaterial(materials[2]);
             meshes[3]->setMaterial(materials[2]);
 
-            renderer->render(scene, camera);
-
-            renderer->setStencilMask(0xFF);
-            renderer->setAlphaBlending(false);
-            renderer->setDepthTest(true);
+            //renderer->render(scene, camera);
+            renderer->renderToTarget(scene, planeCamera, *shadowRenderTarget, false);
         }
-
 
         void renderRegular()
         {
@@ -188,7 +185,6 @@ namespace PlanarShadowDemo
             meshes[0]->setMaterial(materials[3]);
             meshes[3]->setMaterial(materials[3]);
 
-            renderer->setStencilTest(false);
             renderer->render(scene, camera);
         }
 
@@ -202,12 +198,14 @@ namespace PlanarShadowDemo
         vector<Vec3PropertySharedPtr>  spotLightDirections;
         vector<FloatPropertySharedPtr> spotLightAngles;
         vector<Vec3PropertySharedPtr>  dirLightDirections;
-
+        ITexture*                      shadowTexture;
+        IRenderTarget*                 shadowRenderTarget;
         Vec3 dirLightDir;
         Vec3 pointLightPos;
         Vec3 spotLightPos;
         Vec3 spotLightDir;
         float spotLightAngle;
+        OrthographicCamera planeCamera;
     };
 
     void main()

@@ -165,6 +165,7 @@
     <ClCompile Include="private\src\Core\Mesh.cpp" />
     <ClCompile Include="private\src\Core\MeshNode.cpp" />
     <ClCompile Include="private\src\Core\Node.cpp" />
+    <ClCompile Include="private\src\Core\OrthographicCamera.cpp" />
     <ClCompile Include="private\src\Core\Particles\GpuParticle2D.cpp" />
     <ClCompile Include="private\src\Core\Particles\SimpleEmitter.cpp" />
     <ClCompile Include="private\src\Core\Particles\SimpleParticle.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="private\inc\Core\MeshNode.hpp" />
     <ClInclude Include="private\inc\Core\Node.hpp" />
     <ClInclude Include="private\inc\Core\NodeTypes.hpp" />
+    <ClInclude Include="private\inc\Core\OrthographicCamera.hpp" />
     <ClInclude Include="private\inc\Core\Particles\GpuParticle2D.hpp" />
     <ClInclude Include="private\inc\Core\Particles\IEmitter.hpp" />
     <ClInclude Include="private\inc\Core\Particles\IParticle.hpp" />

@@ -835,6 +835,15 @@ Matrix4 GeometryAlgorithm::CreatePerspectiveMatrix(const float angleOfView, cons
         Vec4(0.0f, 0.0f, -1.0f, 0.0f));
 }
 
+Matrix4 GeometryAlgorithm::CreateOrthographicMatrix(float near, float far, float left, float right, float top, float bottom)
+{
+    return Matrix4(
+        Vec4(2.0f / (right - left), 0.0f, 0.0f, -(right + left) / (right - left)),
+        Vec4(0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom)),
+        Vec4(0.0f, 0.0f, -2.0f / (far - near), -(far + near) / (far - near)),
+        Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+}
+
 Matrix4 GeometryAlgorithm::CreateLookAtMatrix(const Vec3& cameraPosition, const Vec3& cameraTarget, const Vec3& cameraUpVector)
 {
     Vec3 zAxis = (cameraPosition - cameraTarget).normalize();

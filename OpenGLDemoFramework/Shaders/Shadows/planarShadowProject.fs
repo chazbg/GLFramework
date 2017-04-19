@@ -5,7 +5,9 @@ uniform vec3 diffuse;
 // Ouput data
 layout(location = 0) out vec4 outColor;
 
+in float projectedDistance;
+
 void main()
 {
-    outColor = vec4(vec3(0.0), 0.2);
+    outColor = vec4(vec3(0.2), projectedDistance);
 }

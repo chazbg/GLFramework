@@ -15,6 +15,7 @@ uniform vec3  planeNormal;
 uniform vec3  planePoint;
 
 out vec3  pos;
+out float projectedDistance;
 
 void main()
 {
@@ -24,5 +25,6 @@ void main()
     vec3  p     = v + t * ray;
     gl_Position = viewProjection * vec4(p, 1.0);
     pos         = p;
+   projectedDistance = t;
 }
 
