@@ -25,6 +25,6 @@ void main()
     vec3  p     = v + t * ray;
     gl_Position = viewProjection * vec4(p, 1.0);
     pos         = p;
-   projectedDistance = t;
+    projectedDistance = t;
 }
 

@@ -75,8 +75,8 @@ void main()
     float c3 = getSpotlightContribution(n, vPos, spotLightPos, spotLightDir, spotLightAngle, 16.0);
     float projectedDistance = texture(shadowTexture, vUV).a;
     //vec3 c = blurTexture(shadowTexture, vUV, projectedDistance * 5.0);
-    vec3 c = texture(shadowTexture, vUV).rgb;
+    vec3 c = vec3(1.0) - texture(shadowTexture, vUV).rgb;
     vec3 shadowColor = c;
-    outColor = diffuse * (c1 + c2 + c3) - shadowColor;
+    outColor = diffuse * (c1 + c2 + c3) * shadowColor;
     //outColor = vec3(projectedDistance);
 }

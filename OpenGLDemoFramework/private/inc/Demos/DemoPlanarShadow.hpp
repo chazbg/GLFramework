@@ -47,9 +47,11 @@ namespace PlanarShadowDemo
         virtual void initTextures()
         {
             auto& rm = renderer->getResourceManager();
-            shadowTexture      = rm.createTexture(1600, 900, 4, false);
-            shadowRenderTarget = rm.createRenderTarget();
+            shadowTexture        = rm.createTexture(1600, 900, 4, false);
+            shadowDepthTexture   = rm.createTexture(1600, 900, 1, true);
+            shadowRenderTarget   = rm.createRenderTarget();
             shadowRenderTarget->addColorTexture(shadowTexture);
+            shadowRenderTarget->addDepthTexture(shadowDepthTexture);
         }
 
         virtual void initMaterials()
@@ -144,7 +146,7 @@ namespace PlanarShadowDemo
             materials[0]->setProperty(planePoints[0],     meshes[1]->getPosition());
             meshes[0]->setMaterial(materials[0]);
             meshes[3]->setMaterial(materials[0]);
-            
+
             renderer->renderToTarget(scene, planeCamera, *shadowRenderTarget, true);
 
             materials[1]->setProperty(dirLightDirections[0], dirLightDir);
@@ -196,6 +198,7 @@ namespace PlanarShadowDemo
         vector<FloatPropertySharedPtr> spotLightAngles;
         vector<Vec3PropertySharedPtr>  dirLightDirections;
         ITexture*                      shadowTexture;
+        ITexture*                      shadowDepthTexture;
         IRenderTarget*                 shadowRenderTarget;
         Vec3 dirLightDir;
         Vec3 pointLightPos;

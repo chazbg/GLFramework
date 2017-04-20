@@ -17,10 +17,10 @@ void main()
     vec3 ray = normalize(pos - spotLightPos);
     if (cos(spotLightAngle) < dot(ray, spotLightDir))
     {
-        outColor = vec4(vec3(0.2), projectedDistance * 0.1);
+        outColor = vec4(vec3(0.5), projectedDistance * 0.1);
     }
     else
     {
-        outColor = vec4(vec3(0.0), projectedDistance * 0.1);
+        discard; //outColor = vec4(vec3(0.0), projectedDistance * 0.1);
     }
 }
