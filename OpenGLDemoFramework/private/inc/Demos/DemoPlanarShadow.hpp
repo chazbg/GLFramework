@@ -37,6 +37,7 @@ namespace PlanarShadowDemo
             {
                 meshes[2]->rotate(Vec3(0.0f, 0.01f, 0.0f));
                 pointLightPos = meshes[2]->getPosition();
+                meshes[0]->translate(Vec3(0.0f, sin(time * 0.02) * 0.02, 0.0f));
             }
 
             renderPlane();
@@ -104,6 +105,7 @@ namespace PlanarShadowDemo
             meshes.push_back(geometryFactory.createCustomGeometry("3DAssets/female_elf-3ds.3DS"));
 
             meshes[0]->scale(Vec3(2.0f));
+            meshes[0]->translate(Vec3(0.0f, -4.0f, 0.0f));
 
             meshes[1]->scale(Vec3(10.0f));
             meshes[1]->rotate(Vec3(-3.14f * 0.5f, 0.0f, 0.0f));
@@ -112,11 +114,11 @@ namespace PlanarShadowDemo
 
             meshes[2]->setMaterial(materials[5]);
             meshes[2]->scale(Vec3(0.05f));
-            meshes[2]->translate(Vec3(5.0f));
+            meshes[2]->translate(Vec3(5.0f, 10.0f, 5.0f));
 
             meshes[3]->scale(Vec3(0.03f));
             meshes[3]->rotate(Vec3(-3.14f / 2.0f, 0.0f, 0.0f));
-            meshes[3]->translate(Vec3(5.0f, 0.0f, 0.0f));
+            meshes[3]->translate(Vec3(5.0f, -3.0f, 0.0f));
         }
 
         void renderPlane()

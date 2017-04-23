@@ -47,23 +47,77 @@ float getSpotlightContribution(vec3 n, vec3 pos, vec3 lightPos, vec3 lightDir, f
     }
 }
 
-float getGaussianCoefficient(vec2 dist, float strength)
+float getDistance(sampler2D tex, vec2 uv)
 {
-    return 1.0 / (2.0 * 3.14 * strength * strength) * pow(2.71828, -dot(dist, dist) / (2.0 * strength * strength));
+    vec2 delta = 1.0 / vec2(1600.0, 900.0);
+    float d = texture(shadowTexture, vUV).a * 41.0 / 273.0;
+    
+    d += texture(tex, uv + vec2(delta.x, 0.0)).a  * 26.0 / 273.0;
+    d += texture(tex, uv + vec2(0.0, delta.y)).a  * 26.0 / 273.0;
+    d += texture(tex, uv + vec2(-delta.x, 0.0)).a * 26.0 / 273.0;
+    d += texture(tex, uv + vec2(0.0, -delta.y)).a * 26.0 / 273.0;
+    
+    d += texture(tex, uv + vec2(delta.x, delta.y)).a   * 16.0 / 273.0;
+    d += texture(tex, uv + vec2(delta.x, -delta.y)).a  * 16.0 / 273.0;
+    d += texture(tex, uv + vec2(-delta.x, delta.y)).a  * 16.0 / 273.0;
+    d += texture(tex, uv + vec2(-delta.x, -delta.y)).a * 16.0 / 273.0;
+    
+    d += texture(tex, uv + vec2(2.0 * delta.x, 0.0)).a  * 7.0 / 273.0;
+    d += texture(tex, uv + vec2(0.0, 2.0 * delta.y)).a  * 7.0 / 273.0;
+    d += texture(tex, uv + vec2(2.0 * -delta.x, 0.0)).a * 7.0 / 273.0;
+    d += texture(tex, uv + vec2(0.0, 2.0 * -delta.y)).a * 7.0 / 273.0;
+    
+    d += texture(tex, uv + vec2(2.0 * delta.x, delta.y)).a   * 4.0 / 273.0;
+    d += texture(tex, uv + vec2(2.0 * delta.x, -delta.y)).a  * 4.0 / 273.0;
+    d += texture(tex, uv + vec2(2.0 * -delta.x, delta.y)).a  * 4.0 / 273.0;
+    d += texture(tex, uv + vec2(2.0 * -delta.x, -delta.y)).a * 4.0 / 273.0;
+    d += texture(tex, uv + vec2(delta.x,  2.0 * delta.y)).a  * 4.0 / 273.0;
+    d += texture(tex, uv + vec2(delta.x,  2.0 * -delta.y)).a * 4.0 / 273.0;
+    d += texture(tex, uv + vec2(-delta.x, 2.0 * delta.y)).a  * 4.0 / 273.0;
+    d += texture(tex, uv + vec2(-delta.x, 2.0 * -delta.y)).a * 4.0 / 273.0;
+    
+    d += texture(tex, uv + vec2(2.0 * delta.x, 2.0 * delta.y)).a   * 1.0 / 273.0;
+    d += texture(tex, uv + vec2(2.0 * delta.x, 2.0 * -delta.y)).a  * 1.0 / 273.0;
+    d += texture(tex, uv + vec2(2.0 * -delta.x, 2.0 * delta.y)).a  * 1.0 / 273.0;
+    d += texture(tex, uv + vec2(2.0 * -delta.x, 2.0 * -delta.y)).a * 1.0 / 273.0;
+    
+    return d * 10.0;
 }
 
-vec3 blurTexture(sampler2D tex, vec2 uv, float strength)
+vec3 blurColor(sampler2D tex, vec2 uv, float strength)
 {
-    vec3 c = vec3(0.0);
-    vec2 delta = 1.0 / vec2(1600.0, 900.0);
-    for (float i = -SAMPLES * 0.5; i < SAMPLES * 0.5; i += 1.0)
-    {
-        for (float j = -SAMPLES * 0.5; j < SAMPLES * 0.5; j += 1.0)
-        {
-            vec2 dist = vec2(i, j) * delta;
-            c += texture(shadowTexture, vUV + dist).rgb * getGaussianCoefficient(dist, strength);
-        }
-    }
+    vec2 delta = 1.0 / vec2(1600.0, 900.0) * strength;
+    vec3 c = texture(shadowTexture, vUV).rgb * 41.0 / 273.0;
+    
+    c += texture(tex, uv + vec2(delta.x, 0.0)).rgb  * 26.0 / 273.0;
+    c += texture(tex, uv + vec2(0.0, delta.y)).rgb  * 26.0 / 273.0;
+    c += texture(tex, uv + vec2(-delta.x, 0.0)).rgb * 26.0 / 273.0;
+    c += texture(tex, uv + vec2(0.0, -delta.y)).rgb * 26.0 / 273.0;
+                 
+    c += texture(tex, uv + vec2(delta.x, delta.y)).rgb   * 16.0 / 273.0;
+    c += texture(tex, uv + vec2(delta.x, -delta.y)).rgb  * 16.0 / 273.0;
+    c += texture(tex, uv + vec2(-delta.x, delta.y)).rgb  * 16.0 / 273.0;
+    c += texture(tex, uv + vec2(-delta.x, -delta.y)).rgb * 16.0 / 273.0;
+                 
+    c += texture(tex, uv + vec2(2.0 * delta.x, 0.0)).rgb  * 7.0 / 273.0;
+    c += texture(tex, uv + vec2(0.0, 2.0 * delta.y)).rgb  * 7.0 / 273.0;
+    c += texture(tex, uv + vec2(2.0 * -delta.x, 0.0)).rgb * 7.0 / 273.0;
+    c += texture(tex, uv + vec2(0.0, 2.0 * -delta.y)).rgb * 7.0 / 273.0;
+                 
+    c += texture(tex, uv + vec2(2.0 * delta.x, delta.y)).rgb   * 4.0 / 273.0;
+    c += texture(tex, uv + vec2(2.0 * delta.x, -delta.y)).rgb  * 4.0 / 273.0;
+    c += texture(tex, uv + vec2(2.0 * -delta.x, delta.y)).rgb  * 4.0 / 273.0;
+    c += texture(tex, uv + vec2(2.0 * -delta.x, -delta.y)).rgb * 4.0 / 273.0;
+    c += texture(tex, uv + vec2(delta.x,  2.0 * delta.y)).rgb  * 4.0 / 273.0;
+    c += texture(tex, uv + vec2(delta.x,  2.0 * -delta.y)).rgb * 4.0 / 273.0;
+    c += texture(tex, uv + vec2(-delta.x, 2.0 * delta.y)).rgb  * 4.0 / 273.0;
+    c += texture(tex, uv + vec2(-delta.x, 2.0 * -delta.y)).rgb * 4.0 / 273.0;
+                 
+    c += texture(tex, uv + vec2(2.0 * delta.x, 2.0 * delta.y)).rgb   * 1.0 / 273.0;
+    c += texture(tex, uv + vec2(2.0 * delta.x, 2.0 * -delta.y)).rgb  * 1.0 / 273.0;
+    c += texture(tex, uv + vec2(2.0 * -delta.x, 2.0 * delta.y)).rgb  * 1.0 / 273.0;
+    c += texture(tex, uv + vec2(2.0 * -delta.x, 2.0 * -delta.y)).rgb * 1.0 / 273.0;
+    
     return c;
 }
 
@@ -73,10 +127,9 @@ void main()
     float c1 = getPointLightContribution(n, vPos, pointLightPos, 32.0);
     float c2 = getDirLightContribution(n, dirLightDirection, 0.25);
     float c3 = getSpotlightContribution(n, vPos, spotLightPos, spotLightDir, spotLightAngle, 16.0);
-    float projectedDistance = texture(shadowTexture, vUV).a;
-    //vec3 c = blurTexture(shadowTexture, vUV, projectedDistance * 5.0);
-    vec3 c = vec3(1.0) - texture(shadowTexture, vUV).rgb;
-    vec3 shadowColor = c;
+    
+    float projectedDistance = getDistance(shadowTexture, vUV);
+    vec3  shadowColor       = 1.0 - blurColor(shadowTexture, vUV, projectedDistance);
+    
     outColor = diffuse * (c1 + c2 + c3) * shadowColor;
-    //outColor = vec3(projectedDistance);
 }
