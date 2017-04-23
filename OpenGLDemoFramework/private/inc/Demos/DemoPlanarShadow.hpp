@@ -37,7 +37,7 @@ namespace PlanarShadowDemo
             {
                 meshes[2]->rotate(Vec3(0.0f, 0.01f, 0.0f));
                 pointLightPos = meshes[2]->getPosition();
-                meshes[0]->translate(Vec3(0.0f, sin(time * 0.02) * 0.02, 0.0f));
+                meshes[0]->translate(Vec3(0.0f, sinf(time * 0.02f) * 0.02f, 0.0f));
             }
 
             renderPlane();

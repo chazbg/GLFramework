@@ -47,39 +47,29 @@ float getSpotlightContribution(vec3 n, vec3 pos, vec3 lightPos, vec3 lightDir, f
     }
 }
 
-float getDistance(sampler2D tex, vec2 uv)
+float getMaxDistanceAtRow(sampler2D tex, vec2 uv, float row)
 {
     vec2 delta = 1.0 / vec2(1600.0, 900.0);
-    float d = texture(shadowTexture, vUV).a * 41.0 / 273.0;
+    float d = 0.0;
     
-    d += texture(tex, uv + vec2(delta.x, 0.0)).a  * 26.0 / 273.0;
-    d += texture(tex, uv + vec2(0.0, delta.y)).a  * 26.0 / 273.0;
-    d += texture(tex, uv + vec2(-delta.x, 0.0)).a * 26.0 / 273.0;
-    d += texture(tex, uv + vec2(0.0, -delta.y)).a * 26.0 / 273.0;
+    d = max(d, texture(tex, uv + vec2(-2.0 * delta.x, row * delta.y)).a);
+    d = max(d, texture(tex, uv + vec2(-1.0 * delta.x, row * delta.y)).a);
+    d = max(d, texture(tex, uv + vec2( 0.0 * delta.x, row * delta.y)).a);
+    d = max(d, texture(tex, uv + vec2( 1.0 * delta.x, row * delta.y)).a);
+    d = max(d, texture(tex, uv + vec2( 2.0 * delta.x, row * delta.y)).a);
     
-    d += texture(tex, uv + vec2(delta.x, delta.y)).a   * 16.0 / 273.0;
-    d += texture(tex, uv + vec2(delta.x, -delta.y)).a  * 16.0 / 273.0;
-    d += texture(tex, uv + vec2(-delta.x, delta.y)).a  * 16.0 / 273.0;
-    d += texture(tex, uv + vec2(-delta.x, -delta.y)).a * 16.0 / 273.0;
+    return d;
+}
+
+float getDistance(sampler2D tex, vec2 uv)
+{
+    float d = 0.0;
     
-    d += texture(tex, uv + vec2(2.0 * delta.x, 0.0)).a  * 7.0 / 273.0;
-    d += texture(tex, uv + vec2(0.0, 2.0 * delta.y)).a  * 7.0 / 273.0;
-    d += texture(tex, uv + vec2(2.0 * -delta.x, 0.0)).a * 7.0 / 273.0;
-    d += texture(tex, uv + vec2(0.0, 2.0 * -delta.y)).a * 7.0 / 273.0;
-    
-    d += texture(tex, uv + vec2(2.0 * delta.x, delta.y)).a   * 4.0 / 273.0;
-    d += texture(tex, uv + vec2(2.0 * delta.x, -delta.y)).a  * 4.0 / 273.0;
-    d += texture(tex, uv + vec2(2.0 * -delta.x, delta.y)).a  * 4.0 / 273.0;
-    d += texture(tex, uv + vec2(2.0 * -delta.x, -delta.y)).a * 4.0 / 273.0;
-    d += texture(tex, uv + vec2(delta.x,  2.0 * delta.y)).a  * 4.0 / 273.0;
-    d += texture(tex, uv + vec2(delta.x,  2.0 * -delta.y)).a * 4.0 / 273.0;
-    d += texture(tex, uv + vec2(-delta.x, 2.0 * delta.y)).a  * 4.0 / 273.0;
-    d += texture(tex, uv + vec2(-delta.x, 2.0 * -delta.y)).a * 4.0 / 273.0;
-    
-    d += texture(tex, uv + vec2(2.0 * delta.x, 2.0 * delta.y)).a   * 1.0 / 273.0;
-    d += texture(tex, uv + vec2(2.0 * delta.x, 2.0 * -delta.y)).a  * 1.0 / 273.0;
-    d += texture(tex, uv + vec2(2.0 * -delta.x, 2.0 * delta.y)).a  * 1.0 / 273.0;
-    d += texture(tex, uv + vec2(2.0 * -delta.x, 2.0 * -delta.y)).a * 1.0 / 273.0;
+    d = max(d, getMaxDistanceAtRow(tex, uv, -2.0));
+    d = max(d, getMaxDistanceAtRow(tex, uv, -1.0));
+    d = max(d, getMaxDistanceAtRow(tex, uv,  0.0));
+    d = max(d, getMaxDistanceAtRow(tex, uv,  1.0));
+    d = max(d, getMaxDistanceAtRow(tex, uv,  2.0));
     
     return d * 10.0;
 }
