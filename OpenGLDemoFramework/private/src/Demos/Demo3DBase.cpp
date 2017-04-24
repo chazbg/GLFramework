@@ -2,7 +2,7 @@
 
 Demo3DBase::Demo3DBase(const Vec2 resolution) :
     resolution(resolution),
-    camera(3.0f / 4.0f, resolution.x / resolution.y, 1.0f, 1000.0f),
+    camera(3.0f / 4.0f, resolution.x / resolution.y, 0.1f, 1000.0f),
     renderer(0)
 {
 
@@ -70,13 +70,13 @@ void Demo3DBase::onMouseEvent(int button, int state, int x, int y)
 
     if (3 == button)
     {
-        radius -= 1.0f;
+        radius -= 0.5f;
         updateCamera();
     }
 
     if (4 == button)
     {
-        radius += 1.0f;
+        radius += 0.5f;
         updateCamera();
     }
 }
