@@ -309,7 +309,7 @@ IGeometryFactory& OpenGLRenderer::getGeometryFactory()
 
 void OpenGLRenderer::render(IScene& scene, ICamera& camera)
 {  
-    //renderToTexture(scene.getChildren(), camera);
+    renderToTexture(scene.getChildren(), camera);
     render(scene.getChildren(), camera);
     //renderWithPostProcess(scene.getChildren(), camera);
     //renderDeferred(scene.getChildren(), camera);
@@ -349,7 +349,7 @@ void OpenGLRenderer::renderToTarget(IScene & scene, ICamera & camera, IRenderTar
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }
 
-void OpenGLRenderer::render(std::vector<std::shared_ptr<INode>>& nodes, ICamera & camera)
+void OpenGLRenderer::render(NodeList& nodes, ICamera & camera)
 {
     for (auto node : nodes)
     {
@@ -364,6 +364,7 @@ void OpenGLRenderer::render(std::vector<std::shared_ptr<INode>>& nodes, ICamera 
         case NodeType::Mesh:
         {
             auto actualNode = std::static_pointer_cast<MeshNode>(node);
+            renderToTexture(actualNode, camera, Vec4(0.0f), true);
             render(actualNode, camera);
             break;
         }
@@ -482,28 +483,31 @@ void OpenGLRenderer::render(std::shared_ptr<IMesh> mesh, ICamera& camera)
     }
 }
 
-void OpenGLRenderer::renderToTarget(std::shared_ptr<IMesh> mesh, ICamera & camera, IRenderTarget & renderTarget)
+void OpenGLRenderer::renderToTarget(std::shared_ptr<IMesh> mesh, ICamera & camera, IRenderTarget & renderTarget, bool clear)
 {
     unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(renderTarget).getId();
     GLint originalFbo;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //if (clear)
+    //{
+    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //}
 
     render(mesh, camera);
 
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 }
 
-void OpenGLRenderer::renderToTexture(std::shared_ptr<MeshNode> node, ICamera & camera, Vec4 & viewport)
+void OpenGLRenderer::renderToTexture(std::shared_ptr<MeshNode> node, ICamera & camera, Vec4 & viewport, bool clear)
 {
     for (auto mesh : node->getMeshes())
     {
         auto originalMaterial = &mesh->getMaterial();
         mesh->setMaterial(depthMat);
 
-        renderToTarget(mesh, lightCamera, *fb);
+        renderToTarget(mesh, lightCamera, *fb, clear);
 
         auto& textures = originalMaterial->getTextures();
         auto it = find(textures.begin(), textures.end(), shadowMap);

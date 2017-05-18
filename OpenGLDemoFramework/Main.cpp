@@ -1,6 +1,6 @@
-#include "Demos/DemoPlanarShadow.hpp"
+#include "Demos/DemoTexture.hpp"
 int main(int argc, char* argv[])
 {
-    PlanarShadowDemo::main();
+    TextureDemo::main();
     return 0;
 }

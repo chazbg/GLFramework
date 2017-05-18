@@ -110,8 +110,8 @@ private:
     void render(std::shared_ptr<MeshNode> node, ICamera& camera);
     void render(std::shared_ptr<ContainerNode> node, ICamera& camera);
     void render(std::shared_ptr<IMesh> mesh, ICamera& camera);
-    void renderToTarget(std::shared_ptr<IMesh> mesh, ICamera& camera, IRenderTarget& renderTarget);
-    void renderToTexture(std::shared_ptr<MeshNode> node, ICamera& camera, Vec4& viewport = Vec4(0, 0, 0, 0));
+    void renderToTarget(std::shared_ptr<IMesh> mesh, ICamera& camera, IRenderTarget& renderTarget, bool clear = false);
+    void renderToTexture(std::shared_ptr<MeshNode> node, ICamera& camera, Vec4& viewport = Vec4(0, 0, 0, 0), bool clear = false);
     void renderDeferred(std::shared_ptr<MeshNode> node, ICamera& camera);
 
     typedef std::vector<std::shared_ptr<INode>> NodeList;

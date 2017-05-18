@@ -28,21 +28,22 @@ namespace TextureDemo
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
             prevDir += Vec3(0, -0.001f, 0);
-            meshes[4]->Translate(prevDir.x, prevDir.y, prevDir.z);
+            meshes[4]->translate(prevDir);
 
-            shared_ptr<BlockMesh> animatedMeshes[3] = { c1, meshes[0], meshes[1] };
+            MeshNodeSharedPtr animatedMeshes[3] = { c1, meshes[0], meshes[1] };
 
             for (int i = 0; i < 3; i++)
             {
                 Vec3 pos = animatedMeshes[i]->getPosition();
-                animatedMeshes[i]->Translate(-pos.x, -pos.y, -pos.z);
-                animatedMeshes[i]->Rotate(0, 0.01f, 0);
-                animatedMeshes[i]->Translate(pos.x, pos.y, pos.z);
+                animatedMeshes[i]->translate(-pos);
+                animatedMeshes[i]->rotate(Vec3(0.0f, 0.01f, 0.0f));
+                animatedMeshes[i]->translate(pos);
             }
 
             cubeTexturedMat[0]->setProperty(timeProperty[0], static_cast<float>(time));
             cubeTexturedMat[1]->setProperty(timeProperty[1], time * 0.1f);
 
+            //renderer->renderToTarget(scene, camera, )
             renderer->render(scene, camera);
         }
 
@@ -62,8 +63,8 @@ namespace TextureDemo
             {
                 prevDir = Vec3(0.01f, 0.1f, 0.0f);
                 Vec3 pos = meshes[4]->getPosition();
-                meshes[4]->Translate(-pos.x, -pos.y, -pos.z);
-                meshes[4]->Translate(-10.0f, 3.0f, 0.0f);
+                meshes[4]->translate(-pos);
+                meshes[4]->translate(Vec3(-10.0f, 3.0f, 0.0f));
                 break;
             }
             default:
@@ -107,39 +108,39 @@ namespace TextureDemo
             IGeometryFactory& geometryFactory = renderer->getGeometryFactory();
 
             c1 = geometryFactory.createBlockMesh();
-            c1->Scale(2.0f, 5.0f, 5.0f);
-            c1->Translate(0, -1, 0);
+            c1->scale(Vec3(2.0f, 5.0f, 5.0f));
+            c1->translate(Vec3(0.0f, -1.0f, 0.0f));
             c1->setMaterial(cubeMat);
             meshes.push_back(geometryFactory.createBlockMesh());
-            meshes[0]->Scale(2.0f, 5.0f, 5.0f);
-            meshes[0]->Translate(-2, -1, 6);
+            meshes[0]->scale(Vec3(2.0f, 5.0f, 5.0f));
+            meshes[0]->translate(Vec3(-2.0f, -1.0f, 6.0f));
             meshes[0]->setMaterial(cubeMat);
             meshes.push_back(geometryFactory.createBlockMesh());
-            meshes[1]->Scale(2.0f, 5.0f, 5.0f);
-            meshes[1]->Translate(2, -1, -6);
+            meshes[1]->scale(Vec3(2.0f, 5.0f, 5.0f));
+            meshes[1]->translate(Vec3(2.0f, -1.0f, -6.0f));
             meshes[1]->setMaterial(cubeMat);
             meshes.push_back(geometryFactory.createBlockMesh());
-            meshes[2]->Scale(20.0f, 0.2f, 20.0f);
-            meshes[2]->Translate(0, -3, 0);
+            meshes[2]->scale(Vec3(20.0f, 0.2f, 20.0f));
+            meshes[2]->translate(Vec3(0.0f, -3.0f, 0.0f));
             meshes[2]->setMaterial(cubeTexturedMat[1]);
             meshes.push_back(geometryFactory.createBlockMesh());
-            meshes[3]->Scale(20.0f, 20.0f, 0.2f);
-            meshes[3]->Translate(0, -3, -10);
+            meshes[3]->scale(Vec3(20.0f, 20.0f, 0.2f));
+            meshes[3]->translate(Vec3(0.0f, -3.0f, -10.0f));
             meshes[3]->setMaterial(cubeTexturedMat[0]);
             meshes.push_back(geometryFactory.createBlockMesh());
-            meshes[4]->Scale(0.5f, 0.5f, 0.5f);
+            meshes[4]->scale(Vec3(0.5f));
             meshes[4]->setMaterial(cubeMat);
 
-            scene.add(c1.get());
-            scene.add(meshes[0].get());
-            scene.add(meshes[1].get());
-            scene.add(meshes[2].get());
-            scene.add(meshes[3].get());
-            scene.add(meshes[4].get());
+            scene.add(c1);
+            scene.add(meshes[0]);
+            scene.add(meshes[1]);
+            scene.add(meshes[2]);
+            scene.add(meshes[3]);
+            scene.add(meshes[4]);
         }
 
-        shared_ptr<BlockMesh> c1;
-        vector<shared_ptr<BlockMesh>> meshes;
+        MeshNodeSharedPtr c1;
+        vector<MeshNodeSharedPtr> meshes;
         IMaterial* cubeMat;
         IMaterial* cubeTexturedMat[2];
         vector<ITexture*> textures;

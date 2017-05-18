@@ -79,6 +79,7 @@ class Vec4
 {
 public:
     inline Vec4() {}
+    inline Vec4(float v) : x(v), y(v), z(v), w(v) {}
     inline Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
     inline Vec4(const Vec3& v, const float w) : x(v.x), y(v.y), z(v.z), w(w) {}
     inline ~Vec4() {}
