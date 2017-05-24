@@ -11,7 +11,7 @@ out vec3 outColor;
 
 void main()
 {
-    vec4 scw = shadowCoord / shadowCoord.w;
+    vec4 scw = (shadowCoord / shadowCoord.w) * 0.5 + 0.5;
     scw.z -= 0.0005;
     float dfl = texture2D(sampler, scw.st).z;
     float sh = 1.0;
@@ -20,6 +20,5 @@ void main()
         sh = dfl < scw.z ? 0.5 : 1.0;
     }
     
-    //outColor = inColor;
     outColor = sh * inColor;
 }

@@ -2,7 +2,7 @@
 
 Demo3DBase::Demo3DBase(const Vec2 resolution) :
     resolution(resolution),
-    camera(3.0f / 4.0f, resolution.x / resolution.y, 0.1f, 1000.0f),
+    camera(3.14f / 3.0f, resolution.x / resolution.y, 0.1f, 1000.0f),
     renderer(0)
 {
 

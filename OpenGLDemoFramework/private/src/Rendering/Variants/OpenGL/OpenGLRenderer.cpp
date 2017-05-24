@@ -4,6 +4,7 @@
 #include "Rendering/Variants/OpenGL/OpenGLVertexBuffer.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLIndexBuffer.hpp"
 #include "Rendering/Variants/OpenGL/OpenGLRenderTarget.hpp"
+#include "Core/DefaultCamera.hpp"
 #include "Core/Shader.hpp"
 #include <GL/glew.h>
 #include <cstdio>
@@ -17,7 +18,7 @@ OpenGLRenderer::OpenGLRenderer(const Vec2& resolution) :
     geometryFactory(resourceManager),
     r(geometryFactory.createRectangle()),
     postProcessRect(geometryFactory.createRectangle()),
-    lightCamera(3.0f / 4.0f, 16.0f / 9.0f, 1.0f, 1000.0f), 
+    lightCamera(3.14f / 3.0f, 1.0f, 10.0f, 50.0f),
     resolution(resolution)
 {
     glCullFace(GL_BACK);
@@ -309,8 +310,28 @@ IGeometryFactory& OpenGLRenderer::getGeometryFactory()
 
 void OpenGLRenderer::render(IScene& scene, ICamera& camera)
 {  
-    renderToTexture(scene.getChildren(), camera);
+    //renderToTexture(scene.getChildren(), camera);
+    unsigned int fbo = reinterpret_cast<OpenGLRenderTarget&>(*fb).getId();
+    GLint originalFbo;
+
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
+
+    for (auto& child : scene.getChildren())
+    {
+        if (child->getNodeType() == NodeType::Mesh)
+        {
+            renderToTexture(std::static_pointer_cast<MeshNode>(child), camera);
+        }
+    }
+
     render(scene.getChildren(), camera);
+    DefaultCamera defaultCamera;
+    glViewport(0, 0, (GLsizei)resolution.x / 4, (GLsizei)resolution.y / 4);
+    render(r, defaultCamera);
+    glViewport(0, 0, (GLsizei)resolution.x, (GLsizei)resolution.y);
     //renderWithPostProcess(scene.getChildren(), camera);
     //renderDeferred(scene.getChildren(), camera);
 }
@@ -364,7 +385,6 @@ void OpenGLRenderer::render(NodeList& nodes, ICamera & camera)
         case NodeType::Mesh:
         {
             auto actualNode = std::static_pointer_cast<MeshNode>(node);
-            renderToTexture(actualNode, camera, Vec4(0.0f), true);
             render(actualNode, camera);
             break;
         }
@@ -490,11 +510,6 @@ void OpenGLRenderer::renderToTarget(std::shared_ptr<IMesh> mesh, ICamera & camer
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-    //if (clear)
-    //{
-    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //}
-
     render(mesh, camera);
 
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
@@ -506,6 +521,12 @@ void OpenGLRenderer::renderToTexture(std::shared_ptr<MeshNode> node, ICamera & c
     {
         auto originalMaterial = &mesh->getMaterial();
         mesh->setMaterial(depthMat);
+
+        auto& propertySetters = systemPropertySetters[static_cast<OpenGLMaterial*>(depthMat)->getId()];
+        for (unsigned int i = 0; i < propertySetters.size(); ++i)
+        {
+            propertySetters[i](node->getModelToWorldMatrix(), *mesh, lightCamera, lightCamera);
+        }
 
         renderToTarget(mesh, lightCamera, *fb, clear);
 

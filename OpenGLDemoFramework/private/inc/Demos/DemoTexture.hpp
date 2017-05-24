@@ -27,21 +27,24 @@ namespace TextureDemo
 
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
 
-            prevDir += Vec3(0, -0.001f, 0);
-            meshes[4]->translate(prevDir);
-
-            MeshNodeSharedPtr animatedMeshes[3] = { c1, meshes[0], meshes[1] };
-
-            for (int i = 0; i < 3; i++)
+            if (!stopTime)
             {
-                Vec3 pos = animatedMeshes[i]->getPosition();
-                animatedMeshes[i]->translate(-pos);
-                animatedMeshes[i]->rotate(Vec3(0.0f, 0.01f, 0.0f));
-                animatedMeshes[i]->translate(pos);
-            }
+                prevDir += Vec3(0, -0.001f, 0);
+                meshes[4]->translate(prevDir);
 
-            cubeTexturedMat[0]->setProperty(timeProperty[0], static_cast<float>(time));
-            cubeTexturedMat[1]->setProperty(timeProperty[1], time * 0.1f);
+                MeshNodeSharedPtr animatedMeshes[3] = { c1, meshes[0], meshes[1] };
+
+                for (int i = 0; i < 3; i++)
+                {
+                    Vec3 pos = animatedMeshes[i]->getPosition();
+                    animatedMeshes[i]->translate(-pos);
+                    animatedMeshes[i]->rotate(Vec3(0.0f, 0.01f, 0.0f));
+                    animatedMeshes[i]->translate(pos);
+                }
+
+                cubeTexturedMat[0]->setProperty(timeProperty[0], static_cast<float>(time));
+                cubeTexturedMat[1]->setProperty(timeProperty[1], time * 0.1f);
+            }
 
             //renderer->renderToTarget(scene, camera, )
             renderer->render(scene, camera);
@@ -49,8 +52,6 @@ namespace TextureDemo
 
         virtual void onKeyboardEvent(unsigned char c, int x, int y)
         {
-            Demo3DBase::onKeyboardEvent(c, x, y);
-
             switch (c)
             {
             case 'j':
@@ -94,12 +95,14 @@ namespace TextureDemo
 
             cubeTexturedMat[0]->addTexture(textures[0]);
             initMaterialProperty(*cubeTexturedMat[0], "colorMap", 0);
+            initMaterialProperty(*cubeTexturedMat[0], "sampler", 1);
             initMaterialProperty(*cubeTexturedMat[0], "diffuse", Vec3(0.2f, 0.2f, 0.8f));
             cubeTexturedMat[0]->getProperty("time", timeProperty[0]);
 
             cubeTexturedMat[1]->addTexture(textures[1]);
             initMaterialProperty(*cubeTexturedMat[0], "colorMap", 0);
-            initMaterialProperty(*cubeTexturedMat[1], "diffuse", Vec3(0.3f, 0.0f, 0.0f));
+            initMaterialProperty(*cubeTexturedMat[1], "sampler", 1);
+            initMaterialProperty(*cubeTexturedMat[1], "diffuse", Vec3(0.8f, 0.2f, 0.0f));
             cubeTexturedMat[1]->getProperty("time", timeProperty[1]);
         }
 
