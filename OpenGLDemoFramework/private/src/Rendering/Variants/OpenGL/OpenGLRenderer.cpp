@@ -329,6 +329,9 @@ void OpenGLRenderer::render(IScene& scene, ICamera& camera)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
 
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(4.0f, 32.0f);
+
     for (auto& child : scene.getChildren())
     {
         if (child->getNodeType() == NodeType::Mesh)
@@ -336,6 +339,8 @@ void OpenGLRenderer::render(IScene& scene, ICamera& camera)
             renderToTexture(std::static_pointer_cast<MeshNode>(child), camera);
         }
     }
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
 
     render(scene.getChildren(), camera);
     DefaultCamera defaultCamera;
