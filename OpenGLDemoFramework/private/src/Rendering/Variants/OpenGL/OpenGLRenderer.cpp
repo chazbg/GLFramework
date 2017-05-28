@@ -18,7 +18,7 @@ OpenGLRenderer::OpenGLRenderer(const Vec2& resolution) :
     geometryFactory(resourceManager),
     r(geometryFactory.createRectangle()),
     postProcessRect(geometryFactory.createRectangle()),
-    lightCamera(3.14f / 3.0f, 1.0f, 10.0f, 50.0f),
+    lightCamera(3.14f / 3.0f, 1.0f, 20.0f, 50.0f),
     resolution(resolution)
 {
     glCullFace(GL_BACK);
@@ -47,6 +47,16 @@ void OpenGLRenderer::materialCreated(IMaterial& material)
         });
     }
     
+    glMaterial.getProperty("depthModelView", p);
+    if (p != 0)
+    {
+        systemPropertySetters[glMaterial.getId()].push_back([p](Matrix4& modelToWorld, IMesh& mesh, ICamera& camera, ICamera& lightCamera)
+        {
+            mesh.getMaterial().setProperty(p,
+                lightCamera.getViewMatrix() * modelToWorld);
+        });
+    }
+
     glMaterial.getProperty("mvp", p);
     if (p != 0)
     {

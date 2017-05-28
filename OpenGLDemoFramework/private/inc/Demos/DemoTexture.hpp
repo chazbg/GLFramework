@@ -4,6 +4,7 @@
 #include "Math/GeometryAlgorithm.hpp"
 #include "Demos/Demo3DBase.hpp"
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ namespace TextureDemo
             Demo3DBase::onInit();
 
             prevDir = Vec3(0.01f, 0.1f, 0);
+            lightSize = 0.01f;
         }
 
         virtual void onRender(const unsigned int deltaTime)
@@ -26,6 +28,9 @@ namespace TextureDemo
             Demo3DBase::onRender(deltaTime);
 
             renderer->clear(Vec4(0.0f, 0.0f, 0.2f, 0.0f));
+
+            cubeTexturedMat[0]->setProperty(lightSizeProperty[0], lightSize);
+            cubeTexturedMat[1]->setProperty(lightSizeProperty[1], lightSize);
 
             if (!stopTime)
             {
@@ -46,7 +51,6 @@ namespace TextureDemo
                 cubeTexturedMat[1]->setProperty(timeProperty[1], time * 0.1f);
             }
 
-            //renderer->renderToTarget(scene, camera, )
             renderer->render(scene, camera);
         }
 
@@ -55,10 +59,12 @@ namespace TextureDemo
             switch (c)
             {
             case 'j':
-                time -= 5;
+                lightSize = std::max(0.0f, lightSize - 0.001f);
+                cout << "Light Size: " << lightSize << endl;
                 break;
             case 'l':
-                time += 5;
+                lightSize = std::min(1.0f, lightSize + 0.001f);
+                cout << "Light Size: " << lightSize << endl;
                 break;
             case 'r':
             {
@@ -95,15 +101,19 @@ namespace TextureDemo
 
             cubeTexturedMat[0]->addTexture(textures[0]);
             initMaterialProperty(*cubeTexturedMat[0], "colorMap", 0);
-            initMaterialProperty(*cubeTexturedMat[0], "sampler", 1);
+            initMaterialProperty(*cubeTexturedMat[0], "shadowMapPointSampler", 1);
+            initMaterialProperty(*cubeTexturedMat[0], "shadowMapSampler", 1);
             initMaterialProperty(*cubeTexturedMat[0], "diffuse", Vec3(0.2f, 0.2f, 0.8f));
             cubeTexturedMat[0]->getProperty("time", timeProperty[0]);
+            cubeTexturedMat[0]->getProperty("lightSize", lightSizeProperty[0]);
 
             cubeTexturedMat[1]->addTexture(textures[1]);
             initMaterialProperty(*cubeTexturedMat[0], "colorMap", 0);
-            initMaterialProperty(*cubeTexturedMat[1], "sampler", 1);
+            initMaterialProperty(*cubeTexturedMat[1], "shadowMapPointSampler", 1);
+            initMaterialProperty(*cubeTexturedMat[1], "shadowMapSampler", 1);
             initMaterialProperty(*cubeTexturedMat[1], "diffuse", Vec3(0.8f, 0.2f, 0.0f));
             cubeTexturedMat[1]->getProperty("time", timeProperty[1]);
+            cubeTexturedMat[1]->getProperty("lightSize", lightSizeProperty[1]);
         }
 
         virtual void initGeometry()
@@ -113,18 +123,18 @@ namespace TextureDemo
             c1 = geometryFactory.createBlockMesh();
             c1->scale(Vec3(2.0f, 5.0f, 5.0f));
             c1->translate(Vec3(0.0f, -1.0f, 0.0f));
-            c1->setMaterial(cubeMat);
+            c1->setMaterial(cubeTexturedMat[0]);
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[0]->scale(Vec3(2.0f, 5.0f, 5.0f));
             meshes[0]->translate(Vec3(-2.0f, -1.0f, 6.0f));
-            meshes[0]->setMaterial(cubeMat);
+            meshes[0]->setMaterial(cubeTexturedMat[0]);
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[1]->scale(Vec3(2.0f, 5.0f, 5.0f));
             meshes[1]->translate(Vec3(2.0f, -1.0f, -6.0f));
-            meshes[1]->setMaterial(cubeMat);
+            meshes[1]->setMaterial(cubeTexturedMat[0]);
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[2]->scale(Vec3(20.0f, 0.2f, 20.0f));
-            meshes[2]->translate(Vec3(0.0f, -3.0f, 0.0f));
+            meshes[2]->translate(Vec3(0.0f, -3.5f, 0.0f));
             meshes[2]->setMaterial(cubeTexturedMat[1]);
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[3]->scale(Vec3(20.0f, 20.0f, 0.2f));
@@ -132,7 +142,7 @@ namespace TextureDemo
             meshes[3]->setMaterial(cubeTexturedMat[0]);
             meshes.push_back(geometryFactory.createBlockMesh());
             meshes[4]->scale(Vec3(0.5f));
-            meshes[4]->setMaterial(cubeMat);
+            meshes[4]->setMaterial(cubeTexturedMat[0]);
 
             scene.add(c1);
             scene.add(meshes[0]);
@@ -148,7 +158,10 @@ namespace TextureDemo
         IMaterial* cubeTexturedMat[2];
         vector<ITexture*> textures;
         Vec3 prevDir;
+        float lightSize;
+
         FloatPropertySharedPtr timeProperty[2];
+        FloatPropertySharedPtr lightSizeProperty[2];
     };
 
     void main()
